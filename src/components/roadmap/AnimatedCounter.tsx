@@ -38,7 +38,7 @@ export function AnimatedCounter({ from, to, skipAnimation = false }: { from: num
         };
 
         requestAnimationFrame(animate);
-    }, [from, to, skipAnimation, count, isComplete]);
+    }, [from, to, skipAnimation]);
 
     return (
         <span className={`text-2xl font-black transition-colors ${skipAnimation ? '' : 'animate-in zoom-in-50 duration-300'} ${isComplete ? '' : 'text-white'}`}>
