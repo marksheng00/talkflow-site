@@ -168,7 +168,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
                 paddingRight: visible ? "16px" : "0px",
                 paddingLeft: visible ? "16px" : "0px",
                 borderRadius: visible ? "24px" : "2rem",
-                y: visible ? 20 : 0,
+                y: visible ? 12 : 0,
             }}
             transition={{
                 type: "spring",
@@ -215,7 +215,7 @@ export const MobileNavMenu = ({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     className={cn(
-                        "absolute inset-x-0 top-20 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-xl bg-neutral-950/90 backdrop-blur-xl border border-white/10 px-6 py-6",
+                        "absolute left-0 right-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-xl bg-neutral-950/95 backdrop-blur-xl border border-white/10 px-6 py-6",
                         className
                     )}
                 >

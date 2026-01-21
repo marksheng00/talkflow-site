@@ -27,26 +27,26 @@ export default function Home() {
   return (
     <AuroraBackground className="pb-24 text-white">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-40 overflow-hidden w-full">
+      <section className="relative pt-24 md:pt-20 pb-32 md:pb-40 overflow-hidden w-full">
         <div className="section-shell relative z-10 flex flex-col items-center text-center">
 
           {/* Main Title */}
-          <h1 className="max-w-4xl font-heading text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">
+          <h1 className="max-w-4xl font-heading text-4xl sm:text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">
             Simple, Fast, Fluent.
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-6 max-w-2xl text-xl leading-relaxed text-slate-400">
+          <p className="mt-4 md:mt-6 max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-400 px-4">
             TalkFlow combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
           </p>
 
           {/* Buttons */}
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <div className="mt-8 md:mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center w-full max-w-lg px-4">
             <Link
               href={appStore}
-              className="group flex h-[64px] items-center gap-4 rounded-xl bg-white px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
             >
-              <svg viewBox="0 0 384 512" className="h-7 w-7 fill-black">
+              <svg viewBox="0 0 384 512" className="h-6 w-6 md:h-7 md:w-7 fill-black flex-shrink-0">
                 <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 21.8-88.5 21.8-11.4 0-51.1-20.8-82.3-20.1-41.2.6-79.1 23.9-100.1 60.5-42.2 73.1-10.8 181.8 30.5 241.6 20.2 29.2 44.1 61.9 75.8 60.7 30.3-1.2 41.8-19.3 78.4-19.3s47.1 19.3 78.9 18.7c32.3-.6 53.3-29.8 73-58.4 22.9-33.1 32.7-65.1 33-66.8-.7-.3-63.5-24.3-63.8-96.1zM288 80.1c15.6-18.8 26.2-44.8 23.3-70.9-22.3 1-49.3 15-65.3 33.8-14.4 16.8-26.9 43.1-23.5 68.3 24.8 1.9 49.3-12.4 65.5-31.2z" />
               </svg>
               <div className="flex flex-col items-start leading-none">
@@ -57,9 +57,9 @@ export default function Home() {
 
             <Link
               href={playStore}
-              className="group flex h-[64px] items-center gap-4 rounded-xl bg-white px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
             >
-              <svg viewBox="0 0 512 512" className="h-6 w-6 fill-black">
+              <svg viewBox="0 0 512 512" className="h-5 w-5 md:h-6 md:w-6 fill-black flex-shrink-0">
                 <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
               </svg>
               <div className="flex flex-col items-start leading-none">
@@ -70,9 +70,9 @@ export default function Home() {
 
             <Link
               href={primaryCta}
-              className="group flex h-[64px] items-center gap-4 rounded-xl bg-white px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
             >
-              <MonitorPlay className="h-6 w-6 fill-black stroke-black" />
+              <MonitorPlay className="h-5 w-5 md:h-6 md:w-6 fill-black stroke-black flex-shrink-0" />
               <div className="flex flex-col items-start leading-none">
                 <span className="text-sm font-bold text-slate-950">Try on web</span>
                 <span className="text-xs text-slate-500 mt-1">Coming soon</span>
@@ -81,14 +81,14 @@ export default function Home() {
           </div>
 
           {/* Video Placeholder */}
-          <div className="mt-20 w-full max-w-5xl relative">
+          <div className="mt-12 md:mt-20 w-full max-w-5xl relative px-4">
             <div className="absolute inset-0 blur-[120px] bg-emerald-400/20 -z-10" />
-            <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-white/10 bg-slate-900/80 shadow-2xl flex items-center justify-center">
-              <div className="flex flex-col items-center gap-4 text-slate-500">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 transition-transform hover:scale-110 cursor-pointer">
-                  <Play className="h-8 w-8 text-white fill-current" />
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/10 bg-slate-900/80 shadow-2xl flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3 md:gap-4 text-slate-500">
+                <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 transition-transform hover:scale-110 cursor-pointer">
+                  <Play className="h-6 w-6 md:h-8 md:w-8 text-white fill-current" />
                 </div>
-                <p className="text-sm font-medium tracking-wide uppercase text-slate-400">Watch Intro</p>
+                <p className="text-xs md:text-sm font-medium tracking-wide uppercase text-slate-400">Watch Intro</p>
               </div>
             </div>
 
@@ -191,7 +191,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:grid-rows-2 h-auto md:h-[560px]">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:grid-rows-2 md:h-[560px]">
 
           {/* 1. Agentic Conversation (Large - 3 cols, 2 rows) */}
           <div className="group relative col-span-1 md:col-span-3 md:row-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 md:p-8 flex flex-col transition-all hover:bg-white/[0.04]">
@@ -266,7 +266,7 @@ export default function Home() {
           </div>
 
           {/* 3. Models - Smooth sequential fade */}
-          <div className="group relative col-span-1 md:col-span-1 md:row-span-1 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
+          <div className="group relative col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative h-10 w-full flex items-center justify-center">
                 <span className="absolute text-2xl md:text-3xl font-bold text-blue-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '0s' }}>Gemini</span>
@@ -281,7 +281,7 @@ export default function Home() {
           </div>
 
           {/* 4. Voice - High-Fidelity Living Mesh (方案 A 改良) */}
-          <div className="group relative col-span-1 md:col-span-1 md:row-span-1 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
+          <div className="group relative col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
             {/* The Fluid Mesh Container */}
             <div className="absolute inset-0 flex items-center justify-center scale-110">
               <div className="relative h-full w-full filter blur-[45px] animate-blob-rotate">
@@ -306,7 +306,7 @@ export default function Home() {
           </div>
 
           {/* 5. ASR - Sequential single phoneme with pixelated feel */}
-          <div className="group relative col-span-1 md:col-span-1 md:row-span-1 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
+          <div className="group relative col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
             {/* Pixel Grid Overlay */}
             <div className="absolute inset-0 pixel-grid" />
             <div className="scanline" />
