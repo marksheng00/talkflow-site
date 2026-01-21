@@ -44,38 +44,38 @@ export default function Home() {
           <div className="mt-8 md:mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center w-full max-w-lg px-4">
             <Link
               href={appStore}
-              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 overflow-hidden"
             >
               <svg viewBox="0 0 384 512" className="h-6 w-6 md:h-7 md:w-7 fill-black flex-shrink-0">
                 <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 21.8-88.5 21.8-11.4 0-51.1-20.8-82.3-20.1-41.2.6-79.1 23.9-100.1 60.5-42.2 73.1-10.8 181.8 30.5 241.6 20.2 29.2 44.1 61.9 75.8 60.7 30.3-1.2 41.8-19.3 78.4-19.3s47.1 19.3 78.9 18.7c32.3-.6 53.3-29.8 73-58.4 22.9-33.1 32.7-65.1 33-66.8-.7-.3-63.5-24.3-63.8-96.1zM288 80.1c15.6-18.8 26.2-44.8 23.3-70.9-22.3 1-49.3 15-65.3 33.8-14.4 16.8-26.9 43.1-23.5 68.3 24.8 1.9 49.3-12.4 65.5-31.2z" />
               </svg>
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-sm font-bold text-slate-950">TalkFlow App</span>
-                <span className="text-xs text-slate-500 mt-1">Download on App Store</span>
+              <div className="flex flex-col items-start justify-center leading-tight min-w-0 flex-1">
+                <span className="text-sm font-bold text-slate-950 truncate w-full">TalkFlow App</span>
+                <span className="text-xs text-slate-500 mt-0.5 truncate w-full">Download on App Store</span>
               </div>
             </Link>
 
             <Link
               href={playStore}
-              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 overflow-hidden"
             >
               <svg viewBox="0 0 512 512" className="h-5 w-5 md:h-6 md:w-6 fill-black flex-shrink-0">
                 <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
               </svg>
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-sm font-bold text-slate-950">TalkFlow App</span>
-                <span className="text-xs text-slate-500 mt-1">Get it on Google Play</span>
+              <div className="flex flex-col items-start justify-center leading-tight min-w-0 flex-1">
+                <span className="text-sm font-bold text-slate-950 truncate w-full">TalkFlow App</span>
+                <span className="text-xs text-slate-500 mt-0.5 truncate w-full">Get it on Google Play</span>
               </div>
             </Link>
 
             <Link
               href={primaryCta}
-              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+              className="group flex h-[56px] md:h-[64px] items-center gap-3 md:gap-4 rounded-xl bg-white px-6 md:px-8 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 overflow-hidden"
             >
               <MonitorPlay className="h-5 w-5 md:h-6 md:w-6 fill-black stroke-black flex-shrink-0" />
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-sm font-bold text-slate-950">Try on web</span>
-                <span className="text-xs text-slate-500 mt-1">Coming soon</span>
+              <div className="flex flex-col items-start justify-center leading-tight min-w-0 flex-1">
+                <span className="text-sm font-bold text-slate-950 truncate w-full">Try on web</span>
+                <span className="text-xs text-slate-500 mt-0.5 truncate w-full">Coming soon</span>
               </div>
             </Link>
           </div>
