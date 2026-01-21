@@ -267,7 +267,7 @@ export const NavbarButton = ({
 
     const variantStyles = {
         primary:
-            "bg-white !text-black font-bold hover:bg-gradient-to-br hover:from-[#7aa2ff] hover:to-[#63f5c5] hover:!text-white transition-all duration-300",
+            "bg-white !text-black font-bold hover:bg-black hover:!text-[#63f5c5] hover:shadow-[0_0_30px_rgba(99,245,197,0.25)] transition-all duration-300",
         secondary:
             "bg-white/5 border border-white/10 text-white hover:bg-white/15", // Explicit secondary style now
         dark: "bg-black text-white border border-white/10 hover:bg-neutral-900",
