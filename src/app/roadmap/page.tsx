@@ -312,803 +312,792 @@ export default function RoadmapPage() {
     }
 
     return (
-        <div className="min-h-screen pb-32 text-white relative selection:bg-emerald-500/30">
-            {/* Fluent Animated Background */}
-            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-                <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-emerald-600/10 rounded-full blur-[120px] animate-blob-one mix-blend-screen" />
-                <div className="absolute top-[10%] right-[-10%] w-[45vw] h-[45vw] bg-teal-600/10 rounded-full blur-[120px] animate-blob-two mix-blend-screen" style={{ animationDelay: '2s' }} />
-                <div className="absolute bottom-[-20%] left-[20%] w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[120px] animate-blob-three mix-blend-screen" style={{ animationDelay: '4s' }} />
-                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] mix-blend-overlay" />
-            </div>
+        <div className="min-h-screen pb-32 text-white">
+            {/* Hero Section */}
+            <section className="section-shell relative pt-32 pb-6">
+                <div className="flex flex-col gap-6 max-w-7xl mx-auto">
+                    {/* Header */}
+                    <h1 className="font-heading text-5xl font-bold tracking-tight text-white md:text-6xl">
+                        Building in public.
+                    </h1>
 
-            {/* Content Wrapper */}
-            <div className="relative z-10">
-                {/* Hero Section */}
-                <section className="section-shell relative pt-32 pb-6">
-                    <div className="flex flex-col gap-6 max-w-7xl mx-auto">
-                        {/* Header */}
-                        <h1 className="font-heading text-5xl font-bold tracking-tight text-white md:text-6xl">
-                            Building in public.
-                        </h1>
-
-                        {/* Controls: Tabs & Filter */}
-                        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    {/* Controls: Tabs & Filter */}
+                    <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
 
 
-                            {/* Tab Switcher */}
-                            <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-fit">
-                                <button
-                                    onClick={() => setActiveTab("roadmap")}
-                                    className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
-                                >
-                                    Product Roadmap
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("ideas")}
-                                    className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
-                                >
-                                    Community Ideas
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("bugs")}
-                                    className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
-                                >
-                                    Bug Tracker
-                                </button>
+                        {/* Tab Switcher */}
+                        <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-fit">
+                            <button
+                                onClick={() => setActiveTab("roadmap")}
+                                className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                            >
+                                Product Roadmap
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("ideas")}
+                                className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                            >
+                                Community Ideas
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("bugs")}
+                                className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                            >
+                                Bug Tracker
+                            </button>
+                        </div>
+
+                        {/* Category Filter */}
+                        <div className="flex flex-wrap gap-2">
+                            {categories.map(cat => {
+                                const categoryButtonColors = {
+                                    All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
+                                    "Feature": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+                                    "Content": "bg-purple-500/20 text-purple-400 border-purple-500/30",
+                                    "AI Core": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+                                    "UIUX": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+                                    "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
+                                };
+
+                                const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
+
+                                return (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setSelectedCategory(cat)}
+                                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${selectedCategory === cat
+                                            ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
+                                            : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
+                                            }`}
+                                    >
+                                        {cat}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- CONTENT TABS --- */}
+
+            {/* TAB 1: OFFICIAL ROADMAP - GANTT CHART */}
+            {activeTab === "roadmap" && (
+                <section className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+                    {/* Mobile View: Task Cards */}
+                    <div className="md:hidden space-y-4">
+                        <p className="text-xs text-slate-500 text-center mb-6">Tap a task to view details. Swipe horizontally on Gantt chart for full view on larger screens.</p>
+                        {filteredTasks
+                            .filter(task => task.startDate && task.targetDate)
+                            .map((task) => {
+                                const categoryColors = {
+                                    Feature: 'border-blue-600/30 bg-blue-600/10',
+                                    Content: 'border-purple-600/30 bg-purple-600/10',
+                                    "AI Core": 'border-emerald-600/30 bg-emerald-600/10',
+                                    UIUX: 'border-amber-600/30 bg-amber-600/10'
+                                };
+                                const colors = categoryColors[task.category as keyof typeof categoryColors] || 'border-slate-600/30 bg-slate-600/10';
+
+                                return (
+                                    <button
+                                        key={task.id}
+                                        onClick={() => setSelectedTask(task)}
+                                        className={`w-full flex flex-col gap-3 p-4 rounded-xl border ${colors} transition-all hover:scale-[1.02] active:scale-95 text-left`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <h4 className="font-semibold text-white text-sm">{task.title}</h4>
+                                            <span className="text-xs text-slate-500">{task.progress}%</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 px-2 py-0.5 rounded bg-white/5">
+                                                {task.category}
+                                            </span>
+                                            <div className="flex items-center gap-1 text-slate-600">
+                                                <Zap className="h-3 w-3" />
+                                                <span className="text-[10px] font-medium">{task.accelerations}</span>
+                                            </div>
+                                            <span className="ml-auto text-[10px] text-slate-600 font-mono">
+                                                {task.startDate} → {task.targetDate}
+                                            </span>
+                                        </div>
+                                        {/* Progress Bar */}
+                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-emerald-500/60 rounded-full transition-all"
+                                                style={{ width: `${task.progress || 0}%` }}
+                                            />
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                    </div>
+
+                    {/* Desktop View: Gantt Chart */}
+                    <div className="hidden md:flex gap-6">
+                        {/* LEFT: Fixed Task Column */}
+                        <div className="w-[280px] flex-shrink-0">
+                            <div className="mb-6 pb-4 border-b border-white/10">
+                                <div className="text-center">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Task Overview</span>
+                                    <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
+                                </div>
                             </div>
+                            <div className="space-y-3">
+                                {filteredTasks
+                                    .filter(task => task.startDate && task.targetDate)
+                                    .map((task) => (
+                                        <div key={task.id} className="h-12 flex items-center">
+                                            <button
+                                                onClick={() => setSelectedTask(task)}
+                                                className="w-full h-full flex items-center text-left hover:bg-white/5 rounded-lg px-2 transition-colors group"
+                                            >
+                                                <div className="space-y-1">
+                                                    <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
+                                                        {task.title}
+                                                    </h4>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
+                                                            {task.category}
+                                                        </span>
+                                                        <div className="flex items-center gap-1 text-slate-600">
+                                                            <Zap className="h-2.5 w-2.5" />
+                                                            <span className="text-[9px] font-medium">{task.accelerations}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
 
-                            {/* Category Filter */}
-                            <div className="flex flex-wrap gap-2">
-                                {categories.map(cat => {
-                                    const categoryButtonColors = {
-                                        All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
-                                        "Feature": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-                                        "Content": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-                                        "AI Core": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-                                        "UIUX": "bg-amber-500/20 text-amber-400 border-amber-500/30",
-                                        "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
-                                    };
+                        {/* RIGHT: Scrollable Timeline */}
+                        <div className="flex-1 overflow-hidden">
+                            <div
+                                ref={timelineRef}
+                                className="overscroll-none overflow-x-auto overflow-y-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+                            >
+                                <div className="min-w-[8000px]">
+                                    {/* Timeline Header */}
+                                    <div className="mb-6 pb-4 border-b border-white/10 flex">
+                                        {Array.from({ length: 97 }, (_, i) => {
+                                            const date = new Date(2024, i, 1);
+                                            const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+                                            const year = date.getFullYear();
+                                            return (
+                                                <div key={i} className="flex-1 text-center min-w-[80px]">
+                                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{monthName}</span>
+                                                    {i % 12 === 0 && <div className="text-[9px] text-slate-600 mt-0.5">{year}</div>}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
 
-                                    const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
+                                    {/* Task Bars */}
+                                    <div className="relative space-y-3">
+                                        {(() => {
+                                            // Today Line (Approximate)
+                                            const today = new Date();
+                                            const timelineStart = new Date('2024-01-01');
+                                            const timelineEnd = new Date('2032-01-31');
+                                            const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+                                            const todayOffset = (today.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+                                            const todayPercent = (todayOffset / totalDays) * 100;
 
-                                    return (
-                                        <button
-                                            key={cat}
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${selectedCategory === cat
-                                                ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
-                                                : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
-                                                }`}
-                                        >
-                                            {cat}
-                                        </button>
-                                    );
-                                })}
+                                            if (todayPercent >= 0 && todayPercent <= 100) {
+                                                return (
+                                                    <div
+                                                        className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
+                                                        style={{ left: `${todayPercent}%` }}
+                                                    />
+                                                );
+                                            }
+                                            return null;
+                                        })()}
+
+                                        {/* Grid Lines */}
+                                        {Array.from({ length: 97 }, (_, i) => (
+                                            <div
+                                                key={i}
+                                                className="absolute -top-6 -bottom-6 border-l border-white/[0.03] pointer-events-none"
+                                                style={{ left: `${(i / 97) * 100}%` }}
+                                            />
+                                        ))}
+
+                                        {filteredTasks
+                                            .filter(task => task.startDate && task.targetDate)
+                                            .map((task) => {
+                                                const startDate = new Date(task.startDate!);
+                                                const endDate = new Date(task.targetDate!);
+                                                const timelineStart = new Date('2024-01-01');
+                                                const timelineEnd = new Date('2032-01-31');
+
+                                                const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+                                                const taskStartOffset = (startDate.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+                                                const taskDuration = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+
+                                                const leftPercent = (taskStartOffset / totalDays) * 100;
+                                                const widthPercent = (taskDuration / totalDays) * 100;
+
+                                                const categoryColors = {
+                                                    Feature: { border: 'border-blue-600/40', bg: 'bg-blue-700/10', progress: 'bg-blue-600/30', text: 'text-blue-200' },
+                                                    Content: { border: 'border-purple-600/40', bg: 'bg-purple-700/10', progress: 'bg-purple-600/30', text: 'text-purple-200' },
+                                                    "AI Core": { border: 'border-emerald-600/40', bg: 'bg-emerald-700/10', progress: 'bg-emerald-600/30', text: 'text-emerald-200' },
+                                                    UIUX: { border: 'border-amber-600/40', bg: 'bg-amber-700/10', progress: 'bg-amber-600/30', text: 'text-amber-200' }
+                                                };
+
+                                                const colors = categoryColors[task.category as keyof typeof categoryColors] || { border: 'border-slate-600/40', bg: 'bg-slate-700/10', progress: 'bg-slate-600/20', text: 'text-slate-300' };
+
+                                                return (
+                                                    <div key={task.id} className="relative h-12 flex items-center">
+                                                        <button
+                                                            onClick={() => setSelectedTask(task)}
+                                                            className={`absolute h-12 rounded-lg border ${colors.border} ${colors.bg} backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg`}
+                                                            style={{
+                                                                left: `${leftPercent}%`,
+                                                                width: `${widthPercent}%`,
+                                                                minWidth: '100px'
+                                                            }}
+                                                        >
+                                                            <div className="absolute inset-0 overflow-hidden rounded-lg">
+                                                                <div
+                                                                    className={`absolute bottom-0 left-0 h-[2px] ${colors.progress.replace('/30', '/60')} transition-all`}
+                                                                    style={{ width: `${task.progress || 0}%` }}
+                                                                />
+                                                            </div>
+                                                            <div className="relative h-full flex items-center justify-between px-3 z-10">
+                                                                <span className={`text-[11px] font-semibold ${colors.text} truncate`}>
+                                                                    {task.progress}%
+                                                                </span>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
+            )}
 
-                {/* --- CONTENT TABS --- */}
+            {/* TAB 2: COMMUNITY IDEAS */}
+            {activeTab === "ideas" && (
+                <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <button
+                            onClick={() => setIsSubmitModalOpen(true)}
+                            className="group relative flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-white/10 bg-transparent p-6 h-[220px] hover:bg-white/[0.02] hover:border-white/20 transition-all"
+                        >
+                            <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Lightbulb className="h-6 w-6 text-emerald-400" />
+                            </div>
+                            <p className="text-sm font-bold text-slate-300 group-hover:text-white">Submit New Idea</p>
+                            <p className="text-xs text-slate-500 text-center px-4">Have a feature request? Add it to the pool.</p>
+                        </button>
 
-                {/* TAB 1: OFFICIAL ROADMAP - GANTT CHART */}
-                {activeTab === "roadmap" && (
-                    <section className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-
-                        {/* Mobile View: Task Cards */}
-                        <div className="md:hidden space-y-4">
-                            <p className="text-xs text-slate-500 text-center mb-6">Tap a task to view details. Swipe horizontally on Gantt chart for full view on larger screens.</p>
-                            {filteredTasks
-                                .filter(task => task.startDate && task.targetDate)
-                                .map((task) => {
-                                    const categoryColors = {
-                                        Feature: 'border-blue-600/30 bg-blue-600/10',
-                                        Content: 'border-purple-600/30 bg-purple-600/10',
-                                        "AI Core": 'border-emerald-600/30 bg-emerald-600/10',
-                                        UIUX: 'border-amber-600/30 bg-amber-600/10'
-                                    };
-                                    const colors = categoryColors[task.category as keyof typeof categoryColors] || 'border-slate-600/30 bg-slate-600/10';
-
-                                    return (
-                                        <button
-                                            key={task.id}
-                                            onClick={() => setSelectedTask(task)}
-                                            className={`w-full flex flex-col gap-3 p-4 rounded-xl border ${colors} transition-all hover:scale-[1.02] active:scale-95 text-left`}
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <h4 className="font-semibold text-white text-sm">{task.title}</h4>
-                                                <span className="text-xs text-slate-500">{task.progress}%</span>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 px-2 py-0.5 rounded bg-white/5">
-                                                    {task.category}
-                                                </span>
-                                                <div className="flex items-center gap-1 text-slate-600">
-                                                    <Zap className="h-3 w-3" />
-                                                    <span className="text-[10px] font-medium">{task.accelerations}</span>
-                                                </div>
-                                                <span className="ml-auto text-[10px] text-slate-600 font-mono">
-                                                    {task.startDate} → {task.targetDate}
-                                                </span>
-                                            </div>
-                                            {/* Progress Bar */}
-                                            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full bg-emerald-500/60 rounded-full transition-all"
-                                                    style={{ width: `${task.progress || 0}%` }}
-                                                />
-                                            </div>
-                                        </button>
-                                    );
-                                })}
-                        </div>
-
-                        {/* Desktop View: Gantt Chart */}
-                        <div className="hidden md:flex gap-6">
-                            {/* LEFT: Fixed Task Column */}
-                            <div className="w-[280px] flex-shrink-0">
-                                <div className="mb-6 pb-4 border-b border-white/10">
-                                    <div className="text-center">
-                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Task Overview</span>
-                                        <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
+                        {filteredIdeals.map(idea => (
+                            <div
+                                key={idea.id}
+                                onClick={() => setSelectedIdea(idea)}
+                                className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer"
+                            >
+                                <div className="space-y-1.5">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-emerald-400 transition-colors pr-8 truncate">
+                                            {idea.title}
+                                        </h4>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
+                                            {idea.category}
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="space-y-3">
-                                    {filteredTasks
-                                        .filter(task => task.startDate && task.targetDate)
-                                        .map((task) => (
-                                            <div key={task.id} className="h-12 flex items-center">
-                                                <button
-                                                    onClick={() => setSelectedTask(task)}
-                                                    className="w-full h-full flex items-center text-left hover:bg-white/5 rounded-lg px-2 transition-colors group"
-                                                >
-                                                    <div className="space-y-1">
-                                                        <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
-                                                            {task.title}
-                                                        </h4>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
-                                                                {task.category}
-                                                            </span>
-                                                            <div className="flex items-center gap-1 text-slate-600">
-                                                                <Zap className="h-2.5 w-2.5" />
-                                                                <span className="text-[9px] font-medium">{task.accelerations}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
 
-                            {/* RIGHT: Scrollable Timeline */}
-                            <div className="flex-1 overflow-hidden">
+                                <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
+                                    {idea.description}
+                                </p>
+
                                 <div
-                                    ref={timelineRef}
-                                    className="overscroll-none overflow-x-auto overflow-y-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+                                    className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
+                                    onClick={(e) => e.stopPropagation()}
                                 >
-                                    <div className="min-w-[8000px]">
-                                        {/* Timeline Header */}
-                                        <div className="mb-6 pb-4 border-b border-white/10 flex">
-                                            {Array.from({ length: 97 }, (_, i) => {
-                                                const date = new Date(2024, i, 1);
-                                                const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-                                                const year = date.getFullYear();
-                                                return (
-                                                    <div key={i} className="flex-1 text-center min-w-[80px]">
-                                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{monthName}</span>
-                                                        {i % 12 === 0 && <div className="text-[9px] text-slate-600 mt-0.5">{year}</div>}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                                    <button
+                                        onClick={(e) => handleVote(idea.id, "up", e)}
+                                        className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-emerald-400 transition-colors group/up"
+                                    >
+                                        <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
+                                        <span>{idea.upvotes}</span>
+                                    </button>
+                                    <button
+                                        onClick={(e) => handleVote(idea.id, "down", e)}
+                                        className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-rose-400 transition-colors group/down"
+                                    >
+                                        <ArrowDown className="h-4 w-4 transition-transform group-hover/down:translate-y-0.5" />
+                                        <span>{idea.downvotes || 0}</span>
+                                    </button>
 
-                                        {/* Task Bars */}
-                                        <div className="relative space-y-3">
-                                            {(() => {
-                                                // Today Line (Approximate)
-                                                const today = new Date();
-                                                const timelineStart = new Date('2024-01-01');
-                                                const timelineEnd = new Date('2032-01-31');
-                                                const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                                const todayOffset = (today.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                                const todayPercent = (todayOffset / totalDays) * 100;
-
-                                                if (todayPercent >= 0 && todayPercent <= 100) {
-                                                    return (
-                                                        <div
-                                                            className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
-                                                            style={{ left: `${todayPercent}%` }}
-                                                        />
-                                                    );
-                                                }
-                                                return null;
-                                            })()}
-
-                                            {/* Grid Lines */}
-                                            {Array.from({ length: 97 }, (_, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="absolute -top-6 -bottom-6 border-l border-white/[0.03] pointer-events-none"
-                                                    style={{ left: `${(i / 97) * 100}%` }}
-                                                />
-                                            ))}
-
-                                            {filteredTasks
-                                                .filter(task => task.startDate && task.targetDate)
-                                                .map((task) => {
-                                                    const startDate = new Date(task.startDate!);
-                                                    const endDate = new Date(task.targetDate!);
-                                                    const timelineStart = new Date('2024-01-01');
-                                                    const timelineEnd = new Date('2032-01-31');
-
-                                                    const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                                    const taskStartOffset = (startDate.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                                    const taskDuration = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
-
-                                                    const leftPercent = (taskStartOffset / totalDays) * 100;
-                                                    const widthPercent = (taskDuration / totalDays) * 100;
-
-                                                    const categoryColors = {
-                                                        Feature: { border: 'border-blue-600/40', bg: 'bg-blue-700/10', progress: 'bg-blue-600/30', text: 'text-blue-200' },
-                                                        Content: { border: 'border-purple-600/40', bg: 'bg-purple-700/10', progress: 'bg-purple-600/30', text: 'text-purple-200' },
-                                                        "AI Core": { border: 'border-emerald-600/40', bg: 'bg-emerald-700/10', progress: 'bg-emerald-600/30', text: 'text-emerald-200' },
-                                                        UIUX: { border: 'border-amber-600/40', bg: 'bg-amber-700/10', progress: 'bg-amber-600/30', text: 'text-amber-200' }
-                                                    };
-
-                                                    const colors = categoryColors[task.category as keyof typeof categoryColors] || { border: 'border-slate-600/40', bg: 'bg-slate-700/10', progress: 'bg-slate-600/20', text: 'text-slate-300' };
-
-                                                    return (
-                                                        <div key={task.id} className="relative h-12 flex items-center">
-                                                            <button
-                                                                onClick={() => setSelectedTask(task)}
-                                                                className={`absolute h-12 rounded-lg border ${colors.border} ${colors.bg} backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg`}
-                                                                style={{
-                                                                    left: `${leftPercent}%`,
-                                                                    width: `${widthPercent}%`,
-                                                                    minWidth: '100px'
-                                                                }}
-                                                            >
-                                                                <div className="absolute inset-0 overflow-hidden rounded-lg">
-                                                                    <div
-                                                                        className={`absolute bottom-0 left-0 h-[2px] ${colors.progress.replace('/30', '/60')} transition-all`}
-                                                                        style={{ width: `${task.progress || 0}%` }}
-                                                                    />
-                                                                </div>
-                                                                <div className="relative h-full flex items-center justify-between px-3 z-10">
-                                                                    <span className={`text-[11px] font-semibold ${colors.text} truncate`}>
-                                                                        {task.progress}%
-                                                                    </span>
-                                                                </div>
-                                                            </button>
-                                                        </div>
-                                                    );
-                                                })}
-                                        </div>
+                                    <div className="ml-auto">
+                                        {(() => {
+                                            const isPlanned = idea.status === 'planned';
+                                            return (
+                                                <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${isPlanned
+                                                    ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20'
+                                                    : 'text-slate-500 bg-white/5 border-white/5'
+                                                    }`}>
+                                                    {isPlanned ? 'Planned' : 'Open'}
+                                                </span>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
-                )}
+                        ))}
+                    </div>
+                </section>
+            )}
 
-                {/* TAB 2: COMMUNITY IDEAS */}
-                {activeTab === "ideas" && (
-                    <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                            <button
-                                onClick={() => setIsSubmitModalOpen(true)}
-                                className="group relative flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-white/10 bg-transparent p-6 h-[220px] hover:bg-white/[0.02] hover:border-white/20 transition-all"
+            {/* TAB 3: BUG TRACKER */}
+            {activeTab === "bugs" && (
+                <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <button
+                            onClick={() => setIsBugModalOpen(true)}
+                            className="group relative flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-white/10 bg-transparent p-6 h-[220px] hover:bg-white/[0.02] hover:border-white/20 transition-all"
+                        >
+                            <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Bug className="h-6 w-6 text-rose-400" />
+                            </div>
+                            <p className="text-sm font-bold text-slate-300 group-hover:text-white">Report a Bug</p>
+                            <p className="text-xs text-slate-500 text-center px-4">Found something broken? Help us squashing it.</p>
+                        </button>
+
+                        {filteredBugs.map(bug => (
+                            <div
+                                key={bug.id}
+                                className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg"
                             >
-                                <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Lightbulb className="h-6 w-6 text-emerald-400" />
+                                <div className="space-y-1.5">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate">
+                                            {bug.title}
+                                        </h4>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
+                                            {bug.platform}
+                                        </span>
+                                    </div>
                                 </div>
-                                <p className="text-sm font-bold text-slate-300 group-hover:text-white">Submit New Idea</p>
-                                <p className="text-xs text-slate-500 text-center px-4">Have a feature request? Add it to the pool.</p>
-                            </button>
 
-                            {filteredIdeals.map(idea => (
+                                <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
+                                    {bug.description}
+                                </p>
+
                                 <div
-                                    key={idea.id}
-                                    onClick={() => setSelectedIdea(idea)}
-                                    className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer"
+                                    className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
+                                    onClick={(e) => e.stopPropagation()}
                                 >
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-start justify-between gap-4">
-                                            <h4 className="font-semibold text-white text-base leading-tight group-hover:text-emerald-400 transition-colors pr-8 truncate">
-                                                {idea.title}
-                                            </h4>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
-                                                {idea.category}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
-                                        {idea.description}
-                                    </p>
-
-                                    <div
-                                        className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
-                                        onClick={(e) => e.stopPropagation()}
+                                    <button
+                                        onClick={(e) => handleBugVote(bug.id, e)}
+                                        className={`flex items-center gap-1.5 text-xs font-semibold transition-colors group/up ${votedIdeas.has(bug.id) ? "text-emerald-400" : "text-slate-500 hover:text-emerald-400"}`}
                                     >
-                                        <button
-                                            onClick={(e) => handleVote(idea.id, "up", e)}
-                                            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-emerald-400 transition-colors group/up"
-                                        >
-                                            <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
-                                            <span>{idea.upvotes}</span>
-                                        </button>
-                                        <button
-                                            onClick={(e) => handleVote(idea.id, "down", e)}
-                                            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-rose-400 transition-colors group/down"
-                                        >
-                                            <ArrowDown className="h-4 w-4 transition-transform group-hover/down:translate-y-0.5" />
-                                            <span>{idea.downvotes || 0}</span>
-                                        </button>
+                                        <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
+                                        <span>{bug.upvotes}</span>
+                                    </button>
 
-                                        <div className="ml-auto">
-                                            {(() => {
-                                                const isPlanned = idea.status === 'planned';
-                                                return (
-                                                    <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${isPlanned
-                                                        ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20'
-                                                        : 'text-slate-500 bg-white/5 border-white/5'
-                                                        }`}>
-                                                        {isPlanned ? 'Planned' : 'Open'}
-                                                    </span>
-                                                );
-                                            })()}
-                                        </div>
+                                    <div className="ml-auto">
+                                        {(() => {
+                                            const statusMap = {
+                                                reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+                                                investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+                                                fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+                                                resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+                                                wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                            };
+                                            const status = statusMap[bug.status] || statusMap.reported;
+                                            return (
+                                                <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
+                                                    {status.label}
+                                                </span>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
-                {/* TAB 3: BUG TRACKER */}
-                {activeTab === "bugs" && (
-                    <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                            <button
-                                onClick={() => setIsBugModalOpen(true)}
-                                className="group relative flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-white/10 bg-transparent p-6 h-[220px] hover:bg-white/[0.02] hover:border-white/20 transition-all"
-                            >
-                                <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Bug className="h-6 w-6 text-rose-400" />
+            {/* TASK DETAIL MODAL */}
+            {selectedTask && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedTask(null)} />
+                    <div className="relative w-full max-w-3xl animate-in zoom-in-95">
+                        <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+
+
+                            {selectedTask.coverImage && (
+                                <div className="relative h-[300px] overflow-hidden">
+                                    <Image
+                                        src={selectedTask.coverImage}
+                                        alt={selectedTask.title}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/50 to-transparent" />
                                 </div>
-                                <p className="text-sm font-bold text-slate-300 group-hover:text-white">Report a Bug</p>
-                                <p className="text-xs text-slate-500 text-center px-4">Found something broken? Help us squashing it.</p>
-                            </button>
+                            )}
 
-                            {filteredBugs.map(bug => (
-                                <div
-                                    key={bug.id}
-                                    className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg"
-                                >
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-start justify-between gap-4">
-                                            <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate">
-                                                {bug.title}
-                                            </h4>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
-                                                {bug.platform}
+                            <div className="p-8 pb-16">
+                                <div className="mb-6">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                                            {selectedTask.category}
+                                        </span>
+                                        {selectedTask.startDate && selectedTask.targetDate && (
+                                            <span className="text-xs text-slate-500 font-mono">
+                                                {selectedTask.startDate} — {selectedTask.targetDate}
                                             </span>
-                                        </div>
+                                        )}
                                     </div>
-
-                                    <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
-                                        {bug.description}
+                                    <h1 className="text-4xl font-heading font-bold text-white mb-4 leading-tight">
+                                        {selectedTask.title}
+                                    </h1>
+                                    <div className="h-1.5 w-12 bg-emerald-500 mb-8 rounded-full" />
+                                    <p className="text-xl text-slate-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
+                                        {selectedTask.description}
                                     </p>
-
-                                    <div
-                                        className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <button
-                                            onClick={(e) => handleBugVote(bug.id, e)}
-                                            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors group/up ${votedIdeas.has(bug.id) ? "text-emerald-400" : "text-slate-500 hover:text-emerald-400"}`}
-                                        >
-                                            <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
-                                            <span>{bug.upvotes}</span>
-                                        </button>
-
-                                        <div className="ml-auto">
-                                            {(() => {
-                                                const statusMap = {
-                                                    reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
-                                                    investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-                                                    fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-                                                    resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-                                                    wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
-                                                };
-                                                const status = statusMap[bug.status] || statusMap.reported;
-                                                return (
-                                                    <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
-                                                        {status.label}
-                                                    </span>
-                                                );
-                                            })()}
-                                        </div>
-                                    </div>
                                 </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
 
-                {/* TASK DETAIL MODAL */}
-                {selectedTask && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedTask(null)} />
-                        <div className="relative w-full max-w-3xl animate-in zoom-in-95">
-                            <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-
-
-                                {selectedTask.coverImage && (
-                                    <div className="relative h-[300px] overflow-hidden">
-                                        <Image
-                                            src={selectedTask.coverImage}
-                                            alt={selectedTask.title}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/50 to-transparent" />
+                                {selectedTask.detailedContent && (
+                                    <div className="prose prose-invert prose-emerald max-w-none">
+                                        <div className="text-base text-slate-300 leading-relaxed space-y-6 whitespace-pre-line font-medium">
+                                            {selectedTask.detailedContent}
+                                        </div>
                                     </div>
                                 )}
-
-                                <div className="p-8 pb-16">
-                                    <div className="mb-6">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                                                {selectedTask.category}
-                                            </span>
-                                            {selectedTask.startDate && selectedTask.targetDate && (
-                                                <span className="text-xs text-slate-500 font-mono">
-                                                    {selectedTask.startDate} — {selectedTask.targetDate}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <h1 className="text-4xl font-heading font-bold text-white mb-4 leading-tight">
-                                            {selectedTask.title}
-                                        </h1>
-                                        <div className="h-1.5 w-12 bg-emerald-500 mb-8 rounded-full" />
-                                        <p className="text-xl text-slate-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
-                                            {selectedTask.description}
-                                        </p>
-                                    </div>
-
-                                    {selectedTask.detailedContent && (
-                                        <div className="prose prose-invert prose-emerald max-w-none">
-                                            <div className="text-base text-slate-300 leading-relaxed space-y-6 whitespace-pre-line font-medium">
-                                                {selectedTask.detailedContent}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Action Buttons - Mobile: inside modal top-right, Desktop: outside left */}
-                            <div className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 md:left-full md:right-auto md:ml-6 z-20 flex flex-row md:flex-col gap-2 md:gap-4">
-                                <button
-                                    onClick={() => setSelectedTask(null)}
-                                    className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
-                                >
-                                    <X className="h-5 w-5 md:h-6 md:w-6" />
-                                </button>
-
-                                <button
-                                    onClick={() => handleBoost(selectedTask)}
-                                    disabled={boostedTasks.has(selectedTask.id) || boostingTaskId === selectedTask.id || selectedTask.progress === 100}
-                                    className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
-                                        ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
-                                        : boostingTaskId === selectedTask.id
-                                            ? "bg-black/80 border border-white/10 cursor-wait opacity-50"
-                                            : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
-                                        }`}
-                                >
-                                    {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
-                                        <Zap className="h-5 w-5 md:h-6 md:w-6 text-emerald-500 fill-emerald-500" />
-                                    ) : (
-                                        <AnimatedCounter
-                                            from={selectedTask.accelerations - 1}
-                                            to={selectedTask.accelerations}
-                                            skipAnimation={!justBoosted}
-                                        />
-                                    )}
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                )}
-
-                {/* IDEA DETAIL MODAL */}
-                {selectedIdea && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedIdea(null)} />
-                        <div className="relative w-full max-w-2xl animate-in zoom-in-95">
-                            <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-xl overflow-hidden">
-
-
-                                <div className="relative h-[240px] w-full bg-slate-900/50 overflow-hidden">
-                                    {selectedIdea.coverImage ? (
-                                        <Image
-                                            src={selectedIdea.coverImage}
-                                            alt={selectedIdea.title}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 via-[#0A0A0A] to-black flex items-center justify-center">
-                                            <Sparkles className="h-12 w-12 text-white/5" />
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/60 to-transparent" />
-                                </div>
-
-                                <div className="p-8 pt-2 space-y-6 relative">
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
-                                                {selectedIdea.category}
-                                            </span>
-                                            <span className="text-xs text-slate-500 font-mono">
-                                                IDEA
-                                            </span>
-                                        </div>
-                                        <h2 className="text-3xl font-heading font-bold text-white leading-tight">
-                                            {selectedIdea.title}
-                                        </h2>
-                                    </div>
-                                    <p className="text-lg text-slate-400 leading-relaxed font-medium border-l-4 border-white/5 pl-6 italic pb-4">
-                                        {selectedIdea.description}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Action Buttons - Mobile: inside modal top-right, Desktop: outside left */}
-                            <div className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 md:left-full md:right-auto md:ml-6 z-20 flex flex-row md:flex-col gap-2 md:gap-4">
-                                <button
-                                    onClick={() => setSelectedIdea(null)}
-                                    className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
-                                >
-                                    <X className="h-5 w-5 md:h-6 md:w-6" />
-                                </button>
-
-                                <button
-                                    onClick={(e) => handleVote(selectedIdea.id, "up", e)}
-                                    disabled={votedIdeas.has(selectedIdea.id)}
-                                    className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
-                                        ? "bg-black/80 border border-emerald-500/50 text-emerald-500 cursor-default"
-                                        : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 hover:scale-105 cursor-pointer text-slate-500"
-                                        }`}
-                                >
-                                    {!votedIdeas.has(selectedIdea.id) ? (
-                                        <ArrowUp className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:-translate-y-0.5" />
-                                    ) : (
-                                        <AnimatedCounter
-                                            from={selectedIdea.upvotes - 1}
-                                            to={selectedIdea.upvotes}
-                                            skipAnimation={lastVotedId !== selectedIdea.id}
-                                        />
-                                    )}
-                                </button>
-                                <button
-                                    onClick={(e) => handleVote(selectedIdea.id, "down", e)}
-                                    disabled={votedIdeas.has(selectedIdea.id)}
-                                    className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
-                                        ? "bg-black/80 border border-rose-500/50 text-rose-500 cursor-default"
-                                        : "bg-black/80 border border-white/10 hover:border-rose-500/50 hover:text-rose-400 hover:scale-105 cursor-pointer text-slate-400"
-                                        }`}
-                                >
-                                    {!votedIdeas.has(selectedIdea.id) ? (
-                                        <ArrowDown className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:translate-y-0.5" />
-                                    ) : (
-                                        <AnimatedCounter
-                                            from={(selectedIdea.downvotes || 0) - 1}
-                                            to={selectedIdea.downvotes || 0}
-                                            skipAnimation={lastVotedId !== selectedIdea.id}
-                                        />
-                                    )}
-                                </button>
                             </div>
                         </div>
-                    </div>
-                )}
 
-                {/* SUBMIT MODAL */}
-                {isSubmitModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsSubmitModalOpen(false)} />
-                        <div className="relative w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95">
-                            <button onClick={() => setIsSubmitModalOpen(false)} className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors outline-none">
-                                <X className="h-5 w-5" />
+                        {/* Action Buttons - Mobile: inside modal top-right, Desktop: outside left */}
+                        <div className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 md:left-full md:right-auto md:ml-6 z-20 flex flex-row md:flex-col gap-2 md:gap-4">
+                            <button
+                                onClick={() => setSelectedTask(null)}
+                                className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                            >
+                                <X className="h-5 w-5 md:h-6 md:w-6" />
                             </button>
 
-                            <div className="space-y-6">
+                            <button
+                                onClick={() => handleBoost(selectedTask)}
+                                disabled={boostedTasks.has(selectedTask.id) || boostingTaskId === selectedTask.id || selectedTask.progress === 100}
+                                className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
+                                    ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
+                                    : boostingTaskId === selectedTask.id
+                                        ? "bg-black/80 border border-white/10 cursor-wait opacity-50"
+                                        : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
+                                    }`}
+                            >
+                                {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
+                                    <Zap className="h-5 w-5 md:h-6 md:w-6 text-emerald-500 fill-emerald-500" />
+                                ) : (
+                                    <AnimatedCounter
+                                        from={selectedTask.accelerations - 1}
+                                        to={selectedTask.accelerations}
+                                        skipAnimation={!justBoosted}
+                                    />
+                                )}
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
+
+            {/* IDEA DETAIL MODAL */}
+            {selectedIdea && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedIdea(null)} />
+                    <div className="relative w-full max-w-2xl animate-in zoom-in-95">
+                        <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-xl overflow-hidden">
+
+
+                            <div className="relative h-[240px] w-full bg-slate-900/50 overflow-hidden">
+                                {selectedIdea.coverImage ? (
+                                    <Image
+                                        src={selectedIdea.coverImage}
+                                        alt={selectedIdea.title}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 via-[#0A0A0A] to-black flex items-center justify-center">
+                                        <Sparkles className="h-12 w-12 text-white/5" />
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/60 to-transparent" />
+                            </div>
+
+                            <div className="p-8 pt-2 space-y-6 relative">
                                 <div>
-                                    <h3 className="text-3xl font-heading font-bold text-white leading-tight mb-2">Submit New Idea</h3>
-                                    <p className="text-slate-400">Share your feature requests or feedback directly with the team.</p>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
+                                            {selectedIdea.category}
+                                        </span>
+                                        <span className="text-xs text-slate-500 font-mono">
+                                            IDEA
+                                        </span>
+                                    </div>
+                                    <h2 className="text-3xl font-heading font-bold text-white leading-tight">
+                                        {selectedIdea.title}
+                                    </h2>
                                 </div>
-
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Title</label>
-                                        <input
-                                            placeholder="What's your idea?"
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-lg text-white font-medium placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all"
-                                            value={form.title}
-                                            onChange={e => setForm({ ...form, title: e.target.value })}
-                                            required
-                                            minLength={6}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Category</label>
-                                        <div className="flex flex-wrap gap-2">
-                                            {categories.filter(c => c !== 'All').map(cat => (
-                                                <button
-                                                    key={cat}
-                                                    type="button"
-                                                    onClick={() => setForm({ ...form, category: cat })}
-                                                    className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${form.category === cat
-                                                        ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]"
-                                                        : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
-                                                        }`}
-                                                >
-                                                    {cat}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Description</label>
-                                        <textarea
-                                            placeholder="Describe how this would work..."
-                                            className="w-full h-40 bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all resize-none leading-relaxed"
-                                            value={form.description}
-                                            onChange={e => setForm({ ...form, description: e.target.value })}
-                                            required
-                                            minLength={12}
-                                        />
-                                    </div>
-
-                                    <div className="pt-2">
-                                        <button
-                                            disabled={submitting}
-                                            className="w-full h-14 bg-emerald-500 text-black rounded-xl font-bold text-lg hover:bg-emerald-400 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:pointer-events-none"
-                                        >
-                                            {submitting ? <Loader2 className="animate-spin h-6 w-6" /> : "Submit Idea"}
-                                        </button>
-                                    </div>
-                                </form>
+                                <p className="text-lg text-slate-400 leading-relaxed font-medium border-l-4 border-white/5 pl-6 italic pb-4">
+                                    {selectedIdea.description}
+                                </p>
                             </div>
                         </div>
-                    </div>
-                )}
 
-                {/* BUG SUBMIT MODAL */}
-                {isBugModalOpen && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsBugModalOpen(false)} />
-                        <div className="relative w-full max-w-xl animate-in zoom-in-95">
-                            <div className="bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                                            <Bug className="h-6 w-6 text-rose-500" />
-                                            Report a Bug
-                                        </h2>
-                                        <p className="text-sm text-slate-500 mt-1">Help us make TalkFlow more stable.</p>
-                                    </div>
-                                    <button onClick={() => setIsBugModalOpen(false)} className="p-2 rounded-full hover:bg-white/5 transition-colors">
-                                        <X className="h-5 w-5 text-slate-400" />
-                                    </button>
+                        {/* Action Buttons - Mobile: inside modal top-right, Desktop: outside left */}
+                        <div className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 md:left-full md:right-auto md:ml-6 z-20 flex flex-row md:flex-col gap-2 md:gap-4">
+                            <button
+                                onClick={() => setSelectedIdea(null)}
+                                className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                            >
+                                <X className="h-5 w-5 md:h-6 md:w-6" />
+                            </button>
+
+                            <button
+                                onClick={(e) => handleVote(selectedIdea.id, "up", e)}
+                                disabled={votedIdeas.has(selectedIdea.id)}
+                                className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
+                                    ? "bg-black/80 border border-emerald-500/50 text-emerald-500 cursor-default"
+                                    : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 hover:scale-105 cursor-pointer text-slate-500"
+                                    }`}
+                            >
+                                {!votedIdeas.has(selectedIdea.id) ? (
+                                    <ArrowUp className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:-translate-y-0.5" />
+                                ) : (
+                                    <AnimatedCounter
+                                        from={selectedIdea.upvotes - 1}
+                                        to={selectedIdea.upvotes}
+                                        skipAnimation={lastVotedId !== selectedIdea.id}
+                                    />
+                                )}
+                            </button>
+                            <button
+                                onClick={(e) => handleVote(selectedIdea.id, "down", e)}
+                                disabled={votedIdeas.has(selectedIdea.id)}
+                                className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
+                                    ? "bg-black/80 border border-rose-500/50 text-rose-500 cursor-default"
+                                    : "bg-black/80 border border-white/10 hover:border-rose-500/50 hover:text-rose-400 hover:scale-105 cursor-pointer text-slate-400"
+                                    }`}
+                            >
+                                {!votedIdeas.has(selectedIdea.id) ? (
+                                    <ArrowDown className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:translate-y-0.5" />
+                                ) : (
+                                    <AnimatedCounter
+                                        from={(selectedIdea.downvotes || 0) - 1}
+                                        to={selectedIdea.downvotes || 0}
+                                        skipAnimation={lastVotedId !== selectedIdea.id}
+                                    />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* SUBMIT MODAL */}
+            {isSubmitModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsSubmitModalOpen(false)} />
+                    <div className="relative w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95">
+                        <button onClick={() => setIsSubmitModalOpen(false)} className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors outline-none">
+                            <X className="h-5 w-5" />
+                        </button>
+
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-3xl font-heading font-bold text-white leading-tight mb-2">Submit New Idea</h3>
+                                <p className="text-slate-400">Share your feature requests or feedback directly with the team.</p>
+                            </div>
+
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Title</label>
+                                    <input
+                                        placeholder="What's your idea?"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-lg text-white font-medium placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all"
+                                        value={form.title}
+                                        onChange={e => setForm({ ...form, title: e.target.value })}
+                                        required
+                                        minLength={6}
+                                    />
                                 </div>
 
-                                <form onSubmit={handleBugSubmit} className="space-y-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Subject</label>
-                                        <input
-                                            required
-                                            type="text"
-                                            placeholder="Brief summary of the issue"
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
-                                            value={bugForm.title}
-                                            onChange={e => setBugForm({ ...bugForm, title: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Severity</label>
-                                            <select
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500/50 transition-colors"
-                                                value={bugForm.severity}
-                                                onChange={e => setBugForm({ ...bugForm, severity: e.target.value as any })}
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Category</label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {categories.filter(c => c !== 'All').map(cat => (
+                                            <button
+                                                key={cat}
+                                                type="button"
+                                                onClick={() => setForm({ ...form, category: cat })}
+                                                className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${form.category === cat
+                                                    ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]"
+                                                    : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
+                                                    }`}
                                             >
-                                                <option value="Minor">Minor (UI/Typo)</option>
-                                                <option value="Major">Major (Functionality)</option>
-                                                <option value="Blocker">Blocker (Crashes)</option>
-                                            </select>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
-                                            <select
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500/50 transition-colors"
-                                                value={bugForm.platform}
-                                                onChange={e => setBugForm({ ...bugForm, platform: e.target.value as any })}
-                                            >
-                                                <option value="iOS">iOS</option>
-                                                <option value="Android">Android</option>
-                                                <option value="Web">Web</option>
-                                            </select>
-                                        </div>
+                                                {cat}
+                                            </button>
+                                        ))}
                                     </div>
+                                </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Steps to Reproduce</label>
-                                        <textarea
-                                            required
-                                            rows={3}
-                                            placeholder="1. Go to... 2. Click on... 3. See..."
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
-                                            value={bugForm.steps}
-                                            onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}
-                                        />
-                                    </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Description</label>
+                                    <textarea
+                                        placeholder="Describe how this would work..."
+                                        className="w-full h-40 bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all resize-none leading-relaxed"
+                                        value={form.description}
+                                        onChange={e => setForm({ ...form, description: e.target.value })}
+                                        required
+                                        minLength={12}
+                                    />
+                                </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Expected Result</label>
-                                            <textarea
-                                                required
-                                                rows={2}
-                                                placeholder="What should happen?"
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
-                                                value={bugForm.expected}
-                                                onChange={e => setBugForm({ ...bugForm, expected: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Actual Result</label>
-                                            <textarea
-                                                required
-                                                rows={2}
-                                                placeholder="What actually happens?"
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
-                                                value={bugForm.actual}
-                                                onChange={e => setBugForm({ ...bugForm, actual: e.target.value })}
-                                            />
-                                        </div>
-                                    </div>
-
+                                <div className="pt-2">
                                     <button
-                                        disabled={bugSubmitting}
-                                        type="submit"
-                                        className="w-full bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-rose-900/20 flex items-center justify-center gap-2"
+                                        disabled={submitting}
+                                        className="w-full h-14 bg-emerald-500 text-black rounded-xl font-bold text-lg hover:bg-emerald-400 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:pointer-events-none"
                                     >
-                                        {bugSubmitting ? (
-                                            <Loader2 className="h-5 w-5 animate-spin" />
-                                        ) : (
-                                            "Submit Bug Report"
-                                        )}
+                                        {submitting ? <Loader2 className="animate-spin h-6 w-6" /> : "Submit Idea"}
                                     </button>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
+
+            {/* BUG SUBMIT MODAL */}
+            {isBugModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsBugModalOpen(false)} />
+                    <div className="relative w-full max-w-xl animate-in zoom-in-95">
+                        <div className="bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                                        <Bug className="h-6 w-6 text-rose-500" />
+                                        Report a Bug
+                                    </h2>
+                                    <p className="text-sm text-slate-500 mt-1">Help us make TalkFlow more stable.</p>
+                                </div>
+                                <button onClick={() => setIsBugModalOpen(false)} className="p-2 rounded-full hover:bg-white/5 transition-colors">
+                                    <X className="h-5 w-5 text-slate-400" />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleBugSubmit} className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Subject</label>
+                                    <input
+                                        required
+                                        type="text"
+                                        placeholder="Brief summary of the issue"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
+                                        value={bugForm.title}
+                                        onChange={e => setBugForm({ ...bugForm, title: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Severity</label>
+                                        <select
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500/50 transition-colors"
+                                            value={bugForm.severity}
+                                            onChange={e => setBugForm({ ...bugForm, severity: e.target.value as any })}
+                                        >
+                                            <option value="Minor">Minor (UI/Typo)</option>
+                                            <option value="Major">Major (Functionality)</option>
+                                            <option value="Blocker">Blocker (Crashes)</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
+                                        <select
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500/50 transition-colors"
+                                            value={bugForm.platform}
+                                            onChange={e => setBugForm({ ...bugForm, platform: e.target.value as any })}
+                                        >
+                                            <option value="iOS">iOS</option>
+                                            <option value="Android">Android</option>
+                                            <option value="Web">Web</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Steps to Reproduce</label>
+                                    <textarea
+                                        required
+                                        rows={3}
+                                        placeholder="1. Go to... 2. Click on... 3. See..."
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
+                                        value={bugForm.steps}
+                                        onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Expected Result</label>
+                                        <textarea
+                                            required
+                                            rows={2}
+                                            placeholder="What should happen?"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
+                                            value={bugForm.expected}
+                                            onChange={e => setBugForm({ ...bugForm, expected: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Actual Result</label>
+                                        <textarea
+                                            required
+                                            rows={2}
+                                            placeholder="What actually happens?"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
+                                            value={bugForm.actual}
+                                            onChange={e => setBugForm({ ...bugForm, actual: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    disabled={bugSubmitting}
+                                    type="submit"
+                                    className="w-full bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-rose-900/20 flex items-center justify-center gap-2"
+                                >
+                                    {bugSubmitting ? (
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                    ) : (
+                                        "Submit Bug Report"
+                                    )}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

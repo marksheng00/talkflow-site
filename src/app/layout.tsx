@@ -30,6 +30,10 @@ export const metadata: Metadata = {
   },
 };
 
+import FluentBackground from "@/components/ui/FluentBackground";
+
+// ... (keep imports)
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,7 +42,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${heading.variable} ${body.variable} antialiased`}>
-        <div className="min-h-screen bg-surface text-slate-100">
+        <FluentBackground />
+        <div className="relative z-10 min-h-screen bg-transparent text-slate-100 selection:bg-emerald-500/30">
           <Header />
           <main>{children}</main>
           <Footer />
