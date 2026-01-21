@@ -142,11 +142,14 @@ export default function RoadmapPage() {
         loadData();
     }, []);
 
-    // Reset tracking states when modal opens
+    // Reset tracking states when modal opens/changes
     useEffect(() => {
-        if (selectedTask) setJustBoosted(false);
-        if (selectedIdea) setLastVotedId(null);
-    }, [selectedTask, selectedIdea]);
+        setJustBoosted(false);
+    }, [selectedTask?.id]);
+
+    useEffect(() => {
+        setLastVotedId(null);
+    }, [selectedIdea?.id]);
 
     // Filter Logic
     const filteredTasks = useMemo(() => {
