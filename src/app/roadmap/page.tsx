@@ -91,20 +91,20 @@ export default function RoadmapPage() {
     // Gantt Chart Scroll Ref
     const timelineRef = useRef<HTMLDivElement>(null);
 
-    // Force horizontal scroll for all wheel events
-    // useLayoutEffect ensures listener is attached synchronously after DOM updates
+    // Force horizontal scroll for wheel events (desktop only)
+    // Touch events work naturally for mobile
     useLayoutEffect(() => {
         const el = timelineRef.current;
         if (!el) return;
 
         const handleWheel = (e: WheelEvent) => {
-            // Strictly block vertical page scrolling
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Map both vertical (wheel) and horizontal (trackpad) scroll to horizontal position
-            el.scrollLeft += e.deltaY + e.deltaX;
-            el.scrollTop = 0;
+            // Only intercept if the timeline element is visible and we're not on touch device
+            // Check if it's a genuine wheel event (not touch-generated)
+            if (e.deltaMode === 0) { // Pixel-based (mouse wheel)
+                e.preventDefault();
+                e.stopPropagation();
+                el.scrollLeft += e.deltaY + e.deltaX;
+            }
         };
 
         // Passive: false is required to allow preventDefault()
@@ -349,7 +349,57 @@ export default function RoadmapPage() {
             {/* TAB 1: OFFICIAL ROADMAP - GANTT CHART */}
             {activeTab === "roadmap" && (
                 <section className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="flex gap-6">
+
+                    {/* Mobile View: Task Cards */}
+                    <div className="md:hidden space-y-4">
+                        <p className="text-xs text-slate-500 text-center mb-6">Tap a task to view details. Swipe horizontally on Gantt chart for full view on larger screens.</p>
+                        {filteredTasks
+                            .filter(task => task.startDate && task.targetDate)
+                            .map((task) => {
+                                const categoryColors = {
+                                    Feature: 'border-blue-600/30 bg-blue-600/10',
+                                    Content: 'border-purple-600/30 bg-purple-600/10',
+                                    "AI Core": 'border-emerald-600/30 bg-emerald-600/10',
+                                    UIUX: 'border-amber-600/30 bg-amber-600/10'
+                                };
+                                const colors = categoryColors[task.category as keyof typeof categoryColors] || 'border-slate-600/30 bg-slate-600/10';
+
+                                return (
+                                    <button
+                                        key={task.id}
+                                        onClick={() => setSelectedTask(task)}
+                                        className={`w-full flex flex-col gap-3 p-4 rounded-xl border ${colors} transition-all hover:scale-[1.02] active:scale-95 text-left`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <h4 className="font-semibold text-white text-sm">{task.title}</h4>
+                                            <span className="text-xs text-slate-500">{task.progress}%</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 px-2 py-0.5 rounded bg-white/5">
+                                                {task.category}
+                                            </span>
+                                            <div className="flex items-center gap-1 text-slate-600">
+                                                <Zap className="h-3 w-3" />
+                                                <span className="text-[10px] font-medium">{task.accelerations}</span>
+                                            </div>
+                                            <span className="ml-auto text-[10px] text-slate-600 font-mono">
+                                                {task.startDate} → {task.targetDate}
+                                            </span>
+                                        </div>
+                                        {/* Progress Bar */}
+                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-emerald-500/60 rounded-full transition-all"
+                                                style={{ width: `${task.progress || 0}%` }}
+                                            />
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                    </div>
+
+                    {/* Desktop View: Gantt Chart */}
+                    <div className="hidden md:flex gap-6">
                         {/* LEFT: Fixed Task Column */}
                         <div className="w-[280px] flex-shrink-0">
                             <div className="mb-6 pb-4 border-b border-white/10">
@@ -699,24 +749,25 @@ export default function RoadmapPage() {
                             </div>
                         </div>
 
-                        <div className="absolute top-1/2 -translate-y-1/2 left-full ml-6 z-20 flex flex-col gap-4">
+                        {/* Action Buttons - Mobile: inside modal top-right, Desktop: outside left */}
+                        <div className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 md:left-full md:right-auto md:ml-6 z-20 flex flex-row md:flex-col gap-2 md:gap-4">
                             <button
                                 onClick={() => setSelectedTask(null)}
-                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                                className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
                             >
-                                <X className="h-6 w-6" />
+                                <X className="h-5 w-5 md:h-6 md:w-6" />
                             </button>
 
                             <button
                                 onClick={() => handleBoost(selectedTask)}
                                 disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
-                                className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
+                                className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
                                     ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
                                     : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
                                     }`}
                             >
                                 {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
-                                    <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
+                                    <Zap className="h-5 w-5 md:h-6 md:w-6 text-emerald-500 fill-emerald-500" />
                                 ) : (
                                     <AnimatedCounter
                                         from={selectedTask.accelerations - 1}
@@ -775,24 +826,25 @@ export default function RoadmapPage() {
                             </div>
                         </div>
 
-                        <div className="absolute top-1/2 -translate-y-1/2 left-full ml-6 z-20 flex flex-col gap-4">
+                        {/* Action Buttons - Mobile: inside modal top-right, Desktop: outside left */}
+                        <div className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 md:left-full md:right-auto md:ml-6 z-20 flex flex-row md:flex-col gap-2 md:gap-4">
                             <button
                                 onClick={() => setSelectedIdea(null)}
-                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                                className="flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
                             >
-                                <X className="h-6 w-6" />
+                                <X className="h-5 w-5 md:h-6 md:w-6" />
                             </button>
 
                             <button
                                 onClick={(e) => handleVote(selectedIdea.id, "up", e)}
                                 disabled={votedIdeas.has(selectedIdea.id)}
-                                className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
+                                className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
                                     ? "bg-black/80 border border-emerald-500/50 text-emerald-500 cursor-default"
                                     : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 hover:scale-105 cursor-pointer text-slate-500"
                                     }`}
                             >
                                 {!votedIdeas.has(selectedIdea.id) ? (
-                                    <ArrowUp className="h-6 w-6 transition-transform group-hover:-translate-y-0.5" />
+                                    <ArrowUp className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:-translate-y-0.5" />
                                 ) : (
                                     <AnimatedCounter
                                         from={selectedIdea.upvotes - 1}
@@ -804,13 +856,13 @@ export default function RoadmapPage() {
                             <button
                                 onClick={(e) => handleVote(selectedIdea.id, "down", e)}
                                 disabled={votedIdeas.has(selectedIdea.id)}
-                                className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
+                                className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
                                     ? "bg-black/80 border border-rose-500/50 text-rose-500 cursor-default"
                                     : "bg-black/80 border border-white/10 hover:border-rose-500/50 hover:text-rose-400 hover:scale-105 cursor-pointer text-slate-400"
                                     }`}
                             >
                                 {!votedIdeas.has(selectedIdea.id) ? (
-                                    <ArrowDown className="h-6 w-6 transition-transform group-hover:translate-y-0.5" />
+                                    <ArrowDown className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:translate-y-0.5" />
                                 ) : (
                                     <AnimatedCounter
                                         from={(selectedIdea.downvotes || 0) - 1}
