@@ -17,7 +17,7 @@ import {
 import { Sparkles } from "lucide-react";
 
 const navItems = [
-  { name: "Product", link: "/#product", icon: <Sparkles className="h-4 w-4" /> },
+  { name: "Product", link: "/", icon: <Sparkles className="h-4 w-4" /> },
   { name: "Pricing", link: "/pricing" },
   { name: "Roadmap", link: "/roadmap" },
   { name: "Downloads", link: "/#downloads" },
