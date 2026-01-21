@@ -46,6 +46,9 @@ type FormState = {
 // Types for local state
 type Tab = "roadmap" | "ideas" | "bugs";
 
+// Global lock outside component to prevent double-execution across re-renders/strict mode
+const globalBoostingLock = new Set<string>();
+
 export default function RoadmapPage() {
     const [activeTab, setActiveTab] = useState<Tab>("roadmap");
     const [tasks, setTasks] = useState<RoadmapItem[]>([]);
@@ -64,6 +67,7 @@ export default function RoadmapPage() {
 
     // Boost tracking
     const [boostedTasks, setBoostedTasks] = useState<Set<string>>(new Set());
+    const [boostingTaskId, setBoostingTaskId] = useState<string | null>(null);
     const [justBoosted, setJustBoosted] = useState(false);
     // Vote tracking
     const [votedIdeas, setVotedIdeas] = useState<Set<string>>(new Set());
@@ -232,26 +236,38 @@ export default function RoadmapPage() {
     }
 
     async function handleBoost(task: RoadmapItem) {
-        if (boostedTasks.has(task.id)) return;
+        const taskId = task.id;
+
+        // Triple check: boosted + GLOBAL lock + state lock
+        if (boostedTasks.has(taskId) || globalBoostingLock.has(taskId) || boostingTaskId === taskId) {
+            return;
+        }
+
+        // Lock immediately (global synchronous)
+        globalBoostingLock.add(taskId);
 
         try {
-            setBoostedTasks(prev => new Set(prev).add(task.id));
+            setBoostingTaskId(taskId);
+            setBoostedTasks(prev => new Set(prev).add(taskId));
             setJustBoosted(true);
 
-            // Optimistic update? Or wait? Wait is safer for sync.
-            const updatedItem = await accelerateRoadmapItem(task.id);
+            const updatedItem = await accelerateRoadmapItem(taskId);
 
-            setTasks(prev => prev.map(t => t.id === task.id ? updatedItem : t));
-            if (selectedTask?.id === task.id) setSelectedTask(updatedItem);
+            setTasks(prev => prev.map(t => t.id === taskId ? updatedItem : t));
+            if (selectedTask?.id === taskId) setSelectedTask(updatedItem);
 
         } catch (error) {
             console.error("Boost failed", error);
-            // Revert optimistic if implemented, or just log
+            // Revert on error
+            globalBoostingLock.delete(taskId);
             setBoostedTasks(prev => {
                 const next = new Set(prev);
-                next.delete(task.id);
+                next.delete(taskId);
                 return next;
             });
+        } finally {
+            globalBoostingLock.delete(taskId);
+            setBoostingTaskId(null);
         }
     }
 
@@ -760,10 +776,12 @@ export default function RoadmapPage() {
 
                             <button
                                 onClick={() => handleBoost(selectedTask)}
-                                disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
+                                disabled={boostedTasks.has(selectedTask.id) || boostingTaskId === selectedTask.id || selectedTask.progress === 100}
                                 className={`flex flex-col items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
                                     ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
-                                    : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
+                                    : boostingTaskId === selectedTask.id
+                                        ? "bg-black/80 border border-white/10 cursor-wait opacity-50"
+                                        : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
                                     }`}
                             >
                                 {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
