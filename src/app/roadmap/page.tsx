@@ -46,8 +46,8 @@ type FormState = {
 // Types for local state
 type Tab = "roadmap" | "ideas" | "bugs";
 
-// Global lock outside component to prevent double-execution across re-renders/strict mode
-const globalBoostingLock = new Set<string>();
+// Request deduplication map
+const pendingBoosts = new Map<string, Promise<RoadmapItem>>();
 
 export default function RoadmapPage() {
     const [activeTab, setActiveTab] = useState<Tab>("roadmap");
@@ -238,36 +238,52 @@ export default function RoadmapPage() {
     async function handleBoost(task: RoadmapItem) {
         const taskId = task.id;
 
-        // Triple check: boosted + GLOBAL lock + state lock
-        if (boostedTasks.has(taskId) || globalBoostingLock.has(taskId) || boostingTaskId === taskId) {
+        // UI Optimistic Update Check
+        if (boostedTasks.has(taskId)) return;
+
+        // 1. Check if a request is already in flight for this task
+        if (pendingBoosts.has(taskId)) {
+            console.log("Request already in flight, waiting for it...", taskId);
+            try {
+                // Wait for the existing promise to resolve
+                await pendingBoosts.get(taskId);
+            } catch (ignore) {
+                // If original request failed, we just ignore here
+            }
             return;
         }
 
-        // Lock immediately (global synchronous)
-        globalBoostingLock.add(taskId);
+        // 2. Set UI State Optimistically
+        setBoostingTaskId(taskId); // Show spinner
+        // Don't set boostedTasks yet to allow retry if failed
 
+        // 3. Create a promise for this action
+        const boostPromise = (async () => {
+            try {
+                const updatedItem = await accelerateRoadmapItem(taskId);
+
+                // Success: Update UI
+                setTasks(prev => prev.map(t => t.id === taskId ? updatedItem : t));
+                if (selectedTask?.id === taskId) setSelectedTask(updatedItem);
+
+                setBoostedTasks(prev => new Set(prev).add(taskId));
+                setJustBoosted(true);
+                return updatedItem;
+            } finally {
+                // Cleanup: Remove from map when done (success or fail)
+                pendingBoosts.delete(taskId);
+                setBoostingTaskId(null);
+            }
+        })();
+
+        // 4. Store the promise in the map
+        pendingBoosts.set(taskId, boostPromise);
+
+        // 5. Await it (optional, mainly for error handling if needed locally)
         try {
-            setBoostingTaskId(taskId);
-            setBoostedTasks(prev => new Set(prev).add(taskId));
-            setJustBoosted(true);
-
-            const updatedItem = await accelerateRoadmapItem(taskId);
-
-            setTasks(prev => prev.map(t => t.id === taskId ? updatedItem : t));
-            if (selectedTask?.id === taskId) setSelectedTask(updatedItem);
-
+            await boostPromise;
         } catch (error) {
             console.error("Boost failed", error);
-            // Revert on error
-            globalBoostingLock.delete(taskId);
-            setBoostedTasks(prev => {
-                const next = new Set(prev);
-                next.delete(taskId);
-                return next;
-            });
-        } finally {
-            globalBoostingLock.delete(taskId);
-            setBoostingTaskId(null);
         }
     }
 
