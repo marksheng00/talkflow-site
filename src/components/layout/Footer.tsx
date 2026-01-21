@@ -73,7 +73,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-white/5 py-4">
         <div className="section-shell text-xs text-slate-500">
-          <span>© {new Date().getFullYear()} TalkFlow. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} TalkFlow. A product of BeyondThink LLC. All rights reserved.</span>
         </div>
       </div>
     </footer>
