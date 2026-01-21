@@ -150,8 +150,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Vertical Marquee Container */}
-            <div className="relative h-[500px] w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
+            {/* Mobile: Horizontal Scroll */}
+            <div className="lg:hidden relative w-full overflow-hidden">
+              <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                {feedbackCards.map((card, idx) => (
+                  <div key={`mobile-${idx}`} className="flex-shrink-0 w-[280px] snap-center">
+                    <FeedbackCard card={card} />
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 text-center mt-2">← Swipe to see more →</p>
+            </div>
+
+            {/* Desktop: Vertical Marquee Container */}
+            <div className="hidden lg:block relative h-[500px] w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
               <div className="grid grid-cols-2 gap-4 h-full">
                 {/* Column 1 - Upward */}
                 <div className="flex flex-col gap-4 animate-marquee-up">
