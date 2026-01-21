@@ -14,8 +14,10 @@ import {
   NavbarButton,
 } from "@/components/ui/resizable-navbar";
 
+import { Sparkles } from "lucide-react";
+
 const navItems = [
-  { name: "Product", link: "/#product" },
+  { name: "Product", link: "/#product", icon: <Sparkles className="h-4 w-4" /> },
   { name: "Pricing", link: "/pricing" },
   { name: "Roadmap", link: "/roadmap" },
   { name: "Downloads", link: "/#downloads" },
@@ -59,8 +61,9 @@ export default function Header() {
               key={item.name}
               href={item.link}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="relative w-full text-neutral-400 hover:text-white"
+              className="relative flex w-full items-center gap-3 text-neutral-400 hover:text-white"
             >
+              {item.icon && <span className="h-5 w-5">{item.icon}</span>}
               {item.name}
             </Link>
           ))}

@@ -15,6 +15,7 @@ import React, { useRef, useState } from "react";
 interface NavItem {
     name: string;
     link: string;
+    icon?: React.ReactNode;
 }
 
 interface NavbarProps {
@@ -137,7 +138,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
                 <Link
                     onMouseEnter={() => setHovered(idx)}
                     onClick={onItemClick}
-                    className="relative px-4 py-2 text-neutral-400 transition-colors hover:text-white"
+                    className="relative flex items-center gap-2 px-4 py-2 text-neutral-400 transition-colors hover:text-white"
                     key={item.link}
                     href={item.link}
                 >
@@ -147,6 +148,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
                             className="absolute inset-0 h-full w-full rounded-lg bg-white/10"
                         />
                     )}
+                    {item.icon && <span className="relative z-20 h-4 w-4">{item.icon}</span>}
                     <span className="relative z-20">{item.name}</span>
                 </Link>
             ))}
@@ -265,7 +267,7 @@ export const NavbarButton = ({
 
     const variantStyles = {
         primary:
-            "bg-white !text-black hover:!bg-black hover:!text-white hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
+            "bg-white text-[#02060f] font-bold hover:bg-gradient-to-br hover:from-[#7aa2ff] hover:to-[#63f5c5] hover:text-white transition-all duration-300",
         secondary:
             "bg-white/5 border border-white/10 text-white hover:bg-white/15", // Explicit secondary style now
         dark: "bg-black text-white border border-white/10 hover:bg-neutral-900",

@@ -111,7 +111,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="product" className="section-shell space-y-16 mb-32">
+      <section id="product" className="section-shell space-y-16 mb-32 scroll-mt-32">
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
             Everything you need to improve.
@@ -328,7 +328,7 @@ export default function Home() {
       </section>
 
       {/* Built by experts - Premium Storytelling Cards */}
-      <section id="about" className="section-shell space-y-16 mb-32">
+      <section id="about" className="section-shell space-y-16 mb-32 scroll-mt-32">
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <h3 className="font-heading text-4xl font-bold text-white md:text-5xl">
             Built by experts.
