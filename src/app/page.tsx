@@ -185,7 +185,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:grid-rows-2 md:h-[560px]">
 
           {/* 1. Agentic Conversation (Large - 3 cols, 2 rows) */}
-          <div className="group relative col-span-1 md:col-span-3 md:row-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 md:p-8 flex flex-col transition-all hover:bg-white/[0.04]">
+          <div className="group relative col-span-1 md:col-span-3 md:row-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 md:p-8 flex flex-col transition-all hover:bg-white/[0.04] min-h-[400px] md:min-h-0">
             <div className="absolute top-0 right-0 -mt-12 -mr-12 h-48 w-48 rounded-full bg-indigo-500/15 blur-[60px] transition-all group-hover:bg-indigo-500/25" />
 
             <div className="relative z-10 space-y-2">
