@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
     Loader2,
@@ -56,6 +57,11 @@ export default function RoadmapPage() {
     const [ideals, setIdeals] = useState<CommunityIdea[]>([]);
     const [bugs, setBugs] = useState<BugReport[]>([]);
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Filtering
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
@@ -735,8 +741,8 @@ export default function RoadmapPage() {
             )}
 
             {/* TASK DETAIL MODAL */}
-            {selectedTask && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {mounted && selectedTask && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedTask(null)} />
                     <div className="relative w-full max-w-3xl animate-in zoom-in-95">
                         <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] md:max-h-[90vh]">
@@ -846,12 +852,13 @@ export default function RoadmapPage() {
                         </div>
 
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* IDEA DETAIL MODAL */}
-            {selectedIdea && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {mounted && selectedIdea && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedIdea(null)} />
                     <div className="relative w-full max-w-2xl animate-in zoom-in-95">
                         <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
@@ -975,15 +982,19 @@ export default function RoadmapPage() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* SUBMIT MODAL */}
-            {isSubmitModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {mounted && isSubmitModalOpen && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsSubmitModalOpen(false)} />
                     <div className="relative w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95">
-                        <button onClick={() => setIsSubmitModalOpen(false)} className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors outline-none">
+                        <button
+                            onClick={() => setIsSubmitModalOpen(false)}
+                            className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
+                        >
                             <X className="h-5 w-5" />
                         </button>
 
@@ -1048,16 +1059,23 @@ export default function RoadmapPage() {
                             </form>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* BUG SUBMIT MODAL */}
-            {isBugModalOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            {mounted && isBugModalOpen && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsBugModalOpen(false)} />
                     <div className="relative w-full max-w-xl animate-in zoom-in-95">
-                        <div className="bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide">
-                            <div className="flex items-center justify-between mb-8">
+                        <div className="bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide relative">
+                            <button
+                                onClick={() => setIsBugModalOpen(false)}
+                                className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                            <div className="mb-8 pr-8">
                                 <div>
                                     <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                                         <Bug className="h-6 w-6 text-rose-500" />
@@ -1065,9 +1083,6 @@ export default function RoadmapPage() {
                                     </h2>
                                     <p className="text-sm text-slate-500 mt-1">Help us make TalkFlow more stable.</p>
                                 </div>
-                                <button onClick={() => setIsBugModalOpen(false)} className="p-2 rounded-full hover:bg-white/5 transition-colors">
-                                    <X className="h-5 w-5 text-slate-400" />
-                                </button>
                             </div>
 
                             <form onSubmit={handleBugSubmit} className="space-y-6">
@@ -1161,7 +1176,8 @@ export default function RoadmapPage() {
                             </form>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </AuroraBackground>
     );
