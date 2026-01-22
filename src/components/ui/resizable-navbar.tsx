@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
+import { AuroraBackground } from "./AuroraBackground";
 
 interface NavItem {
     name: string;
@@ -85,7 +86,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     return (
         <motion.div
             ref={ref}
-            className={cn("fixed inset-x-0 top-0 z-40 w-full isolate", className)}
+            className={cn("fixed inset-x-0 top-0 z-40 w-full", className)}
         >
             {React.Children.map(children, (child) =>
                 React.isValidElement(child)
@@ -97,16 +98,20 @@ export const Navbar = ({ children, className }: NavbarProps) => {
 };
 
 export const NavBody = ({ children, className, visible }: NavBodyProps) => {
+    const blurValue = visible ? "blur(12px)" : "blur(0px)";
+
     return (
         <motion.div
             animate={{
-                backdropFilter: visible ? "blur(12px)" : "blur(0px)",
+                backdropFilter: blurValue,
+                WebkitBackdropFilter: blurValue,
                 boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
                 width: visible ? "auto" : "100%",
                 y: visible ? 20 : 0,
             }}
+            style={{ WebkitBackdropFilter: blurValue }}
             transition={{
                 type: "spring",
                 stiffness: 200,
@@ -114,7 +119,9 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
             }}
             className={cn(
                 "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-2xl bg-transparent px-6 py-3 lg:px-10 lg:py-3",
-                visible && "bg-white/10 border border-white/20 min-w-[600px] gap-8 shadow-lg",
+                visible
+                    ? "bg-white/10 border border-white/20 min-w-[600px] gap-8 shadow-lg backdrop-blur-xl backdrop-saturate-150"
+                    : "backdrop-blur-none",
                 className
             )}
         >
@@ -157,10 +164,13 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
 };
 
 export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
+    const blurValue = visible ? "blur(12px)" : "blur(0px)";
+
     return (
         <motion.div
             animate={{
-                backdropFilter: visible ? "blur(12px)" : "blur(0px)",
+                backdropFilter: blurValue,
+                WebkitBackdropFilter: blurValue,
                 boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
@@ -170,6 +180,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
                 borderRadius: visible ? "24px" : "2rem",
                 y: visible ? 12 : 0,
             }}
+            style={{ WebkitBackdropFilter: blurValue }}
             transition={{
                 type: "spring",
                 stiffness: 200,
@@ -177,7 +188,9 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
             }}
             className={cn(
                 "relative mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-4 py-3 lg:hidden",
-                visible && "bg-white/10 border border-white/20 shadow-lg",
+                visible
+                    ? "bg-white/10 border border-white/20 shadow-lg backdrop-blur-xl backdrop-saturate-150"
+                    : "backdrop-blur-none",
                 className
             )}
         >
@@ -214,17 +227,31 @@ export const MobileNavMenu = ({
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 50,
+                    }}
                     className={cn(
-                        "absolute left-0 right-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-6 shadow-lg",
+                        "absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl bg-slate-950 border border-white/10 shadow-2xl overflow-hidden",
                         className
                     )}
                 >
-                    {children}
+                    <div className="absolute inset-0 z-0">
+                        <AuroraBackground className="h-full w-full opacity-60 pointer-events-none">
+                            {/* No children needed, just background */}
+                        </AuroraBackground>
+                    </div>
+
+                    <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
+                        {children}
+                    </div>
                 </motion.div>
             )}
         </AnimatePresence>
     );
 };
+
 
 export const MobileNavToggle = ({ isOpen, onClick }: MobileNavToggleProps) => {
     return isOpen ? (
