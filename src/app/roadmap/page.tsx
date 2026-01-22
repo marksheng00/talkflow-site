@@ -351,7 +351,7 @@ export default function RoadmapPage() {
     }
 
     return (
-        <AuroraBackground className="min-h-screen pb-32 text-white">
+        <AuroraBackground className="min-h-screen pb-32 text-white overflow-x-hidden">
             {/* Hero Section */}
             <section className="section-shell relative pt-32 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">
@@ -800,10 +800,10 @@ export default function RoadmapPage() {
                                     onClick={() => handleBoost(selectedTask)}
                                     disabled={boostedTasks.has(selectedTask.id) || boostingTaskId === selectedTask.id || selectedTask.progress === 100}
                                     className={`w-full h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
-                                            ? "bg-slate-800 text-emerald-500 cursor-default"
-                                            : boostingTaskId === selectedTask.id
-                                                ? "bg-slate-800 text-slate-400"
-                                                : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                                        ? "bg-slate-800 text-emerald-500 cursor-default"
+                                        : boostingTaskId === selectedTask.id
+                                            ? "bg-slate-800 text-slate-400"
+                                            : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
                                         }`}
                                 >
                                     <Zap className={`h-5 w-5 ${boostedTasks.has(selectedTask.id) ? "fill-emerald-500" : ""}`} />
@@ -908,8 +908,8 @@ export default function RoadmapPage() {
                                     onClick={(e) => handleVote(selectedIdea.id, "up", e)}
                                     disabled={votedIdeas.has(selectedIdea.id)}
                                     className={`flex-1 h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${votedIdeas.has(selectedIdea.id)
-                                            ? "bg-slate-800 text-emerald-400 cursor-default"
-                                            : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:bg-emerald-500/20"
+                                        ? "bg-slate-800 text-emerald-400 cursor-default"
+                                        : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:bg-emerald-500/20"
                                         }`}
                                 >
                                     <ArrowUp className="h-5 w-5" />
@@ -919,8 +919,8 @@ export default function RoadmapPage() {
                                     onClick={(e) => handleVote(selectedIdea.id, "down", e)}
                                     disabled={votedIdeas.has(selectedIdea.id)}
                                     className={`h-12 w-12 rounded-xl flex items-center justify-center font-bold transition-all ${votedIdeas.has(selectedIdea.id)
-                                            ? "bg-slate-800 text-rose-400 cursor-default"
-                                            : "bg-white/5 border border-white/10 text-slate-400 active:bg-white/10"
+                                        ? "bg-slate-800 text-rose-400 cursor-default"
+                                        : "bg-white/5 border border-white/10 text-slate-400 active:bg-white/10"
                                         }`}
                                 >
                                     <ArrowDown className="h-5 w-5" />
