@@ -562,8 +562,8 @@ export default function Home() {
       <section className="section-shell">
         <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,245,197,0.12),transparent_30%)]" />
-          <div className="relative grid gap-6 md:grid-cols-[1.2fr,0.8fr] md:items-center">
-            <div className="space-y-4">
+          <div className="relative flex flex-col items-center md:items-start text-center md:text-left">
+            <div className="space-y-4 w-full">
               <h3 className="font-heading text-3xl font-semibold text-white md:text-4xl">
                 Start practicing in seconds.
               </h3>
@@ -574,7 +574,7 @@ export default function Home() {
                 appStoreLink={appStore}
                 playStoreLink={playStore}
                 webLink={primaryCta}
-                className="mt-6 w-full max-w-full mx-0 px-0 items-start lg:justify-start"
+                className="mt-6 w-full max-w-full mx-auto md:mx-0 px-0 items-center md:items-start lg:justify-start"
               />
             </div>
           </div>
