@@ -353,7 +353,7 @@ export default function RoadmapPage() {
     return (
         <AuroraBackground className="min-h-screen pb-32 text-white overflow-x-hidden">
             {/* Hero Section */}
-            <section className="section-shell relative pt-32 pb-6">
+            <section className="section-shell relative pt-24 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">
                     {/* Header */}
                     <h1 className="font-heading text-5xl font-bold tracking-tight text-white md:text-6xl whitespace-nowrap">

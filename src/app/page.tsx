@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <AuroraBackground className="pb-24 text-white">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-32 md:pb-40 overflow-hidden w-full">
+      <section className="relative pt-24 pb-32 md:pb-40 overflow-hidden w-full">
         <div className="section-shell relative z-10 flex flex-col items-center text-center">
 
           {/* Main Title */}

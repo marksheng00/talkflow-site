@@ -13,7 +13,7 @@ export default function PricingPage() {
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
             {/* Hero Section */}
-            <section className="relative pt-32 pb-20 w-full text-center px-4">
+            <section className="relative pt-24 pb-20 w-full text-center px-4">
                 <h1 className="mx-auto max-w-4xl font-heading text-5xl font-bold tracking-tight text-white md:text-6xl">
                     Simple pricing for
                     <br />
