@@ -18,6 +18,7 @@ const navItems = [
   { name: "Product", link: "/" },
   { name: "Pricing", link: "/pricing" },
   { name: "Roadmap", link: "/roadmap" },
+  { name: "Blog", link: "/blog" },
   { name: "Downloads", link: "/#downloads" },
 ];
 

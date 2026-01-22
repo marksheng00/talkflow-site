@@ -22,6 +22,7 @@ const columns = [
   {
     title: "Resources",
     items: [
+      { label: "Blog", href: "/blog" },
       { label: "TalkFlow community", href: primaryCommunity() },
       { label: "Press", href: "mailto:press@talkflow.ai" },
       { label: "Privacy", href: "#" },
