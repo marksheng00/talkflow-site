@@ -424,58 +424,10 @@ export default function RoadmapPage() {
             {activeTab === "roadmap" && (
                 <section className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-                    {/* Mobile View: Task Cards */}
-                    <div className="md:hidden space-y-4">
-                        <p className="text-xs text-slate-500 text-center mb-6">Tap a task to view details. Swipe horizontally on Gantt chart for full view on larger screens.</p>
-                        {filteredTasks
-                            .filter(task => task.startDate && task.targetDate)
-                            .map((task) => {
-                                const categoryColors = {
-                                    Feature: 'border-blue-600/30 bg-blue-600/10',
-                                    Content: 'border-purple-600/30 bg-purple-600/10',
-                                    "AI Core": 'border-emerald-600/30 bg-emerald-600/10',
-                                    UIUX: 'border-amber-600/30 bg-amber-600/10'
-                                };
-                                const colors = categoryColors[task.category as keyof typeof categoryColors] || 'border-slate-600/30 bg-slate-600/10';
-
-                                return (
-                                    <button
-                                        key={task.id}
-                                        onClick={() => setSelectedTask(task)}
-                                        className={`w-full flex flex-col gap-3 p-4 rounded-xl border ${colors} transition-all hover:scale-[1.02] active:scale-95 text-left`}
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <h4 className="font-semibold text-white text-sm">{task.title}</h4>
-                                            <span className="text-xs text-slate-500">{task.progress}%</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 px-2 py-0.5 rounded bg-white/5">
-                                                {task.category}
-                                            </span>
-                                            <div className="flex items-center gap-1 text-slate-600">
-                                                <Zap className="h-3 w-3" />
-                                                <span className="text-[10px] font-medium">{task.accelerations}</span>
-                                            </div>
-                                            <span className="ml-auto text-[10px] text-slate-600 font-mono">
-                                                {task.startDate} → {task.targetDate}
-                                            </span>
-                                        </div>
-                                        {/* Progress Bar */}
-                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full bg-emerald-500/60 rounded-full transition-all"
-                                                style={{ width: `${task.progress || 0}%` }}
-                                            />
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                    </div>
-
-                    {/* Desktop View: Gantt Chart */}
-                    <div className="hidden md:flex gap-6">
+                    {/* Unified Gantt Chart View */}
+                    <div className="flex gap-4 md:gap-6">
                         {/* LEFT: Fixed Task Column */}
-                        <div className="w-[280px] flex-shrink-0">
+                        <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
                             <div className="mb-6 pb-4 border-b border-white/10">
                                 <div className="text-center">
                                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Task Overview</span>
@@ -495,7 +447,7 @@ export default function RoadmapPage() {
                                                     <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
                                                         {task.title}
                                                     </h4>
-                                                    <div className="flex items-center gap-2">
+                                                    <div className="hidden md:flex items-center gap-2">
                                                         <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
                                                             {task.category}
                                                         </span>
@@ -515,7 +467,7 @@ export default function RoadmapPage() {
                         <div className="flex-1 overflow-hidden">
                             <div
                                 ref={timelineRef}
-                                className="overflow-x-hidden overflow-y-hidden cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] select-none"
+                                className="overflow-x-auto md:overflow-x-hidden overflow-y-hidden cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] select-none"
                             >
                                 <div className="min-w-[8000px]">
                                     {/* Timeline Header */}
