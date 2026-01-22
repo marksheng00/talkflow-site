@@ -40,7 +40,7 @@ const StoreButton = ({
     <Link
         href={href}
         className={cn(
-            "group flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-white text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 whitespace-nowrap lg:w-auto lg:min-w-[160px]",
+            "group flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-white text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 whitespace-nowrap lg:w-auto lg:min-w-[200px]",
             isMobileLayout ? "w-1/2 px-3" : "px-6"
         )}
     >
@@ -56,7 +56,7 @@ const WebButton = ({ href, isMobileLayout }: { href: string; isMobileLayout?: bo
         href={href}
         className={cn(
             "group flex h-14 w-full lg:w-auto lg:min-w-[200px] items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 lg:flex-initial whitespace-nowrap",
-            isMobileLayout ? "w-1/2 px-3" : "px-8"
+            isMobileLayout ? "w-1/2 px-3" : "px-6"
         )}
     >
         <MonitorPlay className="h-5 w-5 text-slate-300 group-hover:text-white transition-colors flex-shrink-0" />
@@ -70,16 +70,17 @@ export const AppDownloadButtons = ({
     appStoreLink,
     playStoreLink,
     webLink,
-}: AppDownloadButtonsProps) => {
+    className,
+}: AppDownloadButtonsProps & { className?: string }) => {
     const platform = usePlatform();
 
     // Prevent hydration mismatch/flash by rendering a placeholder until platform is detected
     if (platform === null) {
-        return <div className="mt-8 md:mt-10 h-14 w-full" aria-hidden="true" />;
+        return <div className={cn("mt-8 md:mt-10 h-14 w-full", className)} aria-hidden="true" />;
     }
 
     return (
-        <div className="mt-8 md:mt-10 flex flex-col items-center gap-4 w-full max-w-sm mx-auto px-4 lg:max-w-none lg:justify-center">
+        <div className={cn("mt-8 md:mt-10 flex flex-col items-center gap-4 w-full max-w-sm mx-auto px-4 lg:max-w-none lg:justify-center", className)}>
             {/* Mobile: Platform + Web side by side */}
             {platform !== "desktop" && (
                 <div className="flex w-full gap-3">
