@@ -76,7 +76,7 @@ export const PricingCard = ({ tier, isYearly }: PricingCardProps) => {
             <Link
                 href={tier.name === "Free" ? "/signup" : tier.name === "Pro" ? "/signup?plan=pro" : "/contact"}
                 className={cn(
-                    "relative z-10 flex h-12 w-full items-center justify-center rounded-xl text-sm font-bold transition-all active:scale-95",
+                    "relative z-10 flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold transition-all active:scale-95",
                     tier.highlight
                         ? "bg-white !text-black shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                         : isUltra

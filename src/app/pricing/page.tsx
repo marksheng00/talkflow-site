@@ -81,10 +81,10 @@ export default function PricingPage() {
                         </p>
                         <Link
                             href="/signup"
-                            className="group flex h-[50px] items-center gap-3 rounded-xl bg-white px-8 !text-black shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
+                            className="group flex h-14 items-center gap-3 rounded-2xl bg-white px-8 !text-black shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95"
                         >
                             <span className="text-xl transition-transform group-hover:rotate-12">👋</span>
-                            <span className="text-sm font-bold">Start Free Trial</span>
+                            <span className="text-base font-bold">Start Free Trial</span>
                         </Link>
                     </div>
                 </div>
