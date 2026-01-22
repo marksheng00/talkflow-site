@@ -102,7 +102,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
             animate={{
                 backdropFilter: visible ? "blur(12px)" : "blur(0px)",
                 boxShadow: visible
-                    ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
+                    ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
                 width: visible ? "auto" : "100%",
                 y: visible ? 20 : 0,
@@ -113,8 +113,8 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
                 damping: 50,
             }}
             className={cn(
-                "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-3xl bg-transparent px-6 py-3 lg:px-10 lg:py-3",
-                visible && "bg-neutral-950/80 border border-white/10 min-w-[600px] gap-8",
+                "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-2xl bg-transparent px-6 py-3 lg:px-10 lg:py-3",
+                visible && "bg-white/10 border border-white/20 min-w-[600px] gap-8 shadow-lg",
                 className
             )}
         >
@@ -162,7 +162,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
             animate={{
                 backdropFilter: visible ? "blur(12px)" : "blur(0px)",
                 boxShadow: visible
-                    ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
+                    ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
                 width: visible ? "90%" : "100%",
                 paddingRight: visible ? "16px" : "0px",
@@ -177,7 +177,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
             }}
             className={cn(
                 "relative mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-4 py-3 lg:hidden",
-                visible && "bg-neutral-950/80 border border-white/10",
+                visible && "bg-white/10 border border-white/20 shadow-lg",
                 className
             )}
         >
@@ -215,7 +215,7 @@ export const MobileNavMenu = ({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     className={cn(
-                        "absolute left-0 right-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-xl bg-neutral-950/95 backdrop-blur-xl border border-white/10 px-6 py-6",
+                        "absolute left-0 right-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-6 shadow-lg",
                         className
                     )}
                 >
@@ -267,9 +267,9 @@ export const NavbarButton = ({
 
     const variantStyles = {
         primary:
-            "bg-white !text-black font-bold hover:bg-black hover:!text-[#63f5c5] hover:shadow-[0_0_30px_rgba(99,245,197,0.25)] transition-all duration-300",
+            "bg-white !text-black font-bold hover:bg-slate-50 hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]",
         secondary:
-            "bg-white/5 border border-white/10 text-white hover:bg-white/15", // Explicit secondary style now
+            "bg-white/5 border border-white/10 text-white hover:bg-white/15",
         dark: "bg-black text-white border border-white/10 hover:bg-neutral-900",
         gradient:
             "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-90",
