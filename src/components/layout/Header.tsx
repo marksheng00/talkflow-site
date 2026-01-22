@@ -14,10 +14,8 @@ import {
   NavbarButton,
 } from "@/components/ui/SiteNavbar";
 
-import { Sparkles } from "lucide-react";
-
 const navItems = [
-  { name: "Product", link: "/", icon: <Sparkles className="h-4 w-4" /> },
+  { name: "Product", link: "/" },
   { name: "Pricing", link: "/pricing" },
   { name: "Roadmap", link: "/roadmap" },
   { name: "Downloads", link: "/#downloads" },
@@ -63,7 +61,6 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
               className="relative flex w-full items-center gap-3 text-neutral-400 hover:text-white"
             >
-              {item.icon && <span className="h-5 w-5">{item.icon}</span>}
               {item.name}
             </Link>
           ))}

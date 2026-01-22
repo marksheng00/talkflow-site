@@ -218,7 +218,6 @@ export const MobileNavMenu = ({
     className,
     isOpen,
 }: MobileNavMenuProps) => {
-    console.log("MobileNavMenu v0.1.13 DEBUG: Loaded with Aurora Hex Color");
     return (
         <AnimatePresence>
             {isOpen && (
