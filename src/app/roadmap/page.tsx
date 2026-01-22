@@ -994,11 +994,11 @@ export default function RoadmapPage() {
                 document.body
             )}
 
-            {/* SUBMIT MODAL */}
+            {/* SUBMIT IDEA MODAL */}
             {mounted && isSubmitModalOpen && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsSubmitModalOpen(false)} />
-                    <div className="relative w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95">
+                    <div className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto no-scrollbar">
                         <button
                             onClick={() => setIsSubmitModalOpen(false)}
                             className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
@@ -1006,66 +1006,68 @@ export default function RoadmapPage() {
                             <X className="h-5 w-5" />
                         </button>
 
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-3xl font-heading font-bold text-white leading-tight mb-2">Submit New Idea</h3>
-                                <p className="text-slate-400">Share your feature requests or feedback directly with the team.</p>
+                        <div className="mb-6">
+                            <h3 className="text-2xl font-heading font-bold text-white leading-tight flex items-center gap-2">
+                                <Lightbulb className="h-6 w-6 text-emerald-500" />
+                                Submit New Idea
+                            </h3>
+                            <p className="text-sm text-slate-500 mt-1">Share your feature requests with the team.</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            {/* Title */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Title</label>
+                                <input
+                                    placeholder="What's your idea?"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-medium placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all"
+                                    value={form.title}
+                                    onChange={e => setForm({ ...form, title: e.target.value })}
+                                    required
+                                    minLength={6}
+                                />
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Title</label>
-                                    <input
-                                        placeholder="What's your idea?"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-lg text-white font-medium placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all"
-                                        value={form.title}
-                                        onChange={e => setForm({ ...form, title: e.target.value })}
-                                        required
-                                        minLength={6}
-                                    />
+                            {/* Category */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Category</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {categories.filter(c => c !== 'All').map(cat => (
+                                        <button
+                                            key={cat}
+                                            type="button"
+                                            onClick={() => setForm({ ...form, category: cat })}
+                                            className={`px-3 py-2 rounded-lg text-sm font-bold border transition-all ${form.category === cat
+                                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300"
+                                                : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
+                                                }`}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
                                 </div>
+                            </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Category</label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {categories.filter(c => c !== 'All').map(cat => (
-                                            <button
-                                                key={cat}
-                                                type="button"
-                                                onClick={() => setForm({ ...form, category: cat })}
-                                                className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${form.category === cat
-                                                    ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]"
-                                                    : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
-                                                    }`}
-                                            >
-                                                {cat}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                            {/* Description */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Description</label>
+                                <textarea
+                                    placeholder="Describe how this would work..."
+                                    className="w-full h-32 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all resize-none leading-relaxed"
+                                    value={form.description}
+                                    onChange={e => setForm({ ...form, description: e.target.value })}
+                                    required
+                                    minLength={12}
+                                />
+                            </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Description</label>
-                                    <textarea
-                                        placeholder="Describe how this would work..."
-                                        className="w-full h-40 bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all resize-none leading-relaxed"
-                                        value={form.description}
-                                        onChange={e => setForm({ ...form, description: e.target.value })}
-                                        required
-                                        minLength={12}
-                                    />
-                                </div>
-
-                                <div className="pt-2">
-                                    <button
-                                        disabled={submitting}
-                                        className="w-full h-14 bg-emerald-500 text-black rounded-xl font-bold text-lg hover:bg-emerald-400 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:pointer-events-none"
-                                    >
-                                        {submitting ? <Loader2 className="animate-spin h-6 w-6" /> : "Submit Idea"}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            <button
+                                disabled={submitting}
+                                className="w-full h-14 bg-emerald-500 text-black rounded-xl font-bold text-lg hover:bg-emerald-400 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:pointer-events-none"
+                            >
+                                {submitting ? <Loader2 className="animate-spin h-6 w-6" /> : "Submit Idea"}
+                            </button>
+                        </form>
                     </div>
                 </div>,
                 document.body
@@ -1075,114 +1077,106 @@ export default function RoadmapPage() {
             {mounted && isBugModalOpen && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsBugModalOpen(false)} />
-                    <div className="relative w-full max-w-xl animate-in zoom-in-95">
-                        <div className="bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide relative">
-                            <button
-                                onClick={() => setIsBugModalOpen(false)}
-                                className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                            <div className="mb-8 pr-8">
-                                <div>
-                                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                                        <Bug className="h-6 w-6 text-rose-500" />
-                                        Report a Bug
-                                    </h2>
-                                    <p className="text-sm text-slate-500 mt-1">Help us make TalkFlow more stable.</p>
+                    <div className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto no-scrollbar">
+                        <button
+                            onClick={() => setIsBugModalOpen(false)}
+                            className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                                <Bug className="h-6 w-6 text-rose-500" />
+                                Report a Bug
+                            </h2>
+                            <p className="text-sm text-slate-500 mt-1">Help us fix issues quickly.</p>
+                        </div>
+
+                        <form onSubmit={handleBugSubmit} className="space-y-5">
+                            {/* Title */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">What happened?</label>
+                                <input
+                                    required
+                                    type="text"
+                                    placeholder="Brief summary of the issue"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
+                                    value={bugForm.title}
+                                    onChange={e => setBugForm({ ...bugForm, title: e.target.value })}
+                                />
+                            </div>
+
+                            {/* Platform - Button Group */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
+                                <div className="flex gap-2">
+                                    {(['iOS', 'Android', 'Web'] as const).map(p => (
+                                        <button
+                                            key={p}
+                                            type="button"
+                                            onClick={() => setBugForm({ ...bugForm, platform: p })}
+                                            className={`flex-1 py-2.5 rounded-lg text-sm font-bold border transition-all ${bugForm.platform === p
+                                                ? "bg-rose-500/20 border-rose-500/50 text-rose-300"
+                                                : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"
+                                                }`}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
 
-                            <form onSubmit={handleBugSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Subject</label>
-                                    <input
-                                        required
-                                        type="text"
-                                        placeholder="Brief summary of the issue"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
-                                        value={bugForm.title}
-                                        onChange={e => setBugForm({ ...bugForm, title: e.target.value })}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Severity</label>
-                                        <select
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500/50 transition-colors"
-                                            value={bugForm.severity}
-                                            onChange={e => setBugForm({ ...bugForm, severity: e.target.value as any })}
+                            {/* Severity - Button Group */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Severity</label>
+                                <div className="flex gap-2">
+                                    {([
+                                        { value: 'Minor', icon: AlertCircle, label: 'Minor' },
+                                        { value: 'Major', icon: ShieldAlert, label: 'Major' },
+                                        { value: 'Blocker', icon: Bug, label: 'Critical' },
+                                    ] as const).map(s => (
+                                        <button
+                                            key={s.value}
+                                            type="button"
+                                            onClick={() => setBugForm({ ...bugForm, severity: s.value })}
+                                            className={`flex-1 py-2.5 rounded-lg text-sm font-bold border transition-all flex items-center justify-center gap-1.5 ${bugForm.severity === s.value
+                                                ? "bg-rose-500/20 border-rose-500/50 text-rose-300"
+                                                : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"
+                                                }`}
                                         >
-                                            <option value="Minor">Minor (UI/Typo)</option>
-                                            <option value="Major">Major (Functionality)</option>
-                                            <option value="Blocker">Blocker (Crashes)</option>
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
-                                        <select
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500/50 transition-colors"
-                                            value={bugForm.platform}
-                                            onChange={e => setBugForm({ ...bugForm, platform: e.target.value as any })}
-                                        >
-                                            <option value="iOS">iOS</option>
-                                            <option value="Android">Android</option>
-                                            <option value="Web">Web</option>
-                                        </select>
-                                    </div>
+                                            <s.icon className="h-4 w-4" />
+                                            <span className="hidden sm:inline">{s.label}</span>
+                                        </button>
+                                    ))}
                                 </div>
+                            </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Steps to Reproduce</label>
-                                    <textarea
-                                        required
-                                        rows={3}
-                                        placeholder="1. Go to... 2. Click on... 3. See..."
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
-                                        value={bugForm.steps}
-                                        onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}
-                                    />
-                                </div>
+                            {/* Description */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Describe the bug</label>
+                                <textarea
+                                    required
+                                    rows={4}
+                                    placeholder="What did you expect? What happened instead? How can we reproduce it?"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
+                                    value={bugForm.steps}
+                                    onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}
+                                />
+                            </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Expected Result</label>
-                                        <textarea
-                                            required
-                                            rows={2}
-                                            placeholder="What should happen?"
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
-                                            value={bugForm.expected}
-                                            onChange={e => setBugForm({ ...bugForm, expected: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Actual Result</label>
-                                        <textarea
-                                            required
-                                            rows={2}
-                                            placeholder="What actually happens?"
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
-                                            value={bugForm.actual}
-                                            onChange={e => setBugForm({ ...bugForm, actual: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <button
-                                    disabled={bugSubmitting}
-                                    type="submit"
-                                    className="w-full bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-rose-900/20 flex items-center justify-center gap-2"
-                                >
-                                    {bugSubmitting ? (
-                                        <Loader2 className="h-5 w-5 animate-spin" />
-                                    ) : (
-                                        "Submit Bug Report"
-                                    )}
-                                </button>
-                            </form>
-                        </div>
+                            <button
+                                disabled={bugSubmitting}
+                                type="submit"
+                                className="w-full bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-rose-900/20 flex items-center justify-center gap-2"
+                            >
+                                {bugSubmitting ? (
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                ) : (
+                                    "Submit Bug Report"
+                                )}
+                            </button>
+                        </form>
                     </div>
                 </div>,
                 document.body
