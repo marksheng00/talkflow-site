@@ -26,8 +26,26 @@ import {
 } from "@/lib/data/home-data";
 
 export default function Home() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "talkflo",
+    "operatingSystem": "iOS, Android, Web",
+    "applicationCategory": "EducationApplication",
+    "description": "Real-time AI Speaking Coach and Conversation Practice tool.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+
   return (
     <AuroraBackground className="pb-24 text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative pt-24 pb-32 md:pb-40 overflow-hidden w-full">
         <div className="section-shell relative z-10 flex flex-col items-center text-center">
@@ -163,9 +181,9 @@ export default function Home() {
       {/* Technology / Under the Hood Section */}
       <section className="section-shell space-y-16 mb-32 relative">
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <h3 className="font-heading text-4xl font-bold text-white md:text-5xl">
+          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
             Magic, engineered.
-          </h3>
+          </h2>
           <p className="text-lg text-slate-400">
             Next-gen models and SOTA speech synthesis for an experience that feels truly alive.
           </p>
@@ -310,9 +328,9 @@ export default function Home() {
       {/* Built by experts - Premium Storytelling Cards */}
       <section id="about" className="section-shell space-y-16 mb-32 scroll-mt-32">
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <h3 className="font-heading text-4xl font-bold text-white md:text-5xl">
+          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
             Built by experts.
-          </h3>
+          </h2>
           <p className="text-lg text-slate-400">
             Where Oxford linguistics meets Silicon Valley engineering.
           </p>
@@ -449,9 +467,9 @@ export default function Home() {
       {/* Testimonials - Voice Note Cards */}
       <section className="section-shell space-y-16 mb-32">
         <div className="text-center max-w-3xl mx-auto">
-          <h3 className="font-heading text-4xl font-bold text-white md:text-5xl">
+          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
             Real people, real results.
-          </h3>
+          </h2>
           <p className="mt-4 text-lg text-slate-400">
             Join thousands of learners sounding more confident every day.
           </p>
@@ -536,9 +554,9 @@ export default function Home() {
       {/* FAQ */}
       <section className="section-shell space-y-16 mb-20">
         <div className="text-center max-w-3xl mx-auto">
-          <h3 className="font-heading text-4xl font-bold text-white md:text-5xl">
+          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
             FAQ.
-          </h3>
+          </h2>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-5xl mx-auto">
           {faqs.map((item) => (
@@ -564,9 +582,9 @@ export default function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,245,197,0.12),transparent_30%)]" />
           <div className="relative flex flex-col items-center md:items-start text-center md:text-left">
             <div className="space-y-4 w-full">
-              <h3 className="font-heading text-3xl font-semibold text-white md:text-4xl">
+              <h2 className="font-heading text-3xl font-semibold text-white md:text-4xl">
                 Start practicing in seconds.
-              </h3>
+              </h2>
               <p className="text-base text-slate-200">
                 Download the app or jump into the web experience—everything stays in sync.
               </p>

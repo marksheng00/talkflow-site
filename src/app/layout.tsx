@@ -19,14 +19,38 @@ const body = Manrope({
 export const metadata: Metadata = {
   title: "talkflo | Real-time AI Speaking Coach & Conversation Practice",
   description:
-    "talkflo helps you become fluent faster with live AI role-play, instant feedback, and a roadmap of upcoming features.",
+    "Master English fluency with talkflo. Real-time AI role-play, instant pronunciation feedback, and professional coaching for IELTS, TOEFL and job interviews.",
+  keywords: ["AI English Speaking", "IELTS Practice", "TOEFL Speaking", "English Fluency", "AI Coach", "Language Learning"],
   metadataBase: new URL("https://talkflo.hicall.ai"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "talkflo | Real-time AI Speaking Coach & Conversation Practice",
     description:
       "AI-powered English practice that feels like a real conversation. Instant feedback, adaptive role-play, and a transparent roadmap.",
     url: "https://talkflo.hicall.ai",
     siteName: "talkflo",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "talkflo - Real-time AI Speaking Coach",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "talkflo | Real-time AI Speaking Coach",
+    description: "Master English fluency with instant AI feedback. Try talkflo today.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
