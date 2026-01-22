@@ -218,35 +218,44 @@ export const MobileNavMenu = ({
     children,
     className,
     isOpen,
+    onClose,
 }: MobileNavMenuProps) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 200,
-                        damping: 50,
-                    }}
-                    className={cn(
-                        "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
-                        className
-                    )}
-                    id="mobile-nav-menu-aurora-v2"
-                >
-                    <div className="absolute inset-0 z-0">
-                        <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
-                            {/* No children needed, just background */}
-                        </AuroraBackground>
-                    </div>
+                <>
+                    {/* Transparent Overlay for click-outside closing */}
+                    <div
+                        className="fixed inset-0 z-40 bg-transparent"
+                        onClick={onClose}
+                    />
 
-                    <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
-                        {children}
-                    </div>
-                </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 200,
+                            damping: 50,
+                        }}
+                        className={cn(
+                            "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
+                            className
+                        )}
+                        id="mobile-nav-menu-aurora-v2"
+                    >
+                        <div className="absolute inset-0 z-0">
+                            <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
+                                {/* No children needed, just background */}
+                            </AuroraBackground>
+                        </div>
+
+                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
+                            {children}
+                        </div>
+                    </motion.div>
+                </>
             )}
         </AnimatePresence>
     );
