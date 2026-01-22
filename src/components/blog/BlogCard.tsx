@@ -2,8 +2,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity.image'
 import { format } from 'date-fns'
+import { estimateReadingTime } from '@/lib/blog-helpers'
+import { Clock } from 'lucide-react'
 
 export default function BlogCard({ post }: { post: any }) {
+    const readingTime = estimateReadingTime(post.body)
+
     return (
         <Link
             href={`/blog/${post.slug.current}`}
@@ -40,19 +44,28 @@ export default function BlogCard({ post }: { post: any }) {
                     {post.excerpt}
                 </p>
 
-                <div className="mt-auto pt-4 flex items-center gap-3 text-xs text-slate-500 border-t border-white/5">
-                    {post.author?.image && (
-                        <Image
-                            src={urlFor(post.author.image).width(24).height(24).url()}
-                            alt={post.author.name}
-                            width={24}
-                            height={24}
-                            className="rounded-full"
-                        />
-                    )}
-                    <span className="font-medium text-slate-400">{post.author?.name}</span>
-                    <span className="text-slate-600">·</span>
-                    <time>{format(new Date(post.publishedAt), 'MMM dd, yyyy')}</time>
+                <div className="mt-auto pt-4 flex items-center justify-between text-xs text-slate-500 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                        {post.author?.image && (
+                            <Image
+                                src={urlFor(post.author.image).width(24).height(24).url()}
+                                alt={post.author.name}
+                                width={24}
+                                height={24}
+                                className="rounded-full"
+                            />
+                        )}
+                        <span className="font-medium text-slate-400">{post.author?.name}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <time>{format(new Date(post.publishedAt), 'MMM dd')}</time>
+                        <span className="w-1 h-1 rounded-full bg-slate-700" />
+                        <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {readingTime} min
+                        </span>
+                    </div>
                 </div>
             </div>
         </Link>
