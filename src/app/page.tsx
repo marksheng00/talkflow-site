@@ -574,7 +574,7 @@ export default function Home() {
                 appStoreLink={appStore}
                 playStoreLink={playStore}
                 webLink={primaryCta}
-                className="mt-6 w-full max-w-md mx-0 px-0 items-start lg:justify-start"
+                className="mt-6 w-full max-w-full mx-0 px-0 items-start lg:justify-start"
               />
             </div>
           </div>
