@@ -320,7 +320,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 gap-8">
           {/* Card 1: Pedagogy - Green Gradient */}
-          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-400/20 via-teal-400/15 to-green-500/10 p-12 transition-all hover:scale-[1.01]">
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-400/20 via-teal-400/15 to-green-500/10 p-6 md:p-12 transition-all hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.15),transparent_50%)]" />
 
             <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
@@ -371,7 +371,7 @@ export default function Home() {
           </div>
 
           {/* Card 2: AI Tech - Indigo Gradient */}
-          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-400/20 via-purple-400/15 to-blue-500/10 p-12 transition-all hover:scale-[1.01]">
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-400/20 via-purple-400/15 to-blue-500/10 p-6 md:p-12 transition-all hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(99,102,241,0.15),transparent_50%)]" />
 
             <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
@@ -416,7 +416,7 @@ export default function Home() {
           </div>
 
           {/* Card 3: Human-Centric - Rose Gradient */}
-          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-rose-400/20 via-pink-400/15 to-orange-500/10 p-12 transition-all hover:scale-[1.01]">
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-rose-400/20 via-pink-400/15 to-orange-500/10 p-6 md:p-12 transition-all hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(244,114,182,0.15),transparent_50%)]" />
 
             <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
@@ -425,7 +425,7 @@ export default function Home() {
                 <div className="relative rounded-2xl rounded-tl-sm border border-white/20 bg-white/95 backdrop-blur-xl p-4 shadow-xl max-w-sm transition-all group-hover:translate-y-[-4px]">
                   <p className="text-sm text-slate-700">I&apos;m worried I keep using the word &quot;very&quot; too much...</p>
                 </div>
-                <div className="relative rounded-2xl rounded-br-sm border border-rose-200/30 bg-gradient-to-br from-rose-400/20 to-orange-400/20 backdrop-blur-xl p-4 shadow-xl ml-8 transition-all group-hover:translate-y-[-2px]">
+                <div className="relative rounded-2xl rounded-br-sm border border-rose-200/30 bg-gradient-to-br from-rose-400/20 to-orange-400/20 backdrop-blur-xl p-4 shadow-xl ml-4 md:ml-8 transition-all group-hover:translate-y-[-2px]">
                   <p className="text-sm text-white/90">I noticed that too. Try &quot;extremely,&quot; &quot;remarkably,&quot; or just drop it entirely—your point is strong enough without it. 💪</p>
                 </div>
               </div>
@@ -560,7 +560,7 @@ export default function Home() {
 
       {/* CTA Footer */}
       <section className="section-shell">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-10">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,245,197,0.12),transparent_30%)]" />
           <div className="relative grid gap-6 md:grid-cols-[1.2fr,0.8fr] md:items-center">
             <div className="space-y-4">
