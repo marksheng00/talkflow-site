@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
+import packageJson from "../../../package.json";
 
 interface NavItem {
     name: string;
@@ -248,6 +249,9 @@ export const NavbarLogo = () => {
                 className="h-12 w-12 rounded-lg object-contain"
             />
             <span className="font-bold text-white tracking-wide text-xl">TalkFlow</span>
+            <span className="ml-1 px-2 py-0.5 text-[10px] font-medium rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 border border-emerald-500/30">
+                v{packageJson.version}
+            </span>
         </Link>
     );
 };
