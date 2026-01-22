@@ -283,6 +283,7 @@ export const NavbarButton = ({
     children,
     className,
     variant = "primary",
+    as, // Destructure 'as' so it's not passed in ...props
     ...props
 }: NavbarButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement> & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
     const baseStyles =
