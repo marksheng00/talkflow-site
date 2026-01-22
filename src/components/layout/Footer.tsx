@@ -39,7 +39,7 @@ export default function Footer() {
     <footer className="border-t border-white/10">
       <div className="section-shell grid grid-cols-1 gap-10 py-12 md:grid-cols-4">
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
             <Image
               src="/talkflo_logo.png"
               alt="talkflo Logo"
