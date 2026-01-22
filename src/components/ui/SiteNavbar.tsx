@@ -10,8 +10,8 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import React, { useRef, useState } from "react";
+// Removed createPortal import
 import { AuroraBackground } from "./AuroraBackground";
 
 interface NavItem {
@@ -87,9 +87,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     return (
         <motion.div
             ref={ref}
-            // Removing fixed positioning from here if possible, or keeping it but ensuring it's not fighting portals.
-            // Actually, for mobile masking issues, the best fix is to shift the mask DOWN.
-            className={cn("fixed inset-x-0 top-0 z-[50] w-full", className)}
+            className={cn("fixed inset-x-0 top-0 z-40 w-full", className)}
         >
             {React.Children.map(children, (child) =>
                 React.isValidElement(child)
@@ -207,7 +205,7 @@ export const MobileNavHeader = ({
     return (
         <div
             className={cn(
-                "flex w-full flex-row items-center justify-between relative z-50",
+                "flex w-full flex-row items-center justify-between",
                 className
             )}
         >
@@ -220,72 +218,45 @@ export const MobileNavMenu = ({
     children,
     className,
     isOpen,
-    onClose,
 }: MobileNavMenuProps) => {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    if (!mounted) return null;
-
-    return createPortal(
+    return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[40] lg:hidden">
-                    {/* 
-                        FIX: Backdrop starts from top-[80px] to physically avoid covering the navbar. 
-                        Navbar is approx 60-80px tall. We leave the top clear.
-                    */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        onClick={onClose}
-                        className="absolute top-[72px] inset-x-0 bottom-0 bg-black/60 backdrop-blur-sm"
-                    />
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 50,
+                    }}
+                    className={cn(
+                        "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
+                        className
+                    )}
+                    id="mobile-nav-menu-aurora-v2"
+                >
+                    <div className="absolute inset-0 z-0">
+                        <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
+                            {/* No children needed, just background */}
+                        </AuroraBackground>
+                    </div>
 
-                    {/* Menu Content Panel */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 30,
-                        }}
-                        className={cn(
-                            "absolute left-4 right-4 top-[84px] z-[50] rounded-3xl bg-[#020617] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden max-h-[70vh] flex flex-col",
-                            className
-                        )}
-                    >
-                        <div className="absolute inset-0 z-0">
-                            <AuroraBackground className="h-full w-full opacity-30 pointer-events-none" />
-                        </div>
-
-                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-5 px-8 py-10">
-                            {children}
-                        </div>
-                    </motion.div>
-                </div>
+                    <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
+                        {children}
+                    </div>
+                </motion.div>
             )}
-        </AnimatePresence>,
-        document.body
+        </AnimatePresence>
     );
 };
 
 export const MobileNavToggle = ({ isOpen, onClick }: MobileNavToggleProps) => {
-    return (
-        <div className="relative z-50">
-            {isOpen ? (
-                <X className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
-            ) : (
-                <Menu className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
-            )}
-        </div>
+    return isOpen ? (
+        <X className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
+    ) : (
+        <Menu className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
     );
 };
 
@@ -293,7 +264,7 @@ export const NavbarLogo = () => {
     return (
         <Link
             href="/"
-            className="relative z-50 flex items-center gap-1.5 py-1 text-sm font-normal text-white"
+            className="relative z-20 flex items-center gap-1.5 py-1 text-sm font-normal text-white"
         >
             <Image
                 src="/talkflo_logo.png"
