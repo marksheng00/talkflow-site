@@ -393,7 +393,7 @@ export default function RoadmapPage() {
                         </div>
 
                         {/* Category Filter */}
-                        <div className="flex flex-wrap gap-2 max-w-full">
+                        <div className="flex gap-1.5 md:gap-2 w-full md:w-auto">
                             {categories.map(cat => {
                                 const categoryButtonColors = {
                                     All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
@@ -404,18 +404,26 @@ export default function RoadmapPage() {
                                     "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
                                 };
 
+                                // Shorter labels for mobile
+                                const mobileLabels: Record<string, string> = {
+                                    "AI Core": "AI",
+                                    "Feature": "Feat",
+                                };
+                                const displayLabel = mobileLabels[cat] || cat;
+
                                 const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
 
                                 return (
                                     <button
                                         key={cat}
                                         onClick={() => setSelectedCategory(cat)}
-                                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${selectedCategory === cat
+                                        className={`flex-1 md:flex-initial px-2 md:px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${selectedCategory === cat
                                             ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
                                             : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
                                             }`}
                                     >
-                                        {cat}
+                                        <span className="md:hidden">{displayLabel}</span>
+                                        <span className="hidden md:inline">{cat}</span>
                                     </button>
                                 );
                             })}
