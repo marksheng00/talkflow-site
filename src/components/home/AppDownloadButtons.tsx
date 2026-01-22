@@ -4,6 +4,8 @@ import Link from "next/link";
 import { MonitorPlay } from "lucide-react";
 import { usePlatform } from "@/hooks/use-platform";
 
+import { cn } from "@/lib/utils";
+
 interface AppDownloadButtonsProps {
     appStoreLink: string;
     playStoreLink: string;
@@ -37,7 +39,10 @@ const StoreButton = ({
 }) => (
     <Link
         href={href}
-        className="group flex h-14 flex-1 items-center justify-center gap-2.5 rounded-2xl bg-white px-6 text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 whitespace-nowrap lg:w-auto lg:min-w-[160px]"
+        className={cn(
+            "group flex h-14 flex-1 items-center justify-center gap-2.5 rounded-2xl bg-white text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 whitespace-nowrap lg:w-auto lg:min-w-[160px]",
+            isMobileLayout ? "px-4" : "px-6"
+        )}
     >
         <Icon />
         <span className="text-base font-bold text-black">
@@ -46,10 +51,13 @@ const StoreButton = ({
     </Link>
 );
 
-const WebButton = ({ href }: { href: string }) => (
+const WebButton = ({ href, isMobileLayout }: { href: string; isMobileLayout?: boolean }) => (
     <Link
         href={href}
-        className="group flex h-14 w-full lg:w-auto lg:min-w-[200px] items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 px-8 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 flex-1 lg:flex-initial"
+        className={cn(
+            "group flex h-14 w-full lg:w-auto lg:min-w-[200px] items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 flex-1 lg:flex-initial whitespace-nowrap",
+            isMobileLayout ? "px-4" : "px-8"
+        )}
     >
         <MonitorPlay className="h-5 w-5 text-slate-300 group-hover:text-white transition-colors flex-shrink-0" />
         <span className="text-base font-medium text-slate-300 group-hover:text-white transition-colors">
@@ -64,6 +72,11 @@ export const AppDownloadButtons = ({
     webLink,
 }: AppDownloadButtonsProps) => {
     const platform = usePlatform();
+
+    // Prevent hydration mismatch/flash by rendering a placeholder until platform is detected
+    if (platform === null) {
+        return <div className="mt-8 md:mt-10 h-14 w-full" aria-hidden="true" />;
+    }
 
     return (
         <div className="mt-8 md:mt-10 flex flex-col items-center gap-4 w-full max-w-sm mx-auto px-4 lg:max-w-none lg:justify-center">
@@ -88,7 +101,7 @@ export const AppDownloadButtons = ({
                         />
                     )}
 
-                    <WebButton href={webLink} />
+                    <WebButton href={webLink} isMobileLayout />
                 </div>
             )}
 

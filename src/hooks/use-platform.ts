@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 export type Platform = "ios" | "android" | "desktop";
 
-export function usePlatform(): Platform {
-    const [platform, setPlatform] = useState<Platform>("desktop");
+export function usePlatform(): Platform | null {
+    const [platform, setPlatform] = useState<Platform | null>(null);
 
     useEffect(() => {
         const ua = navigator.userAgent.toLowerCase();
