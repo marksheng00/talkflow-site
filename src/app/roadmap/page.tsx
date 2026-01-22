@@ -371,24 +371,24 @@ export default function RoadmapPage() {
 
 
                         {/* Tab Switcher */}
-                        <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-full max-w-full md:w-fit overflow-x-auto no-scrollbar">
+                        <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-full md:w-fit">
                             <button
                                 onClick={() => setActiveTab("roadmap")}
-                                className={`flex-shrink-0 px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
-                                Product Roadmap
+                                Roadmap
                             </button>
                             <button
                                 onClick={() => setActiveTab("ideas")}
-                                className={`flex-shrink-0 px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
-                                Community Ideas
+                                Ideas
                             </button>
                             <button
                                 onClick={() => setActiveTab("bugs")}
-                                className={`flex-shrink-0 px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
-                                Bug Tracker
+                                Bugs
                             </button>
                         </div>
 
