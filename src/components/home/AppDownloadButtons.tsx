@@ -80,10 +80,10 @@ export const AppDownloadButtons = ({
     }
 
     return (
-        <div className={cn("mt-8 md:mt-10 flex flex-col items-center gap-4 w-full max-w-sm mx-auto px-4 lg:max-w-none lg:justify-center", className)}>
+        <div className={cn("mt-8 md:mt-10 flex flex-col items-center gap-4 w-full mx-auto lg:max-w-none lg:justify-center", className)}>
             {/* Mobile: Platform + Web side by side */}
             {platform !== "desktop" && (
-                <div className="flex w-full gap-3">
+                <div className="grid grid-cols-2 w-full gap-3">
                     {platform === "ios" && (
                         <StoreButton
                             href={appStoreLink}
