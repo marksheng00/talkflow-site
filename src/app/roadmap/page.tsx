@@ -625,18 +625,23 @@ export default function RoadmapPage() {
             {/* TAB 2: COMMUNITY IDEAS */}
             {activeTab === "ideas" && (
                 <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <button
-                            onClick={() => setIsSubmitModalOpen(true)}
-                            className="group relative flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-white/10 bg-transparent p-6 h-[220px] hover:bg-white/[0.02] hover:border-white/20 transition-all"
-                        >
-                            <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <Lightbulb className="h-6 w-6 text-emerald-400" />
-                            </div>
-                            <p className="text-sm font-bold text-slate-300 group-hover:text-white">Submit New Idea</p>
-                            <p className="text-xs text-slate-500 text-center px-4">Have a feature request? Add it to the pool.</p>
-                        </button>
+                    <button
+                        onClick={() => setIsSubmitModalOpen(true)}
+                        className="group relative flex flex-row items-center gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 mb-8 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
+                    >
+                        <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Lightbulb className="h-5 w-5 text-emerald-400" />
+                        </div>
+                        <div className="text-left">
+                            <p className="text-sm font-bold text-slate-200 group-hover:text-white">Submit New Idea</p>
+                            <p className="text-xs text-slate-500">Have a feature request? Add it to the pool.</p>
+                        </div>
+                        <div className="ml-auto pr-2">
+                            <Plus className="h-5 w-5 text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                        </div>
+                    </button>
 
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {filteredIdeals.map(idea => (
                             <div
                                 key={idea.id}
@@ -702,18 +707,23 @@ export default function RoadmapPage() {
             {/* TAB 3: BUG TRACKER */}
             {activeTab === "bugs" && (
                 <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <button
-                            onClick={() => setIsBugModalOpen(true)}
-                            className="group relative flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-white/10 bg-transparent p-6 h-[220px] hover:bg-white/[0.02] hover:border-white/20 transition-all"
-                        >
-                            <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <Bug className="h-6 w-6 text-rose-400" />
-                            </div>
-                            <p className="text-sm font-bold text-slate-300 group-hover:text-white">Report a Bug</p>
-                            <p className="text-xs text-slate-500 text-center px-4">Found something broken? Help us squashing it.</p>
-                        </button>
+                    <button
+                        onClick={() => setIsBugModalOpen(true)}
+                        className="group relative flex flex-row items-center gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 mb-8 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
+                    >
+                        <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Bug className="h-5 w-5 text-rose-400" />
+                        </div>
+                        <div className="text-left">
+                            <p className="text-sm font-bold text-slate-200 group-hover:text-white">Report a Bug</p>
+                            <p className="text-xs text-slate-500">Found something broken? Help us squash it.</p>
+                        </div>
+                        <div className="ml-auto pr-2">
+                            <Plus className="h-5 w-5 text-slate-600 group-hover:text-rose-400 transition-colors" />
+                        </div>
+                    </button>
 
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {filteredBugs.map(bug => (
                             <div
                                 key={bug.id}
