@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import packageJson from "../../../package.json";
 
 const columns = [
   {
@@ -45,10 +46,13 @@ export default function Footer() {
               height={48}
               className="h-10 w-10 rounded-lg object-contain block"
             />
-            <div>
+            <div className="flex items-center gap-2">
               <p className="font-heading text-xl font-bold tracking-wide text-white">
                 TalkFlow
               </p>
+              <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-slate-400 border border-slate-700/50 backdrop-blur-sm">
+                v{packageJson.version}
+              </span>
             </div>
           </div>
         </div>
