@@ -23,7 +23,7 @@ VALUES
 **📅 Development Timeline**
 
 **January 2024** - Initial research and prototype
-• Conducted user interviews with 50+ TalkFlow users
+• Conducted user interviews with 50+ TalkFlo users
 • Built sentiment analysis pipeline
 • Tested 3 different conversation models
 
@@ -153,7 +153,7 @@ Every day at 8 AM, you receive:
   ),
   (
     'IOS App Launch',
-    'The first version of TalkFlow for iPhone users.',
+    'The first version of TalkFlo for iPhone users.',
     'released',
     'UIUX',
     'released',
@@ -162,7 +162,7 @@ Every day at 8 AM, you receive:
     '2024-01-10',
     100,
     'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=400&fit=crop',
-    $$📱 **TalkFlow is now on iOS!**
+    $$📱 **TalkFlo is now on iOS!**
 
 After 4 months of development, we're thrilled to announce that iPhone users can now practice English speaking on the go.
 

@@ -1,16 +1,16 @@
-# TalkFlow Blog - Sanity CMS 实施方案
+# TalkFlo Blog - Sanity CMS 实施方案
 
 ## 阶段 1: Sanity 项目初始化 (30分钟)
 
 ### 1.1 安装 Sanity CLI 并初始化项目
 ```bash
-cd /Users/marksheng/Cursor/TalkFlow/TalkFlow_OWS/talkflow-site
+cd /Users/marksheng/Cursor/TalkFlo/TalkFlo_OWS/talkflo-site
 npm install -g @sanity/cli
 npx sanity init --project-plan free --dataset production
 ```
 
 **回答交互式问题**:
-- Project name: `talkflow-blog`
+- Project name: `talkflo-blog`
 - Dataset: `production`
 - Output path: `./sanity`
 - Schema template: `Clean project with no predefined schemas`
@@ -322,7 +322,7 @@ import { schemaTypes } from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'TalkFlow Blog',
+  title: 'TalkFlo Blog',
 
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
@@ -421,7 +421,7 @@ import { AuroraBackground } from '@/components/ui/AuroraBackground'
 import BlogCard from '@/components/blog/BlogCard'
 
 export const metadata = {
-  title: 'Blog | TalkFlow - English Speaking Practice Tips',
+  title: 'Blog | TalkFlo - English Speaking Practice Tips',
   description: 'Learn how to improve your English speaking skills with AI-powered practice tips and insights.',
 }
 
@@ -439,7 +439,7 @@ export default async function BlogPage() {
       <section className="section-shell pt-24">
         <div className="mb-12">
           <h1 className="font-heading text-5xl font-bold text-white mb-4">
-            TalkFlow Blog
+            TalkFlo Blog
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl">
             Tips, insights, and stories to help you master English speaking with AI
@@ -481,7 +481,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!post) return {}
 
   return {
-    title: post.seo?.metaTitle || `${post.title} | TalkFlow Blog`,
+    title: post.seo?.metaTitle || `${post.title} | TalkFlo Blog`,
     description: post.seo?.metaDescription || post.excerpt,
     keywords: post.seo?.keywords,
     openGraph: {
@@ -639,13 +639,13 @@ npm run dev
 cd sanity
 npx sanity deploy
 ```
-选择一个子域名，比如 `talkflow-blog`
-Studio 会部署到 `https://talkflow-blog.sanity.studio`
+选择一个子域名，比如 `talkflo-blog`
+Studio 会部署到 `https://talkflo-blog.sanity.studio`
 
 ### 4.3 配置 CORS
 在 Sanity 管理后台添加允许的域名：
 - `http://localhost:3000` (开发)
-- `https://talkflow.hicall.ai` (生产)
+- `https://talkflo.hicall.ai` (生产)
 
 ---
 

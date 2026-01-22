@@ -12,7 +12,7 @@ import { ChevronLeft, ChevronRight, Filter, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 
 export const metadata = {
-    title: 'Blog | TalkFlow - English Speaking Practice Tips',
+    title: 'Blog | TalkFlo - English Speaking Practice Tips',
     description: 'Expert tips, learning strategies, and product updates to help you speak English with confidence.',
 }
 

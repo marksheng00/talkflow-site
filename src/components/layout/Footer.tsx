@@ -15,23 +15,23 @@ const columns = [
     title: "Company",
     items: [
       { label: "About", href: "#about" },
-      { label: "Careers", href: "mailto:hello@talkflow.ai" },
-      { label: "Support", href: "mailto:support@talkflow.ai" },
+      { label: "Careers", href: "mailto:hello@talkflo.ai" },
+      { label: "Support", href: "mailto:support@talkflo.ai" },
     ],
   },
   {
     title: "Resources",
     items: [
       { label: "Blog", href: "/blog" },
-      { label: "TalkFlow community", href: primaryCommunity() },
-      { label: "Press", href: "mailto:press@talkflow.ai" },
+      { label: "TalkFlo community", href: primaryCommunity() },
+      { label: "Press", href: "mailto:press@talkflo.ai" },
       { label: "Privacy", href: "#" },
     ],
   },
 ];
 
 function primaryCommunity() {
-  return "https://talkflow.hicall.ai/callout-lite/en/talkflow";
+  return "https://talkflo.hicall.ai/callout-lite/en/talkflo";
 }
 
 export default function Footer() {
@@ -41,15 +41,15 @@ export default function Footer() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <Image
-              src="/talkflow_logo.png"
-              alt="TalkFlow Logo"
+              src="/talkflo_logo.png"
+              alt="TalkFlo Logo"
               width={48}
               height={48}
               className="h-10 w-10 rounded-lg object-contain block"
             />
             <div className="flex items-center gap-2">
               <p className="font-heading text-xl font-bold tracking-wide text-white">
-                TalkFlow
+                TalkFlo
               </p>
               <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-slate-400 border border-slate-700/50 backdrop-blur-sm">
                 v{packageJson.version}
@@ -78,7 +78,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-white/5 py-4">
         <div className="section-shell text-xs text-slate-500">
-          <span>© {new Date().getFullYear()} TalkFlow. A product of BeyondThink LLC. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} TalkFlo. A product of BeyondThink LLC. All rights reserved.</span>
         </div>
       </div>
     </footer>

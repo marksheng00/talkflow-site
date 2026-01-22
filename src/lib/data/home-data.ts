@@ -1,8 +1,8 @@
 import { Mic2, Sparkles, Waves } from "lucide-react";
 
-export const primaryCta = "https://talkflow.hicall.ai/callout-lite/en/talkflow";
-export const playStore = "https://play.google.com/store/apps/details?id=io.aigaia.talkflow";
-export const appStore = "https://apps.apple.com/us/app/talkflow-speak-english-better/id6746321404";
+export const primaryCta = "https://talkflo.hicall.ai/callout-lite/en/talkflo";
+export const playStore = "https://play.google.com/store/apps/details?id=io.aigaia.talkflo";
+export const appStore = "https://apps.apple.com/us/app/talkflo-speak-english-better/id6746321404";
 
 export const featureCards = [
     {
@@ -52,7 +52,7 @@ export const highlights = [
 
 export const testimonials = [
     {
-        quote: "TalkFlow feels like a calm coach in my ear. I stopped overthinking and finally sound confident in interviews.",
+        quote: "TalkFlo feels like a calm coach in my ear. I stopped overthinking and finally sound confident in interviews.",
         name: "Andrea M.",
         title: "Product Manager relocating to Berlin",
     },

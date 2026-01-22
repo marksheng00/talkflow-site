@@ -267,13 +267,13 @@ export const NavbarLogo = () => {
             className="relative z-20 flex items-center gap-2.5 py-1 text-sm font-normal text-white"
         >
             <Image
-                src="/talkflow_logo.png"
-                alt="TalkFlow Logo"
+                src="/talkflo_logo.png"
+                alt="TalkFlo Logo"
                 width={48}
                 height={48}
                 className="h-12 w-12 rounded-lg object-contain"
             />
-            <span className="font-bold text-white tracking-wide text-xl">TalkFlow</span>
+            <span className="font-bold text-white tracking-wide text-xl">TalkFlo</span>
         </Link>
     );
 };

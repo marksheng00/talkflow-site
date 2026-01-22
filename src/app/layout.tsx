@@ -17,16 +17,16 @@ const body = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "TalkFlow | Real-time AI Speaking Coach & Conversation Practice",
+  title: "TalkFlo | Real-time AI Speaking Coach & Conversation Practice",
   description:
-    "TalkFlow helps you become fluent faster with live AI role-play, instant feedback, and a roadmap of upcoming features.",
-  metadataBase: new URL("https://talkflow.hicall.ai"),
+    "TalkFlo helps you become fluent faster with live AI role-play, instant feedback, and a roadmap of upcoming features.",
+  metadataBase: new URL("https://talkflo.hicall.ai"),
   openGraph: {
-    title: "TalkFlow | Real-time AI Speaking Coach & Conversation Practice",
+    title: "TalkFlo | Real-time AI Speaking Coach & Conversation Practice",
     description:
       "AI-powered English practice that feels like a real conversation. Instant feedback, adaptive role-play, and a transparent roadmap.",
-    url: "https://talkflow.hicall.ai",
-    siteName: "TalkFlow",
+    url: "https://talkflo.hicall.ai",
+    siteName: "TalkFlo",
   },
 };
 

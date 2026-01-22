@@ -5,7 +5,7 @@ import { schemaTypes } from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'talkflow-blog',
+  title: 'talkflo-blog',
 
   projectId: '5rduxdqw',
   dataset: 'production',

@@ -1,11 +1,11 @@
-## TalkFlow marketing site
+## TalkFlo marketing site
 
 Next.js (App Router, TypeScript) + Tailwind v4 site with a Roadmap page that supports submissions, voting, and acceleration backed by Supabase (with mock fallback for local preview).
 
 ### Getting started
 
 ```bash
-cd talkflow-site
+cd talkflo-site
 npm install
 npm run dev
 # visit http://localhost:3000
