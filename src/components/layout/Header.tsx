@@ -12,7 +12,7 @@ import {
   MobileNavToggle,
   NavbarLogo,
   NavbarButton,
-} from "@/components/ui/resizable-navbar";
+} from "@/components/ui/ResizableNavbar";
 
 import { Sparkles } from "lucide-react";
 
