@@ -236,9 +236,10 @@ export const MobileNavMenu = ({
                         "absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl bg-slate-950 border border-white/10 shadow-2xl overflow-hidden",
                         className
                     )}
+                    id="mobile-nav-menu-aurora-v2"
                 >
                     <div className="absolute inset-0 z-0">
-                        <AuroraBackground className="h-full w-full opacity-60 pointer-events-none">
+                        <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
                             {/* No children needed, just background */}
                         </AuroraBackground>
                     </div>
