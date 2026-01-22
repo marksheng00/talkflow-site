@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+// Removed createPortal import - RE-ADDING IT FOR TRANSPARENT OVERLAY
 import { AuroraBackground } from "./AuroraBackground";
 
 interface NavItem {
@@ -37,7 +38,12 @@ interface NavItemsProps {
     onItemClick?: () => void;
 }
 
-
+interface MobileNavProps {
+    children: React.ReactNode;
+    className?: string;
+    visible?: boolean;
+    // Removed isMenuOpen prop
+}
 
 interface MobileNavHeaderProps {
     children: React.ReactNode;
@@ -83,8 +89,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     return (
         <motion.div
             ref={ref}
-            // Ensure Navbar has a high z-index to stay above the portal overlay if top-aligned
-            className={cn("fixed inset-x-0 top-0 z-[60] w-full", className)}
+            className={cn("fixed inset-x-0 top-0 z-40 w-full", className)}
         >
             {React.Children.map(children, (child) =>
                 React.isValidElement(child)
@@ -160,34 +165,21 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
     );
 };
 
-interface MobileNavProps {
-    children: React.ReactNode;
-    className?: string;
-    visible?: boolean;
-    isMenuOpen?: boolean;
-}
-
-
-
-export const MobileNav = ({ children, className, visible, isMenuOpen }: MobileNavProps) => {
-    const blurValue = (visible || isMenuOpen) ? "blur(12px)" : "blur(0px)";
-
-    // When menu is open, force the navbar to be "full width" and "top aligned" (reset to default state)
-    // regardless of scroll position. This ensures the menu panel aligns perfectly with the header.
-    const isPillState = visible && !isMenuOpen;
+export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
+    const blurValue = visible ? "blur(12px)" : "blur(0px)";
 
     return (
         <motion.div
             animate={{
                 backdropFilter: blurValue,
-                boxShadow: isPillState
+                boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
-                width: isPillState ? "92%" : "100%",
-                paddingRight: isPillState ? "16px" : "16px", // Keep padding consistent or adjust if needed
-                paddingLeft: isPillState ? "16px" : "16px",
-                borderRadius: isPillState ? "24px" : "0px",
-                y: isPillState ? 12 : 0,
+                width: visible ? "92%" : "100%",
+                paddingRight: visible ? "16px" : "0px",
+                paddingLeft: visible ? "16px" : "0px",
+                borderRadius: visible ? "24px" : "0px",
+                y: visible ? 12 : 0,
             }}
             style={{ WebkitBackdropFilter: blurValue }}
             transition={{
@@ -197,13 +189,10 @@ export const MobileNav = ({ children, className, visible, isMenuOpen }: MobileNa
             }}
             className={cn(
                 "relative mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-4 py-3 lg:hidden",
-                isPillState
+                visible
                     ? "bg-white/10 border border-white/20 shadow-lg backdrop-blur-xl backdrop-saturate-150"
-                    : "backdrop-blur-none", // You might want a background when menu is open?
-                className,
-                // When menu is open, we might want to enforce a background so the navbar text is legible 
-                // against the page content if it's transparent. 
-                isMenuOpen && "bg-[#020617]"
+                    : "backdrop-blur-none",
+                className
             )}
         >
             {children}
@@ -239,75 +228,64 @@ export const MobileNavMenu = ({
         setMounted(true);
     }, []);
 
-    if (!mounted) return null;
-
-    // "Perfect" Implementation using Portal for EVERYTHING that pops out.
-    // 1. Navbar stays in its own stacking context (z-60).
-    // 2. Portal renders directly to body (z-50).
-    // 3. Inside Portal:
-    //    a. Backdrop: fixed top-[72px] inset-x/bottom z-[30] (Below menu)
-    //    b. Menu: fixed top-[84px] z-[50] (Above backdrop)
-    // This allows the backdrop to blur the page content starting below the navbar,
-    // while the menu sits cleanly on top of the backdrop.
-    // Navbar visual region is NOT covered by the backdrop because backdrop starts at top-72px.
-
-    return createPortal(
+    return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[50] lg:hidden pointer-events-none">
+                <>
                     {/* 
-                       Backdrop Overlay 
-                       - Starts below the navbar (top-[72px]) to avoid blurring/covering the logo
-                       - pointer-events-auto so it catches clicks
+                      Transparent Portal Overlay:
+                      RENDERED AT BODY LEVEL to escape Navbar's transform context.
+                      This ensures the click area is truly full-screen.
+                      z-30 puts it below the Navbar (z-40) but above content.
                     */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed top-[72px] inset-x-0 bottom-0 bg-black/40 backdrop-blur-sm pointer-events-auto"
-                        onClick={onClose}
-                    />
+                    {mounted && createPortal(
+                        <div
+                            className="fixed inset-0 z-[30] bg-transparent"
+                            onClick={onClose}
+                        />,
+                        document.body
+                    )}
 
-                    {/* 
-                       Menu Panel
-                       - Positioned fixed relative to viewport, mimicking 'absolute' placement
-                       - Starts slightly below the overlay start for spacing (top-[84px])
-                       - pointer-events-auto so the menu itself is interactive
-                    */}
                     <motion.div
-                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
                         transition={{
                             type: "spring",
-                            stiffness: 250,
-                            damping: 30,
+                            stiffness: 200,
+                            damping: 50,
                         }}
                         className={cn(
-                            "fixed left-4 right-4 top-[84px] z-[60] rounded-3xl bg-[#020617] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden max-h-[70vh] flex flex-col pointer-events-auto",
+                            "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
                             className
                         )}
+                        id="mobile-nav-menu-aurora-v2"
                     >
                         <div className="absolute inset-0 z-0">
-                            <AuroraBackground className="h-full w-full opacity-30 pointer-events-none" />
+                            <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
+                                {/* No children needed, just background */}
+                            </AuroraBackground>
                         </div>
 
-                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6 overflow-y-auto">
+                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
                             {children}
                         </div>
                     </motion.div>
-                </div>
+                </>
             )}
-        </AnimatePresence>,
-        document.body
+        </AnimatePresence>
     );
 };
 
 export const MobileNavToggle = ({ isOpen, onClick }: MobileNavToggleProps) => {
-    return isOpen ? (
-        <X className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
-    ) : (
-        <Menu className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
+    return (
+        <div className="relative z-50">
+            {isOpen ? (
+                <X className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
+            ) : (
+                <Menu className="h-6 w-6 text-white cursor-pointer" onClick={onClick} />
+            )}
+        </div>
     );
 };
 
