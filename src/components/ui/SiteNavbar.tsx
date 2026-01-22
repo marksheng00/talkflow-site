@@ -240,7 +240,7 @@ export const MobileNavMenu = ({
                     */}
                     {mounted && createPortal(
                         <div
-                            className="fixed inset-0 z-[30] bg-transparent"
+                            className="fixed inset-0 z-[20] bg-transparent"
                             onClick={onClose}
                         />,
                         document.body
@@ -255,6 +255,7 @@ export const MobileNavMenu = ({
                             stiffness: 200,
                             damping: 50,
                         }}
+                        onClick={(e) => e.stopPropagation()}
                         className={cn(
                             "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
                             className
