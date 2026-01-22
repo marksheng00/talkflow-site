@@ -10,7 +10,8 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 // Removed createPortal import
 import { AuroraBackground } from "./AuroraBackground";
 
@@ -214,21 +215,38 @@ export const MobileNavHeader = ({
     );
 };
 
+
+
 export const MobileNavMenu = ({
     children,
     className,
     isOpen,
     onClose,
 }: MobileNavMenuProps) => {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     return (
         <AnimatePresence>
             {isOpen && (
                 <>
-                    {/* Transparent Overlay for click-outside closing */}
-                    <div
-                        className="fixed inset-0 z-40 bg-transparent"
-                        onClick={onClose}
-                    />
+                    {/* 
+                      Transparent Overlay via Portal:
+                      This portal guarantees the overlay is attached to the body, 
+                      escaping any stacking contexts or transform constraints 
+                      from the Navbar parent. This ensures the 'click-outside'
+                      area truly covers the entire viewport.
+                    */}
+                    {mounted && createPortal(
+                        <div
+                            className="fixed inset-0 z-[30] bg-transparent"
+                            onClick={onClose}
+                        />,
+                        document.body
+                    )}
 
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
@@ -239,6 +257,8 @@ export const MobileNavMenu = ({
                             stiffness: 200,
                             damping: 50,
                         }}
+                        // Keep z-index high enough to be above the portal overlay if needed, 
+                        // though they are in different contexts now.
                         className={cn(
                             "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
                             className
