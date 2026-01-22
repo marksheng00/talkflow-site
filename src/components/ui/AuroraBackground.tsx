@@ -1,7 +1,9 @@
 "use client";
 import React from "react";
+import { motion, MotionProps } from "framer-motion";
 
-type AuroraProps = React.HTMLAttributes<HTMLDivElement> & {
+type AuroraProps = Omit<React.HTMLAttributes<HTMLDivElement>, "style"> & MotionProps & {
+    style?: React.CSSProperties | any; // Loose typing to allow Motion values
     children?: React.ReactNode;
 };
 
@@ -11,7 +13,7 @@ export const AuroraBackground = ({
     ...props
 }: AuroraProps) => {
     return (
-        <div
+        <motion.div
             className={`relative flex flex-col bg-transparent ${className}`}
             {...props}
         >
@@ -39,6 +41,6 @@ export const AuroraBackground = ({
                 <div className="absolute -bottom-32 left-20 w-[500px] h-[500px] bg-emerald-500/25 rounded-full filter blur-[128px] animate-blob animation-delay-4000"></div>
             </div>
             <div className="relative z-10 w-full">{children}</div>
-        </div>
+        </motion.div>
     );
 };

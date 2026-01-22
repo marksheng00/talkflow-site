@@ -14,7 +14,7 @@ const columns = [
   {
     title: "Company",
     items: [
-      { label: "About", href: "#about" },
+      { label: "Vision", href: "/vision" },
       { label: "Careers", href: "mailto:hello@talkflo.ai" },
       { label: "Support", href: "mailto:support@talkflo.ai" },
     ],

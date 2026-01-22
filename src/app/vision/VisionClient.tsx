@@ -1,200 +1,280 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, Globe2, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Globe, Fingerprint, Activity, Zap } from "lucide-react";
 
-// --- Components ---
+// --- Micro Components ---
 
-function FadeInText({ children, delay = 0, className }: { children: React.ReactNode, delay?: number, className?: string }) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay, ease: "easeOut" }}
-            className={className}
-        >
-            {children}
-        </motion.div>
-    );
-}
+const PhaseBadge = ({ phase, label, active }: { phase: string; label: string; active?: boolean }) => (
+    <div className={cn(
+        "inline-flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all duration-500",
+        active
+            ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]"
+            : "border-white/10 bg-white/5 text-slate-500"
+    )}>
+        <span className="text-[10px] font-mono font-bold tracking-widest uppercase">{phase}</span>
+        <span className="w-px h-3 bg-current opacity-20" />
+        <span className="text-xs font-bold tracking-wide">{label}</span>
+    </div>
+);
 
-function GridBackground() {
-    return (
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20" />
+const GlowingOrb = ({ className }: { className?: string }) => (
+    <div className={cn("absolute rounded-full blur-[80px] opacity-30 mix-blend-screen pointer-events-none", className)} />
+);
+
+// --- Phase Visualizations ---
+
+const Phase1Visual = () => (
+    <div className="relative w-full h-[300px] md:h-[400px] border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden flex items-center justify-center group">
+        {/* Chat Interface Sim */}
+        <div className="w-[280px] space-y-4 opacity-80 transition-opacity duration-700 group-hover:opacity-100">
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-white/10 p-4 rounded-2xl rounded-tl-sm backdrop-blur-md border border-white/5"
+            >
+                <div className="h-2 w-3/4 bg-white/20 rounded-full animate-pulse" />
+                <div className="h-2 w-1/2 bg-white/20 rounded-full mt-2" />
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+                className="bg-emerald-500/20 border border-emerald-500/20 p-4 rounded-2xl rounded-br-sm backdrop-blur-md ml-auto"
+            >
+                <div className="h-2 w-2/3 bg-emerald-400/30 rounded-full ml-auto" />
+            </motion.div>
         </div>
-    );
-}
 
-function GlowingOrb({ className }: { className?: string }) {
+        {/* Connection Lines */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(circle_at_center,black_40%,transparent_100%)] opacity-40" />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent pointer-events-none" />
+    </div>
+);
+
+const Phase2Visual = () => (
+    <div className="relative w-full h-[300px] md:h-[400px] border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden flex items-center justify-center">
+        {/* Network / Simulation Graph */}
+        <div className="relative w-64 h-64">
+            {[...Array(3)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute inset-0 border border-purple-500/20 rounded-full"
+                    animate={{ rotate: 360, scale: [1, 1.05, 1] }}
+                    transition={{ duration: 10 + i * 5, repeat: Infinity, ease: "linear" }}
+                />
+            ))}
+            <div className="absolute inset-0 flex items-center justify-center">
+                <Globe className="h-16 w-16 text-purple-400/50" />
+            </div>
+            {/* Orbiting nodes */}
+            <motion.div
+                className="absolute top-0 left-1/2 w-4 h-4 bg-blue-400 rounded-full shadow-[0_0_15px_rgba(96,165,250,0.8)] z-10"
+                animate={{ rotate: 360 }}
+                style={{ originX: 0.5, originY: 8 }} // Orbit radius hack
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+                className="absolute top-0 left-1/2 w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.8)] z-10"
+                animate={{ rotate: -360 }}
+                style={{ originX: 0.5, originY: 6 }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            />
+        </div>
+
+        {/* Digital Noise Overlay */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+    </div>
+);
+
+const Phase3Visual = () => (
+    <div className="relative w-full h-[300px] md:h-[400px] border border-white/10 bg-white/[0.02] rounded-3xl overflow-hidden flex items-center justify-center">
+        {/* The Singularity / OS Orb */}
+        <motion.div
+            className="w-48 h-48 rounded-full bg-emerald-500/20 blur-xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4, repeat: Infinity }}
+        />
+        <motion.div
+            className="absolute w-32 h-32 rounded-full border border-emerald-400/50 bg-emerald-400/10 backdrop-blur-md flex items-center justify-center z-10"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        >
+            <Activity className="h-12 w-12 text-emerald-300" />
+        </motion.div>
+
+        {/* Pulse Ring */}
+        <motion.div
+            className="absolute w-32 h-32 rounded-full border border-emerald-400/30"
+            animate={{ scale: [1, 2], opacity: [1, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+        />
+
+        {/* Data streams */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020617_80%)] z-20" />
+    </div>
+);
+
+const VisionSection = ({
+    phase,
+    title,
+    description,
+    visual,
+    align = "left",
+    isFinal = false
+}: {
+    phase: string,
+    title: string,
+    description: string,
+    visual: React.ReactNode,
+    align?: "left" | "right",
+    isFinal?: boolean
+}) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { margin: "-20% 0px -20% 0px", once: true });
+
     return (
-        <div className={cn("absolute rounded-full blur-[100px] opacity-40 mix-blend-screen animate-pulse-slow", className)} />
+        <section ref={ref} className={cn("min-h-[80vh] flex flex-col justify-center py-20 relative", isFinal ? "min-h-screen" : "")}>
+            {/* Connecting Line */}
+            {!isFinal && (
+                <div className="absolute left-1/2 md:left-1/2 bottom-0 top-full w-px h-24 bg-gradient-to-b from-white/10 to-transparent -translate-x-1/2" />
+            )}
+
+            <div className={cn("grid md:grid-cols-2 gap-12 md:gap-24 items-center", align === "right" ? "md:grid-flow-dense" : "")}>
+                {/* Text Content */}
+                <motion.div
+                    initial={{ opacity: 0, x: align === 'left' ? -50 : 50 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className={cn(align === "right" ? "md:col-start-2" : "")}
+                >
+                    <PhaseBadge phase={phase.split(":")[0]} label={phase.split(":")[1]} active={isInView} />
+
+                    <h2 className="mt-8 text-4xl md:text-6xl font-heading font-bold text-white leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                        {title}
+                    </h2>
+                    <p className="mt-6 text-lg md:text-xl text-slate-400 leading-relaxed max-w-lg">
+                        {description}
+                    </p>
+
+                    {isFinal && (
+                        <div className="mt-12 group">
+                            <Link href="/signup" className="relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden rounded-full bg-white text-black font-bold text-lg hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(52,211,153,0.5)]">
+                                <span className="relative z-10 flex items-center gap-2">
+                                    Join the Revolution
+                                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity" />
+                            </Link>
+                        </div>
+                    )}
+                </motion.div>
+
+                {/* Visual */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                    animate={isInView ? { opacity: 1, scale: 1, filter: "blur(0px)" } : {}}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    className={cn(align === "right" ? "md:col-start-1" : "")}
+                >
+                    {visual}
+                </motion.div>
+            </div>
+        </section>
     );
-}
+};
 
 export default function VisionClient() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"]
-    });
-
-    const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1.2]);
-    const opacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
+    const { scrollYProgress } = useScroll();
+    const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
     return (
-        <div ref={containerRef} className="relative bg-[#020617] text-white selection:bg-emerald-500/30 selection:text-emerald-200 overflow-hidden">
-            <AuroraBackground className="fixed inset-0 z-0 opacity-30" />
-            <GridBackground />
+        <div className="relative bg-[#020617] text-white overflow-hidden selection:bg-emerald-500/30 min-h-screen">
+            <AuroraBackground className="fixed inset-0 z-0 opacity-20" style={{ y: backgroundY }} />
 
-            {/* Glowing Orbs for ambiance */}
-            <GlowingOrb className="top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-blue-600/20" />
-            <GlowingOrb className="bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-emerald-500/20 animation-delay-2000" />
+            {/* Ambient Lighting */}
+            <GlowingOrb className="top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-blue-600/10 animate-blob" />
+            <GlowingOrb className="top-[40%] right-[-20%] w-[50vw] h-[50vw] bg-purple-600/10 animate-blob animation-delay-2000" />
+            <GlowingOrb className="bottom-[-10%] left-[20%] w-[40vw] h-[40vw] bg-emerald-600/10 animate-blob animation-delay-4000" />
 
-            <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12">
+            <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 pb-32">
 
-                {/* --- Section 1: The Definition --- */}
-                <section className="min-h-screen flex flex-col justify-center items-center text-center relative pt-32 pb-20">
-                    <FadeInText delay={0.2}>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-xs font-mono tracking-widest text-emerald-400 uppercase">The Master Plan</span>
+                {/* Hero */}
+                <section className="min-h-screen flex flex-col items-center justify-center text-center relative">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className="space-y-8 max-w-5xl"
+                    >
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-4">
+                            <Zap className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                            <span className="text-xs font-mono tracking-widest text-slate-300 uppercase">Vision 2030</span>
                         </div>
-                    </FadeInText>
 
-                    <FadeInText delay={0.4} className="max-w-5xl mx-auto">
-                        <h1 className="font-heading text-5xl md:text-8xl font-bold tracking-tight leading-[0.9] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 mb-8">
-                            Communication <br className="hidden md:block" /> Operating System.
+                        <h1 className="font-heading text-6xl md:text-9xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 leading-[0.9]">
+                            Communication<br />
+                            <span className="text-white/20">OS.</span>
                         </h1>
-                    </FadeInText>
-
-                    <FadeInText delay={0.6} className="max-w-2xl mx-auto">
-                        <p className="text-xl md:text-2xl text-slate-400 leading-relaxed font-light">
-                            We are not just building an English tutor. We are engineering the <span className="text-white font-medium">fundamental layer</span> for human understanding.
+                        <p className="text-xl md:text-3xl text-slate-400 font-light max-w-3xl mx-auto leading-relaxed">
+                            From <span className="text-white font-medium">language tutor</span> to the <span className="text-white font-medium">fundamental layer of human understanding</span>.
                         </p>
-                    </FadeInText>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.5, duration: 1 }}
+                        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+                    >
+                        <span className="text-xs font-mono tracking-[0.2em] text-slate-600 uppercase">Scroll to Initialize</span>
+                        <motion.div
+                            className="w-[1px] h-16 bg-gradient-to-b from-slate-600 to-transparent"
+                            animate={{ scaleY: [0, 1, 0], originY: 0 }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                    </motion.div>
                 </section>
 
-                {/* --- Section 2: The Why (The Problem) --- */}
-                <section className="py-32 md:py-48 relative">
-                    <div className="grid md:grid-cols-2 gap-16 items-center">
-                        <FadeInText className="space-y-8">
-                            <h2 className="text-4xl md:text-5xl font-heading font-bold">The Friction of <span className="text-rose-400">Silence</span>.</h2>
-                            <div className="space-y-6 text-lg text-slate-400 leading-relaxed">
-                                <p>
-                                    Humanity's greatest asset is collaboration. Yet, we are segmented by <span className="text-white">invisible walls</span>.
-                                </p>
-                                <ul className="space-y-4 border-l-2 border-white/10 pl-6">
-                                    <li className="flex gap-4">
-                                        <div className="h-6 w-6 mt-1 flex-shrink-0 text-slate-500">01</div>
-                                        <div>
-                                            <strong className="text-white block mb-1">Language Barrier</strong>
-                                            Non-native speakers lose opportunities not because of ability, but expression.
-                                        </div>
-                                    </li>
-                                    <li className="flex gap-4">
-                                        <div className="h-6 w-6 mt-1 flex-shrink-0 text-slate-500">02</div>
-                                        <div>
-                                            <strong className="text-white block mb-1">Context Mismatch</strong>
-                                            Diverse backgrounds and information asymmetry lead to misunderstanding.
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </FadeInText>
+                {/* Scrollytelling Content */}
+                <div className="relative">
+                    {/* Vertical Guide Line */}
+                    <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent -translate-x-1/2 md:block hidden" />
 
-                        {/* Visual Metaphor for Friction */}
-                        <FadeInText delay={0.3} className="relative h-[400px] w-full rounded-3xl overflow-hidden border border-white/5 bg-white/[0.02]">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                {/* Abstract Noise Animation */}
-                                <div className="w-full h-full opacity-30 mix-blend-overlay" style={{
-                                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                                }} />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent" />
-                                <div className="relative z-10 text-center space-y-2">
-                                    <div className="text-6xl md:text-8xl font-bold text-white/5 tracking-tighter">ERROR</div>
-                                    <div className="text-6xl md:text-8xl font-bold text-white/5 tracking-tighter">LOST</div>
-                                    <div className="text-6xl md:text-8xl font-bold text-white/5 tracking-tighter">NOISE</div>
-                                </div>
-                            </div>
-                        </FadeInText>
-                    </div>
-                </section>
+                    {/* Phase 1: NOW */}
+                    <VisionSection
+                        phase="Phase 1: Interface"
+                        title="TalkFlow Now."
+                        description="We start by solving the immediate pain: Language Fluency. Our AI engine builds the bridge, correcting syntax, refining accent, and building confidence in a 1-on-1 environment."
+                        visual={<Phase1Visual />}
+                        align="left"
+                    />
 
-                {/* --- Section 3: The What (The Product Vision) --- */}
-                <section className="py-32 md:py-48 relative border-t border-white/5">
-                    <div className="text-center max-w-4xl mx-auto mb-20">
-                        <FadeInText>
-                            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6">TalkFlow is Step One.</h2>
-                            <p className="text-xl text-slate-400">
-                                We start by mastering the tool of language. Then, we simulate the world.
-                            </p>
-                        </FadeInText>
-                    </div>
+                    {/* Phase 2: NEXT */}
+                    <VisionSection
+                        phase="Phase 2: Simulation"
+                        title="Context Engine."
+                        description="Language without context is noise. We are building the Metaverse of Scenarios—infinite, generative role-plays (Interview, Negotiation, Dating) that prepare you for the unpredictability of the real world."
+                        visual={<Phase2Visual />}
+                        align="right"
+                    />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[
-                            {
-                                title: "Non-Linear Metaverse",
-                                desc: "Generative storylines where every choice matters. Learn by living through scenarios, not just reading them.",
-                                icon: Globe2,
-                                color: "text-blue-400"
-                            },
-                            {
-                                title: "Simulation Engine",
-                                desc: "Job interviews, sales pitches, medical consultations. Infinite, hyper-realistic role-play environments.",
-                                icon: BrainCircuit,
-                                color: "text-purple-400"
-                            },
-                            {
-                                title: "Digital Twin",
-                                desc: "The system learns about YOU. It records your knowledge, builds your context, and helps you articulate your specific expertise.",
-                                icon: Sparkles,
-                                color: "text-emerald-400"
-                            }
-                        ].map((item, i) => (
-                            <FadeInText key={i} delay={i * 0.15} className="group relative p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all hover:scale-[1.02] duration-500">
-                                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <item.icon className={cn("h-10 w-10 mb-6", item.color)} />
-                                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                                <p className="text-slate-400 leading-relaxed text-sm">
-                                    {item.desc}
-                                </p>
-                            </FadeInText>
-                        ))}
-                    </div>
-                </section>
-
-                {/* --- Section 4: The Final Goal --- */}
-                <section className="py-32 md:py-64 relative text-center">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/5 to-transparent pointer-events-none" />
-
-                    <FadeInText>
-                        <h2 className="text-[12vw] font-bold font-heading leading-none tracking-tighter text-white/10 select-none">
-                            SYMBIOSIS
-                        </h2>
-                    </FadeInText>
-
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <FadeInText delay={0.3} className="max-w-2xl px-6 pointer-events-auto">
-                            <h3 className="text-3xl md:text-5xl font-bold text-white mb-8">
-                                AI-Empowered Human Connection.
-                            </h3>
-                            <p className="text-lg text-slate-300 mb-10">
-                                Imagine a world where you can express your complex thoughts perfectly, in any language, to anyone. Where the machine handles the syntax, so you can focus on the <span className="text-emerald-400 font-bold">soul</span> of the message.
-                            </p>
-                            <Link href="/signup" className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform">
-                                Join the Revolution
-                                <ArrowRight className="h-5 w-5" />
-                            </Link>
-                        </FadeInText>
-                    </div>
-                </section>
+                    {/* Phase 3: FUTURE */}
+                    <VisionSection
+                        phase="Phase 3: Symbiosis"
+                        title="Communication OS."
+                        description="The ultimate goal: A digital extension of your mind. An OS that understands your intent and handles the transmission, erasing language barriers and cultural friction forever."
+                        visual={<Phase3Visual />}
+                        align="left"
+                        isFinal={true}
+                    />
+                </div>
 
             </div>
         </div>
