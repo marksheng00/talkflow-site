@@ -225,53 +225,70 @@ export const MobileNavMenu = ({
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
-    }, []);
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isOpen]);
 
     return (
         <AnimatePresence>
             {isOpen && (
                 <>
                     {/* 
-                      Transparent Portal Overlay:
-                      RENDERED AT BODY LEVEL to escape Navbar's transform context.
-                      This ensures the click area is truly full-screen.
-                      z-30 puts it below the Navbar (z-40) but above content.
+                      BACKDROP OVERLAY (z-60)
+                      - Portaled to body to ensure full screen coverage
+                      - Locks scroll (via useEffect)
+                      - Semi-transparent blur to indicate modal state
+                      - Clicking closes menu
                     */}
                     {mounted && createPortal(
-                        <div
-                            className="fixed inset-0 z-[20] bg-transparent"
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
                             onClick={onClose}
                         />,
                         document.body
                     )}
 
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 200,
-                            damping: 50,
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        className={cn(
-                            "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
-                            className
-                        )}
-                        id="mobile-nav-menu-aurora-v2"
-                    >
-                        <div className="absolute inset-0 z-0">
-                            <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
-                                {/* No children needed, just background */}
-                            </AuroraBackground>
-                        </div>
+                    {/* 
+                      MENU PANEL (z-70)
+                      - Also Portaled to body to sit ON TOP of the backdrop
+                      - Fixed positioning relative to viewport
+                      - Top offset ensures it sits below the visual navbar area
+                    */}
+                    {mounted && createPortal(
+                        <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 250,
+                                damping: 30,
+                            }}
+                            className={cn(
+                                "fixed left-4 right-4 top-24 z-[70] rounded-3xl bg-[#020617] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden max-h-[70vh] flex flex-col",
+                                className
+                            )}
+                            id="mobile-nav-menu-aurora-v2"
+                        >
+                            <div className="absolute inset-0 z-0">
+                                <AuroraBackground className="h-full w-full opacity-50 pointer-events-none" />
+                            </div>
 
-                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
-                            {children}
-                        </div>
-                    </motion.div>
+                            <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6 overflow-y-scroll max-h-[60vh]">
+                                {children}
+                            </div>
+                        </motion.div>,
+                        document.body
+                    )}
                 </>
             )}
         </AnimatePresence>
