@@ -18,7 +18,7 @@ export const PricingCard = ({ tier, isYearly }: PricingCardProps) => {
     return (
         <div
             className={cn(
-                "relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/[0.02] p-8 transition-all hover:bg-white/[0.04]",
+                "relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/[0.02] p-6 md:p-8 transition-all hover:bg-white/[0.04]",
                 tier.highlight
                     ? "border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.1)]"
                     : isUltra

@@ -69,7 +69,7 @@ export default function PricingPage() {
 
             {/* CTA Footer */}
             <section className="section-shell">
-                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-10 text-center">
+                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10 text-center">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,245,197,0.12),transparent_30%)]" />
                     <div className="relative z-10 flex flex-col items-center gap-6">
                         <h3 className="font-heading text-3xl font-semibold text-white md:text-4xl">
