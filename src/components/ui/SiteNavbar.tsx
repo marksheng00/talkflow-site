@@ -238,20 +238,7 @@ export const MobileNavMenu = ({
         <AnimatePresence>
             {isOpen && (
                 <>
-                    {/* 
-                      BACKDROP OVERLAY (In Flow)
-                      - Rendered as a sibling to the menu
-                      - Fixed positioning relative to viewport
-                      - z-[-1] puts it BEHIND the Navbar content (which creates the stacking context)
-                      - But because Navbar is z-40, this overlay covers the page content (z-0)
-                    */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[-1] bg-black/60 backdrop-blur-sm"
-                        onClick={onClose}
-                    />
+
 
                     {/* 
                       MENU PANEL (In Flow)
