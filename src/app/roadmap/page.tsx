@@ -599,12 +599,12 @@ export default function RoadmapPage() {
                         </div>
                     </button>
 
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-full">
                         {filteredIdeals.map(idea => (
                             <div
                                 key={idea.id}
                                 onClick={() => setSelectedIdea(idea)}
-                                className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer"
+                                className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer w-full min-w-0 overflow-hidden"
                             >
                                 <div className="space-y-1.5 min-w-0">
                                     <div className="flex items-start justify-between gap-4 min-w-0">
