@@ -1077,7 +1077,7 @@ export default function RoadmapPage() {
             {mounted && isBugModalOpen && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setIsBugModalOpen(false)} />
-                    <div className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto no-scrollbar">
+                    <div className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95">
                         <button
                             onClick={() => setIsBugModalOpen(false)}
                             className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
@@ -1090,75 +1090,29 @@ export default function RoadmapPage() {
                                 <Bug className="h-6 w-6 text-rose-500" />
                                 Report a Bug
                             </h2>
-                            <p className="text-sm text-slate-500 mt-1">Help us fix issues quickly.</p>
+                            <p className="text-sm text-slate-500 mt-1">Something not working? Let us know.</p>
                         </div>
 
                         <form onSubmit={handleBugSubmit} className="space-y-5">
                             {/* Title */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">What happened?</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">What went wrong?</label>
                                 <input
                                     required
                                     type="text"
-                                    placeholder="Brief summary of the issue"
+                                    placeholder="e.g. App crashes when I click..."
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
                                     value={bugForm.title}
                                     onChange={e => setBugForm({ ...bugForm, title: e.target.value })}
                                 />
                             </div>
 
-                            {/* Platform - Button Group */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
-                                <div className="flex gap-2">
-                                    {(['iOS', 'Android', 'Web'] as const).map(p => (
-                                        <button
-                                            key={p}
-                                            type="button"
-                                            onClick={() => setBugForm({ ...bugForm, platform: p })}
-                                            className={`flex-1 py-2.5 rounded-lg text-sm font-bold border transition-all ${bugForm.platform === p
-                                                ? "bg-rose-500/20 border-rose-500/50 text-rose-300"
-                                                : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"
-                                                }`}
-                                        >
-                                            {p}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Severity - Button Group */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Severity</label>
-                                <div className="flex gap-2">
-                                    {([
-                                        { value: 'Minor', icon: AlertCircle, label: 'Minor' },
-                                        { value: 'Major', icon: ShieldAlert, label: 'Major' },
-                                        { value: 'Blocker', icon: Bug, label: 'Critical' },
-                                    ] as const).map(s => (
-                                        <button
-                                            key={s.value}
-                                            type="button"
-                                            onClick={() => setBugForm({ ...bugForm, severity: s.value })}
-                                            className={`flex-1 py-2.5 rounded-lg text-sm font-bold border transition-all flex items-center justify-center gap-1.5 ${bugForm.severity === s.value
-                                                ? "bg-rose-500/20 border-rose-500/50 text-rose-300"
-                                                : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"
-                                                }`}
-                                        >
-                                            <s.icon className="h-4 w-4" />
-                                            <span className="hidden sm:inline">{s.label}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
                             {/* Description */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Describe the bug</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Tell us more (optional)</label>
                                 <textarea
-                                    required
                                     rows={4}
-                                    placeholder="What did you expect? What happened instead? How can we reproduce it?"
+                                    placeholder="Any details that might help us fix it faster..."
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
                                     value={bugForm.steps}
                                     onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}
@@ -1173,7 +1127,7 @@ export default function RoadmapPage() {
                                 {bugSubmitting ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
-                                    "Submit Bug Report"
+                                    "Report Bug"
                                 )}
                             </button>
                         </form>
