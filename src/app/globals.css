@@ -27,6 +27,7 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  overscroll-behavior-y: none;
 }
 
 html::-webkit-scrollbar {
@@ -43,6 +44,7 @@ body {
   letter-spacing: 0.01em;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  overscroll-behavior-y: none;
 }
 
 body::-webkit-scrollbar {

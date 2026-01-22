@@ -25,6 +25,7 @@ import {
     IdeaSubmission,
     BugSubmission
 } from "@/types/roadmap";
+import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import {
     listRoadmapItems,
     accelerateRoadmapItem,
@@ -312,7 +313,7 @@ export default function RoadmapPage() {
     }
 
     return (
-        <div className="min-h-screen pb-32 text-white">
+        <AuroraBackground className="min-h-screen pb-32 text-white">
             {/* Hero Section */}
             <section className="section-shell relative pt-32 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">
@@ -1098,6 +1099,6 @@ export default function RoadmapPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </AuroraBackground>
     );
 }

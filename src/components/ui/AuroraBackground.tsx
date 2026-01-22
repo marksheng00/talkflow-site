@@ -2,20 +2,20 @@
 import React from "react";
 
 type AuroraProps = React.HTMLAttributes<HTMLDivElement> & {
-  children?: React.ReactNode;
+    children?: React.ReactNode;
 };
 
 export const AuroraBackground = ({
-  children,
-  className = "",
-  ...props
+    children,
+    className = "",
+    ...props
 }: AuroraProps) => {
     return (
         <div
-            className={`relative flex flex-col items-center justify-center bg-slate-950 text-slate-950 transition-bg ${className}`}
+            className={`relative flex flex-col bg-transparent ${className}`}
             {...props}
         >
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none isolate">
                 <div
                     className={`
             absolute -inset-[10px] opacity-50
@@ -34,9 +34,9 @@ export const AuroraBackground = ({
           `}
                 ></div>
                 {/* Secondary moving blobs for more depth */}
-                <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/30 rounded-full mix-blend-multiply filter blur-[128px] animate-blob decoration-clone"></div>
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/30 rounded-full mix-blend-multiply filter blur-[128px] animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-32 left-20 w-[500px] h-[500px] bg-emerald-500/30 rounded-full mix-blend-multiply filter blur-[128px] animate-blob animation-delay-4000"></div>
+                <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/25 rounded-full filter blur-[128px] animate-blob decoration-clone"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/25 rounded-full filter blur-[128px] animate-blob animation-delay-2000"></div>
+                <div className="absolute -bottom-32 left-20 w-[500px] h-[500px] bg-emerald-500/25 rounded-full filter blur-[128px] animate-blob animation-delay-4000"></div>
             </div>
             <div className="relative z-10 w-full">{children}</div>
         </div>
