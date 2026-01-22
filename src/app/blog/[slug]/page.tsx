@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity.client'
-import { postBySlugQuery, postsQuery } from '@/lib/sanity.queries'
+import { postBySlugQuery, allPostSlugsQuery } from '@/lib/sanity.queries'
 import { AuroraBackground } from '@/components/ui/AuroraBackground'
 import { PortableText } from '@portabletext/react'
 import { urlFor } from '@/lib/sanity.image'
@@ -11,7 +11,7 @@ import { ArrowLeft } from 'lucide-react'
 
 // Generate static params for all posts
 export async function generateStaticParams() {
-    const posts = await client.fetch(postsQuery)
+    const posts = await client.fetch(allPostSlugsQuery)
     return posts.map((post: any) => ({
         slug: post.slug.current,
     }))

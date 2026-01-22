@@ -41,6 +41,13 @@ export const categoriesQuery = groq`
   }
 `
 
+// 获取所有文章的 slugs（用于 generateStaticParams）
+export const allPostSlugsQuery = groq`
+  *[_type == "post"] {
+    slug
+  }
+`
+
 export const postBySlugQuery = groq`
   *[_type == "post" && slug.current == $slug][0] {
     ${postFields},
