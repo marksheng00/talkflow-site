@@ -241,8 +241,11 @@ export const MobileNavMenu = ({
                       area truly covers the entire viewport.
                     */}
                     {mounted && createPortal(
-                        <div
-                            className="fixed inset-0 z-[30] bg-transparent"
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed top-[60px] inset-x-0 bottom-0 z-[30] bg-black/20 backdrop-blur-sm"
                             onClick={onClose}
                         />,
                         document.body
