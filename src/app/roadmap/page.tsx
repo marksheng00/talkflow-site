@@ -93,30 +93,68 @@ export default function RoadmapPage() {
 
     const [bugSubmitting, setBugSubmitting] = useState(false);
 
-    // Gantt Chart Scroll Ref
+    // Gantt Chart Drag-to-Scroll Logic
     const timelineRef = useRef<HTMLDivElement>(null);
+    const isDragging = useRef(false);
+    const startX = useRef(0);
+    const scrollLeftOnDown = useRef(0);
 
-    // Force horizontal scroll for wheel events (desktop only)
-    // Touch events work naturally for mobile
+    // Timeline Drag Interaction
     useLayoutEffect(() => {
         const el = timelineRef.current;
         if (!el) return;
 
-        const handleWheel = (e: WheelEvent) => {
-            // Only intercept if the timeline element is visible and we're not on touch device
-            // Check if it's a genuine wheel event (not touch-generated)
-            if (e.deltaMode === 0) { // Pixel-based (mouse wheel)
+        const handleMouseDown = (e: MouseEvent) => {
+            isDragging.current = true;
+            el.style.cursor = 'grabbing';
+            el.style.userSelect = 'none';
+            startX.current = e.pageX - el.offsetLeft;
+            scrollLeftOnDown.current = el.scrollLeft;
+        };
+
+        const handleMouseLeave = () => {
+            isDragging.current = false;
+            el.style.cursor = 'grab';
+            el.style.userSelect = 'auto';
+        };
+
+        const handleMouseUp = () => {
+            isDragging.current = false;
+            el.style.cursor = 'grab';
+            el.style.userSelect = 'auto';
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isDragging.current) return;
+            e.preventDefault();
+            const x = e.pageX - el.offsetLeft;
+            const walk = (x - startX.current) * 2; // scroll speed multiplier
+            el.scrollLeft = scrollLeftOnDown.current - walk;
+        };
+
+        // Prevent clicks when dragging
+        const handleClick = (e: MouseEvent) => {
+            if (Math.abs(scrollLeftOnDown.current - el.scrollLeft) > 5) {
                 e.preventDefault();
                 e.stopPropagation();
-                el.scrollLeft += e.deltaY + e.deltaX;
             }
         };
 
-        // Passive: false is required to allow preventDefault()
-        el.addEventListener("wheel", handleWheel, { passive: false });
+        el.addEventListener("mousedown", handleMouseDown);
+        el.addEventListener("mousemove", handleMouseMove);
+        el.addEventListener("mouseup", handleMouseUp);
+        el.addEventListener("mouseleave", handleMouseLeave);
+        el.addEventListener("click", handleClick, { capture: true });
+
+        // Initial cursor
+        el.style.cursor = 'grab';
 
         return () => {
-            el.removeEventListener("wheel", handleWheel);
+            el.removeEventListener("mousedown", handleMouseDown);
+            el.removeEventListener("mousemove", handleMouseMove);
+            el.removeEventListener("mouseup", handleMouseUp);
+            el.removeEventListener("mouseleave", handleMouseLeave);
+            el.removeEventListener("click", handleClick, { capture: true });
         };
     }, [activeTab, loading]);
 
@@ -477,7 +515,7 @@ export default function RoadmapPage() {
                         <div className="flex-1 overflow-hidden">
                             <div
                                 ref={timelineRef}
-                                className="overscroll-none overflow-x-auto overflow-y-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+                                className="overflow-x-hidden overflow-y-hidden cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] select-none"
                             >
                                 <div className="min-w-[8000px]">
                                     {/* Timeline Header */}
