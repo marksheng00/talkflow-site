@@ -51,9 +51,13 @@ export default function Footer() {
               <p className="font-heading text-xl font-bold tracking-wide text-white">
                 talkflo
               </p>
-              <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-slate-400 border border-slate-700/50 backdrop-blur-sm">
+              <Link
+                href="/changelog"
+                className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-slate-400 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-700/50 hover:text-white hover:border-slate-600 transition-colors cursor-pointer"
+                aria-label="View Changelog"
+              >
                 v{packageJson.version}
-              </span>
+              </Link>
             </div>
           </div>
         </div>
