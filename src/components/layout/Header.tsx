@@ -42,7 +42,7 @@ export default function Header() {
       </NavBody>
 
       {/* Mobile Navigation */}
-      <MobileNav>
+      <MobileNav isMenuOpen={isMobileMenuOpen}>
         <MobileNavHeader>
           <NavbarLogo />
           <MobileNavToggle

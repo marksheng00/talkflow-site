@@ -12,7 +12,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-// Removed createPortal import
 import { AuroraBackground } from "./AuroraBackground";
 
 interface NavItem {
@@ -38,11 +37,7 @@ interface NavItemsProps {
     onItemClick?: () => void;
 }
 
-interface MobileNavProps {
-    children: React.ReactNode;
-    className?: string;
-    visible?: boolean;
-}
+
 
 interface MobileNavHeaderProps {
     children: React.ReactNode;
@@ -88,7 +83,8 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     return (
         <motion.div
             ref={ref}
-            className={cn("fixed inset-x-0 top-0 z-40 w-full", className)}
+            // Ensure Navbar has a high z-index to stay above the portal overlay if top-aligned
+            className={cn("fixed inset-x-0 top-0 z-[60] w-full", className)}
         >
             {React.Children.map(children, (child) =>
                 React.isValidElement(child)
@@ -164,21 +160,34 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
     );
 };
 
-export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
-    const blurValue = visible ? "blur(12px)" : "blur(0px)";
+interface MobileNavProps {
+    children: React.ReactNode;
+    className?: string;
+    visible?: boolean;
+    isMenuOpen?: boolean;
+}
+
+
+
+export const MobileNav = ({ children, className, visible, isMenuOpen }: MobileNavProps) => {
+    const blurValue = (visible || isMenuOpen) ? "blur(12px)" : "blur(0px)";
+
+    // When menu is open, force the navbar to be "full width" and "top aligned" (reset to default state)
+    // regardless of scroll position. This ensures the menu panel aligns perfectly with the header.
+    const isPillState = visible && !isMenuOpen;
 
     return (
         <motion.div
             animate={{
                 backdropFilter: blurValue,
-                boxShadow: visible
+                boxShadow: isPillState
                     ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
-                width: visible ? "92%" : "100%",
-                paddingRight: visible ? "16px" : "0px",
-                paddingLeft: visible ? "16px" : "0px",
-                borderRadius: visible ? "24px" : "0px",
-                y: visible ? 12 : 0,
+                width: isPillState ? "92%" : "100%",
+                paddingRight: isPillState ? "16px" : "16px", // Keep padding consistent or adjust if needed
+                paddingLeft: isPillState ? "16px" : "16px",
+                borderRadius: isPillState ? "24px" : "0px",
+                y: isPillState ? 12 : 0,
             }}
             style={{ WebkitBackdropFilter: blurValue }}
             transition={{
@@ -188,10 +197,13 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
             }}
             className={cn(
                 "relative mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-4 py-3 lg:hidden",
-                visible
+                isPillState
                     ? "bg-white/10 border border-white/20 shadow-lg backdrop-blur-xl backdrop-saturate-150"
-                    : "backdrop-blur-none",
-                className
+                    : "backdrop-blur-none", // You might want a background when menu is open?
+                className,
+                // When menu is open, we might want to enforce a background so the navbar text is legible 
+                // against the page content if it's transparent. 
+                isMenuOpen && "bg-[#020617]"
             )}
         >
             {children}
@@ -215,8 +227,6 @@ export const MobileNavHeader = ({
     );
 };
 
-
-
 export const MobileNavMenu = ({
     children,
     className,
@@ -229,58 +239,67 @@ export const MobileNavMenu = ({
         setMounted(true);
     }, []);
 
-    return (
+    if (!mounted) return null;
+
+    // "Perfect" Implementation using Portal for EVERYTHING that pops out.
+    // 1. Navbar stays in its own stacking context (z-60).
+    // 2. Portal renders directly to body (z-50).
+    // 3. Inside Portal:
+    //    a. Backdrop: fixed top-[72px] inset-x/bottom z-[30] (Below menu)
+    //    b. Menu: fixed top-[84px] z-[50] (Above backdrop)
+    // This allows the backdrop to blur the page content starting below the navbar,
+    // while the menu sits cleanly on top of the backdrop.
+    // Navbar visual region is NOT covered by the backdrop because backdrop starts at top-72px.
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <>
+                <div className="fixed inset-0 z-[50] lg:hidden pointer-events-none">
                     {/* 
-                      Transparent Overlay via Portal:
-                      This portal guarantees the overlay is attached to the body, 
-                      escaping any stacking contexts or transform constraints 
-                      from the Navbar parent. This ensures the 'click-outside'
-                      area truly covers the entire viewport.
+                       Backdrop Overlay 
+                       - Starts below the navbar (top-[72px]) to avoid blurring/covering the logo
+                       - pointer-events-auto so it catches clicks
                     */}
-                    {mounted && createPortal(
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed top-[60px] inset-x-0 bottom-0 z-[30] bg-black/20 backdrop-blur-sm"
-                            onClick={onClose}
-                        />,
-                        document.body
-                    )}
-
                     <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed top-[72px] inset-x-0 bottom-0 bg-black/40 backdrop-blur-sm pointer-events-auto"
+                        onClick={onClose}
+                    />
+
+                    {/* 
+                       Menu Panel
+                       - Positioned fixed relative to viewport, mimicking 'absolute' placement
+                       - Starts slightly below the overlay start for spacing (top-[84px])
+                       - pointer-events-auto so the menu itself is interactive
+                    */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -20, scale: 0.95 }}
                         transition={{
                             type: "spring",
-                            stiffness: 200,
-                            damping: 50,
+                            stiffness: 250,
+                            damping: 30,
                         }}
-                        // Keep z-index high enough to be above the portal overlay if needed, 
-                        // though they are in different contexts now.
                         className={cn(
-                            "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto no-scrollbar",
+                            "fixed left-4 right-4 top-[84px] z-[60] rounded-3xl bg-[#020617] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden max-h-[70vh] flex flex-col pointer-events-auto",
                             className
                         )}
-                        id="mobile-nav-menu-aurora-v2"
                     >
                         <div className="absolute inset-0 z-0">
-                            <AuroraBackground className="h-full w-full opacity-50 pointer-events-none">
-                                {/* No children needed, just background */}
-                            </AuroraBackground>
+                            <AuroraBackground className="h-full w-full opacity-30 pointer-events-none" />
                         </div>
 
-                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6">
+                        <div className="relative z-10 flex w-full flex-col items-start justify-start gap-4 px-6 py-6 overflow-y-auto">
                             {children}
                         </div>
                     </motion.div>
-                </>
+                </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 
@@ -315,7 +334,7 @@ export const NavbarButton = ({
     children,
     className,
     variant = "primary",
-    as, // Destructure 'as' so it's not passed in ...props
+    as,
     ...props
 }: NavbarButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement> & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
     const baseStyles =
