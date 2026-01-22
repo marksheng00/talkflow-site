@@ -1,10 +1,10 @@
-# TalkFlo Blog - Sanity CMS 实施方案
+# talkflo Blog - Sanity CMS 实施方案
 
 ## 阶段 1: Sanity 项目初始化 (30分钟)
 
 ### 1.1 安装 Sanity CLI 并初始化项目
 ```bash
-cd /Users/marksheng/Cursor/TalkFlo/TalkFlo_OWS/talkflo-site
+cd /Users/marksheng/Cursor/talkflo/talkflo_OWS/talkflo-site
 npm install -g @sanity/cli
 npx sanity init --project-plan free --dataset production
 ```
@@ -322,7 +322,7 @@ import { schemaTypes } from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'TalkFlo Blog',
+  title: 'talkflo Blog',
 
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
@@ -421,7 +421,7 @@ import { AuroraBackground } from '@/components/ui/AuroraBackground'
 import BlogCard from '@/components/blog/BlogCard'
 
 export const metadata = {
-  title: 'Blog | TalkFlo - English Speaking Practice Tips',
+  title: 'Blog | talkflo - English Speaking Practice Tips',
   description: 'Learn how to improve your English speaking skills with AI-powered practice tips and insights.',
 }
 
@@ -439,7 +439,7 @@ export default async function BlogPage() {
       <section className="section-shell pt-24">
         <div className="mb-12">
           <h1 className="font-heading text-5xl font-bold text-white mb-4">
-            TalkFlo Blog
+            talkflo Blog
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl">
             Tips, insights, and stories to help you master English speaking with AI
@@ -481,7 +481,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!post) return {}
 
   return {
-    title: post.seo?.metaTitle || `${post.title} | TalkFlo Blog`,
+    title: post.seo?.metaTitle || `${post.title} | talkflo Blog`,
     description: post.seo?.metaDescription || post.excerpt,
     keywords: post.seo?.keywords,
     openGraph: {

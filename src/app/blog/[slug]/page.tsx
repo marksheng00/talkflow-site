@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!post) return {}
 
     return {
-        title: post.seo?.metaTitle || `${post.title} | TalkFlo Blog`,
+        title: post.seo?.metaTitle || `${post.title} | talkflo Blog`,
         description: post.seo?.metaDescription || post.excerpt,
         keywords: post.seo?.keywords,
         openGraph: {

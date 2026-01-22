@@ -279,12 +279,12 @@ export const NavbarLogo = () => {
         >
             <Image
                 src="/talkflo_logo.png"
-                alt="TalkFlo Logo"
+                alt="talkflo Logo"
                 width={48}
                 height={48}
                 className="h-12 w-12 rounded-lg object-contain"
             />
-            <span className="font-bold text-white tracking-wide text-xl">TalkFlo</span>
+            <span className="font-bold text-white tracking-wide text-xl">talkflo</span>
         </Link>
     );
 };

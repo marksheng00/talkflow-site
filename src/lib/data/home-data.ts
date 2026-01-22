@@ -52,7 +52,7 @@ export const highlights = [
 
 export const testimonials = [
     {
-        quote: "TalkFlo feels like a calm coach in my ear. I stopped overthinking and finally sound confident in interviews.",
+        quote: "talkflo feels like a calm coach in my ear. I stopped overthinking and finally sound confident in interviews.",
         name: "Andrea M.",
         title: "Product Manager relocating to Berlin",
     },

@@ -1,4 +1,4 @@
--- Schema for roadmap items used by the TalkFlo site
+-- Schema for roadmap items used by the talkflo site
 create extension if not exists "uuid-ossp";
 
 create table if not exists public.roadmap_items (

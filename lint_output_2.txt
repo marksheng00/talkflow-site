@@ -3,7 +3,7 @@
 > eslint
 
 
-/Users/marksheng/Cursor/TalkFlo/TalkFlo_OWS/talkflo-site/src/app/roadmap/page.tsx
+/Users/marksheng/Cursor/talkflo/talkflo_OWS/talkflo-site/src/app/roadmap/page.tsx
    47:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
@@ -12,7 +12,7 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-/Users/marksheng/Cursor/TalkFlo/TalkFlo_OWS/talkflo-site/src/app/roadmap/page.tsx:47:13
+/Users/marksheng/Cursor/talkflo/talkflo_OWS/talkflo-site/src/app/roadmap/page.tsx:47:13
   45 |     useEffect(() => {
   46 |         if (justBoosted) {
 > 47 |             setJustBoosted(false);
@@ -23,7 +23,7 @@ Calling setState synchronously within an effect body causes cascading renders th
   430:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @next/next/no-img-element
   537:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @next/next/no-img-element
 
-/Users/marksheng/Cursor/TalkFlo/TalkFlo_OWS/talkflo-site/src/components/roadmap/AnimatedCounter.tsx
+/Users/marksheng/Cursor/talkflo/talkflo_OWS/talkflo-site/src/components/roadmap/AnimatedCounter.tsx
   13:30  error    Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
@@ -32,7 +32,7 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-/Users/marksheng/Cursor/TalkFlo/TalkFlo_OWS/talkflo-site/src/components/roadmap/AnimatedCounter.tsx:13:30
+/Users/marksheng/Cursor/talkflo/talkflo_OWS/talkflo-site/src/components/roadmap/AnimatedCounter.tsx:13:30
   11 |             // Initial state is already handled by useState.
   12 |             // If props update to true later, we might want to force update:
 > 13 |             if (!isComplete) setIsComplete(true);

@@ -39,7 +39,7 @@ export default function Home() {
 
           {/* Subtitle */}
           <p className="mt-4 md:mt-6 max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-400 px-4">
-            TalkFlo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
+            talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
           </p>
 
           <AppDownloadButtons
@@ -403,7 +403,7 @@ export default function Home() {
                   {/* Terminal Content */}
                   <div className="p-4 font-mono text-xs space-y-1">
                     <p className="text-emerald-400">$ npm run dev</p>
-                    <p className="text-slate-500">&gt; Starting TalkFlo engine...</p>
+                    <p className="text-slate-500">&gt; Starting talkflo engine...</p>
                     <p className="text-indigo-300">✓ Voice model loaded (Gemini Flash 2.0)</p>
                     <p className="text-indigo-300">✓ ASR initialized (Deepgram Nova-2)</p>
                     <p className="text-slate-400">⚡ Avg latency: <span className="text-emerald-400 font-bold">187ms</span></p>
@@ -472,7 +472,7 @@ export default function Home() {
               role: "Medical Student",
               score: "IELTS 6.5 → 7.5",
               icon: "TrendingUp",
-              quote: "I used to mumble. TalkFlo forced me to speak up and clearly. It's like a gym for your voice.",
+              quote: "I used to mumble. talkflo forced me to speak up and clearly. It's like a gym for your voice.",
               color: "indigo"
             },
             {

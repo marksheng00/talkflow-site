@@ -1,4 +1,4 @@
-## TalkFlo marketing site
+## talkflo marketing site
 
 Next.js (App Router, TypeScript) + Tailwind v4 site with a Roadmap page that supports submissions, voting, and acceleration backed by Supabase (with mock fallback for local preview).
 

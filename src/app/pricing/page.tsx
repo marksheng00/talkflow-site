@@ -76,7 +76,7 @@ export default function PricingPage() {
                             Still not sure?
                         </h3>
                         <p className="text-base text-slate-200 max-w-xl">
-                            You can start using TalkFlo for free without a credit card. Upgrade
+                            You can start using talkflo for free without a credit card. Upgrade
                             only when you see the results.
                         </p>
                         <Link
