@@ -253,7 +253,7 @@ export const MobileNavMenu = ({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-[30] bg-black/40 backdrop-blur-sm"
+                            className="fixed inset-0 z-[20] bg-black/40 backdrop-blur-sm"
                             onClick={onClose}
                         />,
                         document.body
@@ -274,6 +274,7 @@ export const MobileNavMenu = ({
                             stiffness: 250,
                             damping: 30,
                         }}
+                        onClick={(e) => e.stopPropagation()}
                         className={cn(
                             "absolute left-0 w-full top-[calc(100%+8px)] z-50 rounded-2xl bg-[#020617] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden max-h-[80vh] flex flex-col",
                             className
