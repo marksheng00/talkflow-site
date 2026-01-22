@@ -104,7 +104,6 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         <motion.div
             animate={{
                 backdropFilter: blurValue,
-                WebkitBackdropFilter: blurValue,
                 boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
@@ -170,7 +169,6 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
         <motion.div
             animate={{
                 backdropFilter: blurValue,
-                WebkitBackdropFilter: blurValue,
                 boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
                     : "none",
