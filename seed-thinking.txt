@@ -1,0 +1,20 @@
+
+import { createClient } from '@sanity/client'
+
+const client = createClient({
+  projectId: '5rduxdqw',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: false,
+  // 这里的 token 需要是一个由于我们没有 token，这个脚本可能无法在没有登录的情况下运行写入操作
+  // 所以我们改用更简单的方法：指导用户在 sanity studio 里创建，或者如果用户有 token 我们可以用。
+  // 但既然是本地开发环境，我们可以尝试用 sanity cli 的 exec 功能。
+})
+
+// 实际上，没有 Auth Token 我们无法通过 API 写入数据。
+// 最好的方式是使用 `sanity-exec` 或者直接在 Studio 里创建。
+// 既然用户让我帮他测试，我可以生成一个 dataset export 文件供导入，或者引导用户更简单地操作。
+
+// 修正方案：
+// 我将创建一个简单的 dataset.ndjson 文件，然后用 sanity import 命令导入。
+// 这是最快且不需要手动鉴权的方式（只要 CLI 登录了）。
