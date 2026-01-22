@@ -41,11 +41,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${heading.variable} ${body.variable} antialiased`}>
+      <body className={`${heading.variable} ${body.variable} antialiased overflow-x-hidden`}>
         <FluentBackground />
-        <div className="relative z-10 min-h-screen bg-transparent text-slate-100 selection:bg-emerald-500/30">
+        <div className="relative z-10 min-h-screen bg-transparent text-slate-100 selection:bg-emerald-500/30 overflow-x-hidden">
           <Header />
-          <main>{children}</main>
+          <main className="overflow-x-hidden">{children}</main>
           <Footer />
         </div>
       </body>

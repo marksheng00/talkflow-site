@@ -362,7 +362,7 @@ export default function RoadmapPage() {
             <section className="section-shell relative pt-24 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">
                     {/* Header */}
-                    <h1 className="font-heading text-5xl font-bold tracking-tight text-white md:text-6xl md:whitespace-nowrap">
+                    <h1 className="font-heading text-4xl font-bold tracking-tight text-white md:text-6xl">
                         Building in public.
                     </h1>
 
@@ -371,29 +371,29 @@ export default function RoadmapPage() {
 
 
                         {/* Tab Switcher */}
-                        <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-fit">
+                        <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-full max-w-full md:w-fit overflow-x-auto no-scrollbar">
                             <button
                                 onClick={() => setActiveTab("roadmap")}
-                                className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-shrink-0 px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
                                 Product Roadmap
                             </button>
                             <button
                                 onClick={() => setActiveTab("ideas")}
-                                className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-shrink-0 px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
                                 Community Ideas
                             </button>
                             <button
                                 onClick={() => setActiveTab("bugs")}
-                                className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-shrink-0 px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
                                 Bug Tracker
                             </button>
                         </div>
 
                         {/* Category Filter */}
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 max-w-full">
                             {categories.map(cat => {
                                 const categoryButtonColors = {
                                     All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
@@ -585,16 +585,16 @@ export default function RoadmapPage() {
                 <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <button
                         onClick={() => setIsSubmitModalOpen(true)}
-                        className="group relative flex flex-row items-center gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 mb-8 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
+                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 mb-8 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
                     >
-                        <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                             <Lightbulb className="h-5 w-5 text-emerald-400" />
                         </div>
-                        <div className="text-left">
-                            <p className="text-sm font-bold text-slate-200 group-hover:text-white">Submit New Idea</p>
-                            <p className="text-xs text-slate-500">Have a feature request? Add it to the pool.</p>
+                        <div className="text-left min-w-0 flex-1">
+                            <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Submit New Idea</p>
+                            <p className="text-xs text-slate-500 truncate">Have a feature request? Add it to the pool.</p>
                         </div>
-                        <div className="ml-auto pr-2">
+                        <div className="ml-auto pl-2 flex-shrink-0">
                             <Plus className="h-5 w-5 text-slate-600 group-hover:text-emerald-400 transition-colors" />
                         </div>
                     </button>
@@ -606,9 +606,9 @@ export default function RoadmapPage() {
                                 onClick={() => setSelectedIdea(idea)}
                                 className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer"
                             >
-                                <div className="space-y-1.5">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-emerald-400 transition-colors pr-8 truncate">
+                                <div className="space-y-1.5 min-w-0">
+                                    <div className="flex items-start justify-between gap-4 min-w-0">
+                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-emerald-400 transition-colors pr-8 truncate min-w-0">
                                             {idea.title}
                                         </h4>
                                     </div>
@@ -667,16 +667,16 @@ export default function RoadmapPage() {
                 <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <button
                         onClick={() => setIsBugModalOpen(true)}
-                        className="group relative flex flex-row items-center gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 mb-8 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
+                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 mb-8 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
                     >
-                        <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                             <Bug className="h-5 w-5 text-rose-400" />
                         </div>
-                        <div className="text-left">
-                            <p className="text-sm font-bold text-slate-200 group-hover:text-white">Report a Bug</p>
-                            <p className="text-xs text-slate-500">Found something broken? Help us squash it.</p>
+                        <div className="text-left min-w-0 flex-1">
+                            <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Report a Bug</p>
+                            <p className="text-xs text-slate-500 truncate">Found something broken? Help us squash it.</p>
                         </div>
-                        <div className="ml-auto pr-2">
+                        <div className="ml-auto pl-2 flex-shrink-0">
                             <Plus className="h-5 w-5 text-slate-600 group-hover:text-rose-400 transition-colors" />
                         </div>
                     </button>
@@ -687,9 +687,9 @@ export default function RoadmapPage() {
                                 key={bug.id}
                                 className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg"
                             >
-                                <div className="space-y-1.5">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate">
+                                <div className="space-y-1.5 min-w-0">
+                                    <div className="flex items-start justify-between gap-4 min-w-0">
+                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
                                             {bug.title}
                                         </h4>
                                     </div>
