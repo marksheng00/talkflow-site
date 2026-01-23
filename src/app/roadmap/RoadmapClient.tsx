@@ -362,7 +362,7 @@ export default function RoadmapClient() {
             <section className="section-shell relative pt-20 md:pt-32 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">
                     {/* Header */}
-                    <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[0.9]">
+                    <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
                             Building in public.
                         </span>

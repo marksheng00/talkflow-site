@@ -51,7 +51,7 @@ export default function Home() {
         <div className="section-shell relative z-10 flex flex-col items-center text-center">
 
           {/* Main Title */}
-          <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[0.9]">
+          <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
             Simple, Fast,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
               Fluent.

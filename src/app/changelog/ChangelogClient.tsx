@@ -101,7 +101,7 @@ export default function ChangelogClient() {
             <section className="relative pt-20 md:pt-32 pb-16 section-shell max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-20 space-y-4">
-                    <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[0.9]">
+                    <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-white to-amber-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
                             Changelog.
                         </span>
