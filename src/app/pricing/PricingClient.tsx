@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
-import { pricingTiers, pricingFaqs } from "@/lib/data/pricing-data";
+import { pricingTiers, pricingFaqs, BillingCycle } from "@/lib/data/pricing-data";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingToggle } from "@/components/pricing/PricingToggle";
 import Link from "next/link";
 
 export default function PricingClient() {
-    const [isYearly, setIsYearly] = useState(true);
+    const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
@@ -26,7 +26,7 @@ export default function PricingClient() {
 
                 {/* Toggle */}
                 <div className="mt-10">
-                    <PricingToggle isYearly={isYearly} onChange={setIsYearly} />
+                    <PricingToggle billingCycle={billingCycle} onChange={setBillingCycle} />
                 </div>
             </section>
 
@@ -34,7 +34,7 @@ export default function PricingClient() {
             <section className="section-shell mb-32">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3 max-w-6xl mx-auto">
                     {pricingTiers.map((tier) => (
-                        <PricingCard key={tier.name} tier={tier} isYearly={isYearly} />
+                        <PricingCard key={tier.name} tier={tier} billingCycle={billingCycle} />
                     ))}
                 </div>
             </section>

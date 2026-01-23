@@ -1,17 +1,17 @@
 "use client";
 
-import { PricingTier } from "@/lib/data/pricing-data";
+import { PricingTier, BillingCycle } from "@/lib/data/pricing-data";
 import { cn } from "@/lib/utils";
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 interface PricingCardProps {
     tier: PricingTier;
-    isYearly: boolean;
+    billingCycle: BillingCycle;
 }
 
-export const PricingCard = ({ tier, isYearly }: PricingCardProps) => {
-    const price = isYearly ? tier.price.yearly : tier.price.monthly;
+export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
+    const price = tier.price[billingCycle];
     const isCustom = tier.name === "Team"; // Keep for legacy check support if needed, though we renamed to Ultra
     const isUltra = tier.name === "Ultra";
 

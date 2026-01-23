@@ -1,9 +1,12 @@
 // Icons are removed as they are not used in data file directly
+export type BillingCycle = "monthly" | "quarterly" | "yearly";
+
 export interface PricingTier {
     name: string;
     description: string;
     price: {
         monthly: number;
+        quarterly: number;
         yearly: number;
     };
     highlight?: boolean;
@@ -17,6 +20,7 @@ export const pricingTiers: PricingTier[] = [
         description: "Perfect for getting started with AI speaking practice.",
         price: {
             monthly: 0,
+            quarterly: 0,
             yearly: 0,
         },
         features: [
@@ -33,6 +37,7 @@ export const pricingTiers: PricingTier[] = [
         description: "Accelerate your fluency with unlimited coaching.",
         price: {
             monthly: 19,
+            quarterly: 17,
             yearly: 15,
         },
         highlight: true,
@@ -51,6 +56,7 @@ export const pricingTiers: PricingTier[] = [
         description: "The ultimate preparation for IELTS bandwidth 8+.",
         price: {
             monthly: 49,
+            quarterly: 44,
             yearly: 39,
         },
         features: [

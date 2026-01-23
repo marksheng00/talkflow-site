@@ -1,49 +1,67 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion } from "motion/react";
+import { BillingCycle } from "@/lib/data/pricing-data";
 
 interface PricingToggleProps {
-    isYearly: boolean;
-    onChange: (isYearly: boolean) => void;
+    billingCycle: BillingCycle;
+    onChange: (cycle: BillingCycle) => void;
 }
 
-export const PricingToggle = ({ isYearly, onChange }: PricingToggleProps) => {
+export const PricingToggle = ({ billingCycle, onChange }: PricingToggleProps) => {
+    // Helper to get button style based on active state (matching RoadmapClient)
+    const getButtonStyle = (isActive: boolean) => cn(
+        "relative flex-1 md:flex-initial px-4 md:px-8 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center flex items-center justify-center gap-2",
+        isActive
+            ? "bg-white text-slate-950 shadow-lg"
+            : "text-slate-400 hover:text-white hover:bg-white/5"
+    );
+
     return (
-        <div className="flex items-center justify-center gap-4">
-            <span
-                className={cn(
-                    "text-sm font-medium transition-colors cursor-pointer",
-                    !isYearly ? "text-white" : "text-slate-500"
-                )}
-                onClick={() => onChange(false)}
-            >
-                Monthly
-            </span>
+        <div className="flex items-center justify-center">
+            <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-full md:w-fit">
+                {/* Monthly Button */}
+                <button
+                    onClick={() => onChange("monthly")}
+                    className={getButtonStyle(billingCycle === "monthly")}
+                >
+                    Monthly
+                </button>
 
-            <div
-                className="relative h-8 w-14 cursor-pointer rounded-full bg-white/10 p-1"
-                onClick={() => onChange(!isYearly)}
-            >
-                <motion.div
-                    className="h-6 w-6 rounded-full bg-white shadow-sm"
-                    animate={{ x: isYearly ? 24 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                />
+                {/* Quarterly Button */}
+                <button
+                    onClick={() => onChange("quarterly")}
+                    className={getButtonStyle(billingCycle === "quarterly")}
+                >
+                    Quarterly
+                    {/* Badge -10% */}
+                    <span className={cn(
+                        "rounded-md px-1.5 py-0.5 text-[9px] font-bold border transition-colors hidden md:inline-block",
+                        billingCycle === "quarterly"
+                            ? "bg-slate-950 text-white border-slate-800"
+                            : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    )}>
+                        -10%
+                    </span>
+                </button>
+
+                {/* Yearly Button */}
+                <button
+                    onClick={() => onChange("yearly")}
+                    className={getButtonStyle(billingCycle === "yearly")}
+                >
+                    Yearly
+                    {/* Badge -20% */}
+                    <span className={cn(
+                        "rounded-md px-1.5 py-0.5 text-[9px] font-bold border transition-colors hidden md:inline-block",
+                        billingCycle === "yearly"
+                            ? "bg-slate-950 text-white border-slate-800"
+                            : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    )}>
+                        -20%
+                    </span>
+                </button>
             </div>
-
-            <span
-                className={cn(
-                    "text-sm font-medium transition-colors cursor-pointer flex items-center gap-2",
-                    isYearly ? "text-white" : "text-slate-500"
-                )}
-                onClick={() => onChange(true)}
-            >
-                Yearly
-                <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/20">
-                    Save 20%
-                </span>
-            </span>
         </div>
     );
 };
