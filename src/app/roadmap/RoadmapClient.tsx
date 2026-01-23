@@ -199,6 +199,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     }, [bugs]);
 
     // Handlers
+    // Handlers
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSubmitting(true);
@@ -209,14 +210,24 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 category: form.category || undefined,
             };
 
-            const newItem = await createIdea(submission);
+            const response = await fetch("/api/roadmap/ideas", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(submission),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit idea");
+            }
+
+            const newItem = await response.json();
             setIdeals(prev => [newItem, ...prev]);
             setIsSubmitModalOpen(false);
             setForm({ title: "", description: "", category: "" });
             setActiveTab("ideas");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to submit idea", error);
-            // @ts-expect-error - Error might be generic object
             alert(`Failed to create idea: ${error?.message || "Ensure title > 6 chars"}`);
         } finally {
             setSubmitting(false);
@@ -236,14 +247,24 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 platform: bugForm.platform,
             };
 
-            const newItem = await createBugReport(submission);
+            const response = await fetch("/api/roadmap/bugs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(submission),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit bug");
+            }
+
+            const newItem = await response.json();
             setBugs(prev => [newItem, ...prev]);
             setIsBugModalOpen(false);
             setBugForm({ title: "", steps: "", expected: "", actual: "", severity: "Minor", platform: "Web" });
             setActiveTab("bugs");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to submit bug", error);
-            // @ts-expect-error - Error might be generic object
             alert(`Failed to report bug: ${error?.message || "Ensure title > 6 chars"}`);
         } finally {
             setBugSubmitting(false);
