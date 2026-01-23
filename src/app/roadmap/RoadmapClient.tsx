@@ -387,7 +387,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white overflow-x-hidden">
             {/* Hero + Content Section */}
-            <section className="section-block pb-4 md:pb-6">
+            <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-tight items-center text-center">
                     <div className="section-heading">
                         <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
@@ -465,138 +465,138 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 {activeTab === "roadmap" && (
                     <div className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight">
 
-                    {/* Unified Gantt Chart View */}
-                    <div className="flex gap-4 md:gap-6">
-                        {/* LEFT: Fixed Task Column */}
-                        <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
-                            <div className="mb-6 pb-4 border-b border-white/10">
-                                <div className="text-center">
-                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Task Overview</span>
-                                    <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
+                        {/* Unified Gantt Chart View */}
+                        <div className="flex gap-4 md:gap-6">
+                            {/* LEFT: Fixed Task Column */}
+                            <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
+                                <div className="mb-6 pb-4 border-b border-white/10">
+                                    <div className="text-center">
+                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Task Overview</span>
+                                        <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="space-y-3">
-                                {filteredTasks
-                                    .filter(task => task.startDate && task.targetDate)
-                                    .map((task) => (
-                                        <div key={task.id} className="h-12 flex items-center">
-                                            <button
-                                                onClick={() => setSelectedTask(task)}
-                                                className="w-full h-full flex items-center text-left hover:bg-white/5 rounded-lg px-2 transition-colors group"
-                                            >
-                                                <div className="space-y-1">
-                                                    <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
-                                                        {task.title}
-                                                    </h4>
-                                                    <div className="hidden md:flex items-center gap-2">
-                                                        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
-                                                            {task.category}
-                                                        </span>
-                                                        <div className="flex items-center gap-1 text-slate-600">
-                                                            <Zap className="h-2.5 w-2.5" />
-                                                            <span className="text-[9px] font-medium">{task.accelerations}</span>
+                                <div className="space-y-3">
+                                    {filteredTasks
+                                        .filter(task => task.startDate && task.targetDate)
+                                        .map((task) => (
+                                            <div key={task.id} className="h-12 flex items-center">
+                                                <button
+                                                    onClick={() => setSelectedTask(task)}
+                                                    className="w-full h-full flex items-center text-left hover:bg-white/5 rounded-lg px-2 transition-colors group"
+                                                >
+                                                    <div className="space-y-1">
+                                                        <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
+                                                            {task.title}
+                                                        </h4>
+                                                        <div className="hidden md:flex items-center gap-2">
+                                                            <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
+                                                                {task.category}
+                                                            </span>
+                                                            <div className="flex items-center gap-1 text-slate-600">
+                                                                <Zap className="h-2.5 w-2.5" />
+                                                                <span className="text-[9px] font-medium">{task.accelerations}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
-
-                        {/* RIGHT: Scrollable Timeline */}
-                        <div className="flex-1 overflow-hidden">
-                            <div
-                                ref={timelineRef}
-                                className="overflow-x-auto md:overflow-x-hidden overflow-y-hidden cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] select-none"
-                            >
-                                <div className="min-w-[8000px]">
-                                    {/* Timeline Header */}
-                                    <div className="mb-6 pb-4 border-b border-white/10 flex">
-                                        {Array.from({ length: 97 }, (_, i) => {
-                                            const date = new Date(2024, i, 1);
-                                            const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-                                            const year = date.getFullYear();
-                                            return (
-                                                <div key={i} className="flex-1 text-center min-w-[80px]">
-                                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{monthName}</span>
-                                                    {i % 12 === 0 && <div className="text-[9px] text-slate-600 mt-0.5">{year}</div>}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-
-                                    {/* Task Bars */}
-                                    <div className="relative space-y-3">
-                                        {mounted && todayPercent !== null && todayPercent >= 0 && todayPercent <= 100 && (
-                                            <div
-                                                className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
-                                                style={{ left: `${todayPercent.toFixed(4)}%` }}
-                                            />
-                                        )}
-
-                                        {/* Grid Lines */}
-                                        {Array.from({ length: 97 }, (_, i) => (
-                                            <div
-                                                key={i}
-                                                className="absolute -top-6 -bottom-6 border-l border-white/[0.03] pointer-events-none"
-                                                style={{ left: `${(i / 97) * 100}%` }}
-                                            />
+                                                </button>
+                                            </div>
                                         ))}
+                                </div>
+                            </div>
 
-                                        {filteredTasks
-                                            .filter(task => task.startDate && task.targetDate)
-                                            .map((task) => {
-                                                const startDate = new Date(task.startDate!);
-                                                const endDate = new Date(task.targetDate!);
-                                                const timelineStart = new Date('2024-01-01');
-                                                const timelineEnd = new Date('2032-01-31');
-
-                                                const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                                const taskStartOffset = (startDate.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                                const taskDuration = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
-
-                                                const leftPercent = (taskStartOffset / totalDays) * 100;
-                                                const widthPercent = (taskDuration / totalDays) * 100;
-
-                                                const categoryColors = {
-                                                    Feature: { border: 'border-blue-600/40', bg: 'bg-blue-700/10', progress: 'bg-blue-600/30', text: 'text-blue-200' },
-                                                    Content: { border: 'border-purple-600/40', bg: 'bg-purple-700/10', progress: 'bg-purple-600/30', text: 'text-purple-200' },
-                                                    "AI Core": { border: 'border-emerald-600/40', bg: 'bg-emerald-700/10', progress: 'bg-emerald-600/30', text: 'text-emerald-200' },
-                                                    UIUX: { border: 'border-amber-600/40', bg: 'bg-amber-700/10', progress: 'bg-amber-600/30', text: 'text-amber-200' }
-                                                };
-
-                                                const colors = categoryColors[task.category as keyof typeof categoryColors] || { border: 'border-slate-600/40', bg: 'bg-slate-700/10', progress: 'bg-slate-600/20', text: 'text-slate-300' };
-
+                            {/* RIGHT: Scrollable Timeline */}
+                            <div className="flex-1 overflow-hidden">
+                                <div
+                                    ref={timelineRef}
+                                    className="overflow-x-auto md:overflow-x-hidden overflow-y-hidden cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] select-none"
+                                >
+                                    <div className="min-w-[8000px]">
+                                        {/* Timeline Header */}
+                                        <div className="mb-6 pb-4 border-b border-white/10 flex">
+                                            {Array.from({ length: 97 }, (_, i) => {
+                                                const date = new Date(2024, i, 1);
+                                                const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+                                                const year = date.getFullYear();
                                                 return (
-                                                    <div key={task.id} className="relative h-12 flex items-center">
-                                                        <button
-                                                            onClick={() => setSelectedTask(task)}
-                                                            className={`absolute h-12 rounded-lg border ${colors.border} ${colors.bg} backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg`}
-                                                            style={{
-                                                                left: `${leftPercent}%`,
-                                                                width: `${widthPercent}%`,
-                                                                minWidth: '100px'
-                                                            }}
-                                                        >
-                                                            <div className="absolute inset-0 overflow-hidden rounded-lg">
-                                                                <div
-                                                                    className={`absolute bottom-0 left-0 h-[2px] ${colors.progress.replace('/30', '/60')} transition-all`}
-                                                                    style={{ width: `${task.progress || 0}%` }}
-                                                                />
-                                                            </div>
-                                                            <div className="relative h-full flex items-center justify-between px-3 z-10">
-                                                                <span className={`text-[11px] font-semibold ${colors.text} truncate`}>
-                                                                    {task.progress}%
-                                                                </span>
-                                                            </div>
-                                                        </button>
+                                                    <div key={i} className="flex-1 text-center min-w-[80px]">
+                                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{monthName}</span>
+                                                        {i % 12 === 0 && <div className="text-[9px] text-slate-600 mt-0.5">{year}</div>}
                                                     </div>
                                                 );
                                             })}
+                                        </div>
+
+                                        {/* Task Bars */}
+                                        <div className="relative space-y-3">
+                                            {mounted && todayPercent !== null && todayPercent >= 0 && todayPercent <= 100 && (
+                                                <div
+                                                    className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
+                                                    style={{ left: `${todayPercent.toFixed(4)}%` }}
+                                                />
+                                            )}
+
+                                            {/* Grid Lines */}
+                                            {Array.from({ length: 97 }, (_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="absolute -top-6 -bottom-6 border-l border-white/[0.03] pointer-events-none"
+                                                    style={{ left: `${(i / 97) * 100}%` }}
+                                                />
+                                            ))}
+
+                                            {filteredTasks
+                                                .filter(task => task.startDate && task.targetDate)
+                                                .map((task) => {
+                                                    const startDate = new Date(task.startDate!);
+                                                    const endDate = new Date(task.targetDate!);
+                                                    const timelineStart = new Date('2024-01-01');
+                                                    const timelineEnd = new Date('2032-01-31');
+
+                                                    const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+                                                    const taskStartOffset = (startDate.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+                                                    const taskDuration = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+
+                                                    const leftPercent = (taskStartOffset / totalDays) * 100;
+                                                    const widthPercent = (taskDuration / totalDays) * 100;
+
+                                                    const categoryColors = {
+                                                        Feature: { border: 'border-blue-600/40', bg: 'bg-blue-700/10', progress: 'bg-blue-600/30', text: 'text-blue-200' },
+                                                        Content: { border: 'border-purple-600/40', bg: 'bg-purple-700/10', progress: 'bg-purple-600/30', text: 'text-purple-200' },
+                                                        "AI Core": { border: 'border-emerald-600/40', bg: 'bg-emerald-700/10', progress: 'bg-emerald-600/30', text: 'text-emerald-200' },
+                                                        UIUX: { border: 'border-amber-600/40', bg: 'bg-amber-700/10', progress: 'bg-amber-600/30', text: 'text-amber-200' }
+                                                    };
+
+                                                    const colors = categoryColors[task.category as keyof typeof categoryColors] || { border: 'border-slate-600/40', bg: 'bg-slate-700/10', progress: 'bg-slate-600/20', text: 'text-slate-300' };
+
+                                                    return (
+                                                        <div key={task.id} className="relative h-12 flex items-center">
+                                                            <button
+                                                                onClick={() => setSelectedTask(task)}
+                                                                className={`absolute h-12 rounded-lg border ${colors.border} ${colors.bg} backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg`}
+                                                                style={{
+                                                                    left: `${leftPercent}%`,
+                                                                    width: `${widthPercent}%`,
+                                                                    minWidth: '100px'
+                                                                }}
+                                                            >
+                                                                <div className="absolute inset-0 overflow-hidden rounded-lg">
+                                                                    <div
+                                                                        className={`absolute bottom-0 left-0 h-[2px] ${colors.progress.replace('/30', '/60')} transition-all`}
+                                                                        style={{ width: `${task.progress || 0}%` }}
+                                                                    />
+                                                                </div>
+                                                                <div className="relative h-full flex items-center justify-between px-3 z-10">
+                                                                    <span className={`text-[11px] font-semibold ${colors.text} truncate`}>
+                                                                        {task.progress}%
+                                                                    </span>
+                                                                </div>
+                                                            </button>
+                                                        </div>
+                                                    );
+                                                })}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -605,10 +605,10 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 {/* TAB 2: COMMUNITY IDEAS */}
                 {activeTab === "ideas" && (
                     <div className="section-shell section-stack max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight stack-base">
-                    <button
-                        onClick={() => setIsSubmitModalOpen(true)}
-                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
-                    >
+                        <button
+                            onClick={() => setIsSubmitModalOpen(true)}
+                            className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
+                        >
                             <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                                 <Lightbulb className="h-5 w-5 text-emerald-400" />
                             </div>
@@ -687,10 +687,10 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 {/* TAB 3: BUG TRACKER */}
                 {activeTab === "bugs" && (
                     <div className="section-shell section-stack max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight stack-base">
-                    <button
-                        onClick={() => setIsBugModalOpen(true)}
-                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
-                    >
+                        <button
+                            onClick={() => setIsBugModalOpen(true)}
+                            className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
+                        >
                             <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                                 <Bug className="h-5 w-5 text-rose-400" />
                             </div>
@@ -821,21 +821,21 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         </div>
                                     )}
                                 </div>
-                                    </div>
+                            </div>
 
-                                    {/* Mobile Bottom Action Bar */}
-                                    <div className="md:hidden p-4 border-t border-white/10 bg-[#0A0A0A]/90 backdrop-blur-xl shrink-0">
-                                        <button
-                                            onClick={() => handleBoost(selectedTask)}
-                                            disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
-                                            className={`w-full h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
-                                                ? "bg-slate-800 text-emerald-500 cursor-default"
-                                                : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
-                                                }`}
-                                        >
-                                            <Zap className={`h-5 w-5 ${boostedTasks.has(selectedTask.id) ? "fill-emerald-500" : ""}`} />
-                                            <span>
-                                                {boostedTasks.has(selectedTask.id) ? "Boosted!" : "Boost this Feature"}
+                            {/* Mobile Bottom Action Bar */}
+                            <div className="md:hidden p-4 border-t border-white/10 bg-[#0A0A0A]/90 backdrop-blur-xl shrink-0">
+                                <button
+                                    onClick={() => handleBoost(selectedTask)}
+                                    disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
+                                    className={`w-full h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
+                                        ? "bg-slate-800 text-emerald-500 cursor-default"
+                                        : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                                        }`}
+                                >
+                                    <Zap className={`h-5 w-5 ${boostedTasks.has(selectedTask.id) ? "fill-emerald-500" : ""}`} />
+                                    <span>
+                                        {boostedTasks.has(selectedTask.id) ? "Boosted!" : "Boost this Feature"}
                                     </span>
                                 </button>
                             </div>
@@ -850,17 +850,17 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 <X className="h-6 w-6" />
                             </button>
 
-                                    <button
-                                        onClick={() => handleBoost(selectedTask)}
-                                        disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
-                                        className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
-                                            ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
-                                            : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
-                                            }`}
-                                    >
-                                        {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
-                                            <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
-                                        ) : (
+                            <button
+                                onClick={() => handleBoost(selectedTask)}
+                                disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
+                                className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
+                                    ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
+                                    : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
+                                    }`}
+                            >
+                                {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
+                                    <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
+                                ) : (
                                     <AnimatedCounter
                                         from={selectedTask.accelerations - 1}
                                         to={selectedTask.accelerations}

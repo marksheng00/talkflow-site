@@ -67,7 +67,7 @@ export default function VisionClient() {
         <AuroraBackground className="pb-24">
             <div className="relative z-10">
                 {/* Hero */}
-                <section className="section-block">
+                <section className="section-block section-hero">
                     <div className="section-shell section-stack stack-hero text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 24 }}

@@ -28,6 +28,7 @@
   --section-padding: clamp(3.5rem, 3rem + 2vw, 6.5rem);
   --section-stack: clamp(2.5rem, 2rem + 1.5vw, 4.5rem);
   --section-head-gap: clamp(1rem, 0.8rem + 0.6vw, 1.6rem);
+  --hero-padding-top: clamp(7.5rem, 6rem + 10vw, 13rem);
 }
 
 @theme inline {
@@ -503,6 +504,10 @@ details summary::-webkit-details-marker {
 .section-block {
   padding-block: var(--section-padding);
   width: 100%;
+}
+
+.section-hero {
+  padding-top: var(--hero-padding-top) !important;
 }
 
 .section-stack {

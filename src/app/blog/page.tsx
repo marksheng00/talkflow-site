@@ -46,7 +46,7 @@ export default async function BlogPage({
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
-            <section className="section-block">
+            <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-base">
                     {/* Header */}
                     <div className="section-heading">

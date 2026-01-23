@@ -98,7 +98,7 @@ function ChangeItem({ change }: { change: { type: ChangeType; content: string } 
 export default function ChangelogClient() {
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
-            <section className="section-block">
+            <section className="section-block section-hero">
                 <div className="section-shell max-w-4xl mx-auto section-stack">
                     {/* Header */}
                     <div className="section-heading">

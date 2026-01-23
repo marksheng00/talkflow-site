@@ -13,7 +13,7 @@ export default function PricingClient() {
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
             {/* Hero Section */}
-            <section className="section-block">
+            <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-loose text-center items-center">
                     <div className="section-heading">
                         <h1 className="mx-auto max-w-7xl font-heading text-5xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
