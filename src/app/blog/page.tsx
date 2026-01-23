@@ -56,7 +56,7 @@ export default async function BlogPage({
                         ) : (
                             <>
                                 Latest{" "}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-cyan-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">
                                     Insights
                                 </span>
                             </>
@@ -76,7 +76,7 @@ export default async function BlogPage({
                             <Link
                                 href="/blog"
                                 className={`px-3 py-2 rounded-lg text-sm transition-all ${!categorySlug
-                                    ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30'
+                                    ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
                                     : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                     }`}
                             >
@@ -87,7 +87,7 @@ export default async function BlogPage({
                                     key={cat.slug.current}
                                     href={`/blog?category=${cat.slug.current}`}
                                     className={`px-3 py-2 rounded-lg text-sm transition-all ${categorySlug === cat.slug.current
-                                        ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30'
+                                        ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
                                         : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                         }`}
                                 >
@@ -104,7 +104,7 @@ export default async function BlogPage({
                             <Link
                                 href="/blog"
                                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${!categorySlug
-                                    ? 'bg-emerald-500 text-black border-emerald-500'
+                                    ? 'bg-teal-500 text-black border-teal-500'
                                     : 'bg-white/5 border-white/10 text-slate-400'
                                     }`}
                             >
@@ -115,7 +115,7 @@ export default async function BlogPage({
                                     key={cat.slug.current}
                                     href={`/blog?category=${cat.slug.current}`}
                                     className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${categorySlug === cat.slug.current
-                                        ? 'bg-emerald-500 text-black border-emerald-500'
+                                        ? 'bg-teal-500 text-black border-teal-500'
                                         : 'bg-white/5 border-white/10 text-slate-400'
                                         }`}
                                 >
@@ -166,7 +166,7 @@ export default async function BlogPage({
                                 <p className="text-slate-400 mb-4">No articles found</p>
                                 <Link
                                     href="/blog"
-                                    className="px-5 py-2 rounded-full bg-emerald-500 text-black font-bold text-sm hover:bg-emerald-400 transition-colors"
+                                    className="px-5 py-2 rounded-full bg-teal-500 text-black font-bold text-sm hover:bg-teal-400 transition-colors"
                                 >
                                     View All
                                 </Link>

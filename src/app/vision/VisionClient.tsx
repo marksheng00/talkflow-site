@@ -144,17 +144,14 @@ const StageCard = ({ stage }: { stage: Stage }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ margin: "-50px", once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="group relative md:py-8 rounded-[2rem] transition-all duration-700 hover:bg-white/[0.02]"
+            className="relative py-8"
         >
-            {/* Background Glow - Only visible on hover, creating an 'organic' bound */}
-            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl" />
-
             <div className="relative z-10">
                 <div className="flex items-start justify-between mb-8">
-                    <div className="inline-flex p-4 rounded-2xl bg-white/[0.03] text-muted/50 group-hover:text-accent group-hover:scale-110 group-hover:bg-accent/10 transition-all duration-500">
+                    <div className="inline-flex p-4 rounded-2xl bg-white/[0.03] text-muted/50">
                         <stage.icon className="w-6 h-6" />
                     </div>
-                    <div className="text-muted/20 font-mono text-4xl group-hover:text-accent/20 transition-colors duration-500 select-none">
+                    <div className="text-muted/20 font-mono text-4xl select-none">
                         {stage.id}
                     </div>
                 </div>
@@ -167,7 +164,7 @@ const StageCard = ({ stage }: { stage: Stage }) => {
                     {stage.title}
                 </h3>
 
-                <p className="text-muted/70 text-lg leading-relaxed font-light group-hover:text-muted transition-colors duration-500">
+                <p className="text-muted/70 text-lg leading-relaxed font-light">
                     {stage.text}
                 </p>
             </div>
@@ -190,12 +187,12 @@ export default function VisionClient() {
                     >
                         <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl tracking-tighter text-foreground mb-12 font-bold leading-[1.1] md:leading-[0.9] whitespace-normal md:whitespace-nowrap">
                             Evolution of{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-foreground to-accent animate-text-shimmer bg-[size:200%_auto] pb-4 md:inline-block">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-pink-400 animate-text-shimmer bg-[size:200%_auto] pb-4 md:inline-block">
                                 Connection
                             </span>
                         </h1>
                         <p className="text-xl md:text-3xl text-muted/60 leading-relaxed font-light max-w-5xl mx-auto tracking-tight">
-                            We are building the world&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-accent/80 to-foreground animate-text-shimmer bg-[size:200%_auto] font-semibold">
+                            We are building the world&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400 animate-text-shimmer bg-[size:200%_auto] font-semibold">
                                 <b className="font-bold">first</b> Agentic Communication OS
                             </span>.
                             A path to quantify, augment, and eventually transcend human language barriers.
@@ -237,7 +234,7 @@ export default function VisionClient() {
                     >
                         <h2 className="font-heading text-5xl md:text-8xl text-foreground mb-12 font-bold tracking-tighter leading-[1.1] md:leading-[0.9] whitespace-normal md:whitespace-nowrap">
                             Everyone deserves{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-foreground to-accent animate-text-shimmer bg-[size:200%_auto] pb-2 md:inline-block">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-white to-pink-400 animate-text-shimmer bg-[size:200%_auto] pb-2 md:inline-block">
                                 a voice.
                             </span>
                         </h2>
