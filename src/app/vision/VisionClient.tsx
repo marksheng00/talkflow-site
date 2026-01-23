@@ -170,10 +170,10 @@ const StageCard = ({ stage }: { stage: Stage }) => {
 
 export default function VisionClient() {
     return (
-        <div className="relative min-h-screen text-foreground font-sans selection:bg-accent/30 pb-32">
+        <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-accent/30 pb-32 overflow-hidden">
 
-            {/* Ambient Noise Texture */}
-            <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('/noise.png')] mix-blend-overlay" />
+            {/* Ambient Noise Texture - Absolute to avoid fixed-composite bugs */}
+            <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('/noise.png')] mix-blend-overlay" />
 
             {/* Hero Section */}
             <header className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20 md:pt-48 md:pb-32 flex flex-col items-center text-center">
@@ -190,7 +190,7 @@ export default function VisionClient() {
                     </h1>
 
                     <p className="text-xl md:text-2xl text-muted leading-relaxed font-light max-w-2xl mx-auto">
-                        We are building the world's first <span className="text-accent font-medium">Agentic Communication OS</span>.
+                        We are building the world&apos;s first <span className="text-accent font-medium">Agentic Communication OS</span>.
                         A comprehensive roadmap to quantify, augment, and eventually transcend human language barriers.
                     </p>
                 </motion.div>

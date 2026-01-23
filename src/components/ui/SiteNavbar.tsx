@@ -11,8 +11,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-// Removed createPortal import - RE-ADDING IT FOR TRANSPARENT OVERLAY
 import { AuroraBackground } from "./AuroraBackground";
 
 interface NavItem {
@@ -42,7 +40,6 @@ interface MobileNavProps {
     children: React.ReactNode;
     className?: string;
     visible?: boolean;
-    // Removed isMenuOpen prop
 }
 
 interface MobileNavHeaderProps {
@@ -54,7 +51,6 @@ interface MobileNavMenuProps {
     children: React.ReactNode;
     className?: string;
     isOpen: boolean;
-    onClose: () => void;
 }
 
 interface MobileNavToggleProps {
@@ -64,7 +60,6 @@ interface MobileNavToggleProps {
 
 interface NavbarButtonProps {
     href?: string;
-    as?: React.ElementType;
     children: React.ReactNode;
     className?: string;
     variant?: "primary" | "secondary" | "dark" | "gradient";
@@ -101,29 +96,30 @@ export const Navbar = ({ children, className }: NavbarProps) => {
 };
 
 export const NavBody = ({ children, className, visible }: NavBodyProps) => {
-    const blurValue = visible ? "blur(12px)" : "blur(0px)";
-
     return (
         <motion.div
             animate={{
-                backdropFilter: blurValue,
+                backdropFilter: visible ? "blur(16px)" : "blur(0px)",
+                backgroundColor: visible ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)",
+                borderColor: visible ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0)",
                 boxShadow: visible
-                    ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
+                    ? "0 4px 24px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1)"
                     : "none",
                 width: visible ? "auto" : "100%",
                 y: visible ? 20 : 0,
             }}
-            style={{ WebkitBackdropFilter: blurValue }}
+            style={{
+                WebkitBackdropFilter: visible ? "blur(16px)" : "blur(0px)",
+                borderWidth: "1px",
+                borderStyle: "solid"
+            }}
             transition={{
                 type: "spring",
                 stiffness: 200,
                 damping: 50,
             }}
             className={cn(
-                "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-2xl bg-transparent px-6 py-3 lg:px-10 lg:py-3",
-                visible
-                    ? "bg-white/10 border border-white/20 min-w-[600px] gap-8 shadow-lg backdrop-blur-xl backdrop-saturate-150"
-                    : "backdrop-blur-none",
+                "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-2xl px-6 py-3 lg:px-10 lg:py-3",
                 className
             )}
         >
@@ -166,14 +162,14 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
 };
 
 export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
-    const blurValue = visible ? "blur(12px)" : "blur(0px)";
-
     return (
         <motion.div
             animate={{
-                backdropFilter: blurValue,
+                backdropFilter: visible ? "blur(16px)" : "blur(0px)",
+                backgroundColor: visible ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)",
+                borderColor: visible ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0)",
                 boxShadow: visible
-                    ? "0 4px 24px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04)"
+                    ? "0 4px 24px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1)"
                     : "none",
                 width: visible ? "92%" : "100%",
                 paddingRight: visible ? "16px" : "0px",
@@ -181,17 +177,18 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
                 borderRadius: visible ? "24px" : "0px",
                 y: visible ? 12 : 0,
             }}
-            style={{ WebkitBackdropFilter: blurValue }}
+            style={{
+                WebkitBackdropFilter: visible ? "blur(16px)" : "blur(0px)",
+                borderWidth: "1px",
+                borderStyle: "solid"
+            }}
             transition={{
                 type: "spring",
                 stiffness: 200,
                 damping: 50,
             }}
             className={cn(
-                "relative mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-4 py-3 lg:hidden",
-                visible
-                    ? "bg-white/10 border border-white/20 shadow-lg backdrop-blur-xl backdrop-saturate-150"
-                    : "backdrop-blur-none",
+                "relative mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between px-4 py-3 lg:hidden",
                 className
             )}
         >
@@ -220,12 +217,10 @@ export const MobileNavMenu = ({
     children,
     className,
     isOpen,
-    onClose,
 }: MobileNavMenuProps) => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";
-            // Also handle iOS Safari rubber banding if possible, but basic overflow hidden is good start
         } else {
             document.body.style.overflow = "";
         }
@@ -238,14 +233,6 @@ export const MobileNavMenu = ({
         <AnimatePresence>
             {isOpen && (
                 <>
-
-
-                    {/* 
-                      MENU PANEL (In Flow)
-                      - Rendered normally inside Navbar
-                      - Inherits Navbar's high z-index (z-50)
-                      - Sits naturally above the portaled overlay (z-30)
-                    */}
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -311,7 +298,6 @@ export const NavbarButton = ({
     children,
     className,
     variant = "primary",
-    as,
     ...props
 }: NavbarButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement> & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
     const baseStyles =
@@ -332,7 +318,7 @@ export const NavbarButton = ({
             <Link
                 href={href}
                 className={cn(baseStyles, variantStyles[variant], className)}
-                {...props}
+                {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
             >
                 {children}
             </Link>
@@ -342,7 +328,7 @@ export const NavbarButton = ({
     return (
         <button
             className={cn(baseStyles, variantStyles[variant], className)}
-            {...(props as any)}
+            {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
         >
             {children}
         </button>
