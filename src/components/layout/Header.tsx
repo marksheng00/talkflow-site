@@ -54,7 +54,6 @@ export default function Header() {
 
         <MobileNavMenu
           isOpen={isMobileMenuOpen}
-          onClose={() => setIsMobileMenuOpen(false)}
         >
           {navItems.map((item) => (
             <Link
