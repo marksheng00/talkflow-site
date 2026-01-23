@@ -182,7 +182,7 @@ export default function VisionClient() {
         <AuroraBackground className="pb-32">
             <div className="relative z-10">
                 {/* Hero Section */}
-                <header className="relative max-w-7xl mx-auto px-6 pt-40 pb-24 md:pt-60 md:pb-40 flex flex-col items-center text-center">
+                <header className="relative max-w-7xl mx-auto px-6 pt-20 pb-24 md:pt-32 md:pb-40 flex flex-col items-center text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}

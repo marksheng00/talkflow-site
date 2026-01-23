@@ -359,14 +359,17 @@ export default function RoadmapClient() {
     return (
         <AuroraBackground className="min-h-screen pb-32 text-white overflow-x-hidden">
             {/* Hero Section */}
-            <section className="section-shell relative pt-24 pb-6">
+            <section className="section-shell relative pt-20 md:pt-32 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">
                     {/* Header */}
-                    <h1 className="font-heading text-4xl font-bold tracking-tight text-white md:text-7xl whitespace-normal md:whitespace-nowrap">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-2">
+                    <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[0.9]">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
                             Building in public.
                         </span>
                     </h1>
+                    <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl">
+                        Track our progress, vote on upcoming features, and help us shape the future of agentic communication.
+                    </p>
 
                     {/* Controls: Tabs & Filter */}
                     <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">

@@ -45,18 +45,18 @@ export default async function BlogPage({
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
-            <div className="section-shell pt-24 md:pt-32">
+            <div className="section-shell pt-20 md:pt-32">
                 {/* Header */}
-                <div className="mb-12 md:mb-16">
-                    <h1 className="font-heading text-4xl md:text-7xl font-bold text-white">
+                <div className="mb-12 md:mb-16 text-center">
+                    <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground leading-[0.9] whitespace-normal md:whitespace-nowrap">
                         {currentCategory ? (
                             <>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-teal-400 animate-text-shimmer bg-[size:200%_auto] py-2 inline-block leading-normal">{currentCategory.title}</span> Articles
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-teal-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">{currentCategory.title}</span> Articles
                             </>
                         ) : (
                             <>
                                 Latest{" "}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] py-2 inline-block leading-normal">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">
                                     Insights
                                 </span>
                             </>

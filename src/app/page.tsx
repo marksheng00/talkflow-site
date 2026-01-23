@@ -47,19 +47,19 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {/* Hero Section */}
-      <section className="relative pt-24 pb-32 md:pb-40 overflow-hidden w-full">
+      <section className="relative pt-20 md:pt-32 pb-32 md:pb-40 overflow-hidden w-full">
         <div className="section-shell relative z-10 flex flex-col items-center text-center">
 
           {/* Main Title */}
-          <h1 className="max-w-6xl font-heading text-5xl font-bold tracking-tight text-white md:text-7xl whitespace-normal md:whitespace-nowrap">
+          <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[0.9]">
             Simple, Fast,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-2">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
               Fluent.
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-4 md:mt-6 max-w-4xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-400 px-4">
+          <p className="mt-6 md:mt-8 max-w-4xl text-xl md:text-2xl leading-relaxed text-muted/60 px-4 font-light tracking-tight">
             talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
           </p>
 
