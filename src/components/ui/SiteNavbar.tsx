@@ -102,15 +102,21 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
                 backdropFilter: visible ? "blur(16px)" : "blur(0px)",
                 backgroundColor: visible ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)",
                 borderColor: visible ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0)",
+                borderWidth: visible ? "1px" : "0px",
                 boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1)"
                     : "none",
                 width: visible ? "auto" : "100%",
                 y: visible ? 20 : 0,
             }}
+            initial={{
+                borderWidth: "0px",
+                borderColor: "rgba(255, 255, 255, 0)",
+                backgroundColor: "rgba(255, 255, 255, 0)",
+                y: 0,
+            }}
             style={{
                 WebkitBackdropFilter: visible ? "blur(16px)" : "blur(0px)",
-                borderWidth: "1px",
                 borderStyle: "solid"
             }}
             transition={{
@@ -168,6 +174,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
                 backdropFilter: visible ? "blur(16px)" : "blur(0px)",
                 backgroundColor: visible ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)",
                 borderColor: visible ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0)",
+                borderWidth: visible ? "1px" : "0px",
                 boxShadow: visible
                     ? "0 4px 24px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1)"
                     : "none",
@@ -177,9 +184,14 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
                 borderRadius: visible ? "24px" : "0px",
                 y: visible ? 12 : 0,
             }}
+            initial={{
+                borderWidth: "0px",
+                borderColor: "rgba(255, 255, 255, 0)",
+                backgroundColor: "rgba(255, 255, 255, 0)",
+                y: 0,
+            }}
             style={{
                 WebkitBackdropFilter: visible ? "blur(16px)" : "blur(0px)",
-                borderWidth: "1px",
                 borderStyle: "solid"
             }}
             transition={{
