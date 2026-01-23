@@ -51,12 +51,15 @@ export default function Home() {
         <div className="section-shell relative z-10 flex flex-col items-center text-center">
 
           {/* Main Title */}
-          <h1 className="max-w-4xl font-heading text-5xl font-bold tracking-tight text-white md:text-6xl">
-            Simple, Fast, Fluent.
+          <h1 className="max-w-6xl font-heading text-5xl font-bold tracking-tight text-white md:text-7xl whitespace-normal md:whitespace-nowrap">
+            Simple, Fast,{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-2">
+              Fluent.
+            </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-4 md:mt-6 max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-400 px-4">
+          <p className="mt-4 md:mt-6 max-w-4xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-400 px-4">
             talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
           </p>
 

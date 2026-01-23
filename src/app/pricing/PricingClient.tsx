@@ -14,14 +14,13 @@ export default function PricingClient() {
         <AuroraBackground className="min-h-screen pb-24 text-white">
             {/* Hero Section */}
             <section className="relative pt-24 pb-20 w-full text-center px-4">
-                <h1 className="mx-auto max-w-4xl font-heading text-5xl font-bold tracking-tight text-white md:text-6xl">
-                    Simple pricing for
-                    <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                <h1 className="mx-auto max-w-7xl font-heading text-5xl font-bold tracking-tight text-white md:text-7xl whitespace-normal md:whitespace-nowrap">
+                    Simple pricing for{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-2">
                         fluent speaking.
                     </span>
                 </h1>
-                <p className="mx-auto mt-6 max-w-2xl text-xl text-slate-400">
+                <p className="mx-auto mt-6 max-w-4xl text-xl text-slate-400">
                     Start for free, upgrade when you&apos;re serious. No hidden fees.
                 </p>
 
