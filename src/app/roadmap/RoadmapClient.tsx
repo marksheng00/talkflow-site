@@ -390,7 +390,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     }
 
     return (
-        <AuroraBackground className="min-h-screen pb-32 text-white overflow-x-hidden">
+        <AuroraBackground className="min-h-screen pb-12 text-white overflow-x-hidden">
             {/* Hero Section */}
             <section className="section-shell relative pt-20 md:pt-32 pb-6">
                 <div className="flex flex-col gap-6 max-w-7xl mx-auto">

@@ -144,7 +144,7 @@ const StageCard = ({ stage }: { stage: Stage }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ margin: "-50px", once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="group relative p-8 md:p-12 rounded-[2rem] transition-all duration-700 hover:bg-white/[0.02]"
+            className="group relative md:py-8 rounded-[2rem] transition-all duration-700 hover:bg-white/[0.02]"
         >
             {/* Background Glow - Only visible on hover, creating an 'organic' bound */}
             <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl" />
@@ -179,10 +179,10 @@ const StageCard = ({ stage }: { stage: Stage }) => {
 
 export default function VisionClient() {
     return (
-        <AuroraBackground className="pb-32">
+        <AuroraBackground className="pb-0">
             <div className="relative z-10">
                 {/* Hero Section */}
-                <header className="relative max-w-7xl mx-auto px-6 pt-20 pb-24 md:pt-32 md:pb-40 flex flex-col items-center text-center">
+                <header className="relative max-w-7xl mx-auto px-6 pt-20 pb-20 md:pt-32 md:pb-32 flex flex-col items-center text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -204,11 +204,11 @@ export default function VisionClient() {
                 </header>
 
                 {/* Chapters Content */}
-                <main className="section-shell space-y-32 md:space-y-64">
+                <main className="section-shell space-y-20 md:space-y-32">
                     {CHAPTERS.map((chapter) => (
-                        <section key={chapter.id} className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-32">
+                        <section key={chapter.id} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                             {/* Sticky Left: Chapter Intro */}
-                            <div className="md:col-span-12 lg:col-span-5 mb-12 lg:mb-0">
+                            <div className="lg:col-span-4 mb-12 lg:mb-0">
                                 <ChapterHeader
                                     label={chapter.label}
                                     title={chapter.title}
@@ -217,7 +217,7 @@ export default function VisionClient() {
                             </div>
 
                             {/* Right: Stage Cards */}
-                            <div className="md:col-span-12 lg:col-span-7 flex flex-col">
+                            <div className="lg:col-span-8 flex flex-col">
                                 {chapter.stages.map((stage) => (
                                     <StageCard key={stage.id} stage={stage} />
                                 ))}
@@ -227,7 +227,7 @@ export default function VisionClient() {
                 </main>
 
                 {/* Final Statement & CTA */}
-                <footer className="section-shell pt-64 pb-48 text-center">
+                <footer className="section-shell pt-24 pb-24 text-center">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
