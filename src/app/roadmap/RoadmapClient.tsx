@@ -77,7 +77,7 @@ export default function RoadmapClient() {
     const [boostingTaskId, setBoostingTaskId] = useState<string | null>(null);
     const [justBoosted, setJustBoosted] = useState(false);
     // Vote tracking
-    const [votedIdeas, setVotedIdeas] = useState<Set<string>>(new Set());
+    const [votedIdeas, setVotedIdeas] = useState<Map<string, "up" | "down">>(new Map());
     const [lastVotedId, setLastVotedId] = useState<string | null>(null);
 
     // Form State
@@ -266,20 +266,38 @@ export default function RoadmapClient() {
 
     async function handleVote(id: string, direction: "up" | "down", e: React.MouseEvent) {
         e.stopPropagation();
+
+        // 1. Optimistic Update
+        const previousIdeals = ideals;
+        setIdeals(prev => prev.map(i => {
+            if (i.id === id) {
+                if (direction === "up") {
+                    return { ...i, upvotes: i.upvotes + 1 };
+                } else {
+                    return { ...i, downvotes: (i.downvotes || 0) + 1 };
+                }
+            }
+            return i;
+        }));
+        setVotedIdeas(prev => new Map(prev).set(id, direction));
+        setLastVotedId(id);
+
         try {
+            // 2. Server Request
             const updatedItem = await voteIdea(id, direction);
 
-            // Track locally to disable buttons and trigger animation
-            setVotedIdeas(prev => new Set(prev).add(id));
-            setLastVotedId(id);
-
-            // Update ideals list
+            // 3. Reconcile (Optional, but good for data consistency)
             setIdeals(prev => prev.map(i => i.id === id ? updatedItem : i));
-
-            // Update selected modal if open
             if (selectedIdea?.id === id) setSelectedIdea(updatedItem);
         } catch (error) {
             console.error("Vote failed", error);
+            // 4. Rollback on error
+            setIdeals(previousIdeals);
+            setVotedIdeas(prev => {
+                const next = new Map(prev);
+                next.delete(id);
+                return next;
+            });
         }
     }
 
@@ -288,63 +306,71 @@ export default function RoadmapClient() {
 
         // UI Optimistic Update Check
         if (boostedTasks.has(taskId)) return;
+        if (pendingBoosts.has(taskId)) return;
 
-        // 1. Check if a request is already in flight for this task
-        if (pendingBoosts.has(taskId)) {
-            console.log("Request already in flight, waiting for it...", taskId);
-            try {
-                // Wait for the existing promise to resolve
-                await pendingBoosts.get(taskId);
-            } catch (ignore) {
-                // If original request failed, we just ignore here
+        // 1. Optimistic Update
+        const previousTasks = tasks;
+        setTasks(prev => prev.map(t => {
+            if (t.id === taskId) {
+                return { ...t, accelerations: t.accelerations + 1 };
             }
-            return;
-        }
+            return t;
+        }));
+        setBoostedTasks(prev => new Set(prev).add(taskId));
+        setJustBoosted(true);
 
-        // 2. Set UI State Optimistically
-        setBoostingTaskId(taskId); // Show spinner
-        // Don't set boostedTasks yet to allow retry if failed
-
-        // 3. Create a promise for this action
         const boostPromise = (async () => {
             try {
                 const updatedItem = await accelerateRoadmapItem(taskId);
-
-                // Success: Update UI
+                // Reconcile with server data
                 setTasks(prev => prev.map(t => t.id === taskId ? updatedItem : t));
                 if (selectedTask?.id === taskId) setSelectedTask(updatedItem);
-
-                setBoostedTasks(prev => new Set(prev).add(taskId));
-                setJustBoosted(true);
                 return updatedItem;
+            } catch (error) {
+                console.error("Boost failed", error);
+                // Rollback
+                setTasks(previousTasks);
+                setBoostedTasks(prev => {
+                    const next = new Set(prev);
+                    next.delete(taskId);
+                    return next;
+                });
+                throw error;
             } finally {
-                // Cleanup: Remove from map when done (success or fail)
                 pendingBoosts.delete(taskId);
-                setBoostingTaskId(null);
             }
         })();
 
-        // 4. Store the promise in the map
         pendingBoosts.set(taskId, boostPromise);
-
-        // 5. Await it (optional, mainly for error handling if needed locally)
-        try {
-            await boostPromise;
-        } catch (error) {
-            console.error("Boost failed", error);
-        }
     }
 
     async function handleBugVote(id: string, e: React.MouseEvent) {
         e.stopPropagation();
-        if (votedIdeas.has(id)) return; // Reuse votedIdeas for simplicity
+        if (votedIdeas.has(id)) return;
+
+        // 1. Optimistic Update
+        const previousBugs = bugs;
+        setBugs(prev => prev.map(b => {
+            if (b.id === id) {
+                return { ...b, upvotes: b.upvotes + 1 };
+            }
+            return b;
+        }));
+        setVotedIdeas(prev => new Map(prev).set(id, "up"));
 
         try {
             const updatedBug = await voteBugReport(id);
-            setVotedIdeas(prev => new Set(prev).add(id));
+            // Reconcile
             setBugs(prev => prev.map(b => b.id === id ? updatedBug : b));
         } catch (error) {
             console.error("Bug vote failed", error);
+            // Rollback
+            setBugs(previousBugs);
+            setVotedIdeas(prev => {
+                const next = new Map(prev);
+                next.delete(id);
+                return next;
+            });
         }
     }
 
@@ -969,7 +995,7 @@ export default function RoadmapClient() {
                                     <ArrowUp className="h-6 w-6 transition-transform group-hover:-translate-y-0.5" />
                                 ) : (
                                     <AnimatedCounter
-                                        from={selectedIdea.upvotes - 1}
+                                        from={votedIdeas.get(selectedIdea.id) === "up" ? selectedIdea.upvotes - 1 : selectedIdea.upvotes}
                                         to={selectedIdea.upvotes}
                                         skipAnimation={lastVotedId !== selectedIdea.id}
                                     />
@@ -987,7 +1013,7 @@ export default function RoadmapClient() {
                                     <ArrowDown className="h-6 w-6 transition-transform group-hover:translate-y-0.5" />
                                 ) : (
                                     <AnimatedCounter
-                                        from={(selectedIdea.downvotes || 0) - 1}
+                                        from={votedIdeas.get(selectedIdea.id) === "down" ? (selectedIdea.downvotes || 0) - 1 : (selectedIdea.downvotes || 0)}
                                         to={selectedIdea.downvotes || 0}
                                         skipAnimation={lastVotedId !== selectedIdea.id}
                                     />
