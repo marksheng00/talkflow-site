@@ -6,6 +6,28 @@
   --foreground: #e8edf7;
   --muted: #93a2c3;
   --border: #162134;
+  /* Spacing tokens */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+
+  /* Semantic spacing aliases */
+  --stack-tight: var(--space-4);
+  --stack-base: var(--space-6);
+  --stack-loose: var(--space-8);
+  --stack-hero: var(--space-8);
+  --gap-grid: var(--space-6);
+  --gap-grid-lg: var(--space-7);
+  --gap-cards: var(--space-5);
+  --pad-card: var(--space-5);
+  --section-padding: clamp(3.5rem, 3rem + 2vw, 6.5rem);
+  --section-stack: clamp(2.5rem, 2rem + 1.5vw, 4.5rem);
+  --section-head-gap: clamp(1rem, 0.8rem + 0.6vw, 1.6rem);
 }
 
 @theme inline {
@@ -476,6 +498,64 @@ details summary::-webkit-details-marker {
 
 .section-shell {
   @apply mx-auto max-w-6xl px-6 md:px-10;
+}
+
+.section-block {
+  padding-block: var(--section-padding);
+  width: 100%;
+}
+
+.section-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-stack);
+}
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--section-head-gap);
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+/* Spacing utilities */
+.stack-tight {
+  gap: var(--stack-tight);
+}
+
+.stack-base {
+  gap: var(--stack-base);
+}
+
+.stack-loose {
+  gap: var(--stack-loose);
+}
+
+.stack-hero {
+  gap: var(--stack-hero);
+}
+
+.gap-grid {
+  gap: var(--gap-grid);
+}
+
+.gap-grid-lg {
+  gap: var(--gap-grid-lg);
+}
+
+.gap-cards {
+  gap: var(--gap-cards);
+}
+
+.pad-card {
+  padding: var(--pad-card);
+}
+
+.mt-stack-tight {
+  margin-top: var(--stack-tight);
 }
 
 .grid-veil {

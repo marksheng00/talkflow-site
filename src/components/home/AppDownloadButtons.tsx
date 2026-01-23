@@ -76,11 +76,11 @@ export const AppDownloadButtons = ({
 
     // Prevent hydration mismatch/flash by rendering a placeholder until platform is detected
     if (platform === null) {
-        return <div className={cn("mt-8 md:mt-10 h-14 w-full", className)} aria-hidden="true" />;
+        return <div className={cn("h-14 w-full", className)} aria-hidden="true" />;
     }
 
     return (
-        <div className={cn("mt-8 md:mt-10 flex flex-col items-center gap-4 w-full mx-auto lg:max-w-none lg:justify-center", className)}>
+        <div className={cn("flex flex-col items-center gap-4 w-full mx-auto lg:max-w-none lg:justify-center", className)}>
             {/* Mobile: Platform + Web side by side */}
             {platform !== "desktop" && (
                 <div className="grid grid-cols-2 w-full gap-3">

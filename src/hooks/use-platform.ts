@@ -1,22 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type Platform = "ios" | "android" | "desktop";
 
+const detectPlatform = (): Platform | null => {
+    if (typeof navigator === "undefined") return null;
+    const ua = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) return "ios";
+    if (/android/.test(ua)) return "android";
+    return "desktop";
+};
+
 export function usePlatform(): Platform | null {
-    const [platform, setPlatform] = useState<Platform | null>(null);
-
-    useEffect(() => {
-        const ua = navigator.userAgent.toLowerCase();
-        if (/iphone|ipad|ipod/.test(ua)) {
-            setPlatform("ios");
-        } else if (/android/.test(ua)) {
-            setPlatform("android");
-        } else {
-            setPlatform("desktop");
-        }
-    }, []);
-
-    return platform;
+    const subscribe = useCallback(() => () => undefined, []);
+    return useSyncExternalStore(subscribe, detectPlatform, () => null);
 }

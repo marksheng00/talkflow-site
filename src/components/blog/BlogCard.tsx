@@ -1,12 +1,13 @@
-import Link from 'next/link'
-import Image from 'next/image'
-import { urlFor } from '@/lib/sanity.image'
-import { format } from 'date-fns'
-import { estimateReadingTime } from '@/lib/blog-helpers'
-import { Clock } from 'lucide-react'
+import Link from 'next/link';
+import Image from 'next/image';
+import { urlFor } from '@/lib/sanity.image';
+import { format } from 'date-fns';
+import { estimateReadingTime } from '@/lib/blog-helpers';
+import { Clock } from 'lucide-react';
+import type { BlogPost, BlogCategory } from '@/types/blog';
 
-export default function BlogCard({ post }: { post: any }) {
-    const readingTime = estimateReadingTime(post.body)
+export default function BlogCard({ post }: { post: BlogPost }) {
+    const readingTime = estimateReadingTime(post.body || []);
 
     return (
         <Link
@@ -26,7 +27,7 @@ export default function BlogCard({ post }: { post: any }) {
 
             <div className="flex flex-col gap-3 flex-1">
                 <div className="flex items-center gap-2">
-                    {post.categories?.slice(0, 2).map((cat: any) => (
+                    {post.categories?.slice(0, 2).map((cat: BlogCategory) => (
                         <span
                             key={cat.slug.current}
                             className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-${cat.color || 'emerald'}-500/30 text-${cat.color || 'emerald'}-400 bg-${cat.color || 'emerald'}-500/10`}
@@ -59,7 +60,7 @@ export default function BlogCard({ post }: { post: any }) {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <time>{format(new Date(post.publishedAt), 'MMM dd')}</time>
+                        <time>{post.publishedAt ? format(new Date(post.publishedAt), 'MMM dd') : ''}</time>
                         <span className="w-1 h-1 rounded-full bg-slate-700" />
                         <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />

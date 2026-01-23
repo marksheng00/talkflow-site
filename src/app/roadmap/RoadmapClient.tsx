@@ -12,8 +12,6 @@ import {
     ArrowUp,
     ArrowDown,
     Bug,
-    AlertCircle,
-    ShieldAlert,
     Lightbulb,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/roadmap/AnimatedCounter";
@@ -28,13 +26,8 @@ import {
 } from "@/types/roadmap";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import {
-    listRoadmapItems,
     accelerateRoadmapItem,
-    listCommunityIdeas,
-    createIdea,
     voteIdea,
-    listBugReports,
-    createBugReport,
     voteBugReport
 } from "@/lib/roadmap";
 
@@ -62,7 +55,6 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     const [tasks, setTasks] = useState<RoadmapItem[]>(initialTasks);
     const [ideals, setIdeals] = useState<CommunityIdea[]>(initialIdeas);
     const [bugs, setBugs] = useState<BugReport[]>(initialBugs);
-    const [loading, setLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -80,11 +72,11 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
     // Boost tracking
     const [boostedTasks, setBoostedTasks] = useState<Set<string>>(new Set());
-    const [boostingTaskId, setBoostingTaskId] = useState<string | null>(null);
     const [justBoosted, setJustBoosted] = useState(false);
     // Vote tracking
     const [votedIdeas, setVotedIdeas] = useState<Map<string, "up" | "down">>(new Map());
     const [lastVotedId, setLastVotedId] = useState<string | null>(null);
+    const [todayPercent, setTodayPercent] = useState<number | null>(null);
 
     // Form State
     const [submitting, setSubmitting] = useState(false);
@@ -168,7 +160,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             el.removeEventListener("mouseleave", handleMouseLeave);
             el.removeEventListener("click", handleClick, { capture: true });
         };
-    }, [activeTab, loading]);
+    }, [activeTab]);
 
     // Fetch Data - Removed in favor of Server Action pre-fetching
     // useEffect(() => { ... }, []);
@@ -181,6 +173,15 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     useEffect(() => {
         setLastVotedId(null);
     }, [selectedIdea?.id]);
+
+    useEffect(() => {
+        const dayMs = 1000 * 60 * 60 * 24;
+        const timelineStart = Date.UTC(2024, 0, 1);
+        const timelineEnd = Date.UTC(2032, 0, 31);
+        const totalDays = (timelineEnd - timelineStart) / dayMs;
+        const todayOffset = (Date.now() - timelineStart) / dayMs;
+        setTodayPercent((todayOffset / totalDays) * 100);
+    }, []);
 
     // Filter Logic
     const filteredTasks = useMemo(() => {
@@ -226,9 +227,10 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             setIsSubmitModalOpen(false);
             setForm({ title: "", description: "", category: "" });
             setActiveTab("ideas");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to submit idea", error);
-            alert(`Failed to create idea: ${error?.message || "Ensure title > 6 chars"}`);
+            const message = error instanceof Error ? error.message : "Ensure title > 6 chars";
+            alert(`Failed to create idea: ${message}`);
         } finally {
             setSubmitting(false);
         }
@@ -263,9 +265,10 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             setIsBugModalOpen(false);
             setBugForm({ title: "", steps: "", expected: "", actual: "", severity: "Minor", platform: "Web" });
             setActiveTab("bugs");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to submit bug", error);
-            alert(`Failed to report bug: ${error?.message || "Ensure title > 6 chars"}`);
+            const message = error instanceof Error ? error.message : "Ensure title > 6 chars";
+            alert(`Failed to report bug: ${message}`);
         } finally {
             setBugSubmitting(false);
         }
@@ -381,35 +384,24 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
         }
     }
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center text-white">
-                <Loader2 className="animate-spin h-8 w-8 text-emerald-500" />
-            </div>
-        );
-    }
-
     return (
-        <AuroraBackground className="min-h-screen pb-12 text-white overflow-x-hidden">
-            {/* Hero Section */}
-            <section className="section-shell relative pt-20 md:pt-32 pb-6">
-                <div className="flex flex-col gap-6 max-w-7xl mx-auto">
-                    {/* Header */}
-                    <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
-                            Building in public.
-                        </span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl">
-                        Track our progress, vote on upcoming features, and help us shape the future of agentic communication.
-                    </p>
+        <AuroraBackground className="min-h-screen pb-24 text-white overflow-x-hidden">
+            {/* Hero + Content Section */}
+            <section className="section-block pb-4 md:pb-6">
+                <div className="section-shell section-stack stack-tight items-center text-center">
+                    <div className="section-heading">
+                        <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
+                                Building in public.
+                            </span>
+                        </h1>
+                        <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl mx-auto">
+                            Track our progress, vote on upcoming features, and help us shape the future of agentic communication.
+                        </p>
+                    </div>
 
-                    {/* Controls: Tabs & Filter */}
-                    <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-
-
-                        {/* Tab Switcher */}
-                        <div className="flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5 w-full md:w-fit">
+                    <div className="flex w-full flex-col stack-tight md:flex-row md:items-center md:justify-between">
+                        <div className="flex p-1 stack-tight md:gap-1 rounded-xl bg-white/5 border border-white/5 w-full md:w-fit">
                             <button
                                 onClick={() => setActiveTab("roadmap")}
                                 className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
@@ -430,8 +422,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                             </button>
                         </div>
 
-                        {/* Category Filter */}
-                        <div className="flex gap-1.5 md:gap-2 w-full md:w-auto">
+                        <div className="flex gap-1.5 md:gap-2 w-full md:w-auto justify-center md:justify-end">
                             {categories.map(cat => {
                                 const categoryButtonColors = {
                                     All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
@@ -442,7 +433,6 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
                                 };
 
-                                // Shorter labels for mobile
                                 const mobileLabels: Record<string, string> = {
                                     "AI Core": "AI",
                                     "Feature": "Feat",
@@ -468,13 +458,12 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         </div>
                     </div>
                 </div>
-            </section>
 
-            {/* --- CONTENT TABS --- */}
+                {/* --- CONTENT TABS --- */}
 
-            {/* TAB 1: OFFICIAL ROADMAP - GANTT CHART */}
-            {activeTab === "roadmap" && (
-                <section className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {/* TAB 1: OFFICIAL ROADMAP - GANTT CHART */}
+                {activeTab === "roadmap" && (
+                    <div className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight">
 
                     {/* Unified Gantt Chart View */}
                     <div className="flex gap-4 md:gap-6">
@@ -539,25 +528,12 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                                     {/* Task Bars */}
                                     <div className="relative space-y-3">
-                                        {(() => {
-                                            // Today Line (Approximate)
-                                            const today = new Date();
-                                            const timelineStart = new Date('2024-01-01');
-                                            const timelineEnd = new Date('2032-01-31');
-                                            const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                            const todayOffset = (today.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                            const todayPercent = (todayOffset / totalDays) * 100;
-
-                                            if (todayPercent >= 0 && todayPercent <= 100) {
-                                                return (
-                                                    <div
-                                                        className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
-                                                        style={{ left: `${todayPercent}%` }}
-                                                    />
-                                                );
-                                            }
-                                            return null;
-                                        })()}
+                                        {mounted && todayPercent !== null && todayPercent >= 0 && todayPercent <= 100 && (
+                                            <div
+                                                className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
+                                                style={{ left: `${todayPercent.toFixed(4)}%` }}
+                                            />
+                                        )}
 
                                         {/* Grid Lines */}
                                         {Array.from({ length: 97 }, (_, i) => (
@@ -621,170 +597,171 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     </div>
                                 </div>
                             </div>
+                            </div>
                         </div>
                     </div>
-                </section>
-            )}
+                )}
 
-            {/* TAB 2: COMMUNITY IDEAS */}
-            {activeTab === "ideas" && (
-                <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {/* TAB 2: COMMUNITY IDEAS */}
+                {activeTab === "ideas" && (
+                    <div className="section-shell section-stack max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight stack-base">
                     <button
                         onClick={() => setIsSubmitModalOpen(true)}
-                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 mb-8 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
+                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-4 w-full hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all"
                     >
-                        <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                            <Lightbulb className="h-5 w-5 text-emerald-400" />
-                        </div>
-                        <div className="text-left min-w-0 flex-1">
-                            <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Submit New Idea</p>
-                            <p className="text-xs text-slate-500 truncate">Have a feature request? Add it to the pool.</p>
-                        </div>
-                        <div className="ml-auto pl-2 flex-shrink-0">
-                            <Plus className="h-5 w-5 text-slate-600 group-hover:text-emerald-400 transition-colors" />
-                        </div>
-                    </button>
-
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-full">
-                        {filteredIdeals.map(idea => (
-                            <div
-                                key={idea.id}
-                                onClick={() => setSelectedIdea(idea)}
-                                className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer w-full min-w-0 overflow-hidden"
-                            >
-                                <div className="space-y-1.5 min-w-0">
-                                    <div className="flex items-start justify-between gap-4 min-w-0">
-                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-emerald-400 transition-colors pr-8 truncate min-w-0">
-                                            {idea.title}
-                                        </h4>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
-                                            {idea.category}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
-                                    {idea.description}
-                                </p>
-
-                                <div
-                                    className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <button
-                                        onClick={(e) => handleVote(idea.id, "up", e)}
-                                        className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-emerald-400 transition-colors group/up"
-                                    >
-                                        <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
-                                        <span>{idea.upvotes}</span>
-                                    </button>
-                                    <button
-                                        onClick={(e) => handleVote(idea.id, "down", e)}
-                                        className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-rose-400 transition-colors group/down"
-                                    >
-                                        <ArrowDown className="h-4 w-4 transition-transform group-hover/down:translate-y-0.5" />
-                                        <span>{idea.downvotes || 0}</span>
-                                    </button>
-
-                                    <div className="ml-auto">
-                                        {(() => {
-                                            const isPlanned = idea.status === 'planned';
-                                            return (
-                                                <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${isPlanned
-                                                    ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20'
-                                                    : 'text-slate-500 bg-white/5 border-white/5'
-                                                    }`}>
-                                                    {isPlanned ? 'Planned' : 'Open'}
-                                                </span>
-                                            );
-                                        })()}
-                                    </div>
-                                </div>
+                            <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                                <Lightbulb className="h-5 w-5 text-emerald-400" />
                             </div>
-                        ))}
-                    </div>
-                </section>
-            )}
+                            <div className="text-left min-w-0 flex-1">
+                                <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Submit New Idea</p>
+                                <p className="text-xs text-slate-500 truncate">Have a feature request? Add it to the pool.</p>
+                            </div>
+                            <div className="ml-auto pl-2 flex-shrink-0">
+                                <Plus className="h-5 w-5 text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                            </div>
+                        </button>
 
-            {/* TAB 3: BUG TRACKER */}
-            {activeTab === "bugs" && (
-                <section className="section-shell max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="grid gap-cards md:grid-cols-2 lg:grid-cols-3 w-full">
+                            {filteredIdeals.map(idea => (
+                                <div
+                                    key={idea.id}
+                                    onClick={() => setSelectedIdea(idea)}
+                                    className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] pad-card h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer w-full min-w-0 overflow-hidden"
+                                >
+                                    <div className="space-y-1.5 min-w-0">
+                                        <div className="flex items-start justify-between gap-4 min-w-0">
+                                            <h4 className="font-semibold text-white text-base leading-tight group-hover:text-emerald-400 transition-colors pr-8 truncate min-w-0">
+                                                {idea.title}
+                                            </h4>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
+                                                {idea.category}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
+                                        {idea.description}
+                                    </p>
+
+                                    <div
+                                        className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <button
+                                            onClick={(e) => handleVote(idea.id, "up", e)}
+                                            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-emerald-400 transition-colors group/up"
+                                        >
+                                            <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
+                                            <span>{idea.upvotes}</span>
+                                        </button>
+                                        <button
+                                            onClick={(e) => handleVote(idea.id, "down", e)}
+                                            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-rose-400 transition-colors group/down"
+                                        >
+                                            <ArrowDown className="h-4 w-4 transition-transform group-hover/down:translate-y-0.5" />
+                                            <span>{idea.downvotes || 0}</span>
+                                        </button>
+
+                                        <div className="ml-auto">
+                                            {(() => {
+                                                const isPlanned = idea.status === 'planned';
+                                                return (
+                                                    <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${isPlanned
+                                                        ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20'
+                                                        : 'text-slate-500 bg-white/5 border-white/5'
+                                                        }`}>
+                                                        {isPlanned ? 'Planned' : 'Open'}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* TAB 3: BUG TRACKER */}
+                {activeTab === "bugs" && (
+                    <div className="section-shell section-stack max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight stack-base">
                     <button
                         onClick={() => setIsBugModalOpen(true)}
-                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 mb-8 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
+                        className="group relative flex flex-row items-center gap-3 md:gap-6 rounded-2xl border border-dashed border-rose-500/20 bg-rose-500/5 p-4 w-full hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
                     >
-                        <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                            <Bug className="h-5 w-5 text-rose-400" />
-                        </div>
-                        <div className="text-left min-w-0 flex-1">
-                            <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Report a Bug</p>
-                            <p className="text-xs text-slate-500 truncate">Found something broken? Help us squash it.</p>
-                        </div>
-                        <div className="ml-auto pl-2 flex-shrink-0">
-                            <Plus className="h-5 w-5 text-slate-600 group-hover:text-rose-400 transition-colors" />
-                        </div>
-                    </button>
-
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {filteredBugs.map(bug => (
-                            <div
-                                key={bug.id}
-                                className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-5 h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg"
-                            >
-                                <div className="space-y-1.5 min-w-0">
-                                    <div className="flex items-start justify-between gap-4 min-w-0">
-                                        <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
-                                            {bug.title}
-                                        </h4>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
-                                            {bug.platform}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
-                                    {bug.description}
-                                </p>
-
-                                <div
-                                    className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <button
-                                        onClick={(e) => handleBugVote(bug.id, e)}
-                                        className={`flex items-center gap-1.5 text-xs font-semibold transition-colors group/up ${votedIdeas.has(bug.id) ? "text-emerald-400" : "text-slate-500 hover:text-emerald-400"}`}
-                                    >
-                                        <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
-                                        <span>{bug.upvotes}</span>
-                                    </button>
-
-                                    <div className="ml-auto">
-                                        {(() => {
-                                            const statusMap = {
-                                                reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
-                                                investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-                                                fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-                                                resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-                                                wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
-                                            };
-                                            const status = statusMap[bug.status] || statusMap.reported;
-                                            return (
-                                                <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
-                                                    {status.label}
-                                                </span>
-                                            );
-                                        })()}
-                                    </div>
-                                </div>
+                            <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                                <Bug className="h-5 w-5 text-rose-400" />
                             </div>
-                        ))}
+                            <div className="text-left min-w-0 flex-1">
+                                <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Report a Bug</p>
+                                <p className="text-xs text-slate-500 truncate">Found something broken? Help us squash it.</p>
+                            </div>
+                            <div className="ml-auto pl-2 flex-shrink-0">
+                                <Plus className="h-5 w-5 text-slate-600 group-hover:text-rose-400 transition-colors" />
+                            </div>
+                        </button>
+
+                        <div className="grid gap-cards md:grid-cols-2 lg:grid-cols-3">
+                            {filteredBugs.map(bug => (
+                                <div
+                                    key={bug.id}
+                                    className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] pad-card h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg"
+                                >
+                                    <div className="space-y-1.5 min-w-0">
+                                        <div className="flex items-start justify-between gap-4 min-w-0">
+                                            <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
+                                                {bug.title}
+                                            </h4>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
+                                                {bug.platform}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
+                                        {bug.description}
+                                    </p>
+
+                                    <div
+                                        className="mt-auto pt-3 flex items-center gap-3 border-t border-white/5"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <button
+                                            onClick={(e) => handleBugVote(bug.id, e)}
+                                            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors group/up ${votedIdeas.has(bug.id) ? "text-emerald-400" : "text-slate-500 hover:text-emerald-400"}`}
+                                        >
+                                            <ArrowUp className="h-4 w-4 transition-transform group-hover/up:-translate-y-0.5" />
+                                            <span>{bug.upvotes}</span>
+                                        </button>
+
+                                        <div className="ml-auto">
+                                            {(() => {
+                                                const statusMap = {
+                                                    reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+                                                    investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+                                                    fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+                                                    resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+                                                    wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                                };
+                                                const status = statusMap[bug.status] || statusMap.reported;
+                                                return (
+                                                    <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
+                                                        {status.label}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </section>
-            )}
+                )}
+            </section>
 
             {/* TASK DETAIL MODAL */}
             {mounted && selectedTask && createPortal(
@@ -844,23 +821,21 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                                    </div>
 
-                            {/* Mobile Bottom Action Bar */}
-                            <div className="md:hidden p-4 border-t border-white/10 bg-[#0A0A0A]/90 backdrop-blur-xl shrink-0">
-                                <button
-                                    onClick={() => handleBoost(selectedTask)}
-                                    disabled={boostedTasks.has(selectedTask.id) || boostingTaskId === selectedTask.id || selectedTask.progress === 100}
-                                    className={`w-full h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
-                                        ? "bg-slate-800 text-emerald-500 cursor-default"
-                                        : boostingTaskId === selectedTask.id
-                                            ? "bg-slate-800 text-slate-400"
-                                            : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
-                                        }`}
-                                >
-                                    <Zap className={`h-5 w-5 ${boostedTasks.has(selectedTask.id) ? "fill-emerald-500" : ""}`} />
-                                    <span>
-                                        {boostedTasks.has(selectedTask.id) ? "Boosted!" : "Boost this Feature"}
+                                    {/* Mobile Bottom Action Bar */}
+                                    <div className="md:hidden p-4 border-t border-white/10 bg-[#0A0A0A]/90 backdrop-blur-xl shrink-0">
+                                        <button
+                                            onClick={() => handleBoost(selectedTask)}
+                                            disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
+                                            className={`w-full h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
+                                                ? "bg-slate-800 text-emerald-500 cursor-default"
+                                                : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                                                }`}
+                                        >
+                                            <Zap className={`h-5 w-5 ${boostedTasks.has(selectedTask.id) ? "fill-emerald-500" : ""}`} />
+                                            <span>
+                                                {boostedTasks.has(selectedTask.id) ? "Boosted!" : "Boost this Feature"}
                                     </span>
                                 </button>
                             </div>
@@ -875,19 +850,17 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 <X className="h-6 w-6" />
                             </button>
 
-                            <button
-                                onClick={() => handleBoost(selectedTask)}
-                                disabled={boostedTasks.has(selectedTask.id) || boostingTaskId === selectedTask.id || selectedTask.progress === 100}
-                                className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
-                                    ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
-                                    : boostingTaskId === selectedTask.id
-                                        ? "bg-black/80 border border-white/10 cursor-wait opacity-50"
-                                        : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
-                                    }`}
-                            >
-                                {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
-                                    <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
-                                ) : (
+                                    <button
+                                        onClick={() => handleBoost(selectedTask)}
+                                        disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
+                                        className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
+                                            ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
+                                            : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
+                                            }`}
+                                    >
+                                        {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
+                                            <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
+                                        ) : (
                                     <AnimatedCounter
                                         from={selectedTask.accelerations - 1}
                                         to={selectedTask.accelerations}

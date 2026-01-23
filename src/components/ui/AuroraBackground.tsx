@@ -3,7 +3,7 @@ import React from "react";
 import { motion, MotionProps } from "framer-motion";
 
 type AuroraProps = Omit<React.HTMLAttributes<HTMLDivElement>, "style"> & MotionProps & {
-    style?: React.CSSProperties | any; // Loose typing to allow Motion values
+    style?: MotionProps["style"];
     children?: React.ReactNode;
 };
 

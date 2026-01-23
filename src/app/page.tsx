@@ -1,11 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   CheckCircle2,
   Play,
-  MonitorPlay,
   BookOpen,
   TrendingUp,
   Briefcase,
@@ -47,30 +44,33 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {/* Hero Section */}
-      <section className="relative pt-20 md:pt-32 pb-32 md:pb-40 overflow-hidden w-full">
-        <div className="section-shell relative z-10 flex flex-col items-center text-center">
+      <section className="section-block relative overflow-hidden w-full pt-12 md:pt-16">
+        <div className="section-shell section-stack stack-hero relative z-10 items-center text-center">
 
           {/* Main Title */}
-          <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
-            Simple, Fast,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
-              Fluent.
-            </span>
-          </h1>
+          <div className="section-heading max-w-6xl">
+            <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+              Simple, Fast,{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
+                Fluent.
+              </span>
+            </h1>
 
-          {/* Subtitle */}
-          <p className="mt-6 md:mt-8 max-w-4xl text-xl md:text-2xl leading-relaxed text-muted/60 px-4 font-light tracking-tight">
-            talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
-          </p>
+            {/* Subtitle */}
+            <p className="max-w-4xl text-xl md:text-2xl leading-relaxed text-muted/60 px-2 md:px-0 font-light tracking-tight text-balance">
+              talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
+            </p>
+          </div>
 
           <AppDownloadButtons
             appStoreLink={appStore}
             playStoreLink={playStore}
             webLink={primaryCta}
+            className="mt-1 md:mt-2"
           />
 
           {/* Video Placeholder */}
-          <div className="mt-12 md:mt-20 w-full max-w-5xl relative px-4">
+          <div className="w-full max-w-5xl relative flex flex-col stack-loose">
             <div className="absolute inset-0 blur-[120px] bg-emerald-400/20 -z-10" />
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/10 bg-slate-900/80 shadow-2xl flex items-center justify-center">
               <div className="flex flex-col items-center gap-3 md:gap-4 text-slate-500">
@@ -82,7 +82,7 @@ export default function Home() {
             </div>
 
             {/* Trust Proof Points Row */}
-            <div className="mt-12 grid grid-cols-2 gap-8 md:grid-cols-4 w-full pt-8">
+            <div className="grid grid-cols-2 gap-grid md:grid-cols-4 md:gap-grid-lg w-full pt-2 md:pt-3">
               {proofPoints.slice(0, 4).map((point) => (
                 <div key={point.label} className="text-center">
                   <div className="text-3xl font-bold text-white">{point.value}</div>
@@ -100,80 +100,82 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="product" className="section-shell space-y-16 mb-32 scroll-mt-32">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-            Everything you need to improve.
-          </h2>
-          <p className="text-lg text-slate-400">
-            Comprehensive tools designed to make you sound like a native speaker.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {featureCards.map((feature) => (
-            <div
-              key={feature.title}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition hover:bg-white/[0.04]"
-            >
-              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 group-hover:bg-white/10 transition-colors">
-                <feature.icon className="h-6 w-6 text-emerald-200" />
+      <section id="product" className="section-block scroll-mt-32">
+        <div className="section-shell section-stack">
+          <div className="section-heading">
+            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+              Everything you need to improve.
+            </h2>
+            <p className="text-lg text-slate-400 text-balance">
+              Comprehensive tools designed to make you sound like a native speaker.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-grid md:grid-cols-3 md:gap-grid-lg">
+            {featureCards.map((feature) => (
+              <div
+                key={feature.title}
+                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition hover:bg-white/[0.04]"
+              >
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <feature.icon className="h-6 w-6 text-emerald-200" />
+                </div>
+                <h3 className="font-heading text-xl font-bold text-white">
+                  {feature.title}
+                </h3>
+                <p className="mt-3 text-base text-slate-400 leading-relaxed">{feature.copy}</p>
               </div>
-              <h3 className="font-heading text-xl font-bold text-white">
-                {feature.title}
-              </h3>
-              <p className="mt-3 text-base text-slate-400 leading-relaxed">{feature.copy}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Feedback Subsection - Part of "Everything you need" */}
-        <div className="mt-16 rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-12 lg:p-16 overflow-hidden relative">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div className="space-y-8 z-10 relative">
-              <h3 className="font-heading text-3xl font-bold text-white md:text-4xl text-balance">
-                Feedback you can actually use.
-              </h3>
-              <p className="text-lg text-slate-400 leading-relaxed">
-                Get clear, actionable advice on your pacing, tone, and grammar. No vague suggestions—just direct ways to improve every single day.
-              </p>
-              <div className="space-y-4">
-                {benefits.map((item) => (
-                  <div key={item} className="flex items-center gap-4">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+          {/* Feedback Subsection - Part of "Everything you need" */}
+          <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-12 lg:p-16 overflow-hidden relative section-stack stack-loose">
+            <div className="grid gap-grid-lg lg:grid-cols-2 lg:items-center">
+              <div className="space-y-8 z-10 relative">
+                <h3 className="font-heading text-3xl font-bold text-white md:text-4xl text-balance">
+                  Feedback you can actually use.
+                </h3>
+                <p className="text-lg text-slate-400 leading-relaxed">
+                  Get clear, actionable advice on your pacing, tone, and grammar. No vague suggestions—just direct ways to improve every single day.
+                </p>
+                <div className="space-y-4">
+                  {benefits.map((item) => (
+                    <div key={item} className="flex items-center gap-4">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                      </div>
+                      <p className="text-base text-slate-300">{item}</p>
                     </div>
-                    <p className="text-base text-slate-300">{item}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile: Horizontal Scroll */}
-            <div className="lg:hidden relative w-full overflow-hidden">
-              <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                {feedbackCards.map((card, idx) => (
-                  <div key={`mobile-${idx}`} className="flex-shrink-0 w-[280px] snap-center">
-                    <FeedbackCard card={card} />
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-slate-500 text-center mt-2">← Swipe to see more →</p>
-            </div>
-
-            {/* Desktop: Vertical Marquee Container */}
-            <div className="hidden lg:block relative h-[500px] w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
-              <div className="grid grid-cols-2 gap-4 h-full">
-                {/* Column 1 - Upward */}
-                <div className="flex flex-col gap-4 animate-marquee-up">
-                  {[...feedbackCards, ...feedbackCards].map((card, idx) => (
-                    <FeedbackCard key={`col1-${idx}`} card={card} />
                   ))}
                 </div>
-                {/* Column 2 - Downward (slower or reverse) */}
-                <div className="flex flex-col gap-4 animate-marquee-down">
-                  {[...feedbackCards.slice().reverse(), ...feedbackCards.slice().reverse()].map((card, idx) => (
-                    <FeedbackCard key={`col2-${idx}`} card={card} />
+              </div>
+
+              {/* Mobile: Horizontal Scroll */}
+              <div className="lg:hidden relative w-full overflow-hidden">
+                <div className="flex gap-grid overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  {feedbackCards.map((card, idx) => (
+                    <div key={`mobile-${idx}`} className="flex-shrink-0 w-[280px] snap-center">
+                      <FeedbackCard card={card} />
+                    </div>
                   ))}
+                </div>
+                <p className="text-xs text-slate-500 text-center mt-2">← Swipe to see more →</p>
+              </div>
+
+              {/* Desktop: Vertical Marquee Container */}
+              <div className="hidden lg:block relative h-[500px] w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
+                <div className="grid grid-cols-2 gap-4 h-full">
+                  {/* Column 1 - Upward */}
+                  <div className="flex flex-col gap-4 animate-marquee-up">
+                    {[...feedbackCards, ...feedbackCards].map((card, idx) => (
+                      <FeedbackCard key={`col1-${idx}`} card={card} />
+                    ))}
+                  </div>
+                  {/* Column 2 - Downward (slower or reverse) */}
+                  <div className="flex flex-col gap-4 animate-marquee-down">
+                    {[...feedbackCards.slice().reverse(), ...feedbackCards.slice().reverse()].map((card, idx) => (
+                      <FeedbackCard key={`col2-${idx}`} card={card} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -182,17 +184,18 @@ export default function Home() {
       </section>
 
       {/* Technology / Under the Hood Section */}
-      <section className="section-shell space-y-16 mb-32 relative">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-            Magic, engineered.
-          </h2>
-          <p className="text-lg text-slate-400">
-            Next-gen models and SOTA speech synthesis for an experience that feels truly alive.
-          </p>
-        </div>
+      <section className="section-block relative">
+        <div className="section-shell section-stack">
+          <div className="section-heading">
+            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+              Magic, engineered.
+            </h2>
+            <p className="text-lg text-slate-400 text-balance">
+              Next-gen models and SOTA speech synthesis for an experience that feels truly alive.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:grid-rows-2 md:h-[560px]">
+          <div className="grid grid-cols-1 gap-5 md:gap-6 md:grid-cols-6 md:grid-rows-2 md:h-[560px]">
 
           {/* 1. Agentic Conversation (Large - 3 cols, 2 rows) */}
           <div className="group relative col-span-1 md:col-span-3 md:row-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 md:p-8 flex flex-col transition-all hover:bg-white/[0.04] h-[540px] md:h-auto md:min-h-0">
@@ -326,20 +329,22 @@ export default function Home() {
           </div>
 
         </div>
+        </div>
       </section>
 
       {/* Built by experts - Premium Storytelling Cards */}
-      <section id="about" className="section-shell space-y-16 mb-32 scroll-mt-32">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-            Built by experts.
-          </h2>
-          <p className="text-lg text-slate-400">
-            Where Oxford linguistics meets Silicon Valley engineering.
-          </p>
-        </div>
+      <section id="about" className="section-block scroll-mt-32">
+        <div className="section-shell section-stack">
+          <div className="section-heading">
+            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+              Built by experts.
+            </h2>
+            <p className="text-lg text-slate-400 text-balance">
+              Where Oxford linguistics meets Silicon Valley engineering.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-8">
+          <div className="grid grid-cols-1 gap-8">
           {/* Card 1: Pedagogy - Green Gradient */}
           <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-400/20 via-teal-400/15 to-green-500/10 p-6 md:p-12 transition-all hover:scale-[1.01]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.15),transparent_50%)]" />
@@ -465,103 +470,107 @@ export default function Home() {
             </div>
           </div>
         </div>
+        </div>
       </section>
 
       {/* Testimonials - Voice Note Cards */}
-      <section className="section-shell space-y-16 mb-32">
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-            Real people, real results.
-          </h2>
-          <p className="mt-4 text-lg text-slate-400">
-            Join thousands of learners sounding more confident every day.
-          </p>
-        </div>
+      <section className="section-block">
+        <div className="section-shell section-stack">
+          <div className="section-heading">
+            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+              Real people, real results.
+            </h2>
+            <p className="text-lg text-slate-400 text-balance">
+              Join thousands of learners sounding more confident every day.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-grid">
-          {[
-            {
-              name: "Sarah Chen",
-              role: "Software Engineer",
-              score: "Job Offer Secured",
-              icon: "Briefcase",
-              quote: "The mock interviews felt incredibly real. I stopped freezing up when I didn't know the answer.",
-              color: "emerald"
-            },
-            {
-              name: "Marcus Rodriguez",
-              role: "Medical Student",
-              score: "IELTS 6.5 → 7.5",
-              icon: "TrendingUp",
-              quote: "I used to mumble. talkflo forced me to speak up and clearly. It's like a gym for your voice.",
-              color: "indigo"
-            },
-            {
-              name: "Yuki Tanaka",
-              role: "Product Designer",
-              score: "Visa Approved",
-              icon: "CheckCircle2",
-              quote: "The nuance feedback is crazy. It caught my tone issues that simple grammar checkers always missed.",
-              color: "rose"
-            }
-          ].map((item) => (
-            <div
-              key={item.name}
-              className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition-all hover:bg-white/[0.04] hover:border-white/20"
-            >
-              <div className="space-y-6">
-                {/* Unified Premium Glass Badge */}
-                <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-md">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10">
-                    {item.icon === 'Briefcase' && <Briefcase className="h-3 w-3 text-emerald-400" />}
-                    {item.icon === 'TrendingUp' && <TrendingUp className="h-3 w-3 text-indigo-400" />}
-                    {item.icon === 'CheckCircle2' && <CheckCircle2 className="h-3 w-3 text-rose-400" />}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 stagger-grid">
+            {[
+              {
+                name: "Sarah Chen",
+                role: "Software Engineer",
+                score: "Job Offer Secured",
+                icon: "Briefcase",
+                quote: "The mock interviews felt incredibly real. I stopped freezing up when I didn't know the answer.",
+                color: "emerald"
+              },
+              {
+                name: "Marcus Rodriguez",
+                role: "Medical Student",
+                score: "IELTS 6.5 → 7.5",
+                icon: "TrendingUp",
+                quote: "I used to mumble. talkflo forced me to speak up and clearly. It's like a gym for your voice.",
+                color: "indigo"
+              },
+              {
+                name: "Yuki Tanaka",
+                role: "Product Designer",
+                score: "Visa Approved",
+                icon: "CheckCircle2",
+                quote: "The nuance feedback is crazy. It caught my tone issues that simple grammar checkers always missed.",
+                color: "rose"
+              }
+            ].map((item) => (
+              <div
+                key={item.name}
+                className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition-all hover:bg-white/[0.04] hover:border-white/20"
+              >
+                <div className="space-y-6">
+                  {/* Unified Premium Glass Badge */}
+                  <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-md">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10">
+                      {item.icon === 'Briefcase' && <Briefcase className="h-3 w-3 text-emerald-400" />}
+                      {item.icon === 'TrendingUp' && <TrendingUp className="h-3 w-3 text-indigo-400" />}
+                      {item.icon === 'CheckCircle2' && <CheckCircle2 className="h-3 w-3 text-rose-400" />}
+                    </div>
+                    <span className="text-[11px] font-bold tracking-tight text-white/90">{item.score}</span>
                   </div>
-                  <span className="text-[11px] font-bold tracking-tight text-white/90">{item.score}</span>
+
+                  <p className="text-lg text-slate-200 leading-relaxed font-medium">“{item.quote}”</p>
+
+                  {/* Fake Audio Player UI */}
+                  <div className="flex items-center gap-3 rounded-xl bg-white/5 p-2 pr-4 border border-white/5">
+                    <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                      <Play className="h-3 w-3 text-white ml-0.5" />
+                    </div>
+                    <div className="flex gap-0.5 h-4 items-center flex-1">
+                      {[...Array(20)].map((_, j) => (
+                        <div
+                          key={j}
+                          className="w-0.5 bg-slate-500/50 rounded-full transition-all group-hover:bg-emerald-400/80"
+                          style={{
+                            height: `${20 + ((j * 13 + item.name.length * 7) % 80)}%`
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">0:14</span>
+                  </div>
                 </div>
 
-                <p className="text-lg text-slate-200 leading-relaxed font-medium">“{item.quote}”</p>
-
-                {/* Fake Audio Player UI */}
-                <div className="flex items-center gap-3 rounded-xl bg-white/5 p-2 pr-4 border border-white/5">
-                  <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                    <Play className="h-3 w-3 text-white ml-0.5" />
+                <div className="mt-8 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 ring-2 ring-white/10" />
+                  <div>
+                    <p className="font-bold text-white text-sm">{item.name}</p>
+                    <p className="text-xs text-slate-400">{item.role}</p>
                   </div>
-                  <div className="flex gap-0.5 h-4 items-center flex-1">
-                    {[...Array(20)].map((_, j) => (
-                      <div
-                        key={j}
-                        className="w-0.5 bg-slate-500/50 rounded-full transition-all group-hover:bg-emerald-400/80"
-                        style={{
-                          height: `${20 + ((j * 13 + item.name.length * 7) % 80)}%`
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[10px] text-slate-500 font-mono">0:14</span>
                 </div>
               </div>
-
-              <div className="mt-8 flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 ring-2 ring-white/10" />
-                <div>
-                  <p className="font-bold text-white text-sm">{item.name}</p>
-                  <p className="text-xs text-slate-400">{item.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="section-shell space-y-16 mb-20">
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-            FAQ.
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-5xl mx-auto">
+      <section className="section-block">
+        <div className="section-shell section-stack">
+          <div className="section-heading">
+            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+              FAQ.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:gap-5 md:grid-cols-2 max-w-5xl mx-auto">
           {faqs.map((item) => (
             <details
               key={item.q}
@@ -577,14 +586,16 @@ export default function Home() {
             </details>
           ))}
         </div>
+        </div>
       </section>
 
       {/* CTA Footer */}
-      <section className="section-shell">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10">
+      <section className="section-block">
+        <div className="section-shell">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,245,197,0.12),transparent_30%)]" />
           <div className="relative flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="space-y-4 w-full">
+            <div className="flex flex-col gap-5 md:gap-6 w-full">
               <h2 className="font-heading text-3xl font-semibold text-white md:text-4xl">
                 Start practicing in seconds.
               </h2>
@@ -595,10 +606,11 @@ export default function Home() {
                 appStoreLink={appStore}
                 playStoreLink={playStore}
                 webLink={primaryCta}
-                className="mt-6 w-full max-w-full mx-auto md:mx-0 px-0 items-center md:items-start lg:justify-start"
+                className="w-full max-w-full mx-auto md:mx-0 px-0 items-center md:items-start lg:justify-start"
               />
             </div>
           </div>
+        </div>
         </div>
       </section>
     </AuroraBackground>

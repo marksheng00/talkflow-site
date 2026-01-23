@@ -3,24 +3,22 @@
 import { useState, useEffect } from "react";
 
 export function AnimatedCounter({ from, to, skipAnimation = false }: { from: number; to: number; skipAnimation?: boolean }) {
-    const [count, setCount] = useState(skipAnimation ? to : from);
-    const [isComplete, setIsComplete] = useState(skipAnimation);
+    const [count, setCount] = useState(from);
+    const [isComplete, setIsComplete] = useState(false);
 
     useEffect(() => {
-        if (skipAnimation) {
-            // Initial state is already handled by useState.
-            // If props update to true later, we might want to force update:
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            if (!isComplete) setIsComplete(true);
-            if (count !== to) setCount(to);
-            return;
-        }
+        if (skipAnimation) return;
 
         let startTime: number | null = null;
         const duration = 600; // Animation duration in ms
+        let rafId: number;
 
         const animate = (currentTime: number) => {
-            if (!startTime) startTime = currentTime;
+            if (!startTime) {
+                startTime = currentTime;
+                setIsComplete(false);
+                setCount(from);
+            }
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
@@ -31,18 +29,23 @@ export function AnimatedCounter({ from, to, skipAnimation = false }: { from: num
             setCount(currentCount);
 
             if (progress < 1) {
-                requestAnimationFrame(animate);
+                rafId = requestAnimationFrame(animate);
             } else {
                 setIsComplete(true);
             }
         };
 
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
+
+        return () => cancelAnimationFrame(rafId);
     }, [from, to, skipAnimation]);
 
+    const displayCount = skipAnimation ? to : count;
+    const complete = skipAnimation ? true : isComplete;
+
     return (
-        <span className={`text-2xl font-black transition-colors ${skipAnimation ? '' : 'animate-in zoom-in-50 duration-300'} ${isComplete ? '' : 'text-white'}`}>
-            {count}
+        <span className={`text-2xl font-black transition-colors ${skipAnimation ? '' : 'animate-in zoom-in-50 duration-300'} ${complete ? '' : 'text-white'}`}>
+            {displayCount}
         </span>
     );
 }

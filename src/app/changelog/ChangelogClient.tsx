@@ -4,19 +4,19 @@ import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import { changelogData, ChangeType } from "@/lib/data/changelog-data";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Zap, Bug, Sparkles, Check } from "lucide-react";
+import { CheckCircle2, Zap, Bug, Sparkles, Check, type LucideIcon } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const typeConfig: Record<ChangeType, { label: string; color: string; icon: any }> = {
+const typeConfig: Record<ChangeType, { label: string; color: string; icon: LucideIcon }> = {
     feature: { label: "New", color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20", icon: Sparkles },
     fix: { label: "Fix", color: "text-rose-400 bg-rose-500/10 border-rose-500/20", icon: Bug },
     improvement: { label: "Update", color: "text-blue-400 bg-blue-500/10 border-blue-500/20", icon: CheckCircle2 },
     perf: { label: "Perf", color: "text-amber-400 bg-amber-500/10 border-amber-500/20", icon: Zap },
 };
 
-function ChangeItem({ change, idx, version }: { change: { type: ChangeType, content: string }, idx: number, version: string }) {
+function ChangeItem({ change }: { change: { type: ChangeType; content: string } }) {
     const config = typeConfig[change.type];
     const Icon = config.icon;
     const [squashed, setSquashed] = useState(false);
@@ -97,63 +97,63 @@ function ChangeItem({ change, idx, version }: { change: { type: ChangeType, cont
 
 export default function ChangelogClient() {
     return (
-        <AuroraBackground className="min-h-screen pb-32 text-white">
-            <section className="relative pt-20 md:pt-32 pb-16 section-shell max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="text-center mb-20 space-y-4">
-                    <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-white to-amber-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
-                            Changelog.
-                        </span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl mx-auto">
-                        We&apos;re building in public. Here&apos;s everything we&apos;ve shipped recently.
-                    </p>
-                    <p className="text-xs text-slate-600 font-mono mt-4">
-                        (Tip: Found a bug fix? Try clicking the bug icon to squash it!)
-                    </p>
-                </div>
+        <AuroraBackground className="min-h-screen pb-24 text-white">
+            <section className="section-block">
+                <div className="section-shell max-w-4xl mx-auto section-stack">
+                    {/* Header */}
+                    <div className="section-heading">
+                        <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-white to-amber-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
+                                Changelog.
+                            </span>
+                        </h1>
+                        <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl mx-auto">
+                            We&apos;re building in public. Here&apos;s everything we&apos;ve shipped recently.
+                        </p>
+                        <p className="text-xs text-slate-600 font-mono">
+                            (Tip: Found a bug fix? Try clicking the bug icon to squash it!)
+                        </p>
+                    </div>
 
-                {/* Timeline */}
-                <div className="relative border-l border-white/10 ml-4 md:ml-12 space-y-16">
-                    {changelogData.map((release, index) => (
-                        <div key={release.version} className="relative pl-8 md:pl-12">
-                            {/* Timeline Dot */}
-                            <div className={cn(
-                                "absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full border border-black z-20",
-                                index === 0 ? "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.5)]" : "bg-slate-600"
-                            )} />
+                    {/* Timeline */}
+                    <div className="relative border-l border-white/10 ml-4 md:ml-12 stack-loose">
+                        {changelogData.map((release, index) => (
+                            <div key={release.version} className="relative pl-8 md:pl-12">
+                                {/* Timeline Dot */}
+                                <div className={cn(
+                                    "absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full border border-black z-20",
+                                    index === 0 ? "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.5)]" : "bg-slate-600"
+                                )} />
 
-                            {/* Release Header */}
-                            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-6 relative group/header">
-                                <div className="flex items-center gap-3">
-                                    <h2 className="text-2xl font-bold text-white font-heading group-hover/header:text-emerald-400 transition-colors cursor-default">
-                                        {release.version}
-                                    </h2>
-                                    {index === 0 && (
-                                        <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950 bg-emerald-400 rounded-full animate-pulse">
-                                            Latest
-                                        </span>
-                                    )}
+                                {/* Release Header */}
+                                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-6 relative group/header">
+                                    <div className="flex items-center gap-3">
+                                        <h2 className="text-2xl font-bold text-white font-heading group-hover/header:text-emerald-400 transition-colors cursor-default">
+                                            {release.version}
+                                        </h2>
+                                        {index === 0 && (
+                                            <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950 bg-emerald-400 rounded-full animate-pulse">
+                                                Latest
+                                            </span>
+                                        )}
+                                    </div>
+                                    <time className="text-sm font-mono text-slate-500">
+                                        {format(new Date(release.date), "MMMM dd, yyyy")}
+                                    </time>
                                 </div>
-                                <time className="text-sm font-mono text-slate-500">
-                                    {format(new Date(release.date), "MMMM dd, yyyy")}
-                                </time>
-                            </div>
 
-                            {/* Changes List */}
-                            <div className="space-y-4">
-                                {release.changes.map((change, idx) => (
-                                    <ChangeItem
-                                        key={idx}
-                                        change={change}
-                                        idx={idx}
-                                        version={release.version}
-                                    />
-                                ))}
+                                {/* Changes List */}
+                                <div className="space-y-4">
+                                    {release.changes.map((change, idx) => (
+                                        <ChangeItem
+                                            key={`${release.version}-${idx}`}
+                                            change={change}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </section>
         </AuroraBackground>

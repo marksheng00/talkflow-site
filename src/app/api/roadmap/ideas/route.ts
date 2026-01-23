@@ -48,10 +48,11 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json(data);
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error('API Error:', e);
+        const message = e instanceof Error ? e.message : 'Internal Server Error';
         return NextResponse.json(
-            { error: e.message || 'Internal Server Error' },
+            { error: message },
             { status: 500 }
         );
     }
