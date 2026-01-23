@@ -13,6 +13,25 @@ export const metadata: Metadata = {
     }
 };
 
-export default function RoadmapPage() {
-    return <RoadmapClient />;
+import {
+    listRoadmapItems,
+    listCommunityIdeas,
+    listBugReports
+} from "@/lib/roadmap";
+
+export default async function RoadmapPage() {
+    // Fetch all data in parallel on the server
+    const [tasks, ideas, bugs] = await Promise.all([
+        listRoadmapItems(),
+        listCommunityIdeas(),
+        listBugReports()
+    ]);
+
+    return (
+        <RoadmapClient
+            initialTasks={tasks}
+            initialIdeas={ideas}
+            initialBugs={bugs}
+        />
+    );
 }

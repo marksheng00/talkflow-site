@@ -51,12 +51,18 @@ type Tab = "roadmap" | "ideas" | "bugs";
 // Request deduplication map
 const pendingBoosts = new Map<string, Promise<RoadmapItem>>();
 
-export default function RoadmapClient() {
+interface RoadmapClientProps {
+    initialTasks: RoadmapItem[];
+    initialIdeas: CommunityIdea[];
+    initialBugs: BugReport[];
+}
+
+export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs }: RoadmapClientProps) {
     const [activeTab, setActiveTab] = useState<Tab>("roadmap");
-    const [tasks, setTasks] = useState<RoadmapItem[]>([]);
-    const [ideals, setIdeals] = useState<CommunityIdea[]>([]);
-    const [bugs, setBugs] = useState<BugReport[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [tasks, setTasks] = useState<RoadmapItem[]>(initialTasks);
+    const [ideals, setIdeals] = useState<CommunityIdea[]>(initialIdeas);
+    const [bugs, setBugs] = useState<BugReport[]>(initialBugs);
+    const [loading, setLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -164,28 +170,8 @@ export default function RoadmapClient() {
         };
     }, [activeTab, loading]);
 
-    // Fetch Data
-    useEffect(() => {
-        async function loadData() {
-            try {
-                // Fetch all three data sources in parallel
-                const [roadmapData, ideasData, bugsData] = await Promise.all([
-                    listRoadmapItems(),
-                    listCommunityIdeas(),
-                    listBugReports()
-                ]);
-
-                setTasks(roadmapData);
-                setIdeals(ideasData);
-                setBugs(bugsData);
-            } catch (error) {
-                console.error("Failed to load data", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadData();
-    }, []);
+    // Fetch Data - Removed in favor of Server Action pre-fetching
+    // useEffect(() => { ... }, []);
 
     // Reset tracking states when modal opens/changes
     useEffect(() => {
