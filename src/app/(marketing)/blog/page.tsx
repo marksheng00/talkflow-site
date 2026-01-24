@@ -105,7 +105,7 @@ export default async function BlogPage({
                             <div className="lg:hidden mb-8 overflow-x-auto pb-2 no-scrollbar flex gap-2">
                                 <Link
                                     href="/blog"
-                                    className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${!categorySlug
+                                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${!categorySlug
                                         ? 'bg-teal-500 text-black border-teal-500'
                                         : 'bg-white/5 border-white/10 text-slate-400'
                                         }`}
@@ -116,7 +116,7 @@ export default async function BlogPage({
                                     <Link
                                         key={cat.slug.current}
                                         href={`/blog?category=${cat.slug.current}`}
-                                        className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${categorySlug === cat.slug.current
+                                        className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${categorySlug === cat.slug.current
                                             ? 'bg-teal-500 text-black border-teal-500'
                                             : 'bg-white/5 border-white/10 text-slate-400'
                                             }`}
