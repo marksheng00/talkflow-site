@@ -77,7 +77,7 @@ export default async function BlogPage({
                             <nav className="flex flex-col space-y-1">
                                 <Link
                                     href="/blog"
-                                    className={`px-3 py-2 rounded-lg text-sm transition-all ${!categorySlug
+                                    className={`px-3 py-2 rounded-xl text-sm transition-all ${!categorySlug
                                         ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
                                         : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                         }`}
@@ -88,7 +88,7 @@ export default async function BlogPage({
                                     <Link
                                         key={cat.slug.current}
                                         href={`/blog?category=${cat.slug.current}`}
-                                        className={`px-3 py-2 rounded-lg text-sm transition-all ${categorySlug === cat.slug.current
+                                        className={`px-3 py-2 rounded-xl text-sm transition-all ${categorySlug === cat.slug.current
                                             ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
                                             : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                             }`}
@@ -141,7 +141,7 @@ export default async function BlogPage({
                                             {page > 1 && (
                                                 <Link
                                                     href={`/blog?page=${page - 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
-                                                    className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
+                                                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
                                                 >
                                                     <ChevronLeft className="w-4 h-4" /> Prev
                                                 </Link>
@@ -154,7 +154,7 @@ export default async function BlogPage({
                                             {page < totalPages && (
                                                 <Link
                                                     href={`/blog?page=${page + 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
-                                                    className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
+                                                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
                                                 >
                                                     Next <ChevronRight className="w-4 h-4" />
                                                 </Link>
@@ -168,7 +168,7 @@ export default async function BlogPage({
                                     <p className="text-slate-400 mb-4">No articles found</p>
                                     <Link
                                         href="/blog"
-                                        className="px-5 py-2 rounded-full bg-teal-500 text-black font-bold text-sm hover:bg-teal-400 transition-colors"
+                                        className="px-5 py-2 rounded-xl bg-teal-500 text-black font-bold text-sm hover:bg-teal-400 transition-colors"
                                     >
                                         View All
                                     </Link>
