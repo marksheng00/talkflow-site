@@ -1,6 +1,6 @@
 "use client";
 
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity.image';
 import { format } from 'date-fns';
@@ -18,6 +18,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
     return (
         <Link
             href={`/blog/${post.slug.current}`}
+            locale={localeSelection}
             className="group relative flex flex-col gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-5 transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg h-full"
         >
             {post.mainImage && (

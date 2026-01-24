@@ -7,8 +7,16 @@ export default defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Title',
-            type: 'string',
+            title: 'Title (Multi-language)',
+            type: 'object',
+            fields: [
+                { name: 'en', title: 'English', type: 'string' },
+                { name: 'zh', title: 'Simplified Chinese', type: 'string' },
+                { name: 'zh-Hant', title: 'Traditional Chinese', type: 'string' },
+                { name: 'es', title: 'Spanish', type: 'string' },
+                { name: 'ko', title: 'Korean', type: 'string' },
+                { name: 'ja', title: 'Japanese', type: 'string' },
+            ],
             validation: (Rule) => Rule.required(),
         }),
         defineField({

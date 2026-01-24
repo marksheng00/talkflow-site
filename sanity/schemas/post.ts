@@ -12,6 +12,23 @@ export default defineType({
             validation: (Rule) => Rule.required().min(5).max(100),
         }),
         defineField({
+            name: 'language',
+            title: 'Language',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'English', value: 'en' },
+                    { title: 'Simplified Chinese', value: 'zh' },
+                    { title: 'Traditional Chinese', value: 'zh-Hant' },
+                    { title: 'Spanish', value: 'es' },
+                    { title: 'Korean', value: 'ko' },
+                    { title: 'Japanese', value: 'ja' },
+                ],
+            },
+            initialValue: 'en',
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
             name: 'slug',
             title: 'Slug',
             type: 'slug',
@@ -100,10 +117,16 @@ export default defineType({
             title: 'title',
             author: 'author.name',
             media: 'mainImage',
+            language: 'language',
         },
         prepare(selection) {
-            const { author } = selection
-            return { ...selection, subtitle: author && `by ${author}` }
+            const { author, language } = selection
+            const langLabel = language ? `[${language.toUpperCase()}] ` : ''
+            return {
+                ...selection,
+                title: `${langLabel}${selection.title}`,
+                subtitle: author && `by ${author}`
+            }
         },
     },
 })

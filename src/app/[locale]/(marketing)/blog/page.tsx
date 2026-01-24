@@ -9,7 +9,7 @@ import {
 import { AuroraBackground } from '@/components/ui/AuroraBackground';
 import BlogCard from '@/components/blog/BlogCard';
 import { ChevronLeft, ChevronRight, Filter, BookOpen } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { getTranslations } from 'next-intl/server';
 
@@ -43,12 +43,12 @@ export default async function BlogPage({
 
     const [posts, totalPosts, categories] = await Promise.all([
         categorySlug
-            ? client.fetch<BlogPost[]>(postsByCategoryQuery, { categorySlug, start, end })
-            : client.fetch<BlogPost[]>(postsQuery, { start, end }),
+            ? client.fetch<BlogPost[]>(postsByCategoryQuery, { categorySlug, start, end, language: locale })
+            : client.fetch<BlogPost[]>(postsQuery, { start, end, language: locale }),
         categorySlug
-            ? client.fetch<number>(postsByCategoryCountQuery, { categorySlug })
-            : client.fetch<number>(postsCountQuery),
-        client.fetch<BlogCategory[]>(categoriesQuery)
+            ? client.fetch<number>(postsByCategoryCountQuery, { categorySlug, language: locale })
+            : client.fetch<number>(postsCountQuery, { language: locale }),
+        client.fetch<BlogCategory[]>(categoriesQuery, { language: locale })
     ]);
 
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
@@ -87,6 +87,7 @@ export default async function BlogPage({
                             <nav className="flex flex-col space-y-1">
                                 <Link
                                     href="/blog"
+                                    locale={locale}
                                     className={`px-3 py-2 rounded-xl text-sm transition-all ${!categorySlug
                                         ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
                                         : 'text-slate-400 hover:bg-white/5 hover:text-white'
@@ -98,6 +99,7 @@ export default async function BlogPage({
                                     <Link
                                         key={cat.slug.current}
                                         href={`/blog?category=${cat.slug.current}`}
+                                        locale={locale}
                                         className={`px-3 py-2 rounded-xl text-sm transition-all ${categorySlug === cat.slug.current
                                             ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
                                             : 'text-slate-400 hover:bg-white/5 hover:text-white'
@@ -115,6 +117,7 @@ export default async function BlogPage({
                             <div className="lg:hidden mb-8 overflow-x-auto pb-2 no-scrollbar flex gap-2">
                                 <Link
                                     href="/blog"
+                                    locale={locale}
                                     className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${!categorySlug
                                         ? 'bg-teal-500 text-black border-teal-500'
                                         : 'bg-white/5 border-white/10 text-slate-400'
@@ -126,6 +129,7 @@ export default async function BlogPage({
                                     <Link
                                         key={cat.slug.current}
                                         href={`/blog?category=${cat.slug.current}`}
+                                        locale={locale}
                                         className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${categorySlug === cat.slug.current
                                             ? 'bg-teal-500 text-black border-teal-500'
                                             : 'bg-white/5 border-white/10 text-slate-400'
@@ -151,6 +155,7 @@ export default async function BlogPage({
                                             {page > 1 && (
                                                 <Link
                                                     href={`/blog?page=${page - 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
+                                                    locale={locale}
                                                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
                                                 >
                                                     <ChevronLeft className="w-4 h-4" /> {t('Pagination.prev')}
@@ -164,6 +169,7 @@ export default async function BlogPage({
                                             {page < totalPages && (
                                                 <Link
                                                     href={`/blog?page=${page + 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
+                                                    locale={locale}
                                                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
                                                 >
                                                     {t('Pagination.next')} <ChevronRight className="w-4 h-4" />
@@ -178,6 +184,7 @@ export default async function BlogPage({
                                     <p className="text-slate-400 mb-4">{t('Empty.title')}</p>
                                     <Link
                                         href="/blog"
+                                        locale={locale}
                                         className="px-5 py-2 rounded-xl bg-teal-500 text-black font-bold text-sm hover:bg-teal-400 transition-colors"
                                     >
                                         {t('Empty.button')}

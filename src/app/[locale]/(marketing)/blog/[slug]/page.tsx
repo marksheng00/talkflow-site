@@ -5,9 +5,9 @@ import { PortableText } from '@portabletext/react';
 import { urlFor } from '@/lib/sanity.image';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
+import { zhCN, zhTW } from 'date-fns/locale';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { TableOfContents } from '@/components/blog/TableOfContents';
 import { estimateReadingTime } from '@/lib/blog-helpers';
@@ -36,27 +36,40 @@ const extractText = (block: PortableTextBlock): string => {
     return (block.children as Array<{ text: string }>).map((child) => child.text).join('');
 };
 
-// Generate static params for all posts
+// Generate static params for all posts across all languages
 export async function generateStaticParams() {
-    const posts = await client.fetch<Array<{ slug: { current: string } }>>(allPostSlugsQuery);
+    const posts = await client.fetch<Array<{ slug: { current: string }, language: string }>>(allPostSlugsQuery);
     return posts.map((post) => ({
         slug: post.slug.current,
+        locale: post.language || 'en'
     }));
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
-    const { slug } = await params;
+    const { slug, locale } = await params;
     if (!slug) return {};
 
-    const post = await client.fetch<BlogPost | null>(postBySlugQuery, { slug });
+    const post = await client.fetch<BlogPost | null>(postBySlugQuery, { slug, language: locale });
 
     if (!post) return {};
+
+    // Prepare alternates (hreflang)
+    const languages: Record<string, string> = {};
+    if (post.translations) {
+        post.translations.forEach(t => {
+            languages[t.language] = `/${t.language}/blog/${t.slug.current}`;
+        });
+    }
 
     return {
         title: post.seo?.metaTitle || `${post.title} | talkflo Blog`,
         description: post.seo?.metaDescription || post.excerpt,
         keywords: post.seo?.keywords,
+        alternates: {
+            canonical: `/${locale}/blog/${slug}`,
+            languages
+        },
         openGraph: {
             title: post.title,
             description: post.excerpt,
@@ -122,7 +135,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     if (!slug) notFound();
 
     const [post, t] = await Promise.all([
-        client.fetch<BlogPost | null>(postBySlugQuery, { slug }),
+        client.fetch<BlogPost | null>(postBySlugQuery, { slug, language: locale }),
         getTranslations({ locale, namespace: 'BlogPage' })
     ]);
 
@@ -150,6 +163,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                             <div className="space-y-8 pt-3">
                                 <Link
                                     href="/blog"
+                                    locale={locale}
                                     className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group text-sm font-bold"
                                 >
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -165,6 +179,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                             <div className="lg:hidden mb-8">
                                 <Link
                                     href="/blog"
+                                    locale={locale}
                                     className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group text-sm font-bold"
                                 >
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -205,9 +220,13 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                             <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.published')}</span>
                                             <time className="text-white font-medium whitespace-nowrap">
                                                 {post.publishedAt
-                                                    ? format(new Date(post.publishedAt), locale === 'zh' ? 'yyyy年MM月dd日' : 'MMMM dd, yyyy', {
-                                                        locale: locale === 'zh' ? zhCN : undefined
-                                                    })
+                                                    ? format(
+                                                        new Date(post.publishedAt),
+                                                        (locale === 'zh' || locale === 'zh-Hant') ? 'yyyy年MM月dd日' : 'MMMM dd, yyyy',
+                                                        {
+                                                            locale: locale === 'zh' ? zhCN : (locale === 'zh-Hant' ? zhTW : undefined)
+                                                        }
+                                                    )
                                                     : t('Post.unknown')}
                                             </time>
                                         </div>

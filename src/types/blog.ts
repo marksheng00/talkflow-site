@@ -26,9 +26,14 @@ export type BlogPost = {
   author?: BlogAuthor | null;
   categories?: BlogCategory[] | null;
   publishedAt?: string;
+  language?: string;
   seo?: {
     metaTitle?: string;
     metaDescription?: string;
     keywords?: string[];
   };
+  translations?: Array<{
+    language: string;
+    slug: BlogSlug;
+  }>;
 };
