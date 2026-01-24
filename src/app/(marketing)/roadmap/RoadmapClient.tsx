@@ -29,7 +29,9 @@ import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import {
     accelerateRoadmapItem,
     voteIdea,
-    voteBugReport
+    voteBugReport,
+    createIdea,
+    createBugReport
 } from "@/lib/roadmap";
 
 // Form State
@@ -212,18 +214,8 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 category: form.category || undefined,
             };
 
-            const response = await fetch("/api/roadmap/ideas", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(submission),
-            });
+            const newItem = await createIdea(submission);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to submit idea");
-            }
-
-            const newItem = await response.json();
             setIdeals(prev => [newItem, ...prev]);
             setIsSubmitModalOpen(false);
             setForm({ title: "", description: "", category: "" });
@@ -249,18 +241,8 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 platform: bugForm.platform,
             };
 
-            const response = await fetch("/api/roadmap/bugs", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(submission),
-            });
+            const newItem = await createBugReport(submission);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to submit bug");
-            }
-
-            const newItem = await response.json();
             setBugs(prev => [newItem, ...prev]);
             setIsBugModalOpen(false);
             setBugForm({ title: "", steps: "", expected: "", actual: "", platform: "Web" });
@@ -391,8 +373,9 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 <div className="section-shell section-stack stack-tight items-center text-center">
                     <div className="section-heading">
                         <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                            Building in{" "}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
-                                Building in public.
+                                public.
                             </span>
                         </h1>
                         <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl mx-auto">
@@ -425,7 +408,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="flex gap-1.5 md:gap-2 w-full md:w-auto justify-center md:justify-end">
                             {activeTab === "bugs" ? (
                                 // Platform Filters for Bugs
-                                (["All", "Web", "iOS", "Android"] as const).map(p => {
+                                (["All", "iOS", "Android", "Web"] as const).map(p => {
                                     const isActive = selectedPlatform === p;
                                     const platformColors = {
                                         All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },

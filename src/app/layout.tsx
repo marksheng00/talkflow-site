@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 
 const heading = Space_Grotesk({
   variable: "--font-heading",
@@ -68,9 +66,7 @@ export default function RootLayout({
       <body className={`${heading.variable} ${body.variable} antialiased overflow-x-hidden`}>
         <FluentBackground />
         <div className="relative z-10 min-h-screen bg-transparent text-slate-100 selection:bg-emerald-500/30 overflow-x-hidden">
-          <Header />
-          <main className="overflow-x-hidden">{children}</main>
-          <Footer />
+          {children}
         </div>
       </body>
     </html>
