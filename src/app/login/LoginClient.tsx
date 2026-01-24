@@ -84,7 +84,7 @@ export default function LoginClient() {
                     <NavbarLogo />
                 </div>
             </div>
-            <div className="flex min-h-screen w-full items-center justify-center px-4 pb-4 pt-24">
+            <div className="flex min-h-[100dvh] w-full items-center justify-center px-4 py-8 md:pt-24 md:pb-8">
                 <div className="w-full max-w-[400px]">
                     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl">
                         <AnimatePresence mode="wait">
@@ -94,11 +94,11 @@ export default function LoginClient() {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="p-8 pt-16 pb-10"
+                                    className="p-6 md:p-8 pt-10 md:pt-16 pb-8 md:pb-10"
                                 >
                                     {/* Header */}
-                                    <div className="flex flex-col items-center justify-center text-center mb-10 space-y-6">
-                                        <div className="relative h-16 w-16">
+                                    <div className="flex flex-col items-center justify-center text-center mb-6 md:mb-10 space-y-4 md:space-y-6">
+                                        <div className="relative h-12 w-12 md:h-16 md:w-16">
                                             <Image
                                                 src="/talkflo_logo.png"
                                                 alt="talkflo"
@@ -123,16 +123,16 @@ export default function LoginClient() {
                                         {socialButtons.map((btn) => (
                                             <button
                                                 key={btn.name}
-                                                className="relative w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-3 px-4 rounded-xl transition-all active:scale-[0.98] group"
+                                                className="relative w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-2.5 md:py-3 px-4 rounded-xl transition-all active:scale-[0.98] group"
                                             >
                                                 {btn.icon}
-                                                <span className="text-[15px] font-semibold">Continue with {btn.name}</span>
+                                                <span className="text-[14px] md:text-[15px] font-semibold">Continue with {btn.name}</span>
                                             </button>
                                         ))}
                                     </div>
 
                                     {/* Divider */}
-                                    <div className="relative my-8">
+                                    <div className="relative my-6 md:my-8">
                                         <div className="absolute inset-0 flex items-center">
                                             <span className="w-full border-t border-white/5" />
                                         </div>
@@ -152,13 +152,13 @@ export default function LoginClient() {
                                                 required
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="w-full bg-transparent border border-white/10 focus:border-white/20 rounded-xl px-4 py-3.5 text-white placeholder:text-slate-500 outline-none transition-all text-[15px]"
+                                                className="w-full bg-transparent border border-white/10 focus:border-white/20 rounded-xl px-4 py-3 md:py-3.5 text-white placeholder:text-slate-500 outline-none transition-all text-[14px] md:text-[15px]"
                                             />
                                         </div>
                                         <button
                                             type="submit"
                                             disabled={isLoading || !email}
-                                            className="w-full bg-white text-black hover:bg-slate-50 font-bold py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-[15px] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                                            className="w-full bg-white text-black hover:bg-slate-50 font-bold py-3 md:py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-[14px] md:text-[15px] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                                         >
                                             {isLoading ? (
                                                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -176,10 +176,10 @@ export default function LoginClient() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
-                                    className="p-8 pt-16 pb-10"
+                                    className="p-6 md:p-8 pt-10 md:pt-16 pb-8 md:pb-10"
                                 >
-                                    <div className="flex flex-col items-center text-center mb-10 space-y-6">
-                                        <div className="relative h-16 w-16">
+                                    <div className="flex flex-col items-center text-center mb-6 md:mb-10 space-y-4 md:space-y-6">
+                                        <div className="relative h-12 w-12 md:h-16 md:w-16">
                                             <Image
                                                 src="/talkflo_logo.png"
                                                 alt="talkflo"
@@ -199,7 +199,7 @@ export default function LoginClient() {
                                         </div>
                                     </div>
 
-                                    <div className="space-y-8">
+                                    <div className="space-y-6 md:space-y-8">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">
                                                 Email
@@ -227,7 +227,7 @@ export default function LoginClient() {
                                                         required
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
-                                                        className="w-full bg-transparent border border-white/10 focus:border-white/20 rounded-xl px-4 py-3.5 text-white placeholder:text-slate-500 outline-none transition-all text-[15px] pr-10"
+                                                        className="w-full bg-transparent border border-white/10 focus:border-white/20 rounded-xl px-4 py-3 md:py-3.5 text-white placeholder:text-slate-500 outline-none transition-all text-[14px] md:text-[15px] pr-10"
                                                     />
                                                     <button
                                                         type="button"
@@ -246,7 +246,7 @@ export default function LoginClient() {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading || !password}
-                                                className="w-full bg-white text-black hover:bg-slate-50 font-bold py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-[15px] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                                                className="w-full bg-white text-black hover:bg-slate-50 font-bold py-3 md:py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-[14px] md:text-[15px] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                                             >
                                                 {isLoading ? (
                                                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -269,7 +269,7 @@ export default function LoginClient() {
                     </div>
 
                     {/* Bottom branding */}
-                    <div className="mt-12 text-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity duration-500">
+                    <div className="mt-6 md:mt-12 text-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity duration-500">
                         <p className="text-[11px] text-slate-500 font-medium tracking-wide">
                             from
                         </p>
