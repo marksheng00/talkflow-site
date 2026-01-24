@@ -12,6 +12,7 @@ import { ArrowLeft } from 'lucide-react';
 import { TableOfContents } from '@/components/blog/TableOfContents';
 import { estimateReadingTime } from '@/lib/blog-helpers';
 import type { PortableTextComponents } from '@portabletext/react';
+import type { PortableTextBlock } from '@portabletext/types';
 import type { Metadata } from 'next';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import type { SanityImageSource } from '@sanity/image-url';
@@ -30,9 +31,9 @@ const slugify = (text: string) => {
 };
 
 // Helper to extract text from PortableText blocks
-const extractText = (block: any) => {
+const extractText = (block: PortableTextBlock): string => {
     if (!block.children) return '';
-    return block.children.map((child: any) => child.text).join('');
+    return (block.children as Array<{ text: string }>).map((child) => child.text).join('');
 };
 
 // Generate static params for all posts
@@ -45,13 +46,10 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
-    const { slug, locale } = await params;
+    const { slug } = await params;
     if (!slug) return {};
 
-    const [post, t] = await Promise.all([
-        client.fetch<BlogPost | null>(postBySlugQuery, { slug }),
-        getTranslations({ locale, namespace: 'BlogPage' })
-    ]);
+    const post = await client.fetch<BlogPost | null>(postBySlugQuery, { slug });
 
     if (!post) return {};
 
@@ -101,11 +99,11 @@ const ptComponents: PortableTextComponents = {
         },
     },
     block: {
-        h2: ({ children, value }: any) => {
+        h2: ({ children, value }: { children?: ReactNode; value: PortableTextBlock }) => {
             const id = slugify(extractText(value));
             return <h2 id={id} className="text-3xl font-bold text-white mt-12 mb-6 scroll-mt-32">{children}</h2>;
         },
-        h3: ({ children, value }: any) => {
+        h3: ({ children, value }: { children?: ReactNode; value: PortableTextBlock }) => {
             const id = slugify(extractText(value));
             return <h3 id={id} className="text-2xl font-bold text-white mt-10 mb-4 scroll-mt-32">{children}</h3>;
         },
@@ -132,11 +130,11 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
     // Extract headings for TOC
     const headings = (post.body || [])
-        .filter((block: any) => block._type === 'block' && (block.style === 'h2' || block.style === 'h3'))
-        .map((block: any) => ({
+        .filter((block: PortableTextBlock) => block._type === 'block' && (block.style === 'h2' || block.style === 'h3'))
+        .map((block: PortableTextBlock) => ({
             id: slugify(extractText(block)),
             text: extractText(block),
-            level: block.style === 'h2' ? 2 : 3
+            level: (block.style === 'h2' ? 2 : 3) as number
         }));
 
     const readingTime = estimateReadingTime(post.body || []);

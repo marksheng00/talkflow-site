@@ -2,7 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { Link, usePathname } from "@/navigation";
-import { Globe } from "lucide-react";
+
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";

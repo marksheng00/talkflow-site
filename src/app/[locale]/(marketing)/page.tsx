@@ -17,10 +17,7 @@ import {
   playStore,
   appStore,
   featureCards,
-  benefits,
-  proofPoints,
   feedbackCards,
-  faqs,
 } from "@/lib/data/home-data";
 
 export default function Home() {

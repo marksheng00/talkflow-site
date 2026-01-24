@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
 import { PricingTier, BillingCycle } from "@/lib/data/pricing-data";
 import { cn } from "@/lib/utils";

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Space_Grotesk } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from 'next-intl';
-import { locales } from "@/i18n/config";
+import { locales, Locale } from "@/i18n/config";
 import "../globals.css";
 import FluentBackground from "@/components/ui/FluentBackground";
 
@@ -70,7 +70,7 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  if (!locales.includes(locale as any)) {
+  if (!locales.includes(locale as Locale)) {
     notFound();
   }
 
