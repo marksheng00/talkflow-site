@@ -21,6 +21,7 @@ import {
     RoadmapItem,
     CommunityIdea,
     BugReport,
+    BugPlatform,
     IdeaSubmission,
     BugSubmission
 } from "@/types/roadmap";
@@ -63,6 +64,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
     // Filtering
     const [selectedCategory, setSelectedCategory] = useState<Category>("All");
+    const [selectedPlatform, setSelectedPlatform] = useState<BugPlatform | "All">("All");
 
     // Modals
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -91,7 +93,6 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
         steps: "",
         expected: "",
         actual: "",
-        severity: "Minor" as "Minor" | "Major" | "Blocker",
         platform: "Web" as "Web" | "iOS" | "Android"
     });
 
@@ -195,9 +196,9 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     }, [ideals, selectedCategory]);
 
     const filteredBugs = useMemo(() => {
-        // Bugs don't have category filter in the same way
-        return bugs;
-    }, [bugs]);
+        if (selectedPlatform === "All") return bugs;
+        return bugs.filter(b => b.platform === selectedPlatform);
+    }, [bugs, selectedPlatform]);
 
     // Handlers
     // Handlers
@@ -245,7 +246,6 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 stepsToReproduce: bugForm.steps,
                 expectedResult: bugForm.expected,
                 actualResult: bugForm.actual,
-                severity: bugForm.severity.toLowerCase() as "minor" | "major" | "blocker",
                 platform: bugForm.platform,
             };
 
@@ -263,7 +263,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             const newItem = await response.json();
             setBugs(prev => [newItem, ...prev]);
             setIsBugModalOpen(false);
-            setBugForm({ title: "", steps: "", expected: "", actual: "", severity: "Minor", platform: "Web" });
+            setBugForm({ title: "", steps: "", expected: "", actual: "", platform: "Web" });
             setActiveTab("bugs");
         } catch (error: unknown) {
             console.error("Failed to submit bug", error);
@@ -423,38 +423,65 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         </div>
 
                         <div className="flex gap-1.5 md:gap-2 w-full md:w-auto justify-center md:justify-end">
-                            {categories.map(cat => {
-                                const categoryButtonColors = {
-                                    All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
-                                    "Feature": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-                                    "Content": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-                                    "AI Core": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-                                    "UIUX": "bg-amber-500/20 text-amber-400 border-amber-500/30",
-                                    "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
-                                };
+                            {activeTab === "bugs" ? (
+                                // Platform Filters for Bugs
+                                (["All", "Web", "iOS", "Android"] as const).map(p => {
+                                    const isActive = selectedPlatform === p;
+                                    const platformColors = {
+                                        All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
+                                        Web: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+                                        iOS: "bg-rose-500/20 text-rose-400 border-rose-500/30",
+                                        Android: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+                                    };
+                                    const colors = platformColors[p] || platformColors.All;
 
-                                const mobileLabels: Record<string, string> = {
-                                    "AI Core": "AI",
-                                    "Feature": "Feat",
-                                };
-                                const displayLabel = mobileLabels[cat] || cat;
+                                    return (
+                                        <button
+                                            key={p}
+                                            onClick={() => setSelectedPlatform(p)}
+                                            className={`flex-1 md:flex-initial px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${isActive
+                                                ? (typeof colors === 'string' ? colors : colors.active)
+                                                : `bg-transparent border-white/10 text-slate-500 ${typeof colors === 'string' ? '' : colors.hover} hover:text-slate-300`
+                                                }`}
+                                        >
+                                            {p}
+                                        </button>
+                                    );
+                                })
+                            ) : (
+                                // Category Filters for Roadmap/Ideas
+                                categories.map(cat => {
+                                    const categoryButtonColors = {
+                                        All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
+                                        "Feature": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+                                        "Content": "bg-purple-500/20 text-purple-400 border-purple-500/30",
+                                        "AI Core": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+                                        "UIUX": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+                                        "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
+                                    };
 
-                                const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
+                                    const mobileLabels: Record<string, string> = {
+                                        "AI Core": "AI",
+                                        "Feature": "Feat",
+                                    };
+                                    const displayLabel = mobileLabels[cat] || cat;
+                                    const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
 
-                                return (
-                                    <button
-                                        key={cat}
-                                        onClick={() => setSelectedCategory(cat)}
-                                        className={`flex-1 md:flex-initial px-2 md:px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${selectedCategory === cat
-                                            ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
-                                            : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
-                                            }`}
-                                    >
-                                        <span className="md:hidden">{displayLabel}</span>
-                                        <span className="hidden md:inline">{cat}</span>
-                                    </button>
-                                );
-                            })}
+                                    return (
+                                        <button
+                                            key={cat}
+                                            onClick={() => setSelectedCategory(cat)}
+                                            className={`flex-1 md:flex-initial px-2 md:px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${selectedCategory === cat
+                                                ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
+                                                : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
+                                                }`}
+                                        >
+                                            <span className="md:hidden">{displayLabel}</span>
+                                            <span className="hidden md:inline">{cat}</span>
+                                        </button>
+                                    );
+                                })
+                            )}
                         </div>
                     </div>
                 </div>
@@ -1118,12 +1145,33 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 />
                             </div>
 
+                            {/* Platform Selection */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
+                                <div className="flex gap-2">
+                                    {(["Web", "iOS", "Android"] as const).map(p => (
+                                        <button
+                                            key={p}
+                                            type="button"
+                                            onClick={() => setBugForm({ ...bugForm, platform: p })}
+                                            className={`flex-1 py-2.5 rounded-xl border font-bold text-sm transition-all ${bugForm.platform === p
+                                                ? "bg-rose-500/20 border-rose-500/50 text-rose-400"
+                                                : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
+                                                }`}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* Description */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Tell us more (optional)</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Steps to Reproduce</label>
                                 <textarea
+                                    required
                                     rows={4}
-                                    placeholder="Any details that might help us fix it faster..."
+                                    placeholder="Describe how to reproduce..."
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
                                     value={bugForm.steps}
                                     onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}

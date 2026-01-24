@@ -63,7 +63,7 @@ export type BugSubmission = {
   stepsToReproduce: string;
   expectedResult: string;
   actualResult: string;
-  severity: BugSeverity;
+  severity?: BugSeverity;
   platform: BugPlatform;
 };
 

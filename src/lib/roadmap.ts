@@ -240,7 +240,7 @@ const bugSubmissionSchema = z.object({
   stepsToReproduce: z.string().min(10, "Please describe how to reproduce").max(1000),
   expectedResult: z.string().min(5, "Tell us what should happen").max(500),
   actualResult: z.string().min(5, "Tell us what actually happens").max(500),
-  severity: z.enum(["minor", "major", "blocker"]),
+  severity: z.enum(["minor", "major", "blocker"]).optional(),
   platform: z.enum(["iOS", "Android", "Web"]),
 });
 
@@ -273,7 +273,7 @@ export async function createBugReport(payload: BugSubmission): Promise<BugReport
     steps_to_reproduce: parsed.stepsToReproduce,
     expected_result: parsed.expectedResult,
     actual_result: parsed.actualResult,
-    severity: parsed.severity,
+    severity: parsed.severity || "minor",
     platform: parsed.platform,
     status: "reported",
     upvotes: 0,
