@@ -48,16 +48,16 @@ export default function Home() {
         <div className="section-shell section-stack stack-hero relative z-10 items-center text-center">
 
           {/* Main Title */}
-          <div className="section-heading max-w-6xl">
-            <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+          <div className="section-heading max-w-none">
+            <h1 className="max-w-none font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
               {t('titlePrefix')}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
                 {t('titleSuffix')}
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="max-w-4xl text-xl md:text-2xl leading-relaxed text-muted/60 px-2 md:px-0 font-light tracking-tight text-balance">
+            <p className="max-w-5xl text-xl md:text-2xl leading-relaxed text-muted/60 px-2 md:px-0 font-light tracking-tight text-balance">
               {t('subtitle')}
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function Home() {
           />
 
           {/* Video Placeholder */}
-          <div className="w-full max-w-5xl relative flex flex-col stack-loose">
+          <div className="w-full max-w-7xl relative flex flex-col stack-loose">
             <div className="absolute inset-0 blur-[120px] bg-emerald-400/20 -z-10" />
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/10 bg-slate-900/80 shadow-2xl flex items-center justify-center">
               <div className="flex flex-col items-center gap-3 md:gap-4 text-slate-500">

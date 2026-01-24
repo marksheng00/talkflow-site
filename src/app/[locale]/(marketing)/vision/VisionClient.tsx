@@ -9,14 +9,21 @@ import { ArrowRight, Cpu, ShieldCheck, Sparkles, Target } from "lucide-react";
 export default function VisionClient() {
     const t = useTranslations('VisionPage');
 
-    // Reconstruct stages from translations
-    // Map 0..8 based on the known number of stages in JSON
-    const stages = [0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => ({
-        id: t(`Stages.list.${idx}.id`),
-        title: t(`Stages.list.${idx}.title`),
-        mission: t(`Stages.list.${idx}.mission`),
-        outcome: t(`Stages.list.${idx}.outcome`),
-    }));
+    // Reconstruct stages from translations dynamically
+    const stages = [];
+    for (let i = 0; i <= 20; i++) {
+        const idKey = `Stages.list.${i}.id`;
+        if (t.has(idKey)) {
+            stages.push({
+                id: t(idKey),
+                title: t(`Stages.list.${i}.title`),
+                mission: t(`Stages.list.${i}.mission`),
+                outcome: t(`Stages.list.${i}.outcome`),
+            });
+        } else {
+            break;
+        }
+    }
 
     // Reconstruct security features
     const securityFeatures = [
@@ -39,15 +46,15 @@ export default function VisionClient() {
                             initial={{ opacity: 0, y: 24 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                            className="section-heading !max-w-6xl"
+                            className="section-heading !max-w-none"
                         >
-                            <h1 className="font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground text-balance w-full md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                            <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
                                 {t('Hero.titlePrefix')}{" "}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
                                     {t('Hero.titleSuffix')}
                                 </span>
                             </h1>
-                            <p className="max-w-4xl mx-auto text-xl md:text-2xl text-muted/60 leading-relaxed font-light text-balance w-full">
+                            <p className="max-w-5xl mx-auto text-xl md:text-2xl text-muted/60 leading-relaxed font-light text-balance w-full">
                                 {t('Hero.subtitle')}
                             </p>
                         </motion.div>

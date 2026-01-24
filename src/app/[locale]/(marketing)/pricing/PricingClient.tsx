@@ -39,13 +39,13 @@ export default function PricingClient() {
             <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-loose text-center items-center">
                     <div className="section-heading">
-                        <h1 className="mx-auto max-w-7xl font-heading text-5xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9] text-balance">
+                        <h1 className="mx-auto max-w-none font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
                             {t('Hero.title')}{" "}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
                                 {t('Hero.titleSuffix')}
                             </span>
                         </h1>
-                        <p className="mx-auto max-w-4xl text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed">
+                        <p className="mx-auto max-w-5xl text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed">
                             {t('Hero.subtitle')}
                         </p>
                     </div>
@@ -54,7 +54,7 @@ export default function PricingClient() {
                     <div className="mt-0">
                         <PricingToggle billingCycle={billingCycle} onChange={setBillingCycle} />
                     </div>
-                    <div className="grid grid-cols-1 gap-grid md:grid-cols-3 max-w-6xl mx-auto w-full">
+                    <div className="grid grid-cols-1 gap-grid md:grid-cols-3 max-w-7xl mx-auto w-full">
                         {translatedTiers.map((tier) => {
                             let orderClass = "";
                             // Check original name for ordering logic or us id

@@ -296,6 +296,42 @@
                     "title": "Bucle de crecimiento",
                     "mission": "Minilecciones diarias combinadas con revisiones en vivo y recordatorios que te mantienen progresando.",
                     "outcome": "Tu racha se mantiene viva y cada error se convierte en la próxima victoria."
+                },
+                {
+                    "id": "Etapa 2.5",
+                    "title": "Voz humanizada",
+                    "mission": "Controla las pausas, el tono y la personalidad para que los ensayos reflejen conversaciones reales.",
+                    "outcome": "El habla se siente viva: más natural, más humana, más tú."
+                },
+                {
+                    "id": "Etapa 3.1",
+                    "title": "Rutas adaptativas",
+                    "mission": "Rutas de estudio dinámicas que se reescriben en función de tu rendimiento.",
+                    "outcome": "Nunca pierdes el tiempo: cada sesión se ajusta a lo que necesitas ahora."
+                },
+                {
+                    "id": "Etapa 3.2",
+                    "title": "Mundos multi-rol",
+                    "mission": "Sumérgete en simulaciones multi-agente con contexto compartido y señales de eventos en vivo.",
+                    "outcome": "Practica liderar, colaborar y pensar a través de roles como un profesional."
+                },
+                {
+                    "id": "Etapa 4",
+                    "title": "Escenarios UGC",
+                    "mission": "Sube el conocimiento de la empresa o los SOP y conviértelos en juegos de rol al instante.",
+                    "outcome": "Entrena con el lenguaje exacto que le importa a tu equipo o clientes."
+                },
+                {
+                    "id": "Etapa 5",
+                    "title": "Ejecución fuera de la App",
+                    "mission": "Lleva el bucle de coaching a reuniones, llamadas y dispositivos en tiempo real.",
+                    "outcome": "Cada interacción tiene un coach susurrando: \"Dilo de esta manera\"."
+                },
+                {
+                    "id": "Final",
+                    "title": "SO de Comunicación Inteligente",
+                    "mission": "Un modelo unificado, APIs abiertas y barreras de privacidad que aprenden de ti.",
+                    "outcome": "Siempre escuchando, sugiriendo constantemente, ayudándote por siempre a actuar con claridad."
                 }
             ]
         },

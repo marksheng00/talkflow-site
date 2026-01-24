@@ -498,7 +498,7 @@ details summary::-webkit-details-marker {
 }
 
 .section-shell {
-  @apply mx-auto max-w-6xl px-6 md:px-10;
+  @apply mx-auto max-w-7xl px-6 md:px-10;
 }
 
 .section-block {
@@ -522,7 +522,7 @@ details summary::-webkit-details-marker {
   align-items: center;
   text-align: center;
   gap: var(--section-head-gap);
-  max-width: 48rem;
+  width: 100%;
   margin-inline: auto;
 }
 
