@@ -50,7 +50,7 @@ export default async function BlogPage({
                 <div className="section-shell section-stack stack-base">
                     {/* Header */}
                     <div className="section-heading">
-                        <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] whitespace-normal md:whitespace-nowrap">
+                        <h1 className="font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] whitespace-normal md:whitespace-nowrap">
                             {currentCategory ? (
                                 <>
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-teal-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">{currentCategory.title}</span> Articles

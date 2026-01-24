@@ -16,9 +16,9 @@ export default function PricingClient() {
             <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-loose text-center items-center">
                     <div className="section-heading">
-                        <h1 className="mx-auto max-w-7xl font-heading text-5xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                        <h1 className="mx-auto max-w-7xl font-heading text-5xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9] text-balance">
                             Simple pricing for{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
                                 U.
                             </span>
                         </h1>
@@ -32,9 +32,18 @@ export default function PricingClient() {
                         <PricingToggle billingCycle={billingCycle} onChange={setBillingCycle} />
                     </div>
                     <div className="grid grid-cols-1 gap-grid md:grid-cols-3 max-w-6xl mx-auto w-full">
-                        {pricingTiers.map((tier) => (
-                            <PricingCard key={tier.name} tier={tier} billingCycle={billingCycle} />
-                        ))}
+                        {pricingTiers.map((tier) => {
+                            let orderClass = "";
+                            if (tier.name === "Ultra") orderClass = "order-1 md:order-3";
+                            else if (tier.name === "Pro") orderClass = "order-2 md:order-2";
+                            else if (tier.name === "Free") orderClass = "order-3 md:order-1";
+
+                            return (
+                                <div key={tier.name} className={`${orderClass} w-full`}>
+                                    <PricingCard tier={tier} billingCycle={billingCycle} />
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>

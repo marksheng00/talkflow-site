@@ -73,6 +73,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     const [isBugModalOpen, setIsBugModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<RoadmapItem | null>(null);
     const [selectedIdea, setSelectedIdea] = useState<CommunityIdea | null>(null);
+    const [selectedBug, setSelectedBug] = useState<BugReport | null>(null);
 
     // Boost tracking
     const [boostedTasks, setBoostedTasks] = useState<Set<string>>(new Set());
@@ -261,16 +262,21 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
         // 1. Optimistic Update
         const previousIdeals = ideals;
-        setIdeals(prev => prev.map(i => {
-            if (i.id === id) {
-                if (direction === "up") {
-                    return { ...i, upvotes: i.upvotes + 1 };
-                } else {
-                    return { ...i, downvotes: (i.downvotes || 0) + 1 };
-                }
+        const prevSelectedIdea = selectedIdea;
+
+        const optimisticallyUpdate = (i: CommunityIdea) => {
+            if (direction === "up") {
+                return { ...i, upvotes: i.upvotes + 1 };
+            } else {
+                return { ...i, downvotes: (i.downvotes || 0) + 1 };
             }
-            return i;
-        }));
+        };
+
+        setIdeals(prev => prev.map(i => i.id === id ? optimisticallyUpdate(i) : i));
+
+        if (selectedIdea?.id === id) {
+            setSelectedIdea(optimisticallyUpdate(selectedIdea));
+        }
         setVotedIdeas(prev => new Map(prev).set(id, direction));
         setLastVotedId(id);
 
@@ -285,6 +291,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             console.error("Vote failed", error);
             // 4. Rollback on error
             setIdeals(previousIdeals);
+            if (prevSelectedIdea && prevSelectedIdea.id === id) setSelectedIdea(prevSelectedIdea);
             setVotedIdeas(prev => {
                 const next = new Map(prev);
                 next.delete(id);
@@ -302,12 +309,15 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
         // 1. Optimistic Update
         const previousTasks = tasks;
-        setTasks(prev => prev.map(t => {
-            if (t.id === taskId) {
-                return { ...t, accelerations: t.accelerations + 1 };
-            }
-            return t;
-        }));
+        const prevSelectedTask = selectedTask;
+
+        const optimisticUpdate = (t: RoadmapItem) => ({ ...t, accelerations: t.accelerations + 1 });
+
+        setTasks(prev => prev.map(t => t.id === taskId ? optimisticUpdate(t) : t));
+
+        if (selectedTask?.id === taskId) {
+            setSelectedTask(optimisticUpdate(selectedTask));
+        }
         setBoostedTasks(prev => new Set(prev).add(taskId));
         setJustBoosted(true);
 
@@ -322,6 +332,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 console.error("Boost failed", error);
                 // Rollback
                 setTasks(previousTasks);
+                if (prevSelectedTask && prevSelectedTask.id === taskId) setSelectedTask(prevSelectedTask);
                 setBoostedTasks(prev => {
                     const next = new Set(prev);
                     next.delete(taskId);
@@ -342,12 +353,15 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
         // 1. Optimistic Update
         const previousBugs = bugs;
-        setBugs(prev => prev.map(b => {
-            if (b.id === id) {
-                return { ...b, upvotes: b.upvotes + 1 };
-            }
-            return b;
-        }));
+        const prevSelectedBug = selectedBug;
+
+        const optimisticUpdate = (b: BugReport) => ({ ...b, upvotes: b.upvotes + 1 });
+
+        setBugs(prev => prev.map(b => b.id === id ? optimisticUpdate(b) : b));
+
+        if (selectedBug?.id === id) {
+            setSelectedBug(optimisticUpdate(selectedBug));
+        }
         setVotedIdeas(prev => new Map(prev).set(id, "up"));
 
         try {
@@ -358,6 +372,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             console.error("Bug vote failed", error);
             // Rollback
             setBugs(previousBugs);
+            if (prevSelectedBug && prevSelectedBug.id === id) setSelectedBug(prevSelectedBug);
             setVotedIdeas(prev => {
                 const next = new Map(prev);
                 next.delete(id);
@@ -372,7 +387,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-tight items-center text-center">
                     <div className="section-heading">
-                        <h1 className="font-heading text-4xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                        <h1 className="font-heading text-5xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
                             Building in{" "}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
                                 public.
@@ -717,7 +732,8 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                             {filteredBugs.map(bug => (
                                 <div
                                     key={bug.id}
-                                    className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] pad-card h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg"
+                                    onClick={() => setSelectedBug(bug)}
+                                    className="group relative flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] pad-card h-[220px] transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg cursor-pointer w-full min-w-0 overflow-hidden"
                                 >
                                     <div className="space-y-1.5 min-w-0">
                                         <div className="flex items-start justify-between gap-4 min-w-0">
@@ -1006,6 +1022,113 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         from={votedIdeas.get(selectedIdea.id) === "down" ? (selectedIdea.downvotes || 0) - 1 : (selectedIdea.downvotes || 0)}
                                         to={selectedIdea.downvotes || 0}
                                         skipAnimation={lastVotedId !== selectedIdea.id}
+                                    />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+
+            {/* BUG DETAIL MODAL */}
+            {mounted && selectedBug && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedBug(null)} />
+                    <div className="relative w-full max-w-2xl animate-in zoom-in-95">
+                        <div className="relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
+
+                            {/* Mobile Close Button (Top Right) */}
+                            <button
+                                onClick={() => setSelectedBug(null)}
+                                className="md:hidden absolute top-4 right-4 z-30 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+
+                            {/* Scrollable Content */}
+                            <div className="flex-1 overflow-y-auto scrollbar-hide">
+                                <div className="p-6 md:p-8 pt-8 space-y-6 relative">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <span className="text-xs font-medium text-rose-400 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20">
+                                                {selectedBug.platform}
+                                            </span>
+                                            <span className="text-xs text-slate-500 font-mono">
+                                                BUG REPORT
+                                            </span>
+                                            {(() => {
+                                                const statusMap = {
+                                                    reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+                                                    investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+                                                    fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+                                                    resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+                                                    wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                                };
+                                                const status = statusMap[selectedBug.status] || statusMap.reported;
+                                                return (
+                                                    <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
+                                                        {status.label}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </div>
+                                        <h2 className="text-2xl md:text-3xl font-heading font-bold text-white leading-tight">
+                                            {selectedBug.title}
+                                        </h2>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Description</h4>
+                                            <p className="text-base text-slate-300 leading-relaxed font-medium border-l-4 border-white/5 pl-4">
+                                                {selectedBug.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Mobile Bottom Action Bar */}
+                            <div className="md:hidden p-4 border-t border-white/10 bg-[#0A0A0A]/90 backdrop-blur-xl shrink-0 flex gap-3">
+                                <button
+                                    onClick={(e) => handleBugVote(selectedBug.id, e)}
+                                    disabled={votedIdeas.has(selectedBug.id)}
+                                    className={`flex-1 h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${votedIdeas.has(selectedBug.id)
+                                        ? "bg-slate-800 text-emerald-400 cursor-default"
+                                        : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:bg-emerald-500/20"
+                                        }`}
+                                >
+                                    <ArrowUp className="h-5 w-5" />
+                                    <span>{selectedBug.upvotes} Upvote</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* DESKTOP Side Actions */}
+                        <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-full ml-6 z-20 flex-col gap-4">
+                            <button
+                                onClick={() => setSelectedBug(null)}
+                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                            >
+                                <X className="h-6 w-6" />
+                            </button>
+
+                            <button
+                                onClick={(e) => handleBugVote(selectedBug.id, e)}
+                                disabled={votedIdeas.has(selectedBug.id)}
+                                className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedBug.id)
+                                    ? "bg-black/80 border border-emerald-500/50 text-emerald-500 cursor-default"
+                                    : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 hover:scale-105 cursor-pointer text-slate-500"
+                                    }`}
+                            >
+                                {!votedIdeas.has(selectedBug.id) ? (
+                                    <ArrowUp className="h-6 w-6 transition-transform group-hover:-translate-y-0.5" />
+                                ) : (
+                                    <AnimatedCounter
+                                        from={selectedBug.upvotes - 1}
+                                        to={selectedBug.upvotes}
+                                        skipAnimation={lastVotedId !== selectedBug.id}
                                     />
                                 )}
                             </button>

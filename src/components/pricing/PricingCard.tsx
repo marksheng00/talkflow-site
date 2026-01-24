@@ -1,5 +1,5 @@
-"use client";
-
+import { useRef, useEffect } from "react";
+import { motion, useSpring, useTransform } from "framer-motion";
 import { PricingTier, BillingCycle } from "@/lib/data/pricing-data";
 import { cn } from "@/lib/utils";
 import { CheckCircle2 } from "lucide-react";
@@ -10,6 +10,17 @@ interface PricingCardProps {
     billingCycle: BillingCycle;
 }
 
+const AnimatedPrice = ({ value }: { value: number }) => {
+    const spring = useSpring(value, { mass: 0.8, stiffness: 75, damping: 15 });
+    const display = useTransform(spring, (current) => Math.round(current));
+
+    useEffect(() => {
+        spring.set(value);
+    }, [spring, value]);
+
+    return <motion.span>{display}</motion.span>;
+};
+
 export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
     const price = tier.price[billingCycle];
     const isCustom = tier.name === "Team"; // Keep for legacy check support if needed, though we renamed to Ultra
@@ -18,7 +29,7 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
     return (
         <div
             className={cn(
-                "relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/[0.02] p-6 md:p-8 transition-all hover:bg-white/[0.04]",
+                "relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border bg-white/[0.02] p-6 md:p-8 transition-all hover:bg-white/[0.04]",
                 tier.highlight
                     ? "border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.1)]"
                     : isUltra
@@ -50,7 +61,9 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
                         <span className="text-4xl font-bold text-white">Custom</span>
                     ) : (
                         <>
-                            <span className="text-4xl font-bold text-white">${price}</span>
+                            <span className="text-4xl font-bold text-white flex">
+                                $<AnimatedPrice value={price} />
+                            </span>
                             <span className="text-slate-500">/mo</span>
                         </>
                     )}
