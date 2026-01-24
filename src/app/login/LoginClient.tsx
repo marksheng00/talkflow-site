@@ -84,7 +84,7 @@ export default function LoginClient() {
                     <NavbarLogo />
                 </div>
             </div>
-            <div className="flex min-h-[100dvh] w-full items-center justify-center px-4 py-8 md:pt-24 md:pb-8">
+            <div className="flex h-[100dvh] w-full items-center justify-center px-4 overflow-hidden py-4 md:py-12">
                 <div className="w-full max-w-[400px]">
                     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl">
                         <AnimatePresence mode="wait">
@@ -94,7 +94,7 @@ export default function LoginClient() {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="p-6 md:p-8 pt-10 md:pt-16 pb-8 md:pb-10"
+                                    className="p-6 md:p-8 pt-8 md:pt-12 pb-8 md:pb-10"
                                 >
                                     {/* Header */}
                                     <div className="flex flex-col items-center justify-center text-center mb-6 md:mb-10 space-y-4 md:space-y-6">
@@ -176,7 +176,7 @@ export default function LoginClient() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
-                                    className="p-6 md:p-8 pt-10 md:pt-16 pb-8 md:pb-10"
+                                    className="p-6 md:p-8 pt-8 md:pt-12 pb-8 md:pb-10"
                                 >
                                     <div className="flex flex-col items-center text-center mb-6 md:mb-10 space-y-4 md:space-y-6">
                                         <div className="relative h-12 w-12 md:h-16 md:w-16">
@@ -269,7 +269,7 @@ export default function LoginClient() {
                     </div>
 
                     {/* Bottom branding */}
-                    <div className="mt-6 md:mt-12 text-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity duration-500">
+                    <div className="mt-6 md:mt-8 text-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity duration-500">
                         <p className="text-[11px] text-slate-500 font-medium tracking-wide">
                             from
                         </p>
