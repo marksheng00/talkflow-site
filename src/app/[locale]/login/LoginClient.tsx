@@ -5,12 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
-import { NavbarLogo } from "@/components/ui/SiteNavbar";
+import {
+    Navbar,
+    NavBody,
+    MobileNav,
+    MobileNavHeader,
+    NavbarLogo
+} from "@/components/ui/SiteNavbar";
 import { ArrowLeft, Check, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type AuthStep = "initial" | "password";
 
 export default function LoginClient() {
+    const t = useTranslations('LoginPage');
     const [step, setStep] = useState<AuthStep>("initial");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -80,10 +88,17 @@ export default function LoginClient() {
     return (
         <AuroraBackground>
             <div className="flex h-[100dvh] w-full items-center justify-center px-4 overflow-hidden py-[2svh] md:py-12 relative">
-                {/* Back Link (Logo) */}
-                <div className="absolute top-6 left-6 md:top-8 md:left-8 z-50">
-                    <NavbarLogo />
-                </div>
+                {/* Global-aligned Header for Login/Signup */}
+                <Navbar>
+                    <NavBody className="hidden lg:flex">
+                        <NavbarLogo />
+                    </NavBody>
+                    <MobileNav className="lg:hidden">
+                        <MobileNavHeader>
+                            <NavbarLogo />
+                        </MobileNavHeader>
+                    </MobileNav>
+                </Navbar>
 
                 <div className="w-full max-w-[400px]">
                     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl">
@@ -110,10 +125,10 @@ export default function LoginClient() {
                                         </div>
                                         <div className="space-y-2">
                                             <h1 className="font-heading text-[26px] font-bold text-white tracking-tight">
-                                                Sign in or sign up
+                                                {t('Step1.title')}
                                             </h1>
                                             <p className="text-slate-400 text-[15px]">
-                                                Start creating with talkflo
+                                                {t('Step1.subtitle')}
                                             </p>
                                         </div>
                                     </div>
@@ -126,7 +141,7 @@ export default function LoginClient() {
                                                 className="relative w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-[1.2svh] min-py-[10px] md:py-3 px-4 rounded-xl transition-all active:scale-[0.98] group"
                                             >
                                                 {btn.icon}
-                                                <span className="text-[14px] md:text-[15px] font-semibold">Continue with {btn.name}</span>
+                                                <span className="text-[14px] md:text-[15px] font-semibold">{t('Step1.social', { name: btn.name })}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -138,7 +153,7 @@ export default function LoginClient() {
                                         </div>
                                         <div className="relative flex justify-center text-[13px] uppercase tracking-wide">
                                             <span className="bg-[#0e0e10] px-3 text-slate-500">
-                                                Or
+                                                {t('Step1.or')}
                                             </span>
                                         </div>
                                     </div>
@@ -148,7 +163,7 @@ export default function LoginClient() {
                                         <div className="space-y-1.5">
                                             <input
                                                 type="email"
-                                                placeholder="Enter your email address"
+                                                placeholder={t('Step1.emailPlaceholder')}
                                                 required
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
@@ -163,7 +178,7 @@ export default function LoginClient() {
                                             {isLoading ? (
                                                 <Loader2 className="h-5 w-5 animate-spin" />
                                             ) : (
-                                                "Continue"
+                                                t('Step1.button')
                                             )}
                                         </button>
                                     </form>
@@ -191,10 +206,10 @@ export default function LoginClient() {
                                         </div>
                                         <div className="space-y-2">
                                             <h1 className="font-heading text-[26px] font-bold text-white tracking-tight">
-                                                Create your account
+                                                {t('Step2.title')}
                                             </h1>
                                             <p className="text-slate-400 text-[15px]">
-                                                Set your password to continue
+                                                {t('Step2.subtitle')}
                                             </p>
                                         </div>
                                     </div>
@@ -202,7 +217,7 @@ export default function LoginClient() {
                                     <div className="space-y-[2svh] md:space-y-8">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">
-                                                Email
+                                                {t('Step2.emailLabel')}
                                             </label>
                                             <div className="flex items-center justify-between p-3.5 rounded-xl border border-white/10 bg-white/[0.02]">
                                                 <span className="text-[15px] text-slate-200 font-medium pl-1">{email}</span>
@@ -210,7 +225,7 @@ export default function LoginClient() {
                                                     onClick={() => setStep("initial")}
                                                     className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors pr-1"
                                                 >
-                                                    Edit
+                                                    {t('Step2.edit')}
                                                 </button>
                                             </div>
                                         </div>
@@ -218,12 +233,12 @@ export default function LoginClient() {
                                         <form onSubmit={handleContinue} className="space-y-5">
                                             <div className="space-y-2">
                                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">
-                                                    Password
+                                                    {t('Step2.passwordLabel')}
                                                 </label>
                                                 <div className="relative">
                                                     <input
                                                         type={showPassword ? "text" : "password"}
-                                                        placeholder="Enter password"
+                                                        placeholder={t('Step2.passwordPlaceholder')}
                                                         required
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
@@ -251,7 +266,7 @@ export default function LoginClient() {
                                                 {isLoading ? (
                                                     <Loader2 className="h-5 w-5 animate-spin" />
                                                 ) : (
-                                                    "Continue"
+                                                    t('Step2.button')
                                                 )}
                                             </button>
                                         </form>
@@ -260,7 +275,7 @@ export default function LoginClient() {
                                             onClick={() => setStep("initial")}
                                             className="w-full text-slate-500 hover:text-white text-sm font-medium transition-colors"
                                         >
-                                            Back
+                                            {t('Step2.back')}
                                         </button>
                                     </div>
                                 </motion.div>
@@ -271,7 +286,7 @@ export default function LoginClient() {
                     {/* Bottom branding */}
                     <div className="mt-[2svh] md:mt-8 text-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity duration-500">
                         <p className="text-[11px] text-slate-500 font-medium tracking-wide">
-                            from
+                            {t('Branding.from')}
                         </p>
                         <div className="flex items-center justify-center gap-2 text-slate-400">
                             <span className="text-[13px] font-bold tracking-tight">BeyondThink</span>

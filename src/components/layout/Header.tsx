@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+// import Link from "next/link"; // Removed in favor of "@/navigation" used inside SiteNavbar or here?
+// Wait, Header uses Link directly in MobileNavMenu loop.
+import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import {
   Navbar,
   NavBody,
@@ -14,17 +18,18 @@ import {
   NavbarButton,
 } from "@/components/ui/SiteNavbar";
 
-const navItems = [
-  { name: "Product", link: "/" },
-  { name: "Pricing", link: "/pricing" },
-  { name: "Roadmap", link: "/roadmap" },
-  { name: "Vision", link: "/vision" },
-  { name: "Blog", link: "/blog" },
-  { name: "Downloads", link: "/#downloads" },
-];
-
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const t = useTranslations('Navigation');
+
+  const navItems = [
+    { name: t('product'), link: "/" },
+    { name: t('pricing'), link: "/pricing" },
+    { name: t('roadmap'), link: "/roadmap" },
+    { name: t('vision'), link: "/vision" },
+    { name: t('blog'), link: "/blog" },
+    { name: t('downloads'), link: "/#downloads" },
+  ];
 
   return (
     <Navbar>
@@ -33,11 +38,9 @@ export default function Header() {
         <NavbarLogo />
         <NavItems items={navItems} />
         <div className="relative z-20 flex items-center gap-4">
-          <NavbarButton href="/login" variant="secondary">
-            Login
-          </NavbarButton>
-          <NavbarButton href="/signup" variant="primary">
-            Get Started
+          <LanguageSwitcher />
+          <NavbarButton href="/login" variant="primary">
+            {t('signup')}
           </NavbarButton>
         </div>
       </NavBody>
@@ -46,10 +49,13 @@ export default function Header() {
       <MobileNav>
         <MobileNavHeader>
           <NavbarLogo />
-          <MobileNavToggle
-            isOpen={isMobileMenuOpen}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          />
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </div>
         </MobileNavHeader>
 
         <MobileNavMenu
@@ -57,30 +63,22 @@ export default function Header() {
         >
           {navItems.map((item) => (
             <Link
-              key={item.name}
+              key={item.link}
               href={item.link}
               onClick={() => setIsMobileMenuOpen(false)}
               className="relative flex w-full items-center gap-3 text-neutral-400 hover:text-white"
             >
-              {item.name}
+              <span className="text-lg font-medium">{item.name}</span>
             </Link>
           ))}
           <div className="flex w-full flex-col gap-4 pt-4">
             <NavbarButton
               href="/login"
-              variant="secondary"
-              className="w-full"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Login
-            </NavbarButton>
-            <NavbarButton
-              href="/signup"
               variant="primary"
               className="w-full"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Get Started
+              {t('signup')}
             </NavbarButton>
           </div>
         </MobileNavMenu>

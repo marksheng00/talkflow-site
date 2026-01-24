@@ -1,0 +1,575 @@
+{
+    "HomePage": {
+        "titlePrefix": "极简, 快速,",
+        "titleSuffix": "流利。",
+        "subtitle": "talkflo 将 AI 语音分析与实时辅导相结合，让您可以不受阻碍地练习、提高并自由交流。",
+        "cta": "立即开始对话",
+        "secondaryCta": "了解原理",
+        "Hero": {
+            "watchIntro": "观看介绍",
+            "proofPoints": {
+                "learners": "全球学习者",
+                "sessions": "每周练习次数",
+                "confidence": "信心提升",
+                "rating": "应用评分"
+            }
+        },
+        "Features": {
+            "title": "提升所需的一切。",
+            "subtitle": "全面的工具设计，助您听起来像母语人士。",
+            "cards": [
+                {
+                    "title": "自适应语音角色扮演",
+                    "copy": "与 AI 伙伴进行真实的对话练习，随着您的进步，它们会调整语调、节奏和复杂度。"
+                },
+                {
+                    "title": "即时辅导",
+                    "copy": "每次对话后提供实时发音评分、口癖检测和表达建议。"
+                },
+                {
+                    "title": "情景蓝图",
+                    "copy": "面试准备、旅行、演讲或谈判演练——几秒钟内即可开启。"
+                }
+            ],
+            "Feedback": {
+                "title": "真正有用的反馈。",
+                "desc": "获得关于语速、语调和语法的清晰、可操作的建议。拒绝模糊的提示——只有每天都能改进的直接方案。",
+                "list": [
+                    "实时的母语级节奏和语调反馈。",
+                    "根据自信程度和口音自动调整的角色扮演。",
+                    "在语言学家和 AI 指导下，一个敢于犯错的安全练习空间。",
+                    "由社区投票和任务加速驱动的产品路线图。"
+                ],
+                "mobileSwipe": "← 滑动查看更多 →"
+            }
+        },
+        "Tech": {
+            "title": "极致工程，如魔法般体验。",
+            "subtitle": "下一代模型和顶尖语音合成，带来真正鲜活的交流体验。",
+            "cards": {
+                "partner": {
+                    "title": "是主动的伙伴，而非剧本。",
+                    "desc": "会打断、会反问、会带着同理心引导。"
+                },
+                "chat": [
+                    "我想练习一下工作面试……",
+                    "请稍等——什么职位？这会改变一切。",
+                    "初创公司的产品经理。",
+                    "太棒了。让我们直接进入高难度：请描述一次你失败的经历。"
+                ],
+                "latency": {
+                    "title": "极致低延迟，几乎瞬时反馈。",
+                    "desc": "没有尴尬的停顿。自然的谈话体验。"
+                },
+                "models": "顶尖模型",
+                "voice": "SOTA 语音",
+                "asr": "音素级识别"
+            }
+        },
+        "About": {
+            "title": "由专家打造。",
+            "subtitle": "当牛津语言学遇见硅谷工程。",
+            "cards": {
+                "pedagogy": {
+                    "title": "教学法为先",
+                    "desc": "我们的课程不是由凭空猜测教育的软件工程师设计的。它由前雅思考官和语言学博士精心打磨，他们深知 band 6 和 band 8 之间的本质区别。",
+                    "badge": "官方雅思水平",
+                    "credential": "考官资质证书",
+                    "stats": {
+                        "fluency": "流利性与连贯性",
+                        "lexical": "词汇丰富度",
+                        "pronunciation": "发音"
+                    },
+                    "footer": "由前剑桥考官签署",
+                    "trust": "深受 50,000+ 学习者信赖"
+                },
+                "engineering": {
+                    "title": "SOTA 工程",
+                    "desc": "由低延迟大语言模型和专有语音处理模型驱动。我们的系统可以像真实对话伙伴一样，在话语中途自然地打断你。",
+                    "stat": "<200ms 响应时间",
+                    "terminal": {
+                        "starting": "正在启动 talkflo 引擎...",
+                        "voice": "语音模型已加载 (Gemini Flash 2.0)",
+                        "asr": "语音识别已初始化 (Deepgram Nova-2)",
+                        "latency": "平均延迟:",
+                        "interruption": "插话检测:",
+                        "active": "激活"
+                    }
+                },
+                "human": {
+                    "title": "以人为中心",
+                    "desc": "我们相信 AI 应该扮演教练的角色而非替代者。我们的系统模拟真实导师的同理心——观察模式、鼓励进步，并适应你独特的声音。",
+                    "bubble1": "我担心我老是过度使用 \"very\" 这个词……",
+                    "bubble2": "我也注意到了。试试 \"extremely\"、\"remarkably\"，或者直接去掉它——你的观点已经足够有力。💪",
+                    "footer": "始终提供个性化反馈"
+                }
+            }
+        },
+        "Testimonials": {
+            "title": "真实用户，真实成果。",
+            "subtitle": "加入数万名学习者的行列，每一天都更自信地表达。",
+            "items": [
+                {
+                    "name": "Sarah Chen",
+                    "role": "软件工程师",
+                    "score": "成功拿回 Offer",
+                    "quote": "模拟面试的感觉极其真实。当我不知道答案时，我不再感到手足无措了。"
+                },
+                {
+                    "name": "Marcus Rodriguez",
+                    "role": "医学生",
+                    "score": "雅思 6.5 → 7.5",
+                    "quote": "我以前说话总是嘟囔。talkflo 强迫我大声且清晰地表达。这就像是声音的健身房。"
+                },
+                {
+                    "name": "Yuki Tanaka",
+                    "role": "产品设计师",
+                    "score": "签证已获批",
+                    "quote": "这种细微的反馈简直太疯狂了。它捕捉到了那些简单语法检查工具总是忽略的语调问题。"
+                }
+            ]
+        },
+        "FAQ": {
+            "title": "常见问题。",
+            "items": [
+                {
+                    "q": "我需要下载移动应用吗？",
+                    "a": "不需要。您可以直接在网页端开始。移动应用可以确保您的练习记录和反馈在不同设备间同步。"
+                },
+                {
+                    "q": "反馈是如何运作的？",
+                    "a": "我们将 ASR、声学分析和语言学家建立的评分标准相结合，提供精准的节奏、清晰度和口癖反馈。"
+                },
+                {
+                    "q": "我的音频会被存储吗？",
+                    "a": "音频仅在您选择加入的情况下被处理并存储用于反馈。Supabase 密钥始终保留在服务器端。"
+                },
+                {
+                    "q": "我可以影响产品路线图吗？",
+                    "a": "可以。您可以直接在 Roadmap 页面提交想法、投票或加速您关心的任务。"
+                }
+            ]
+        },
+        "FooterCTA": {
+            "title": "几秒钟内开启练习。",
+            "subtitle": "下载应用或直接开启网页体验——一切都保持同步。"
+        },
+        "AppButtons": {
+            "download": "下载手机版",
+            "tryWeb": "在网页端尝试",
+            "ios": "苹果 iOS",
+            "android": "安卓 Android"
+        }
+    },
+    "PricingPage": {
+        "Hero": {
+            "title": "简单定价，为您",
+            "titleSuffix": "量身定制。",
+            "subtitle": "免费开始，按需升级。拒绝任何隐形费用。"
+        },
+        "Toggle": {
+            "monthly": "月付",
+            "yearly": "年付"
+        },
+        "Tiers": {
+            "free": {
+                "name": "免费版",
+                "description": "完美开启您的 AI 口语练习之旅。",
+                "features": [
+                    "每天 10 分钟 AI 练习",
+                    "基础发音反馈",
+                    "标准语音模型",
+                    "访问社区话题",
+                    "包含广告的体验"
+                ],
+                "cta": "免费开始"
+            },
+            "pro": {
+                "name": "Pro 版",
+                "description": "通过无限次辅导加速流利度。",
+                "features": [
+                    "无限量 AI 练习时间",
+                    "高级语法与语调分析",
+                    "SOTA 高级语音模型",
+                    "优先低延迟 (<200ms)",
+                    "个性化学习路线图",
+                    "无广告体验"
+                ],
+                "cta": "获取 Pro"
+            },
+            "ultra": {
+                "name": "Ultra 版",
+                "description": "雅思 Band 8+ 的终极备考方案。",
+                "features": [
+                    "包含 Pro 版所有内容",
+                    "雅思全真模考",
+                    "官方考官评分系统",
+                    "Band 9 满分范例",
+                    "详细纠错报告",
+                    "口语预测题库",
+                    "优先 VIP 支持"
+                ],
+                "cta": "获取 Ultra"
+            }
+        },
+        "FAQ": {
+            "title": "常见问题。",
+            "items": [
+                {
+                    "q": "我可以随时取消吗？",
+                    "a": "是的，当然可以。您可以随时在账户设置中取消订阅。您将在账单周期结束前保留访问权限。"
+                },
+                {
+                    "q": "“无限量”练习是如何运作的？",
+                    "a": "Pro 用户可以无限制地访问我们的 AI 对话伙伴。无论您每天练习 15 分钟还是 5 小时，都没有上限。"
+                },
+                {
+                    "q": "有学生折扣吗？",
+                    "a": "有的！我们为认证学生提供 50% 折扣。只需使用 .edu 邮箱注册或联系支持人员提供学生证即可。"
+                },
+                {
+                    "q": "接受哪些付款方式？",
+                    "a": "我们接受所有主流信用卡 (Visa, Mastercard, Amex)，PayPal 以及 Google Pay/Apple Pay。"
+                }
+            ]
+        },
+        "CTA": {
+            "title": "还在犹豫？",
+            "subtitle": "您可以无需绑定信用卡免费开始使用 talkflo。只在看到效果后再升级。",
+            "button": "开始免费试用"
+        }
+    },
+    "Navigation": {
+        "product": "产品",
+        "pricing": "定价",
+        "roadmap": "路线图",
+        "vision": "愿景",
+        "blog": "博客",
+        "login": "登录",
+        "signup": "登录 / 注册",
+        "downloads": "客户端下载"
+    },
+    "Footer": {
+        "columns": {
+            "Product": "产品",
+            "Company": "公司",
+            "Resources": "相关资源"
+        },
+        "items": {
+            "Voice role-play": "语音角色扮演",
+            "AI feedback": "AI 对话反馈",
+            "Roadmap": "开发路线图",
+            "Vision": "我们的愿景",
+            "Careers": "加入我们",
+            "Support": "客户支持",
+            "Blog": "官方博客",
+            "talkflo community": "交流社区",
+            "Press": "媒体联系",
+            "Privacy": "隐私条例"
+        },
+        "copyright": "© {year} talkflo. BeyondThink LLC 产品. 保留所有权利。"
+    },
+    "VisionPage": {
+        "Hero": {
+            "titlePrefix": "连接方式的",
+            "titleSuffix": "进化",
+            "subtitle": "我们正在构建世界上第一个“代理式沟通操作系统”(Agentic Communication OS)。这是一条量化、增强并最终超越人类语言障碍的道路。"
+        },
+        "Stages": {
+            "title": "从安全练习到实战",
+            "subtitle": "每个阶段都是一项使命：从安全环境下的练习到关键时刻的执行。",
+            "list": [
+                {
+                    "id": "Stage 0",
+                    "title": "基础期",
+                    "mission": "设置个人档案，选择交流角色，并完成第一个引导式循环。",
+                    "outcome": "随着在安全练习中获得稳定节奏，你会感觉到阻力消失。"
+                },
+                {
+                    "id": "Stage 1",
+                    "title": "定向对话",
+                    "mission": "练习特定提示，获得即时口头反馈，并重复练习直到完全掌握。",
+                    "outcome": "为考试、面试和重要演讲建立信心。"
+                },
+                {
+                    "id": "Stage 2",
+                    "title": "增长循环",
+                    "mission": "每日迷你课程搭配实时复习和助推提醒，保持您的进步。",
+                    "outcome": "保持连胜纪录，每一个错过的节拍都转化为下一次胜利。"
+                },
+                {
+                    "id": "Stage 2.5",
+                    "title": "人性化语音",
+                    "mission": "控制停顿、语调和人设，使排练如真实对话般自然。",
+                    "outcome": "语言变得鲜活——更自然、更人性化、更像你自己。"
+                },
+                {
+                    "id": "Stage 3.1",
+                    "title": "自适应路径",
+                    "mission": "根据您的表现动态重写学习路径。",
+                    "outcome": "从不浪费时间——每次课程都针对当下需求进行调整。"
+                },
+                {
+                    "id": "Stage 3.2",
+                    "title": "多角色世界",
+                    "mission": "进入具有共享背景和实时事件提示的多智能体模拟。",
+                    "outcome": "像专业人士一样练习领导、协作和跨角色思考。"
+                },
+                {
+                    "id": "Stage 4",
+                    "title": "场景 UGC",
+                    "mission": "上传公司知识库或 SOP，瞬间将其转化为角色扮演。",
+                    "outcome": "使用团队或客户真正关心的语言进行训练。"
+                },
+                {
+                    "id": "Stage 5",
+                    "title": "应用外执行",
+                    "mission": "将辅导循环实时引入会议、通话和设备中。",
+                    "outcome": "每次互动都有教练在耳边轻语：“试着这样说。”"
+                },
+                {
+                    "id": "Final",
+                    "title": "智能沟通 OS",
+                    "mission": "一个统一的模型、开放的 API 和理解你的隐私护栏。",
+                    "outcome": "时刻倾听，不断建议，永远助你清晰表达。"
+                }
+            ]
+        },
+        "Security": {
+            "title": "安全与信任",
+            "subtitle": "隐私保护、可解释的反馈和可组合的控制，确保每项任务安全。",
+            "features": [
+                {
+                    "title": "隐私优先",
+                    "desc": "无论身在何处，您都通过加密和细粒度访问控制掌握数据。"
+                },
+                {
+                    "title": "可解释的反馈",
+                    "desc": "理解每一个评分，导出您的学习旅程，并与相关方分享。"
+                },
+                {
+                    "title": "可组合平台",
+                    "desc": "通过 API 和插件将 talkflo 插入您的日历、会议和技术栈中。"
+                }
+            ]
+        },
+        "CTA": {
+            "title": "每个人都值得拥有声音。",
+            "subtitle": "talkflo 是隐形的基础设施，确保您的声音在所有边界中被听到、理解和放大。",
+            "explore": "探索路线图",
+            "try": "立即尝试"
+        }
+    },
+    "RoadmapPage": {
+        "Hero": {
+            "titlePrefix": "公开构建",
+            "titleSuffix": "产品。",
+            "subtitle": "追踪我们的进度，为您期待的功能投票，并帮助我们共同塑造代理式沟通的未来。"
+        },
+        "Tabs": {
+            "roadmap": "路线图",
+            "ideas": "想法",
+            "bugs": "Bug"
+        },
+        "Filters": {
+            "category": "类别",
+            "platform": "平台",
+            "Categories": {
+                "All": "全部",
+                "Feature": "功能",
+                "Content": "内容",
+                "AI Core": "AI 核心",
+                "UIUX": "UI/UX",
+                "Bug": "Bug"
+            },
+            "Platforms": {
+                "All": "全部",
+                "Web": "Web",
+                "iOS": "iOS",
+                "Android": "Android"
+            }
+        },
+        "RoadmapTab": {
+            "taskOverview": "任务概览",
+            "boost": "加速此功能",
+            "boosted": "已加速！"
+        },
+        "IdeasTab": {
+            "submitCard": {
+                "title": "提交新想法",
+                "subtitle": "有功能需求？将其加入想法池。"
+            },
+            "status": {
+                "planned": "已计划",
+                "open": "开放中"
+            },
+            "vote": "赞成",
+            "modal": {
+                "label": "想法"
+            }
+        },
+        "BugsTab": {
+            "reportCard": {
+                "title": "反馈 Bug",
+                "subtitle": "发现哪里出了问题？帮我们消灭它。"
+            },
+            "status": {
+                "reported": "已反馈",
+                "investigating": "排查中",
+                "fixing": "修复中",
+                "resolved": "已解决",
+                "wont_fix": "暂不修复"
+            },
+            "vote": "赞成",
+            "modal": {
+                "label": "Bug 反馈",
+                "description": "详细描述"
+            }
+        },
+        "SubmitIdeaModal": {
+            "title": "提交新想法",
+            "subtitle": "向团队分享您的功能需求。",
+            "fields": {
+                "title": "标题",
+                "category": "类别",
+                "description": "详细描述"
+            },
+            "placeholders": {
+                "title": "您有什么想法？",
+                "description": "描述这个功能应该如何运作……"
+            },
+            "submit": "提交想法"
+        },
+        "ReportBugModal": {
+            "title": "反馈 Bug",
+            "subtitle": "哪里运行不正常？请告诉我们。",
+            "fields": {
+                "title": "出了什么问题？",
+                "platform": "平台",
+                "steps": "重现步骤"
+            },
+            "placeholders": {
+                "title": "例如：点击某处时应用崩溃……",
+                "steps": "描述如何重现该问题……"
+            },
+            "submit": "提交反馈"
+        }
+    },
+    "ChangelogPage": {
+        "Hero": {
+            "title": "更新日志。",
+            "subtitle": "我们正在公开构建。这是我们最近发布的所有内容。",
+            "tip": "(提示：发现 Bug 修复？点击 Bug 图标来消灭它！)"
+        },
+        "Types": {
+            "feature": "新功能",
+            "fix": "修复",
+            "improvement": "迭代",
+            "perf": "性能"
+        },
+        "Squash": {
+            "title": "消灭这个 Bug！",
+            "success": "Bug 已消灭！",
+            "fixed": "已修复并通过验证"
+        },
+        "Latest": "最新版本",
+        "Data": {
+            "v0_1_61": {
+                "changes": [
+                    "移除移动端菜单背景遮罩，提高导航稳定性。",
+                    "解决影响移动端菜单可见性的 z-index 层级问题。",
+                    "增强屏幕滚动锁定机制，使移动端交互更流畅。"
+                ]
+            },
+            "v0_1_55": {
+                "changes": [
+                    "全面的 SEO 优化，包括 JSON-LD 结构化数据和 Meta 标签。",
+                    "新增动态 sitemap.xml 和 robots.txt 生成。",
+                    "优化标题层级 (H1-H3)，提升可访问性和搜索索引。",
+                    "启用 Next.js 原生图像优化。"
+                ]
+            },
+            "v0_1_50": {
+                "changes": [
+                    "发布采用 Aurora 审美的新型高性能落地页。",
+                    "上线具有投票和加速功能的“路线图”页面。",
+                    "新增带有月付/年付切换的“定价”页面。",
+                    "集成 Sanity CMS 用于博客管理。"
+                ]
+            },
+            "v0_1_0": {
+                "changes": [
+                    "talkflo 初始公开测试版发布。",
+                    "核心 AI 语音角色扮演引擎上线。"
+                ]
+            }
+        }
+    },
+    "BlogPage": {
+        "Hero": {
+            "latest": "最新",
+            "insights": "洞察",
+            "articles": "文章"
+        },
+        "Sidebar": {
+            "categories": "分类",
+            "allPosts": "全部文章"
+        },
+        "Pagination": {
+            "prev": "上一页",
+            "next": "下一页"
+        },
+        "Empty": {
+            "title": "未找到文章",
+            "button": "查看全部"
+        },
+        "Card": {
+            "readingTime": "{minutes} 分钟"
+        },
+        "Post": {
+            "back": "返回博客",
+            "author": "作者",
+            "published": "发布于",
+            "readTime": "阅读时间",
+            "category": "分类",
+            "readSuffix": "{minutes} 分钟阅读",
+            "unknown": "未知日期",
+            "toc": "本页内容："
+        }
+    },
+    "LoginPage": {
+        "Step1": {
+            "title": "登录或注册",
+            "subtitle": "开始使用 talkflo",
+            "social": "使用 {name} 继续",
+            "or": "或",
+            "emailPlaceholder": "输入您的邮箱地址",
+            "button": "继续"
+        },
+        "Step2": {
+            "title": "创建您的账户",
+            "subtitle": "设置密码以继续",
+            "emailLabel": "电子邮箱",
+            "edit": "编辑",
+            "passwordLabel": "密码",
+            "passwordPlaceholder": "输入密码",
+            "button": "继续",
+            "back": "返回"
+        },
+        "Branding": {
+            "from": "来自于"
+        }
+    },
+    "NotFound": {
+        "title": "404",
+        "subtitle": "未找到页面",
+        "description": "抱歉，我们找不到您要访问的页面。它可能已被移动或不存在。",
+        "button": "返回首页"
+    },
+    "Metadata": {
+        "title": "talkflo | 实时 AI 口语教练与对话练习",
+        "description": "使用 talkflo 精通英语流利度。实时 AI 角色扮演、即时发音反馈，以及针对雅思、托福和工作面试的专业辅导。",
+        "ogTitle": "talkflo | 实时 AI 口语教练",
+        "ogDescription": "如真实对话般的 AI 英语练习。即时反馈、自适应角色扮演以及透明的产品路线图。"
+    }
+}

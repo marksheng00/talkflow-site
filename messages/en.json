@@ -1,0 +1,576 @@
+{
+    "HomePage": {
+        "titlePrefix": "Simple, Fast,",
+        "titleSuffix": "Fluent.",
+        "subtitle": "talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.",
+        "cta": "Start Speaking Now",
+        "secondaryCta": "How it works",
+        "Hero": {
+            "watchIntro": "Watch Intro",
+            "proofPoints": {
+                "learners": "Learners worldwide",
+                "sessions": "Weekly sessions",
+                "confidence": "Confidence lift",
+                "rating": "App Rating"
+            }
+        },
+        "Features": {
+            "title": "Everything you need to improve.",
+            "subtitle": "Comprehensive tools designed to make you sound like a native speaker.",
+            "cards": [
+                {
+                    "title": "Adaptive voice role-play",
+                    "copy": "Practice real-world dialogs with AI partners that shift tone, pace, and complexity as you improve."
+                },
+                {
+                    "title": "Instant coaching",
+                    "copy": "Live pronunciation scoring, filler-word detection, and delivery tips after every turn."
+                },
+                {
+                    "title": "Situational blueprints",
+                    "copy": "Interview prep, travel, presentations, or negotiation drills—ready to launch in seconds."
+                }
+            ],
+            "Feedback": {
+                "title": "Feedback you can actually use.",
+                "desc": "Get clear, actionable advice on your pacing, tone, and grammar. No vague suggestions—just direct ways to improve every single day.",
+                "list": [
+                    "Native-like cadence and intonation feedback in real time.",
+                    "Role-play that adapts to confidence level and accent.",
+                    "Safe space to make mistakes with coaching from linguists and AI.",
+                    "Roadmap driven by community voting and task acceleration."
+                ],
+                "mobileSwipe": "← Swipe to see more →"
+            }
+        },
+        "Tech": {
+            "title": "Magic, engineered.",
+            "subtitle": "Next-gen models and SOTA speech synthesis for an experience that feels truly alive.",
+            "cards": {
+                "partner": {
+                    "title": "An active partner, not a script.",
+                    "desc": "Interrupts, asks clarifying questions, guides with empathy."
+                },
+                "chat": [
+                    "I want to practice for my job interview...",
+                    "Wait— what role? That changes everything.",
+                    "Product Manager at a startup.",
+                    "Perfect. Let's start hard: Tell me about a time you failed."
+                ],
+                "latency": {
+                    "title": "Latency so low, it feels instant.",
+                    "desc": "No awkward pauses. Natural conversation."
+                },
+                "models": "Top-tier Models",
+                "voice": "SOTA Voice",
+                "asr": "Phoneme ASR"
+            }
+        },
+        "About": {
+            "title": "Built by experts.",
+            "subtitle": "Where Oxford linguistics meets Silicon Valley engineering.",
+            "cards": {
+                "pedagogy": {
+                    "title": "Pedagogy First",
+                    "desc": "Our curriculum isn't designed by software engineers guessing at education. It's crafted by former IELTS examiners and linguistic PhDs who understand exactly what separates a Band 6 from a Band 8.",
+                    "badge": "IELTS Official",
+                    "credential": "Examiner Credentials",
+                    "stats": {
+                        "fluency": "Fluency & Coherence",
+                        "lexical": "Lexical Resource",
+                        "pronunciation": "Pronunciation"
+                    },
+                    "footer": "Signed by former Cambridge examiners",
+                    "trust": "Trusted by 50,000+ learners"
+                },
+                "engineering": {
+                    "title": "SOTA Engineering",
+                    "desc": "Powered by low-latency LLMs and proprietary voice processing models. Our system can naturally interrupt you mid-sentence, just like a real conversation partner.",
+                    "stat": "<200ms response time",
+                    "terminal": {
+                        "starting": "Starting talkflo engine...",
+                        "voice": "Voice model loaded (Gemini Flash 2.0)",
+                        "asr": "ASR initialized (Deepgram Nova-2)",
+                        "latency": "Avg latency:",
+                        "interruption": "Interruption detection:",
+                        "active": "Active"
+                    }
+                },
+                "human": {
+                    "title": "Human-Centric",
+                    "desc": "We believe AI should coach, not replace. Our system mimics the empathy of a real tutor—noticing patterns, celebrating progress, and adapting to your unique voice.",
+                    "bubble1": "I'm worried I keep using the word \"very\" too much...",
+                    "bubble2": "I noticed that too. Try \"extremely,\" \"remarkably,\" or just drop it entirely—your point is strong enough without it. 💪",
+                    "footer": "Personalized feedback, always"
+                }
+            }
+        },
+        "Testimonials": {
+            "title": "Real people, real results.",
+            "subtitle": "Join thousands of learners sounding more confident every day.",
+            "items": [
+                {
+                    "name": "Sarah Chen",
+                    "role": "Software Engineer",
+                    "score": "Job Offer Secured",
+                    "quote": "The mock interviews felt incredibly real. I stopped freezing up when I didn't know the answer."
+                },
+                {
+                    "name": "Marcus Rodriguez",
+                    "role": "Medical Student",
+                    "score": "IELTS 6.5 → 7.5",
+                    "quote": "I used to mumble. talkflo forced me to speak up and clearly. It's like a gym for your voice."
+                },
+                {
+                    "name": "Yuki Tanaka",
+                    "role": "Product Designer",
+                    "score": "Visa Approved",
+                    "quote": "The nuance feedback is crazy. It caught my tone issues that simple grammar checkers always missed."
+                }
+            ]
+        },
+        "FAQ": {
+            "title": "FAQ.",
+            "items": [
+                {
+                    "q": "Do I need the mobile app?",
+                    "a": "No. You can start on web instantly. Mobile apps keep your sessions and feedback in sync across devices."
+                },
+                {
+                    "q": "How does the feedback work?",
+                    "a": "We blend ASR, acoustic analysis, and linguist-built rubrics to give precise pacing, clarity, and filler-word feedback."
+                },
+                {
+                    "q": "Is my audio stored?",
+                    "a": "Sessions are processed for feedback and stored only if you opt in. Supabase keys stay on the server side."
+                },
+                {
+                    "q": "Can I influence the roadmap?",
+                    "a": "Yes. Submit ideas, vote, or accelerate tasks directly on the Roadmap page."
+                }
+            ]
+        },
+        "FooterCTA": {
+            "title": "Start practicing in seconds.",
+            "subtitle": "Download the app or jump into the web experience—everything stays in sync."
+        },
+        "AppButtons": {
+            "download": "Download",
+            "tryWeb": "Try on Web",
+            "ios": "iOS",
+            "android": "Android"
+        }
+    },
+    "PricingPage": {
+        "Hero": {
+            "title": "Simple pricing for",
+            "titleSuffix": "U.",
+            "subtitle": "Start for free, upgrade when you're serious. No hidden fees."
+        },
+        "Toggle": {
+            "monthly": "Monthly",
+            "yearly": "Yearly"
+        },
+        "Tiers": {
+            "free": {
+                "name": "Free",
+                "description": "Perfect for getting started with AI speaking practice.",
+                "features": [
+                    "10 minutes of AI practice per day",
+                    "Basic pronunciation feedback",
+                    "Standard voice models",
+                    "Access to community topics",
+                    "Ad-supported experience"
+                ],
+                "cta": "Start for Free"
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Accelerate your fluency with unlimited coaching.",
+                "features": [
+                    "Unlimited AI practice time",
+                    "Advanced grammar & tone analysis",
+                    "Premium SOTA voice models",
+                    "Priority latency (<200ms)",
+                    "Personalized learning roadmap",
+                    "Ad-free experience"
+                ],
+                "cta": "Get Pro"
+            },
+            "ultra": {
+                "name": "Ultra",
+                "description": "The ultimate preparation for IELTS bandwidth 8+.",
+                "features": [
+                    "Everything in Pro",
+                    "IELTS Mock Exams (Full length)",
+                    "Official Examiner Scoring System",
+                    "Band 9 Sample Answers",
+                    "Detailed error correction",
+                    "Speaking prediction topics",
+                    "Priority VIP Support"
+                ],
+                "cta": "Get Ultra"
+            }
+        },
+        "FAQ": {
+            "title": "Common Questions.",
+            "items": [
+                {
+                    "q": "Can I cancel anytime?",
+                    "a": "Yes, absolutely. You can cancel your subscription at any time from your account settings. You'll keep access until the end of your billing period."
+                },
+                {
+                    "q": "How does the 'Unlimited' practice work?",
+                    "a": "Pro users get unlimited access to our AI conversation partners. Whether you practice for 15 minutes or 5 hours a day, there are no caps or limits."
+                },
+                {
+                    "q": "Is there a student discount?",
+                    "a": "Yes! We offer 50% off for verified students. Just sign up with your .edu email address or contact support with your student ID."
+                },
+                {
+                    "q": "What payment methods do you accept?",
+                    "a": "We accept all major credit cards (Visa, Mastercard, Amex), PayPal, and Google Pay/Apple Pay."
+                }
+            ]
+        },
+        "CTA": {
+            "title": "Still not sure?",
+            "subtitle": "You can start using talkflo for free without a credit card. Upgrade only when you see the results.",
+            "button": "Start Free Trial"
+        }
+    },
+    "Navigation": {
+        "product": "Product",
+        "pricing": "Pricing",
+        "roadmap": "Roadmap",
+        "vision": "Vision",
+        "blog": "Blog",
+        "login": "Login",
+        "signup": "Login / Register",
+        "downloads": "Downloads"
+    },
+    "Footer": {
+        "columns": {
+            "Product": "Product",
+            "Company": "Company",
+            "Resources": "Resources"
+        },
+        "items": {
+            "Voice role-play": "Voice role-play",
+            "AI feedback": "AI feedback",
+            "Roadmap": "Roadmap",
+            "Vision": "Vision",
+            "Careers": "Careers",
+            "Support": "Support",
+            "Blog": "Blog",
+            "talkflo community": "talkflo community",
+            "Press": "Press",
+            "Privacy": "Privacy"
+        },
+        "copyright": "© {year} talkflo. A product of BeyondThink LLC. All rights reserved."
+    },
+    "VisionPage": {
+        "Hero": {
+            "titlePrefix": "Evolution of",
+            "titleSuffix": "Connection",
+            "subtitle": "We are building the world's first Agentic Communication OS. A path to quantify, augment, and eventually transcend human language barriers."
+        },
+        "Stages": {
+            "title": "Stage-by-stage mission",
+            "subtitle": "Every stage is a mission: from safe practice to mission-critical execution.",
+            "list": [
+                {
+                    "id": "Stage 0",
+                    "title": "Foundation",
+                    "mission": "Set up your profile, choose communicating roles, and complete the first guided loop.",
+                    "outcome": "Feel the friction disappear as you gain a steady rhythm in safe practice."
+                },
+                {
+                    "id": "Stage 1",
+                    "title": "Targeted Dialog",
+                    "mission": "Practice prompts, get instant verbal feedback, and repeat until you own the response.",
+                    "outcome": "Build confidence for exams, interviews, and important presentations."
+                },
+                {
+                    "id": "Stage 2",
+                    "title": "Growth Loop",
+                    "mission": "Daily mini-lessons paired with live reviews and nudges keep you progressing.",
+                    "outcome": "Your streak stays alive, and every missed beat turns into the next win."
+                },
+                {
+                    "id": "Stage 2.5",
+                    "title": "Humanized Voice",
+                    "mission": "Control pauses, tone, and persona so rehearsals mirror real conversations.",
+                    "outcome": "Speech feels alive—more natural, more human, more you."
+                },
+                {
+                    "id": "Stage 3.1",
+                    "title": "Adaptive Paths",
+                    "mission": "Dynamic study paths rewrite themselves based on your performance.",
+                    "outcome": "You never waste time—every session is tuned to what you need now."
+                },
+                {
+                    "id": "Stage 3.2",
+                    "title": "Multi-role Worlds",
+                    "mission": "Jump into multi-agent simulations with shared context and live event cues.",
+                    "outcome": "Practice leading, collaborating, and thinking across roles like a pro."
+                },
+                {
+                    "id": "Stage 4",
+                    "title": "Scenario UGC",
+                    "mission": "Upload company knowledge or SOPs and turn them into role-plays instantly.",
+                    "outcome": "Train with the exact language your team or customers care about."
+                },
+                {
+                    "id": "Stage 5",
+                    "title": "Out-of-app Execution",
+                    "mission": "Move the coaching loop into meetings, calls, and devices in real time.",
+                    "outcome": "Every interaction has a coach whispering, “Say it this way.”"
+                },
+                {
+                    "id": "Final",
+                    "title": "Intelligence Communication OS",
+                    "mission": "A unified model, open APIs, and privacy guardrails that learn you.",
+                    "outcome": "Always listening, constantly advising, forever helping you act with clarity."
+                }
+            ]
+        },
+        "Security": {
+            "title": "Security & Trust",
+            "subtitle": "Privacy, explainable feedback, and composable controls keep every mission safe.",
+            "features": [
+                {
+                    "title": "Privacy-first",
+                    "desc": "You control the data with encryption and fine-grained access wherever you go."
+                },
+                {
+                    "title": "Explainable feedback",
+                    "desc": "Understand every score, export your journey, and share it with stakeholders."
+                },
+                {
+                    "title": "Composable platform",
+                    "desc": "Plug talkflo into your calendars, meetings, and stacks via APIs and plugins."
+                }
+            ]
+        },
+        "CTA": {
+            "title": "Everyone deserves a voice.",
+            "subtitle": "talkflo is the invisible infrastructure that ensures that voice is heard, understood, and amplified across all boundaries.",
+            "explore": "Explore the roadmap",
+            "try": "Try it now"
+        }
+    },
+    "RoadmapPage": {
+        "Hero": {
+            "titlePrefix": "Building in",
+            "titleSuffix": "public.",
+            "subtitle": "Track our progress, vote on upcoming features, and help us shape the future of agentic communication."
+        },
+        "Tabs": {
+            "roadmap": "Roadmap",
+            "ideas": "Ideas",
+            "bugs": "Bugs"
+        },
+        "Filters": {
+            "category": "Category",
+            "platform": "Platform",
+            "Categories": {
+                "All": "All",
+                "Feature": "Feature",
+                "Content": "Content",
+                "AI Core": "AI Core",
+                "UIUX": "UIUX",
+                "Bug": "Bug"
+            },
+            "Platforms": {
+                "All": "All",
+                "Web": "Web",
+                "iOS": "iOS",
+                "Android": "Android"
+            }
+        },
+        "RoadmapTab": {
+            "taskOverview": "Task Overview",
+            "boost": "Boost this Feature",
+            "boosted": "Boosted!"
+        },
+        "IdeasTab": {
+            "submitCard": {
+                "title": "Submit New Idea",
+                "subtitle": "Have a feature request? Add it to the pool."
+            },
+            "status": {
+                "planned": "Planned",
+                "open": "Open"
+            },
+            "vote": "Upvote",
+            "modal": {
+                "label": "IDEA"
+            }
+        },
+        "BugsTab": {
+            "reportCard": {
+                "title": "Report a Bug",
+                "subtitle": "Found something broken? Help us squash it."
+            },
+            "status": {
+                "reported": "Reported",
+                "investigating": "Investigating",
+                "fixing": "Fixing",
+                "resolved": "Resolved",
+                "wont_fix": "Won't Fix"
+            },
+            "vote": "Upvote",
+            "modal": {
+                "label": "BUG REPORT",
+                "description": "Description"
+            }
+        },
+        "SubmitIdeaModal": {
+            "title": "Submit New Idea",
+            "subtitle": "Share your feature requests with the team.",
+            "fields": {
+                "title": "Title",
+                "category": "Category",
+                "description": "Description"
+            },
+            "placeholders": {
+                "title": "What's your idea?",
+                "description": "Describe how this would work..."
+            },
+            "submit": "Submit Idea"
+        },
+        "ReportBugModal": {
+            "title": "Report a Bug",
+            "subtitle": "Something not working? Let us know.",
+            "fields": {
+                "title": "What went wrong?",
+                "platform": "Platform",
+                "steps": "Steps to Reproduce"
+            },
+            "placeholders": {
+                "title": "e.g. App crashes when I click...",
+                "steps": "Describe how to reproduce..."
+            },
+            "submit": "Report Bug"
+        }
+    },
+    "ChangelogPage": {
+        "Hero": {
+            "title": "Changelog.",
+            "subtitle": "We're building in public. Here's everything we've shipped recently.",
+            "tip": "(Tip: Found a bug fix? Try clicking the bug icon to squash it!)"
+        },
+        "Types": {
+            "feature": "New",
+            "fix": "Fix",
+            "improvement": "Update",
+            "perf": "Perf"
+        },
+        "Squash": {
+            "title": "Squash this bug!",
+            "success": "Bug Squashed!",
+            "fixed": "Fixed & Verified"
+        },
+        "Latest": "Latest",
+        "Data": {
+            "v0_1_61": {
+                "changes": [
+                    "Removed mobile menu backdrop overlay to improve navigation reliability.",
+                    "Resolved z-index stacking issues affecting mobile menu visibility.",
+                    "Enhanced body scroll locking mechanism for smoother mobile interactions."
+                ]
+            },
+            "v0_1_55": {
+                "changes": [
+                    "Comprehensive SEO optimization including JSON-LD structured data and meta tags.",
+                    "Added dynamic sitemap.xml and robots.txt generation.",
+                    "Optimized heading hierarchy (H1-H3) for better accessibility and search indexing.",
+                    "Enabled native Next.js image optimization."
+                ]
+            },
+            "v0_1_50": {
+                "changes": [
+                    "Launched new high-performance landing page with Aurora aesthetics.",
+                    "Implemented 'Roadmap' page with voting and acceleration features.",
+                    "Added 'Pricing' page with monthly/yearly toggle.",
+                    "Integrated Sanity CMS for blog management."
+                ]
+            },
+            "v0_1_0": {
+                "changes": [
+                    "Initial public beta release of talkflo.",
+                    "Core AI voice role-play engine online."
+                ]
+            }
+        }
+    },
+    "BlogPage": {
+        "Hero": {
+            "latest": "Latest",
+            "insights": "Insights",
+            "articles": "Articles"
+        },
+        "Sidebar": {
+            "categories": "Categories",
+            "allPosts": "All Posts"
+        },
+        "Pagination": {
+            "prev": "Prev",
+            "next": "Next"
+        },
+        "Empty": {
+            "title": "No articles found",
+            "button": "View All"
+        },
+        "Card": {
+            "readingTime": "{minutes} min"
+        },
+        "Post": {
+            "back": "Back to Blog",
+            "author": "Author",
+            "published": "Published",
+            "readTime": "Read Time",
+            "category": "Category",
+            "readSuffix": "{minutes} min read",
+            "unknown": "Unknown",
+            "toc": "On this page:"
+        }
+    },
+    "LoginPage": {
+        "Step1": {
+            "title": "Sign in or sign up",
+            "subtitle": "Start creating with talkflo",
+            "social": "Continue with {name}",
+            "or": "Or",
+            "emailPlaceholder": "Enter your email address",
+            "button": "Continue"
+        },
+        "Step2": {
+            "title": "Create your account",
+            "subtitle": "Set your password to continue",
+            "emailLabel": "Email",
+            "edit": "Edit",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "Enter password",
+            "button": "Continue",
+            "back": "Back"
+        },
+        "Branding": {
+            "from": "from"
+        }
+    },
+    "NotFound": {
+        "title": "404",
+        "subtitle": "Page not found",
+        "description": "Sorry, we couldn't find the page you were looking for. It might have been moved or doesn't exist.",
+        "button": "Return Home"
+    },
+    "Metadata": {
+        "title": "talkflo | Real-time AI Speaking Coach & Conversation Practice",
+        "description": "Master English fluency with talkflo. Real-time AI role-play, instant pronunciation feedback, and professional coaching for IELTS, TOEFL and job interviews.",
+        "ogTitle": "talkflo | Real-time AI Speaking Coach",
+        "ogDescription": "AI-powered English practice that feels like a real conversation. Instant feedback, adaptive role-play, and a transparent roadmap.",
+        "keywords": "AI English Speaking, IELTS Practice, TOEFL Speaking, English Fluency, AI Coach, Language Learning"
+    }
+}

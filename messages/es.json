@@ -1,0 +1,539 @@
+{
+    "HomePage": {
+        "titlePrefix": "Simple, Rápido,",
+        "titleSuffix": "Fluido.",
+        "subtitle": "talkflo combina el análisis de voz por IA con el entrenamiento en tiempo real para que puedas practicar, mejorar y hablar libremente sin fricciones.",
+        "cta": "Empezar a hablar ahora",
+        "secondaryCta": "Cómo funciona",
+        "Hero": {
+            "watchIntro": "Ver introducción",
+            "proofPoints": {
+                "learners": "Estudiantes en todo el mundo",
+                "sessions": "Sesiones semanales",
+                "confidence": "Aumento de confianza",
+                "rating": "Calificación de la App"
+            }
+        },
+        "Features": {
+            "title": "Todo lo que necesitas para mejorar.",
+            "subtitle": "Herramientas integrales diseñadas para que suenes como un hablante nativo.",
+            "cards": [
+                {
+                    "title": "Juego de roles de voz adaptativo",
+                    "copy": "Practica diálogos del mundo real con socios de IA que cambian el tono, el ritmo y la complejidad a medida que mejoras."
+                },
+                {
+                    "title": "Entrenamiento instantáneo",
+                    "copy": "Puntuación de pronunciación en vivo, detección de muletillas y consejos de entrega después de cada turno."
+                },
+                {
+                    "title": "Planos situacionales",
+                    "copy": "Preparación de entrevistas, viajes, presentaciones o simulacros de negociación—listos para lanzar en segundos."
+                }
+            ],
+            "Feedback": {
+                "title": "Comentarios que realmente puedes usar.",
+                "desc": "Obtén consejos claros y prácticos sobre tu ritmo, tono y gramática. Sin sugerencias vagas, solo formas directas de mejorar cada día.",
+                "list": [
+                    "Comentarios sobre cadencia e entonación nativa en tiempo real.",
+                    "Juego de roles que se adapta al nivel de confianza y acento.",
+                    "Espacio seguro para cometer errores con el entrenamiento de lingüistas e IA.",
+                    "Hoja de ruta impulsada por la votación de la comunidad y la aceleración de tareas."
+                ],
+                "mobileSwipe": "← Desliza para ver más →"
+            }
+        },
+        "Tech": {
+            "title": "Magia, diseñada.",
+            "subtitle": "Modelos de próxima generación y síntesis de voz SOTA para una experiencia que se siente verdaderamente viva.",
+            "cards": {
+                "partner": {
+                    "title": "Un socio activo, no un guion.",
+                    "desc": "Interrumpe, hace preguntas aclaratorias, guía con empatía."
+                },
+                "chat": [
+                    "Quiero practicar para mi entrevista de trabajo...",
+                    "Espera— ¿qué puesto? Eso lo cambia todo.",
+                    "Gerente de Producto en una startup.",
+                    "Perfecto. Empecemos con lo difícil: Háblame de una vez que fallaste."
+                ],
+                "latency": {
+                    "title": "Latencia tan baja que se siente instantánea.",
+                    "desc": "Sin pausas incómodas. Conversación natural."
+                },
+                "models": "Modelos de primer nivel",
+                "voice": "Voz SOTA",
+                "asr": "ASR de fonemas"
+            }
+        },
+        "About": {
+            "title": "Construido por expertos.",
+            "subtitle": "Donde la lingüística de Oxford se encuentra con la ingeniería de Silicon Valley.",
+            "cards": {
+                "pedagogy": {
+                    "title": "Pedagogía primero",
+                    "desc": "Nuestro plan de estudios no está diseñado por ingenieros de software que adivinan la educación. Está elaborado por ex examinadores de IELTS y doctores en lingüística que entienden exactamente lo que separa una Banda 6 de una Banda 8.",
+                    "badge": "IELTS Oficial",
+                    "credential": "Credenciales de examinador",
+                    "stats": {
+                        "fluency": "Fluidez y Coherencia",
+                        "lexical": "Recurso Léxico",
+                        "pronunciation": "Pronunciación"
+                    },
+                    "footer": "Firmado por ex examinadores de Cambridge",
+                    "trust": "Con la confianza de más de 50,000 estudiantes"
+                },
+                "engineering": {
+                    "title": "Ingeniería SOTA",
+                    "desc": "Impulsado por LLM de baja latencia y modelos de procesamiento de voz patentados. Nuestro sistema puede interrumpirte naturalmente a mitad de camino, igual que un compañero de conversación real.",
+                    "stat": "<200ms tiempo de respuesta",
+                    "terminal": {
+                        "starting": "Iniciando motor talkflo...",
+                        "voice": "Modelo de voz cargado (Gemini Flash 2.0)",
+                        "asr": "ASR inicializado (Deepgram Nova-2)",
+                        "latency": "Latencia prom:",
+                        "interruption": "Detección de interrupción:",
+                        "active": "Activo"
+                    }
+                },
+                "human": {
+                    "title": "Centrado en el ser humano",
+                    "desc": "Creemos que la IA debe entrenar, no reemplazar. Nuestro sistema imita la empatía de un tutor real: nota patrones, celebra el progreso y se adapta a tu voz única.",
+                    "bubble1": "Me preocupa que sigo usando demasiado la palabra \"very\"...",
+                    "bubble2": "Yo también lo noté. Prueba con \"extremely,\" \"remarkably,\" o simplemente elimínala—tu punto es lo suficientemente fuerte sin ella. 💪",
+                    "footer": "Comentarios personalizados, siempre"
+                }
+            }
+        },
+        "Testimonials": {
+            "title": "Gente real, resultados reales.",
+            "subtitle": "Únete a miles de estudiantes que suenan más seguros cada día.",
+            "items": [
+                {
+                    "name": "Sarah Chen",
+                    "role": "Ingeniera de Software",
+                    "score": "Oferta de trabajo asegurada",
+                    "quote": "Las entrevistas simuladas se sintieron increíblemente reales. Dejé de bloquearme cuando no sabía la respuesta."
+                },
+                {
+                    "name": "Marcus Rodriguez",
+                    "role": "Estudiante de Medicina",
+                    "score": "IELTS 6.5 → 7.5",
+                    "quote": "Solía balbucear. talkflo me obligó a hablar alto y claro. Es como un gimnasio para tu voz."
+                },
+                {
+                    "name": "Yuki Tanaka",
+                    "role": "Diseñadora de Producto",
+                    "score": "Visa aprobada",
+                    "quote": "Los comentarios sobre los matices son una locura. Detectó mis problemas de tono que los simples correctores gramaticales siempre pasaban por alto."
+                }
+            ]
+        },
+        "FAQ": {
+            "title": "FAQ.",
+            "items": [
+                {
+                    "q": "¿Necesito la aplicación móvil?",
+                    "a": "No. Puedes empezar en la web al instante. Las aplicaciones móviles mantienen tus sesiones y comentarios sincronizados en todos tus dispositivos."
+                },
+                {
+                    "q": "¿Cómo funcionan los comentarios?",
+                    "a": "Combinamos ASR, análisis acústico y rúbricas creadas por lingüistas para dar comentarios precisos sobre el ritmo, la claridad y las muletillas."
+                },
+                {
+                    "q": "¿Se almacena mi audio?",
+                    "a": "Las sesiones se procesan para los comentarios y se almacenan solo si tú aceptas. Las claves de Supabase se quedan en el lado del servidor."
+                },
+                {
+                    "q": "¿Puedo influir en la hoja de ruta?",
+                    "a": "Sí. Envía ideas, vota o acelera tareas directamente en la página de Hoja de Ruta."
+                }
+            ]
+        },
+        "FooterCTA": {
+            "title": "Empieza a practicar en segundos.",
+            "subtitle": "Descarga la aplicación o entra en la experiencia web—todo se mantiene sincronizado."
+        },
+        "AppButtons": {
+            "download": "Descargar",
+            "tryWeb": "Probar en Web",
+            "ios": "iOS",
+            "android": "Android"
+        }
+    },
+    "PricingPage": {
+        "Hero": {
+            "title": "Precios simples para",
+            "titleSuffix": "Ti.",
+            "subtitle": "Empieza gratis, mejora cuando vayas en serio. Sin cargos ocultos."
+        },
+        "Toggle": {
+            "monthly": "Mensual",
+            "yearly": "Anual"
+        },
+        "Tiers": {
+            "free": {
+                "name": "Gratis",
+                "description": "Perfecto para empezar con la práctica de habla con IA.",
+                "features": [
+                    "10 minutos de práctica con IA al día",
+                    "Comentarios de pronunciación básicos",
+                    "Modelos de voz estándar",
+                    "Acceso a temas de la comunidad",
+                    "Experiencia con anuncios"
+                ],
+                "cta": "Empezar Gratis"
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Acelera tu fluidez con entrenamiento ilimitado.",
+                "features": [
+                    "Tiempo de práctica con IA ilimitado",
+                    "Análisis avanzado de gramática y tono",
+                    "Modelos de voz SOTA premium",
+                    "Latencia prioritaria (<200ms)",
+                    "Hoja de ruta de aprendizaje personalizada",
+                    "Experiencia sin anuncios"
+                ],
+                "cta": "Obtener Pro"
+            },
+            "ultra": {
+                "name": "Ultra",
+                "description": "La preparación definitiva para el IELTS banda 8+.",
+                "features": [
+                    "Todo lo de Pro",
+                    "Exámenes simulados de IELTS (completos)",
+                    "Sistema de puntuación oficial de examinador",
+                    "Respuestas de muestra Banda 9",
+                    "Corrección de errores detallada",
+                    "Temas de predicción de habla",
+                    "Soporte VIP prioritario"
+                ],
+                "cta": "Obtener Ultra"
+            }
+        },
+        "FAQ": {
+            "title": "Preguntas Comunes.",
+            "items": [
+                {
+                    "q": "¿Puedo cancelar en cualquier momento?",
+                    "a": "Sí, absolutamente. Puedes cancelar tu suscripción en cualquier momento desde la configuración de tu cuenta. Mantendrás el acceso hasta el final de tu período de facturación."
+                },
+                {
+                    "q": "¿Cómo funciona la práctica 'Ilimitada'?",
+                    "a": "Los usuarios Pro obtienen acceso ilimitado a nuestros socios de conversación de IA. Ya sea que practiques 15 minutos o 5 horas al día, no hay topes ni límites."
+                },
+                {
+                    "q": "¿Hay descuento para estudiantes?",
+                    "a": "¡Sí! Ofrecemos un 50% de descuento para estudiantes verificados. Solo regístrate con tu dirección de correo electrónico .edu o contacta al equipo de soporte con tu identificación de estudiante."
+                },
+                {
+                    "q": "¿Qué métodos de pago aceptan?",
+                    "a": "Aceptamos todas las principales tarjetas de crédito (Visa, Mastercard, Amex), PayPal y Google Pay/Apple Pay."
+                }
+            ]
+        },
+        "CTA": {
+            "title": "¿Aún no estás seguro?",
+            "subtitle": "Puedes empezar a usar talkflo gratis sin tarjeta de crédito. Mejora solo cuando veas los resultados.",
+            "button": "Empezar Prueba Gratuita"
+        }
+    },
+    "Navigation": {
+        "product": "Producto",
+        "pricing": "Precios",
+        "roadmap": "Hoja de ruta",
+        "vision": "Visión",
+        "blog": "Blog",
+        "login": "Iniciar sesión",
+        "signup": "Entrar / Registrarse",
+        "downloads": "Descargas"
+    },
+    "Footer": {
+        "columns": {
+            "Product": "Producto",
+            "Company": "Empresa",
+            "Resources": "Recursos"
+        },
+        "items": {
+            "Voice role-play": "Juego de roles de voz",
+            "AI feedback": "Comentarios con IA",
+            "Roadmap": "Hoja de ruta",
+            "Vision": "Visión",
+            "Careers": "Carreras",
+            "Support": "Soporte",
+            "Blog": "Blog",
+            "talkflo community": "Comunidad talkflo",
+            "Press": "Prensa",
+            "Privacy": "Privacidad"
+        },
+        "copyright": "© {year} talkflo. Un producto de BeyondThink LLC. Todos los derechos reservados."
+    },
+    "VisionPage": {
+        "Hero": {
+            "titlePrefix": "Evolución de la",
+            "titleSuffix": "Conexión",
+            "subtitle": "Estamos construyendo el primer SO de Comunicación Agéntica del mundo. Un camino para cuantificar, aumentar y eventualmente trascender las barreras lingüísticas humanas."
+        },
+        "Stages": {
+            "title": "Misión etapa por etapa",
+            "subtitle": "Cada etapa es una misión: desde la práctica segura hasta la ejecución crítica.",
+            "list": [
+                {
+                    "id": "Etapa 0",
+                    "title": "Fundamentación",
+                    "mission": "Configura tu perfil, elige roles comunicativos y completa el primer bucle guiado.",
+                    "outcome": "Siente cómo desaparece la fricción a medida que ganas un ritmo constante en la práctica segura."
+                },
+                {
+                    "id": "Etapa 1",
+                    "title": "Diálogo dirigido",
+                    "mission": "Practica indicaciones, obtén comentarios verbales instantáneos y repite hasta que domines la respuesta.",
+                    "outcome": "Construye confianza para exámenes, entrevistas e importantes presentaciones."
+                },
+                {
+                    "id": "Etapa 2",
+                    "title": "Bucle de crecimiento",
+                    "mission": "Minilecciones diarias combinadas con revisiones en vivo y recordatorios que te mantienen progresando.",
+                    "outcome": "Tu racha se mantiene viva y cada error se convierte en la próxima victoria."
+                }
+            ]
+        },
+        "Security": {
+            "title": "Seguridad y Confianza",
+            "subtitle": "La privacidad, los comentarios explicables y los controles componibles mantienen cada misión segura.",
+            "features": [
+                {
+                    "title": "Privacidad primero",
+                    "desc": "Tú controlas los datos con cifrado y acceso granular dondequiera que vayas."
+                },
+                {
+                    "title": "Comentarios explicables",
+                    "desc": "Entiende cada puntuación, exporta tu viaje y compártelo con los interesados."
+                },
+                {
+                    "title": "Plataforma componible",
+                    "desc": "Conecta talkflo a tus calendarios, reuniones y herramientas mediante API y complementos."
+                }
+            ]
+        },
+        "CTA": {
+            "title": "Todo el mundo merece una voz.",
+            "subtitle": "talkflo es la infraestructura invisible que garantiza que esa voz sea escuchada, comprendida y amplificada en todas las fronteras.",
+            "explore": "Explorar la hoja de ruta",
+            "try": "Probar ahora"
+        }
+    },
+    "RoadmapPage": {
+        "Hero": {
+            "titlePrefix": "Construyendo en",
+            "titleSuffix": "público.",
+            "subtitle": "Sigue nuestro progreso, vota sobre las próximas funciones y ayúdanos a dar forma al futuro de la comunicación agéntica."
+        },
+        "Tabs": {
+            "roadmap": "Hoja de ruta",
+            "ideas": "Ideas",
+            "bugs": "Bugs"
+        },
+        "Filters": {
+            "category": "Categoría",
+            "platform": "Plataforma",
+            "Categories": {
+                "All": "Todo",
+                "Feature": "Función",
+                "Content": "Contenido",
+                "AI Core": "Núcleo de IA",
+                "UIUX": "UI/UX",
+                "Bug": "Bug"
+            },
+            "Platforms": {
+                "All": "Todo",
+                "Web": "Web",
+                "iOS": "iOS",
+                "Android": "Android"
+            }
+        },
+        "RoadmapTab": {
+            "taskOverview": "Resumen de tareas",
+            "boost": "Impulsar esta función",
+            "boosted": "¡Impulsado!"
+        },
+        "IdeasTab": {
+            "submitCard": {
+                "title": "Enviar Nueva Idea",
+                "subtitle": "¿Tienes una solicitud de función? Añádela al grupo."
+            },
+            "status": {
+                "planned": "Planificado",
+                "open": "Abierto"
+            },
+            "vote": "Votar",
+            "modal": {
+                "label": "IDEA"
+            }
+        },
+        "BugsTab": {
+            "reportCard": {
+                "title": "Reportar un Bug",
+                "subtitle": "¿Encontraste algo roto? Ayúdanos a aplastarlo."
+            },
+            "status": {
+                "reported": "Reportado",
+                "investigating": "Investigando",
+                "fixing": "Reparando",
+                "resolved": "Resuelto",
+                "wont_fix": "No se arreglará"
+            },
+            "vote": "Votar",
+            "modal": {
+                "label": "REPORTE DE BUG",
+                "description": "Descripción"
+            }
+        },
+        "SubmitIdeaModal": {
+            "title": "Enviar Nueva Idea",
+            "subtitle": "Comparte tus solicitudes de funciones con el equipo.",
+            "fields": {
+                "title": "Título",
+                "category": "Categoría",
+                "description": "Descripción"
+            },
+            "placeholders": {
+                "title": "¿Cuál es tu idea?",
+                "description": "Describe cómo funcionaría esto..."
+            },
+            "submit": "Enviar Idea"
+        },
+        "ReportBugModal": {
+            "title": "Reportar un Bug",
+            "subtitle": "¿Algo no funciona? Háznoslo saber.",
+            "fields": {
+                "title": "¿Qué salió mal?",
+                "platform": "Plataforma",
+                "steps": "Pasos para Reproducir"
+            },
+            "placeholders": {
+                "title": "ej. La app se cierra cuando hago clic...",
+                "steps": "Describe cómo reproducirlo..."
+            },
+            "submit": "Reportar Bug"
+        }
+    },
+    "ChangelogPage": {
+        "Hero": {
+            "title": "Registro de cambios.",
+            "subtitle": "Estamos construyendo en público. Aquí está todo lo que hemos enviado recientemente.",
+            "tip": "(Consejo: ¿Encontraste una corrección de bug? ¡Prueba haciendo clic en el icono del bicho para aplastarlo!)"
+        },
+        "Types": {
+            "feature": "Nuevo",
+            "fix": "Reparación",
+            "improvement": "Actualización",
+            "perf": "Perf"
+        },
+        "Squash": {
+            "title": "¡Aplasta este bug!",
+            "success": "¡Bug aplastado!",
+            "fixed": "Reparado y Verificado"
+        },
+        "Latest": "Último",
+        "Data": {
+            "v0_1_61": {
+                "changes": [
+                    "Se eliminó la capa de fondo del menú móvil para mejorar la fiabilidad de la navegación.",
+                    "Se resolvieron problemas de apilamiento de z-index que afectaban la visibilidad del menú móvil.",
+                    "Se mejoró el mecanismo de bloqueo de desplazamiento del cuerpo para interacciones móviles más fluidas."
+                ]
+            },
+            "v0_1_55": {
+                "changes": [
+                    "Optimización SEO integral que incluye datos estructurados JSON-LD y etiquetas meta.",
+                    "Se añadió la generación dinámica de sitemap.xml y robots.txt.",
+                    "Se optimizó la jerarquía de encabezados (H1-H3) para una mejor accesibilidad e indexación de búsqueda.",
+                    "Se habilitó la optimización de imágenes nativa de Next.js."
+                ]
+            },
+            "v0_1_50": {
+                "changes": [
+                    "Se lanzó la nueva página de aterrizaje de alto rendimiento con estética Aurora.",
+                    "Se implementó la página 'Roadmap' con funciones de votación y aceleración.",
+                    "Se añadió la página de 'Precios' con selector mensual/anual.",
+                    "Se integró Sanity CMS para la gestión del blog."
+                ]
+            },
+            "v0_1_0": {
+                "changes": [
+                    "Lanzamiento beta pública inicial de talkflo.",
+                    "Motor central de juego de roles de voz por IA en línea."
+                ]
+            }
+        }
+    },
+    "BlogPage": {
+        "Hero": {
+            "latest": "Último",
+            "insights": "Insights",
+            "articles": "Artículos"
+        },
+        "Sidebar": {
+            "categories": "Categorías",
+            "allPosts": "Todos los posts"
+        },
+        "Pagination": {
+            "prev": "Ant",
+            "next": "Sig"
+        },
+        "Empty": {
+            "title": "No se encontraron artículos",
+            "button": "Ver Todo"
+        },
+        "Card": {
+            "readingTime": "{minutes} min"
+        },
+        "Post": {
+            "back": "Volver al Blog",
+            "author": "Autor",
+            "published": "Publicado",
+            "readTime": "Tiempo de Lectura",
+            "category": "Categoría",
+            "readSuffix": "{minutes} min de lectura",
+            "unknown": "Desconocido",
+            "toc": "En esta página:"
+        }
+    },
+    "LoginPage": {
+        "Step1": {
+            "title": "Inicia sesión o regístrate",
+            "subtitle": "Empieza a crear con talkflo",
+            "social": "Continuar con {name}",
+            "or": "O",
+            "emailPlaceholder": "Introduce tu correo electrónico",
+            "button": "Continuar"
+        },
+        "Step2": {
+            "title": "Crea tu cuenta",
+            "subtitle": "Establece tu contraseña para continuar",
+            "emailLabel": "Correo electrónico",
+            "edit": "Editar",
+            "passwordLabel": "Contraseña",
+            "passwordPlaceholder": "Introduce contraseña",
+            "button": "Continuar",
+            "back": "Atrás"
+        },
+        "Branding": {
+            "from": "de"
+        }
+    },
+    "NotFound": {
+        "title": "404",
+        "subtitle": "Página no encontrada",
+        "description": "Lo sentimos, no pudimos encontrar la página que buscas. Puede que haya sido movida o no exista.",
+        "button": "Volver al Inicio"
+    },
+    "Metadata": {
+        "title": "talkflo | Entrenador de habla con IA en tiempo real y práctica de conversación",
+        "description": "Domina la fluidez en inglés con talkflo. Juego de roles con IA en tiempo real, comentarios de pronunciación instantáneos y entrenamiento profesional para IELTS, TOEFL y entrevistas de trabajo.",
+        "ogTitle": "talkflo | Entrenador de habla con IA en tiempo real",
+        "ogDescription": "Práctica de inglés impulsada por IA que se siente como una conversación real. Comentarios instantáneos, juego de roles adaptativo y una hoja de ruta transparente."
+    }
+}

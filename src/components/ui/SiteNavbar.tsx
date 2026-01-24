@@ -9,7 +9,7 @@ import {
     useMotionValueEvent,
 } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import React, { useRef, useState, useEffect } from "react";
 import { AuroraBackground } from "./AuroraBackground";
 
@@ -230,6 +230,7 @@ export const MobileNavMenu = ({
     className,
     isOpen,
 }: MobileNavMenuProps) => {
+
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";

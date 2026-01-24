@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { MonitorPlay } from "lucide-react";
 import { usePlatform } from "@/hooks/use-platform";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
@@ -51,7 +52,7 @@ const StoreButton = ({
     </Link>
 );
 
-const WebButton = ({ href, isMobileLayout }: { href: string; isMobileLayout?: boolean }) => (
+const WebButton = ({ href, isMobileLayout, label }: { href: string; isMobileLayout?: boolean; label: string }) => (
     <Link
         href={href}
         className={cn(
@@ -61,7 +62,7 @@ const WebButton = ({ href, isMobileLayout }: { href: string; isMobileLayout?: bo
     >
         <MonitorPlay className="h-5 w-5 text-slate-300 group-hover:text-white transition-colors flex-shrink-0" />
         <span className="text-base font-medium text-slate-300 group-hover:text-white transition-colors">
-            Try on Web
+            {label}
         </span>
     </Link>
 );
@@ -72,6 +73,7 @@ export const AppDownloadButtons = ({
     webLink,
     className,
 }: AppDownloadButtonsProps & { className?: string }) => {
+    const t = useTranslations('HomePage.AppButtons');
     const platform = usePlatform();
 
     // Prevent hydration mismatch/flash by rendering a placeholder until platform is detected
@@ -88,7 +90,7 @@ export const AppDownloadButtons = ({
                         <StoreButton
                             href={appStoreLink}
                             icon={IOSIcon}
-                            label="Download"
+                            label={t('download')}
                             isMobileLayout
                         />
                     )}
@@ -97,12 +99,12 @@ export const AppDownloadButtons = ({
                         <StoreButton
                             href={playStoreLink}
                             icon={AndroidIcon}
-                            label="Download"
+                            label={t('download')}
                             isMobileLayout
                         />
                     )}
 
-                    <WebButton href={webLink} isMobileLayout />
+                    <WebButton href={webLink} isMobileLayout label={t('tryWeb')} />
                 </div>
             )}
 
@@ -112,14 +114,14 @@ export const AppDownloadButtons = ({
                     <StoreButton
                         href={appStoreLink}
                         icon={IOSIcon}
-                        label="iOS"
+                        label={t('ios')}
                     />
                     <StoreButton
                         href={playStoreLink}
                         icon={AndroidIcon}
-                        label="Android"
+                        label={t('android')}
                     />
-                    <WebButton href={webLink} />
+                    <WebButton href={webLink} label={t('tryWeb')} />
                 </div>
             )}
         </div>

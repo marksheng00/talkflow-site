@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import {
     Loader2,
     Plus,
@@ -54,6 +55,7 @@ interface RoadmapClientProps {
 }
 
 export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs }: RoadmapClientProps) {
+    const t = useTranslations('RoadmapPage');
     const [activeTab, setActiveTab] = useState<Tab>("roadmap");
     const [tasks, setTasks] = useState<RoadmapItem[]>(initialTasks);
     const [ideals, setIdeals] = useState<CommunityIdea[]>(initialIdeas);
@@ -388,13 +390,13 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 <div className="section-shell section-stack stack-tight items-center text-center">
                     <div className="section-heading">
                         <h1 className="font-heading text-5xl font-bold tracking-tighter text-foreground md:text-8xl whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
-                            Building in{" "}
+                            {t('Hero.titlePrefix')}{" "}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
-                                public.
+                                {t('Hero.titleSuffix')}
                             </span>
                         </h1>
                         <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl mx-auto">
-                            Track our progress, vote on upcoming features, and help us shape the future of agentic communication.
+                            {t('Hero.subtitle')}
                         </p>
                     </div>
 
@@ -404,19 +406,19 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 onClick={() => setActiveTab("roadmap")}
                                 className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
-                                Roadmap
+                                {t('Tabs.roadmap')}
                             </button>
                             <button
                                 onClick={() => setActiveTab("ideas")}
                                 className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
-                                Ideas
+                                {t('Tabs.ideas')}
                             </button>
                             <button
                                 onClick={() => setActiveTab("bugs")}
                                 className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
                             >
-                                Bugs
+                                {t('Tabs.bugs')}
                             </button>
                         </div>
 
@@ -442,7 +444,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 : `bg-transparent border-white/10 text-slate-500 ${typeof colors === 'string' ? '' : colors.hover} hover:text-slate-300`
                                                 }`}
                                         >
-                                            {p}
+                                            {t(`Filters.Platforms.${p}`)}
                                         </button>
                                     );
                                 })
@@ -458,11 +460,6 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
                                     };
 
-                                    const mobileLabels: Record<string, string> = {
-                                        "AI Core": "AI",
-                                        "Feature": "Feat",
-                                    };
-                                    const displayLabel = mobileLabels[cat] || cat;
                                     const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
 
                                     return (
@@ -474,8 +471,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
                                                 }`}
                                         >
-                                            <span className="md:hidden">{displayLabel}</span>
-                                            <span className="hidden md:inline">{cat}</span>
+                                            {t(`Filters.Categories.${cat}`)}
                                         </button>
                                     );
                                 })
@@ -496,7 +492,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                             <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
                                 <div className="mb-6 pb-4 border-b border-white/10">
                                     <div className="text-center">
-                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Task Overview</span>
+                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('RoadmapTab.taskOverview')}</span>
                                         <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
                                     </div>
                                 </div>
@@ -515,7 +511,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                         </h4>
                                                         <div className="hidden md:flex items-center gap-2">
                                                             <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
-                                                                {task.category}
+                                                                {t(`Filters.Categories.${task.category}`)}
                                                             </span>
                                                             <div className="flex items-center gap-1 text-slate-600">
                                                                 <Zap className="h-2.5 w-2.5" />
@@ -638,8 +634,8 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 <Lightbulb className="h-5 w-5 text-emerald-400" />
                             </div>
                             <div className="text-left min-w-0 flex-1">
-                                <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Submit New Idea</p>
-                                <p className="text-xs text-slate-500 truncate">Have a feature request? Add it to the pool.</p>
+                                <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">{t('IdeasTab.submitCard.title')}</p>
+                                <p className="text-xs text-slate-500 truncate">{t('IdeasTab.submitCard.subtitle')}</p>
                             </div>
                             <div className="ml-auto pl-2 flex-shrink-0">
                                 <Plus className="h-5 w-5 text-slate-600 group-hover:text-emerald-400 transition-colors" />
@@ -661,7 +657,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
-                                                {idea.category}
+                                                {t(`Filters.Categories.${idea.category}`)}
                                             </span>
                                         </div>
                                     </div>
@@ -697,7 +693,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                         ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20'
                                                         : 'text-slate-500 bg-white/5 border-white/5'
                                                         }`}>
-                                                        {isPlanned ? 'Planned' : 'Open'}
+                                                        {isPlanned ? t('IdeasTab.status.planned') : t('IdeasTab.status.open')}
                                                     </span>
                                                 );
                                             })()}
@@ -720,8 +716,8 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 <Bug className="h-5 w-5 text-rose-400" />
                             </div>
                             <div className="text-left min-w-0 flex-1">
-                                <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">Report a Bug</p>
-                                <p className="text-xs text-slate-500 truncate">Found something broken? Help us squash it.</p>
+                                <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">{t('BugsTab.reportCard.title')}</p>
+                                <p className="text-xs text-slate-500 truncate">{t('BugsTab.reportCard.subtitle')}</p>
                             </div>
                             <div className="ml-auto pl-2 flex-shrink-0">
                                 <Plus className="h-5 w-5 text-slate-600 group-hover:text-rose-400 transition-colors" />
@@ -743,7 +739,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500">
-                                                {bug.platform}
+                                                {t(`Filters.Platforms.${bug.platform}`)}
                                             </span>
                                         </div>
                                     </div>
@@ -767,13 +763,13 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         <div className="ml-auto">
                                             {(() => {
                                                 const statusMap = {
-                                                    reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
-                                                    investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-                                                    fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-                                                    resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-                                                    wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                                    reported: { label: t('BugsTab.status.reported'), color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+                                                    investigating: { label: t('BugsTab.status.investigating'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+                                                    fixing: { label: t('BugsTab.status.fixing'), color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+                                                    resolved: { label: t('BugsTab.status.resolved'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+                                                    wont_fix: { label: t('BugsTab.status.wont_fix'), color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
                                                 };
-                                                const status = statusMap[bug.status] || statusMap.reported;
+                                                const status = statusMap[bug.status as keyof typeof statusMap] || statusMap.reported;
                                                 return (
                                                     <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
                                                         {status.label}
@@ -822,7 +818,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     <div className="mb-6">
                                         <div className="flex items-center gap-3 mb-4">
                                             <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                                                {selectedTask.category}
+                                                {t(`Filters.Categories.${selectedTask.category}`)}
                                             </span>
                                             {selectedTask.startDate && selectedTask.targetDate && (
                                                 <span className="text-xs text-slate-500 font-mono">
@@ -861,7 +857,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 >
                                     <Zap className={`h-5 w-5 ${boostedTasks.has(selectedTask.id) ? "fill-emerald-500" : ""}`} />
                                     <span>
-                                        {boostedTasks.has(selectedTask.id) ? "Boosted!" : "Boost this Feature"}
+                                        {boostedTasks.has(selectedTask.id) ? t('RoadmapTab.boosted') : t('RoadmapTab.boost')}
                                     </span>
                                 </button>
                             </div>
@@ -938,10 +934,10 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     <div>
                                         <div className="flex items-center gap-3 mb-4">
                                             <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
-                                                {selectedIdea.category}
+                                                {t(`Filters.Categories.${selectedIdea.category}`)}
                                             </span>
                                             <span className="text-xs text-slate-500 font-mono">
-                                                IDEA
+                                                {t('IdeasTab.modal.label')}
                                             </span>
                                         </div>
                                         <h2 className="text-2xl md:text-3xl font-heading font-bold text-white leading-tight">
@@ -965,7 +961,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         }`}
                                 >
                                     <ArrowUp className="h-5 w-5" />
-                                    <span>{selectedIdea.upvotes} Upvote</span>
+                                    <span>{selectedIdea.upvotes} {t('IdeasTab.vote')}</span>
                                 </button>
                                 <button
                                     onClick={(e) => handleVote(selectedIdea.id, "down", e)}
@@ -1052,20 +1048,20 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     <div>
                                         <div className="flex items-center gap-3 mb-4">
                                             <span className="text-xs font-medium text-rose-400 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20">
-                                                {selectedBug.platform}
+                                                {t(`Filters.Platforms.${selectedBug.platform}`)}
                                             </span>
                                             <span className="text-xs text-slate-500 font-mono">
-                                                BUG REPORT
+                                                {t('BugsTab.modal.label')}
                                             </span>
                                             {(() => {
                                                 const statusMap = {
-                                                    reported: { label: 'Reported', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
-                                                    investigating: { label: 'Investigating', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-                                                    fixing: { label: 'Fixing', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-                                                    resolved: { label: 'Resolved', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-                                                    wont_fix: { label: "Won't Fix", color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                                    reported: { label: t('BugsTab.status.reported'), color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+                                                    investigating: { label: t('BugsTab.status.investigating'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+                                                    fixing: { label: t('BugsTab.status.fixing'), color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+                                                    resolved: { label: t('BugsTab.status.resolved'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+                                                    wont_fix: { label: t('BugsTab.status.wont_fix'), color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
                                                 };
-                                                const status = statusMap[selectedBug.status] || statusMap.reported;
+                                                const status = statusMap[selectedBug.status as keyof typeof statusMap] || statusMap.reported;
                                                 return (
                                                     <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded border ${status.color}`}>
                                                         {status.label}
@@ -1080,7 +1076,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Description</h4>
+                                            <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">{t('BugsTab.modal.description')}</h4>
                                             <p className="text-base text-slate-300 leading-relaxed font-medium border-l-4 border-white/5 pl-4">
                                                 {selectedBug.description}
                                             </p>
@@ -1100,7 +1096,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         }`}
                                 >
                                     <ArrowUp className="h-5 w-5" />
-                                    <span>{selectedBug.upvotes} Upvote</span>
+                                    <span>{selectedBug.upvotes} {t('BugsTab.vote')}</span>
                                 </button>
                             </div>
                         </div>
@@ -1153,17 +1149,17 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="mb-6">
                             <h3 className="text-2xl font-heading font-bold text-white leading-tight flex items-center gap-2">
                                 <Lightbulb className="h-6 w-6 text-emerald-500" />
-                                Submit New Idea
+                                {t('SubmitIdeaModal.title')}
                             </h3>
-                            <p className="text-sm text-slate-500 mt-1">Share your feature requests with the team.</p>
+                            <p className="text-sm text-slate-500 mt-1">{t('SubmitIdeaModal.subtitle')}</p>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-5">
                             {/* Title */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Title</label>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('SubmitIdeaModal.fields.title')}</label>
                                 <input
-                                    placeholder="What's your idea?"
+                                    placeholder={t('SubmitIdeaModal.placeholders.title')}
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-medium placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all"
                                     value={form.title}
                                     onChange={e => setForm({ ...form, title: e.target.value })}
@@ -1174,7 +1170,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                             {/* Category */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Category</label>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('SubmitIdeaModal.fields.category')}</label>
                                 <div className="flex flex-wrap gap-2">
                                     {categories.filter(c => c !== 'All').map(cat => (
                                         <button
@@ -1186,7 +1182,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
                                                 }`}
                                         >
-                                            {cat}
+                                            {t(`Filters.Categories.${cat}`)}
                                         </button>
                                     ))}
                                 </div>
@@ -1194,9 +1190,9 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                             {/* Description */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Description</label>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t('SubmitIdeaModal.fields.description')}</label>
                                 <textarea
-                                    placeholder="Describe how this would work..."
+                                    placeholder={t('SubmitIdeaModal.placeholders.description')}
                                     className="w-full h-32 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.07] transition-all resize-none leading-relaxed"
                                     value={form.description}
                                     onChange={e => setForm({ ...form, description: e.target.value })}
@@ -1209,7 +1205,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 disabled={submitting}
                                 className="w-full h-14 bg-emerald-500 text-black rounded-xl font-bold text-lg hover:bg-emerald-400 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:pointer-events-none"
                             >
-                                {submitting ? <Loader2 className="animate-spin h-6 w-6" /> : "Submit Idea"}
+                                {submitting ? <Loader2 className="animate-spin h-6 w-6" /> : t('SubmitIdeaModal.submit')}
                             </button>
                         </form>
                     </div>
@@ -1232,19 +1228,19 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                                 <Bug className="h-6 w-6 text-rose-500" />
-                                Report a Bug
+                                {t('ReportBugModal.title')}
                             </h2>
-                            <p className="text-sm text-slate-500 mt-1">Something not working? Let us know.</p>
+                            <p className="text-sm text-slate-500 mt-1">{t('ReportBugModal.subtitle')}</p>
                         </div>
 
                         <form onSubmit={handleBugSubmit} className="space-y-5">
                             {/* Title */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">What went wrong?</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('ReportBugModal.fields.title')}</label>
                                 <input
                                     required
                                     type="text"
-                                    placeholder="e.g. App crashes when I click..."
+                                    placeholder={t('ReportBugModal.placeholders.title')}
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
                                     value={bugForm.title}
                                     onChange={e => setBugForm({ ...bugForm, title: e.target.value })}
@@ -1253,7 +1249,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                             {/* Platform Selection */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Platform</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('ReportBugModal.fields.platform')}</label>
                                 <div className="flex gap-2">
                                     {(["Web", "iOS", "Android"] as const).map(p => (
                                         <button
@@ -1265,7 +1261,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
                                                 }`}
                                         >
-                                            {p}
+                                            {t(`Filters.Platforms.${p}`)}
                                         </button>
                                     ))}
                                 </div>
@@ -1273,11 +1269,11 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                             {/* Description */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Steps to Reproduce</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('ReportBugModal.fields.steps')}</label>
                                 <textarea
                                     required
                                     rows={4}
-                                    placeholder="Describe how to reproduce..."
+                                    placeholder={t('ReportBugModal.placeholders.steps')}
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
                                     value={bugForm.steps}
                                     onChange={e => setBugForm({ ...bugForm, steps: e.target.value })}
@@ -1292,7 +1288,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 {bugSubmitting ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
-                                    "Report Bug"
+                                    t('ReportBugModal.submit')
                                 )}
                             </button>
                         </form>

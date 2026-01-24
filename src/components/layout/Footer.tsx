@@ -1,8 +1,11 @@
-import Link from "next/link";
+"use client";
+
+import { Link } from "@/navigation";
 import Image from "next/image";
 import packageJson from "../../../package.json";
+import { useTranslations } from "next-intl";
 
-const columns = [
+const columnsRaw = [
   {
     title: "Product",
     items: [
@@ -35,6 +38,8 @@ function primaryCommunity() {
 }
 
 export default function Footer() {
+  const t = useTranslations('Footer');
+
   return (
     <footer className="border-t border-white/10">
       <div className="section-shell grid grid-cols-1 gap-10 py-12 md:grid-cols-4">
@@ -61,10 +66,10 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        {columns.map((column) => (
+        {columnsRaw.map((column) => (
           <div key={column.title}>
             <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-400">
-              {column.title}
+              {t(`columns.${column.title}`)}
             </p>
             <div className="space-y-3 text-sm text-slate-200">
               {column.items.map((item) => (
@@ -73,7 +78,7 @@ export default function Footer() {
                   href={item.href}
                   className="block transition hover:text-white"
                 >
-                  {item.label}
+                  {t(`items.${item.label}`)}
                 </Link>
               ))}
             </div>
@@ -82,7 +87,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-white/5 py-4">
         <div className="section-shell text-xs text-slate-500">
-          <span>© {new Date().getFullYear()} talkflo. A product of BeyondThink LLC. All rights reserved.</span>
+          <span>{t('copyright', { year: new Date().getFullYear() })}</span>
         </div>
       </div>
     </footer>

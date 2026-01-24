@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   CheckCircle2,
   Play,
@@ -23,13 +24,15 @@ import {
 } from "@/lib/data/home-data";
 
 export default function Home() {
+  const t = useTranslations('HomePage');
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "talkflo",
     "operatingSystem": "iOS, Android, Web",
     "applicationCategory": "EducationApplication",
-    "description": "Real-time AI Speaking Coach and Conversation Practice tool.",
+    "description": t('subtitle'), // Use translated subtitle
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -50,15 +53,15 @@ export default function Home() {
           {/* Main Title */}
           <div className="section-heading max-w-6xl">
             <h1 className="max-w-6xl font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
-              Simple, Fast,{" "}
+              {t('titlePrefix')}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
-                Fluent.
+                {t('titleSuffix')}
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="max-w-4xl text-xl md:text-2xl leading-relaxed text-muted/60 px-2 md:px-0 font-light tracking-tight text-balance">
-              talkflo combines AI voice analysis with real-time coaching so you can practice, improve, and speak freely without friction.
+              {t('subtitle')}
             </p>
           </div>
 
@@ -77,23 +80,23 @@ export default function Home() {
                 <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 transition-transform hover:scale-110 cursor-pointer">
                   <Play className="h-6 w-6 md:h-8 md:w-8 text-white fill-current" />
                 </div>
-                <p className="text-xs md:text-sm font-medium tracking-wide uppercase text-slate-400">Watch Intro</p>
+                <p className="text-xs md:text-sm font-medium tracking-wide uppercase text-slate-400">{t('Hero.watchIntro')}</p>
               </div>
             </div>
 
             {/* Trust Proof Points Row */}
             <div className="grid grid-cols-2 gap-grid md:grid-cols-4 md:gap-grid-lg w-full pt-2 md:pt-3">
-              {proofPoints.slice(0, 4).map((point) => (
+              {[
+                { label: t('Hero.proofPoints.learners'), value: "180K+" },
+                { label: t('Hero.proofPoints.sessions'), value: "4.7" },
+                { label: t('Hero.proofPoints.confidence'), value: "2.1x" },
+                { label: t('Hero.proofPoints.rating'), value: "4.9/5" }
+              ].map((point) => (
                 <div key={point.label} className="text-center">
                   <div className="text-3xl font-bold text-white">{point.value}</div>
                   <div className="text-xs uppercase tracking-wider text-slate-500 mt-1">{point.label}</div>
                 </div>
               ))}
-              {/* Add a 4th dummy point for balance if needed, or stick to 3 */}
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">4.9/5</div>
-                <div className="text-xs uppercase tracking-wider text-slate-500 mt-1">App Rating</div>
-              </div>
             </div>
           </div>
         </div>
@@ -104,25 +107,27 @@ export default function Home() {
         <div className="section-shell section-stack">
           <div className="section-heading">
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-              Everything you need to improve.
+              {t('Features.title')}
             </h2>
             <p className="text-lg text-slate-400 text-balance">
-              Comprehensive tools designed to make you sound like a native speaker.
+              {t('Features.subtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 gap-grid md:grid-cols-3 md:gap-grid-lg">
-            {featureCards.map((feature) => (
+            {featureCards.map((feature, idx) => (
               <div
-                key={feature.title}
+                key={idx}
                 className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition hover:bg-white/[0.04]"
               >
                 <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 group-hover:bg-white/10 transition-colors">
                   <feature.icon className="h-6 w-6 text-emerald-200" />
                 </div>
                 <h3 className="font-heading text-xl font-bold text-white">
-                  {feature.title}
+                  {t(`Features.cards.${idx}.title`)}
                 </h3>
-                <p className="mt-3 text-base text-slate-400 leading-relaxed">{feature.copy}</p>
+                <p className="mt-3 text-base text-slate-400 leading-relaxed">
+                  {t(`Features.cards.${idx}.copy`)}
+                </p>
               </div>
             ))}
           </div>
@@ -132,18 +137,18 @@ export default function Home() {
             <div className="grid gap-grid-lg lg:grid-cols-2 lg:items-center">
               <div className="space-y-8 z-10 relative">
                 <h3 className="font-heading text-3xl font-bold text-white md:text-4xl text-balance">
-                  Feedback you can actually use.
+                  {t('Features.Feedback.title')}
                 </h3>
                 <p className="text-lg text-slate-400 leading-relaxed">
-                  Get clear, actionable advice on your pacing, tone, and grammar. No vague suggestions—just direct ways to improve every single day.
+                  {t('Features.Feedback.desc')}
                 </p>
                 <div className="space-y-4">
-                  {benefits.map((item) => (
-                    <div key={item} className="flex items-center gap-4">
+                  {[0, 1, 2, 3].map((idx) => (
+                    <div key={idx} className="flex items-center gap-4">
                       <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
                         <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                       </div>
-                      <p className="text-base text-slate-300">{item}</p>
+                      <p className="text-base text-slate-300">{t(`Features.Feedback.list.${idx}`)}</p>
                     </div>
                   ))}
                 </div>
@@ -158,7 +163,7 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-slate-500 text-center mt-2">← Swipe to see more →</p>
+                <p className="text-xs text-slate-500 text-center mt-2">{t('Features.Feedback.mobileSwipe')}</p>
               </div>
 
               {/* Desktop: Vertical Marquee Container */}
@@ -188,10 +193,10 @@ export default function Home() {
         <div className="section-shell section-stack">
           <div className="section-heading">
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-              Magic, engineered.
+              {t('Tech.title')}
             </h2>
             <p className="text-lg text-slate-400 text-balance">
-              Next-gen models and SOTA speech synthesis for an experience that feels truly alive.
+              {t('Tech.subtitle')}
             </p>
           </div>
 
@@ -202,9 +207,9 @@ export default function Home() {
               <div className="absolute top-0 right-0 -mt-12 -mr-12 h-48 w-48 rounded-full bg-indigo-500/15 blur-[60px] transition-all group-hover:bg-indigo-500/25" />
 
               <div className="relative z-10 space-y-2">
-                <h4 className="text-lg font-bold text-white md:text-xl">An active partner, not a script.</h4>
+                <h4 className="text-lg font-bold text-white md:text-xl">{t('Tech.cards.partner.title')}</h4>
                 <p className="text-slate-400 leading-relaxed text-xs md:text-sm">
-                  Interrupts, asks clarifying questions, guides with empathy.
+                  {t('Tech.cards.partner.desc')}
                 </p>
               </div>
 
@@ -212,36 +217,36 @@ export default function Home() {
               <ChatConversation
                 messages={[
                   {
-                    text: "I want to practice for my job interview...",
+                    text: t('Tech.cards.chat.0'),
                     delay: 0,
                     typingSpeed: 60,
                     className: "self-end max-w-[75%] rounded-2xl rounded-br-sm bg-indigo-500/30 px-5 py-3.5 text-base text-white/90 leading-relaxed",
                   },
                   {
-                    text: "Wait— what role? That changes everything.",
+                    text: t('Tech.cards.chat.1'),
                     delay: 2500,
                     typingSpeed: 55,
                     className: "self-start max-w-[80%] rounded-2xl rounded-bl-sm bg-white/10 px-5 py-3.5 text-base text-white/80 leading-relaxed",
                     highlightWords: [
-                      { word: "Wait", className: "gradient-word-cool" },
-                      { word: "role", className: "gradient-word-emerald" },
-                      { word: "changes", className: "gradient-word-warm" },
+                      { word: t('Tech.cards.chat.1').includes('Wait') ? "Wait" : "请稍等", className: "gradient-word-cool" },
+                      { word: t('Tech.cards.chat.1').includes('role') ? "role" : "职位", className: "gradient-word-emerald" },
+                      { word: t('Tech.cards.chat.1').includes('changes') ? "changes" : "改变", className: "gradient-word-warm" },
                     ],
                   },
                   {
-                    text: "Product Manager at a startup.",
+                    text: t('Tech.cards.chat.2'),
                     delay: 5000,
                     typingSpeed: 65,
                     className: "self-end max-w-[65%] rounded-2xl rounded-br-sm bg-indigo-500/30 px-5 py-3.5 text-base text-white/90 leading-relaxed",
                   },
                   {
-                    text: "Perfect. Let's start hard: Tell me about a time you failed.",
+                    text: t('Tech.cards.chat.3'),
                     delay: 7500,
                     typingSpeed: 50,
                     className: "self-start max-w-[85%] rounded-2xl rounded-bl-sm bg-white/10 px-5 py-3.5 text-base text-white/80 leading-relaxed",
                     highlightWords: [
-                      { word: "Perfect", className: "gradient-word-cool" },
-                      { word: "failed", className: "gradient-word-warm" },
+                      { word: t('Tech.cards.chat.3').includes('Perfect') ? "Perfect" : "太棒了", className: "gradient-word-cool" },
+                      { word: t('Tech.cards.chat.3').includes('failed') ? "failed" : "失败", className: "gradient-word-warm" },
                     ],
                   },
                 ]}
@@ -258,9 +263,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-base md:text-lg font-bold text-white">Latency so low, it feels instant.</h4>
+                <h4 className="text-base md:text-lg font-bold text-white">{t('Tech.cards.latency.title')}</h4>
                 <p className="text-slate-400 text-xs md:text-sm mt-0.5 truncate">
-                  No awkward pauses. Natural conversation.
+                  {t('Tech.cards.latency.desc')}
                 </p>
               </div>
               {/* Speed line animation */}
@@ -280,7 +285,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h4 className="text-xs font-bold text-white/90 text-center">Top-tier Models</h4>
+                <h4 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.models')}</h4>
               </div>
             </div>
 
@@ -305,7 +310,7 @@ export default function Home() {
 
               {/* Overlaid Label - Consistent with others */}
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h4 className="text-xs font-bold text-white/90 text-center">SOTA Voice</h4>
+                <h4 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.voice')}</h4>
               </div>
             </div>
 
@@ -324,7 +329,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h4 className="text-xs font-bold text-white/90 text-center">Phoneme ASR</h4>
+                <h4 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.asr')}</h4>
               </div>
             </div>
 
@@ -337,10 +342,10 @@ export default function Home() {
         <div className="section-shell section-stack">
           <div className="section-heading">
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-              Built by experts.
+              {t('About.title')}
             </h2>
             <p className="text-lg text-slate-400 text-balance">
-              Where Oxford linguistics meets Silicon Valley engineering.
+              {t('About.subtitle')}
             </p>
           </div>
 
@@ -355,8 +360,8 @@ export default function Home() {
                   <div className="relative rounded-2xl border border-white/20 bg-white/95 backdrop-blur-xl p-6 shadow-2xl transition-all duration-500 group-hover:shadow-emerald-500/20">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">IELTS Official</p>
-                        <p className="text-sm text-slate-500 mt-0.5">Examiner Credentials</p>
+                        <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">{t('About.cards.pedagogy.badge')}</p>
+                        <p className="text-sm text-slate-500 mt-0.5">{t('About.cards.pedagogy.credential')}</p>
                       </div>
                       <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center">
                         <BookOpen className="h-5 w-5 text-white" />
@@ -364,33 +369,33 @@ export default function Home() {
                     </div>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                        <span className="text-sm text-slate-600">Fluency & Coherence</span>
+                        <span className="text-sm text-slate-600">{t('About.cards.pedagogy.stats.fluency')}</span>
                         <span className="text-sm font-bold text-slate-900">8.5</span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                        <span className="text-sm text-slate-600">Lexical Resource</span>
+                        <span className="text-sm text-slate-600">{t('About.cards.pedagogy.stats.lexical')}</span>
                         <span className="text-sm font-bold text-slate-900">9.0</span>
                       </div>
                       <div className="flex justify-between items-center py-2">
-                        <span className="text-sm text-slate-600">Pronunciation</span>
+                        <span className="text-sm text-slate-600">{t('About.cards.pedagogy.stats.pronunciation')}</span>
                         <span className="text-sm font-bold text-slate-900">8.0</span>
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-200">
-                      <p className="text-xs text-slate-400 italic">Signed by former Cambridge examiners</p>
+                      <p className="text-xs text-slate-400 italic">{t('About.cards.pedagogy.footer')}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Right: Text Content */}
                 <div className="space-y-4">
-                  <h4 className="text-2xl font-bold text-white">Pedagogy First</h4>
+                  <h4 className="text-2xl font-bold text-white">{t('About.cards.pedagogy.title')}</h4>
                   <p className="text-base text-slate-200 leading-relaxed">
-                    Our curriculum isn&apos;t designed by software engineers guessing at education. It&apos;s crafted by <strong>former IELTS examiners</strong> and linguistic PhDs who understand exactly what separates a Band 6 from a Band 8.
+                    {t('About.cards.pedagogy.desc')}
                   </p>
                   <div className="flex items-center gap-2 text-sm text-emerald-300">
                     <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>Trusted by 50,000+ learners</span>
+                    <span>{t('About.cards.pedagogy.trust')}</span>
                   </div>
                 </div>
               </div>
@@ -403,13 +408,13 @@ export default function Home() {
               <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
                 {/* Left: Text Content */}
                 <div className="space-y-4 md:order-1">
-                  <h4 className="text-2xl font-bold text-white">SOTA Engineering</h4>
+                  <h4 className="text-2xl font-bold text-white">{t('About.cards.engineering.title')}</h4>
                   <p className="text-base text-slate-200 leading-relaxed">
-                    Powered by <strong>low-latency LLMs</strong> and proprietary voice processing models. Our system can naturally interrupt you mid-sentence, just like a real conversation partner.
+                    {t('About.cards.engineering.desc')}
                   </p>
                   <div className="flex items-center gap-2 text-sm text-indigo-300">
                     <div className="h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
-                    <span>&lt;200ms response time</span>
+                    <span>{t('About.cards.engineering.stat')}</span>
                   </div>
                 </div>
 
@@ -429,11 +434,11 @@ export default function Home() {
                     {/* Terminal Content */}
                     <div className="p-4 font-mono text-xs space-y-1">
                       <p className="text-emerald-400">$ npm run dev</p>
-                      <p className="text-slate-500">&gt; Starting talkflo engine...</p>
-                      <p className="text-indigo-300">✓ Voice model loaded (Gemini Flash 2.0)</p>
-                      <p className="text-indigo-300">✓ ASR initialized (Deepgram Nova-2)</p>
-                      <p className="text-slate-400">⚡ Avg latency: <span className="text-emerald-400 font-bold">187ms</span></p>
-                      <p className="text-slate-400">🎯 Interruption detection: <span className="text-purple-400 font-bold">Active</span></p>
+                      <p className="text-slate-500">&gt; {t('About.cards.engineering.terminal.starting')}</p>
+                      <p className="text-indigo-300">✓ {t('About.cards.engineering.terminal.voice')}</p>
+                      <p className="text-indigo-300">✓ {t('About.cards.engineering.terminal.asr')}</p>
+                      <p className="text-slate-400">⚡ {t('About.cards.engineering.terminal.latency')} <span className="text-emerald-400 font-bold">187ms</span></p>
+                      <p className="text-slate-400">🎯 {t('About.cards.engineering.terminal.interruption')} <span className="text-purple-400 font-bold">{t('About.cards.engineering.terminal.active')}</span></p>
                       <p className="text-slate-500 animate-pulse">▊</p>
                     </div>
                   </div>
@@ -449,22 +454,22 @@ export default function Home() {
                 {/* Left: Embedded Chat Bubbles */}
                 <div className="space-y-4">
                   <div className="relative rounded-2xl rounded-tl-sm border border-white/20 bg-white/95 backdrop-blur-xl p-4 shadow-xl max-w-sm transition-all group-hover:translate-y-[-4px]">
-                    <p className="text-sm text-slate-700">I&apos;m worried I keep using the word &quot;very&quot; too much...</p>
+                    <p className="text-sm text-slate-700">{t('About.cards.human.bubble1')}</p>
                   </div>
                   <div className="relative rounded-2xl rounded-br-sm border border-rose-200/30 bg-gradient-to-br from-rose-400/20 to-orange-400/20 backdrop-blur-xl p-4 shadow-xl ml-4 md:ml-8 transition-all group-hover:translate-y-[-2px]">
-                    <p className="text-sm text-white/90">I noticed that too. Try &quot;extremely,&quot; &quot;remarkably,&quot; or just drop it entirely—your point is strong enough without it. 💪</p>
+                    <p className="text-sm text-white/90">{t('About.cards.human.bubble2')}</p>
                   </div>
                 </div>
 
                 {/* Right: Text Content */}
                 <div className="space-y-4">
-                  <h4 className="text-2xl font-bold text-white">Human-Centric</h4>
+                  <h4 className="text-2xl font-bold text-white">{t('About.cards.human.title')}</h4>
                   <p className="text-base text-slate-200 leading-relaxed">
-                    We believe AI should <strong>coach, not replace</strong>. Our system mimics the empathy of a real tutor—noticing patterns, celebrating progress, and adapting to your unique voice.
+                    {t('About.cards.human.desc')}
                   </p>
                   <div className="flex items-center gap-2 text-sm text-rose-300">
                     <div className="h-2 w-2 rounded-full bg-rose-400 animate-pulse" />
-                    <span>Personalized feedback, always</span>
+                    <span>{t('About.cards.human.footer')}</span>
                   </div>
                 </div>
               </div>
@@ -478,56 +483,35 @@ export default function Home() {
         <div className="section-shell section-stack">
           <div className="section-heading">
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-              Real people, real results.
+              {t('Testimonials.title')}
             </h2>
             <p className="text-lg text-slate-400 text-balance">
-              Join thousands of learners sounding more confident every day.
+              {t('Testimonials.subtitle')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 stagger-grid">
             {[
-              {
-                name: "Sarah Chen",
-                role: "Software Engineer",
-                score: "Job Offer Secured",
-                icon: "Briefcase",
-                quote: "The mock interviews felt incredibly real. I stopped freezing up when I didn't know the answer.",
-                color: "emerald"
-              },
-              {
-                name: "Marcus Rodriguez",
-                role: "Medical Student",
-                score: "IELTS 6.5 → 7.5",
-                icon: "TrendingUp",
-                quote: "I used to mumble. talkflo forced me to speak up and clearly. It's like a gym for your voice.",
-                color: "indigo"
-              },
-              {
-                name: "Yuki Tanaka",
-                role: "Product Designer",
-                score: "Visa Approved",
-                icon: "CheckCircle2",
-                quote: "The nuance feedback is crazy. It caught my tone issues that simple grammar checkers always missed.",
-                color: "rose"
-              }
-            ].map((item) => (
+              { icon: "Briefcase", color: "emerald" },
+              { icon: "TrendingUp", color: "indigo" },
+              { icon: "CheckCircle2", color: "rose" }
+            ].map((config, idx) => (
               <div
-                key={item.name}
+                key={idx}
                 className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition-all hover:bg-white/[0.04] hover:border-white/20"
               >
                 <div className="space-y-6">
                   {/* Unified Premium Glass Badge */}
                   <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-md">
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10">
-                      {item.icon === 'Briefcase' && <Briefcase className="h-3 w-3 text-emerald-400" />}
-                      {item.icon === 'TrendingUp' && <TrendingUp className="h-3 w-3 text-indigo-400" />}
-                      {item.icon === 'CheckCircle2' && <CheckCircle2 className="h-3 w-3 text-rose-400" />}
+                      {config.icon === 'Briefcase' && <Briefcase className="h-3 w-3 text-emerald-400" />}
+                      {config.icon === 'TrendingUp' && <TrendingUp className="h-3 w-3 text-indigo-400" />}
+                      {config.icon === 'CheckCircle2' && <CheckCircle2 className="h-3 w-3 text-rose-400" />}
                     </div>
-                    <span className="text-[11px] font-bold tracking-tight text-white/90">{item.score}</span>
+                    <span className="text-[11px] font-bold tracking-tight text-white/90">{t(`Testimonials.items.${idx}.score`)}</span>
                   </div>
 
-                  <p className="text-lg text-slate-200 leading-relaxed font-medium">“{item.quote}”</p>
+                  <p className="text-lg text-slate-200 leading-relaxed font-medium">“{t(`Testimonials.items.${idx}.quote`)}”</p>
 
                   {/* Fake Audio Player UI */}
                   <div className="flex items-center gap-3 rounded-xl bg-white/5 p-2 pr-4 border border-white/5">
@@ -540,7 +524,7 @@ export default function Home() {
                           key={j}
                           className="w-0.5 bg-slate-500/50 rounded-full transition-all group-hover:bg-emerald-400/80"
                           style={{
-                            height: `${20 + ((j * 13 + item.name.length * 7) % 80)}%`
+                            height: `${20 + ((j * 13 + idx * 7) % 80)}%`
                           }}
                         />
                       ))}
@@ -552,8 +536,8 @@ export default function Home() {
                 <div className="mt-8 flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 ring-2 ring-white/10" />
                   <div>
-                    <p className="font-bold text-white text-sm">{item.name}</p>
-                    <p className="text-xs text-slate-400">{item.role}</p>
+                    <p className="font-bold text-white text-sm">{t(`Testimonials.items.${idx}.name`)}</p>
+                    <p className="text-xs text-slate-400">{t(`Testimonials.items.${idx}.role`)}</p>
                   </div>
                 </div>
               </div>
@@ -567,22 +551,22 @@ export default function Home() {
         <div className="section-shell section-stack">
           <div className="section-heading">
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
-              FAQ.
+              {t('FAQ.title')}
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-4 md:gap-5 md:grid-cols-2 max-w-5xl mx-auto">
-            {faqs.map((item) => (
+            {[0, 1, 2, 3].map((idx) => (
               <details
-                key={item.q}
+                key={idx}
                 className="group rounded-3xl border border-white/10 bg-white/5 p-6 text-base md:text-lg transition-all hover:bg-white/10"
               >
                 <summary className="flex cursor-pointer items-start justify-between font-medium text-white gap-4">
-                  {item.q}
+                  {t(`FAQ.items.${idx}.q`)}
                   <span className="text-emerald-200 transition-transform group-open:rotate-45 text-2xl leading-none">
                     +
                   </span>
                 </summary>
-                <p className="mt-4 text-base text-slate-400 leading-relaxed pr-8">{item.a}</p>
+                <p className="mt-4 text-base text-slate-400 leading-relaxed pr-8">{t(`FAQ.items.${idx}.a`)}</p>
               </details>
             ))}
           </div>
@@ -597,10 +581,10 @@ export default function Home() {
             <div className="relative flex flex-col items-center md:items-start text-center md:text-left">
               <div className="flex flex-col gap-5 md:gap-6 w-full">
                 <h2 className="font-heading text-3xl font-semibold text-white md:text-4xl">
-                  Start practicing in seconds.
+                  {t('FooterCTA.title')}
                 </h2>
                 <p className="text-base text-slate-200">
-                  Download the app or jump into the web experience—everything stays in sync.
+                  {t('FooterCTA.subtitle')}
                 </p>
                 <AppDownloadButtons
                   appStoreLink={appStore}

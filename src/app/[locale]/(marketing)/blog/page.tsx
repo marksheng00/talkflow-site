@@ -11,23 +11,33 @@ import BlogCard from '@/components/blog/BlogCard';
 import { ChevronLeft, ChevronRight, Filter, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import type { BlogPost, BlogCategory } from '@/types/blog';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = {
-    title: 'Blog | talkflo - English Speaking Practice Tips',
-    description: 'Expert tips, learning strategies, and product updates to help you speak English with confidence.',
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'BlogPage' });
+
+    return {
+        title: `${t('Hero.articles')} | talkflo - English Speaking Practice Tips`,
+        description: 'Expert tips, learning strategies, and product updates to help you speak English with confidence.',
+    };
 }
 
 export const revalidate = 3600
 const POSTS_PER_PAGE = 9
 
 export default async function BlogPage({
+    params,
     searchParams,
 }: {
+    params: Promise<{ locale: string }>;
     searchParams: Promise<{ page?: string; category?: string }>
 }) {
-    const params = await searchParams;
-    const page = Number(params.page) || 1;
-    const categorySlug = params.category;
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'BlogPage' });
+    const searchParamsObj = await searchParams;
+    const page = Number(searchParamsObj.page) || 1;
+    const categorySlug = searchParamsObj.category;
     const start = (page - 1) * POSTS_PER_PAGE;
     const end = start + POSTS_PER_PAGE;
 
@@ -53,13 +63,13 @@ export default async function BlogPage({
                         <h1 className="font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] whitespace-normal md:whitespace-nowrap">
                             {currentCategory ? (
                                 <>
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-teal-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">{currentCategory.title}</span> Articles
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-teal-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">{currentCategory.title}</span> {t('Hero.articles')}
                                 </>
                             ) : (
                                 <>
-                                    Latest{" "}
+                                    {t('Hero.latest')}{" "}
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-cyan-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">
-                                        Insights
+                                        {t('Hero.insights')}
                                     </span>
                                 </>
                             )}
@@ -72,7 +82,7 @@ export default async function BlogPage({
                         <aside className="hidden lg:block w-[220px] flex-shrink-0 sticky top-32">
                             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                                 <Filter className="w-3 h-3" />
-                                Categories
+                                {t('Sidebar.categories')}
                             </h3>
                             <nav className="flex flex-col space-y-1">
                                 <Link
@@ -82,7 +92,7 @@ export default async function BlogPage({
                                         : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                         }`}
                                 >
-                                    All Posts
+                                    {t('Sidebar.allPosts')}
                                 </Link>
                                 {categories.map((cat) => (
                                     <Link
@@ -110,7 +120,7 @@ export default async function BlogPage({
                                         : 'bg-white/5 border-white/10 text-slate-400'
                                         }`}
                                 >
-                                    All
+                                    {t('Hero.latest')}
                                 </Link>
                                 {categories.map((cat) => (
                                     <Link
@@ -143,7 +153,7 @@ export default async function BlogPage({
                                                     href={`/blog?page=${page - 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
                                                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
                                                 >
-                                                    <ChevronLeft className="w-4 h-4" /> Prev
+                                                    <ChevronLeft className="w-4 h-4" /> {t('Pagination.prev')}
                                                 </Link>
                                             )}
 
@@ -156,7 +166,7 @@ export default async function BlogPage({
                                                     href={`/blog?page=${page + 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
                                                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
                                                 >
-                                                    Next <ChevronRight className="w-4 h-4" />
+                                                    {t('Pagination.next')} <ChevronRight className="w-4 h-4" />
                                                 </Link>
                                             )}
                                         </div>
@@ -165,12 +175,12 @@ export default async function BlogPage({
                             ) : (
                                 <div className="flex flex-col items-center justify-center py-24 bg-white/5 rounded-2xl border border-white/10 border-dashed text-center">
                                     <BookOpen className="w-10 h-10 text-slate-600 mb-3" />
-                                    <p className="text-slate-400 mb-4">No articles found</p>
+                                    <p className="text-slate-400 mb-4">{t('Empty.title')}</p>
                                     <Link
                                         href="/blog"
                                         className="px-5 py-2 rounded-xl bg-teal-500 text-black font-bold text-sm hover:bg-teal-400 transition-colors"
                                     >
-                                        View All
+                                        {t('Empty.button')}
                                     </Link>
                                 </div>
                             )}

@@ -1,12 +1,18 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity.image';
 import { format } from 'date-fns';
+import { zhCN } from 'date-fns/locale';
 import { estimateReadingTime } from '@/lib/blog-helpers';
 import { Clock } from 'lucide-react';
 import type { BlogPost, BlogCategory } from '@/types/blog';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function BlogCard({ post }: { post: BlogPost }) {
+    const t = useTranslations('BlogPage');
+    const localeSelection = useLocale();
     const readingTime = estimateReadingTime(post.body || []);
 
     return (
@@ -60,11 +66,17 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <time>{post.publishedAt ? format(new Date(post.publishedAt), 'MMM dd') : ''}</time>
+                        <time>
+                            {post.publishedAt
+                                ? format(new Date(post.publishedAt), localeSelection === 'zh' ? 'MM月dd日' : 'MMM dd', {
+                                    locale: localeSelection === 'zh' ? zhCN : undefined
+                                })
+                                : ''}
+                        </time>
                         <span className="w-1 h-1 rounded-full bg-slate-700" />
                         <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {readingTime} min
+                            {t('Card.readingTime', { minutes: readingTime })}
                         </span>
                     </div>
                 </div>

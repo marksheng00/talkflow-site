@@ -5,15 +5,18 @@ import { PortableText } from '@portabletext/react';
 import { urlFor } from '@/lib/sanity.image';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import { zhCN } from 'date-fns/locale';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { TableOfContents } from '@/components/blog/TableOfContents';
+import { estimateReadingTime } from '@/lib/blog-helpers';
 import type { PortableTextComponents } from '@portabletext/react';
 import type { Metadata } from 'next';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import type { SanityImageSource } from '@sanity/image-url';
 import type { ReactNode } from 'react';
+import { getTranslations } from 'next-intl/server';
 
 // Helper to generate IDs from text
 const slugify = (text: string) => {
@@ -41,11 +44,14 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-    const { slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
+    const { slug, locale } = await params;
     if (!slug) return {};
 
-    const post = await client.fetch<BlogPost | null>(postBySlugQuery, { slug });
+    const [post, t] = await Promise.all([
+        client.fetch<BlogPost | null>(postBySlugQuery, { slug }),
+        getTranslations({ locale, namespace: 'BlogPage' })
+    ]);
 
     if (!post) return {};
 
@@ -112,14 +118,15 @@ const ptComponents: PortableTextComponents = {
     }
 };
 
-export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+export default async function BlogPost({ params }: { params: Promise<{ slug: string; locale: string }> }) {
+    const { slug, locale } = await params;
 
     if (!slug) notFound();
 
-    console.log('Fetching post for slug:', slug);
-    const post = await client.fetch<BlogPost | null>(postBySlugQuery, { slug });
-    console.log('Sanity fetch result:', post);
+    const [post, t] = await Promise.all([
+        client.fetch<BlogPost | null>(postBySlugQuery, { slug }),
+        getTranslations({ locale, namespace: 'BlogPage' })
+    ]);
 
     if (!post) notFound();
 
@@ -131,6 +138,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             text: extractText(block),
             level: block.style === 'h2' ? 2 : 3
         }));
+
+    const readingTime = estimateReadingTime(post.body || []);
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
@@ -146,9 +155,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                     className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group text-sm font-bold"
                                 >
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                                    Back to Blog
+                                    {t('Post.back')}
                                 </Link>
-                                <TableOfContents headings={headings} />
+                                <TableOfContents headings={headings} translation={t('Post.toc')} />
                             </div>
                         </aside>
 
@@ -161,7 +170,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                     className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group text-sm font-bold"
                                 >
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                                    Back to Blog
+                                    {t('Post.back')}
                                 </Link>
                             </div>
 
@@ -186,7 +195,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                                 </div>
                                             )}
                                             <div className="flex flex-col">
-                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">Author</span>
+                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.author')}</span>
                                                 <span className="font-bold text-white text-lg whitespace-nowrap">{post.author?.name}</span>
                                             </div>
                                         </div>
@@ -195,9 +204,13 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
                                         {/* Date */}
                                         <div className="flex flex-col">
-                                            <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">Published</span>
+                                            <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.published')}</span>
                                             <time className="text-white font-medium whitespace-nowrap">
-                                                {post.publishedAt ? format(new Date(post.publishedAt), 'MMMM dd, yyyy') : 'Unknown'}
+                                                {post.publishedAt
+                                                    ? format(new Date(post.publishedAt), locale === 'zh' ? 'yyyy年MM月dd日' : 'MMMM dd, yyyy', {
+                                                        locale: locale === 'zh' ? zhCN : undefined
+                                                    })
+                                                    : t('Post.unknown')}
                                             </time>
                                         </div>
 
@@ -205,12 +218,12 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
                                         {/* Read Time */}
                                         <div className="flex flex-col">
-                                            <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">Read Time</span>
+                                            <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.readTime')}</span>
                                             <div className="flex items-center gap-2 text-white font-medium whitespace-nowrap">
                                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                <span>5 min read</span>
+                                                <span>{t('Post.readSuffix', { minutes: readingTime })}</span>
                                             </div>
                                         </div>
 
@@ -218,7 +231,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                             <>
                                                 <div className="hidden md:block w-px h-10 bg-white/10" />
                                                 <div className="flex flex-col">
-                                                    <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">Category</span>
+                                                    <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.category')}</span>
                                                     <div className="flex items-center gap-2">
                                                         {post.categories.map((cat: BlogCategory) => (
                                                             <span

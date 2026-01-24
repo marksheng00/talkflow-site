@@ -11,9 +11,10 @@ export interface Heading {
 
 interface TableOfContentsProps {
     headings: Heading[];
+    translation?: string;
 }
 
-export function TableOfContents({ headings }: TableOfContentsProps) {
+export function TableOfContents({ headings, translation }: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>("");
 
     useEffect(() => {
@@ -40,7 +41,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
     return (
         <div className="hidden lg:block sticky top-24 self-start w-64 shrink-0">
-            <h3 className="font-bold text-lg text-white mb-4">On this page:</h3>
+            <h3 className="font-bold text-lg text-white mb-4">{translation || "On this page:"}</h3>
             <nav className="relative">
                 {/* Render a continuous line if needed, but styling shows individual items have borders */}
                 <ul className="space-y-4">
