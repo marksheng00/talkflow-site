@@ -98,7 +98,7 @@ export default function LoginClient() {
                                 >
                                     {/* Header */}
                                     <div className="flex flex-col items-center justify-center text-center mb-[2.5svh] md:mb-10 space-y-[1.5svh] md:space-y-6">
-                                        <div className="relative h-[5svh] w-[5svh] min-h-[40px] min-w-[40px] max-h-[64px] max-w-[64px] md:h-16 md:w-16">
+                                        <div className="relative h-[8svh] w-[8svh] min-h-[60px] min-w-[60px] max-h-[80px] max-w-[80px] md:h-20 md:w-20">
                                             <Image
                                                 src="/talkflo_logo.png"
                                                 alt="talkflo"
@@ -179,7 +179,7 @@ export default function LoginClient() {
                                     className="p-6 md:p-8 pt-[3svh] md:pt-[4svh] pb-[3svh] md:pb-[4svh]"
                                 >
                                     <div className="flex flex-col items-center text-center mb-[2.5svh] md:mb-10 space-y-[1.5svh] md:space-y-6">
-                                        <div className="relative h-[5svh] w-[5svh] min-h-[40px] min-w-[40px] max-h-[64px] max-w-[64px] md:h-16 md:w-16">
+                                        <div className="relative h-[8svh] w-[8svh] min-h-[60px] min-w-[60px] max-h-[80px] max-w-[80px] md:h-20 md:w-20">
                                             <Image
                                                 src="/talkflo_logo.png"
                                                 alt="talkflo"
