@@ -437,7 +437,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         <button
                                             key={p}
                                             onClick={() => setSelectedPlatform(p)}
-                                            className={`flex-1 md:flex-initial px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${isActive
+                                            className={`flex-1 md:flex-initial px-3 md:px-4 py-1.5 rounded-xl text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${isActive
                                                 ? (typeof colors === 'string' ? colors : colors.active)
                                                 : `bg-transparent border-white/10 text-slate-500 ${typeof colors === 'string' ? '' : colors.hover} hover:text-slate-300`
                                                 }`}
@@ -469,7 +469,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         <button
                                             key={cat}
                                             onClick={() => setSelectedCategory(cat)}
-                                            className={`flex-1 md:flex-initial px-2 md:px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${selectedCategory === cat
+                                            className={`flex-1 md:flex-initial px-2 md:px-3 py-1.5 rounded-xl text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${selectedCategory === cat
                                                 ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
                                                 : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
                                                 }`}
