@@ -53,17 +53,27 @@ export async function POST(req: Request) {
             SourceText: text,
         };
 
-        return new Promise<NextResponse>((resolve) => {
-            client.TextTranslate(params, (err, response) => {
-                if (err) {
-                    console.error("Tencent Cloud Translation Error:", err);
-                    const errMsg = typeof err === 'string' ? err : ((err as any).message || "Tencent API Error");
-                    resolve(NextResponse.json({ error: errMsg }, { status: 500 }));
-                    return;
-                }
-                resolve(NextResponse.json({ translatedText: response.TargetText }));
+        // Wrap TMT callback in a promise helper
+        const translateText = () => {
+            return new Promise<{ TargetText?: string }>((resolve, reject) => {
+                client.TextTranslate(params, (err, response) => {
+                    if (err) {
+                        const errMsg = typeof err === 'string' ? err : ((err as any).message || "Tencent API Error");
+                        reject(new Error(errMsg));
+                        return;
+                    }
+                    resolve(response);
+                });
             });
-        });
+        };
+
+        try {
+            const response = await translateText();
+            return NextResponse.json({ translatedText: response.TargetText });
+        } catch (apiError: any) {
+            console.error("Tencent Cloud Translation Error:", apiError);
+            return NextResponse.json({ error: apiError.message }, { status: 500 });
+        }
 
     } catch (error: any) {
         console.error("Translation handler error:", error);
