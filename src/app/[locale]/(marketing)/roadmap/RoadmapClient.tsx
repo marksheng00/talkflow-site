@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import {
     Loader2,
     Plus,
@@ -56,6 +57,16 @@ interface RoadmapClientProps {
 
 export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs }: RoadmapClientProps) {
     const t = useTranslations('RoadmapPage');
+    const params = useParams();
+    const locale = (params?.locale as string) || 'en';
+
+    // Helper to get content based on locale
+    const getLocalizedContent = (input: any) => {
+        if (!input) return "";
+        // Priority: Current Locale -> English -> First Available -> Empty
+        return input[locale] || input['en'] || Object.values(input)[0] || "";
+    };
+
     const [activeTab, setActiveTab] = useState<Tab>("roadmap");
     const [tasks, setTasks] = useState<RoadmapItem[]>(initialTasks);
     const [ideals, setIdeals] = useState<CommunityIdea[]>(initialIdeas);
@@ -498,6 +509,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 </div>
                                 <div className="space-y-3">
                                     {filteredTasks
+                                        .filter(task => task.status !== 'discovery')
                                         .filter(task => task.startDate && task.targetDate)
                                         .map((task) => (
                                             <div key={task.id} className="h-12 flex items-center">
@@ -507,7 +519,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 >
                                                     <div className="space-y-1">
                                                         <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
-                                                            {task.title}
+                                                            {getLocalizedContent(task.title)}
                                                         </h4>
                                                         <div className="hidden md:flex items-center gap-2">
                                                             <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
@@ -566,6 +578,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                             ))}
 
                                             {filteredTasks
+                                                .filter(task => task.status !== 'discovery')
                                                 .filter(task => task.startDate && task.targetDate)
                                                 .map((task) => {
                                                     const startDate = new Date(task.startDate!);
@@ -592,7 +605,11 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                     return (
                                                         <div key={task.id} className="relative h-12 flex items-center">
                                                             <button
-                                                                onClick={() => setSelectedTask(task)}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSelectedTask(task);
+                                                                }}
+                                                                onMouseDown={(e) => e.stopPropagation()}
                                                                 className={`absolute h-12 rounded-lg border ${colors.border} ${colors.bg} backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg`}
                                                                 style={{
                                                                     left: `${leftPercent}%`,
@@ -806,7 +823,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     <div className="relative h-[200px] md:h-[300px] overflow-hidden shrink-0">
                                         <Image
                                             src={selectedTask.coverImage}
-                                            alt={selectedTask.title}
+                                            alt={getLocalizedContent(selectedTask.title)}
                                             fill
                                             className="object-cover"
                                         />
@@ -827,18 +844,18 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                             )}
                                         </div>
                                         <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4 leading-tight">
-                                            {selectedTask.title}
+                                            {getLocalizedContent(selectedTask.title)}
                                         </h1>
                                         <div className="h-1.5 w-12 bg-emerald-500 mb-8 rounded-full" />
                                         <p className="text-lg md:text-xl text-slate-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
-                                            {selectedTask.description}
+                                            {getLocalizedContent(selectedTask.description)}
                                         </p>
                                     </div>
 
                                     {selectedTask.detailedContent && (
                                         <div className="prose prose-invert prose-emerald max-w-none">
                                             <div className="text-base text-slate-300 leading-relaxed space-y-6 whitespace-pre-line font-medium">
-                                                {selectedTask.detailedContent}
+                                                <div dangerouslySetInnerHTML={{ __html: getLocalizedContent(selectedTask.detailedContent) }} />
                                             </div>
                                         </div>
                                     )}

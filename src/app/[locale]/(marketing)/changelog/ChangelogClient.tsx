@@ -1,25 +1,53 @@
 "use client";
 
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
-import { changelogData, ChangeType } from "@/lib/data/changelog-data";
 import { format } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Zap, Bug, Sparkles, Check, type LucideIcon } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase Client
+const supabaseClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+type ChangeType = "feature" | "fix" | "improvement" | "perf";
+
+interface DBRelease {
+    id: string;
+    version: string;
+    publish_date: string;
+    status: string;
+}
+
+interface DBChangeItem {
+    id: string;
+    release_id: string;
+    type: ChangeType;
+    description: Record<string, string>;
+    order: number;
+}
+
+interface RenderRelease {
+    version: string;
+    date: string;
+    changes: {
+        type: ChangeType;
+        content: string; // localized content
+    }[];
+}
 
 function ChangeItem({
     change,
-    versionKey,
-    changeIdx
 }: {
     change: { type: ChangeType; content: string };
-    versionKey: string;
-    changeIdx: number;
 }) {
     const t = useTranslations('ChangelogPage');
     const [squashed, setSquashed] = useState(false);
@@ -41,9 +69,6 @@ function ChangeItem({
             if (navigator.vibrate) navigator.vibrate(50);
         }
     };
-
-    // Get translated content
-    const translatedContent = t(`Data.${versionKey}.changes.${changeIdx}`);
 
     return (
         <SpotlightCard className="rounded-2xl border-white/5 bg-white/[0.02]">
@@ -91,16 +116,13 @@ function ChangeItem({
                             {squashed ? t('Squash.fixed') : config.label}
                         </span>
                     </div>
-                    <p className={cn(
-                        "leading-relaxed text-sm md:text-base transition-all duration-500",
-                        squashed ? "text-emerald-100/70" : "text-slate-300"
-                    )}>
-                        {squashed ? (
-                            <span className="line-through decoration-emerald-500/50 decoration-2">{translatedContent}</span>
-                        ) : (
-                            translatedContent
+                    <div
+                        className={cn(
+                            "leading-relaxed text-sm md:text-base transition-all duration-500 prose prose-invert prose-p:my-0 prose-strong:text-white max-w-none",
+                            squashed ? "text-emerald-100/70 line-through decoration-emerald-500/50 decoration-2 opacity-50" : "text-slate-300"
                         )}
-                    </p>
+                        dangerouslySetInnerHTML={{ __html: change.content }}
+                    />
                 </div>
             </div>
         </SpotlightCard>
@@ -110,7 +132,78 @@ function ChangeItem({
 export default function ChangelogClient() {
     const t = useTranslations('ChangelogPage');
     const params = useParams();
-    const locale = params?.locale as string;
+    const locale = (params?.locale as string) || 'en';
+    const [changelogData, setChangelogData] = useState<RenderRelease[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchChangelog() {
+            setLoading(true);
+
+            // 1. Fetch published releases
+            const { data: releases, error: releasesError } = await supabaseClient
+                .from("changelog_releases")
+                .select("*")
+                .eq("status", "published")
+                .order("publish_date", { ascending: false });
+
+            if (releasesError || !releases) {
+                console.error("Error fetching releases:", releasesError);
+                setLoading(false);
+                return;
+            }
+
+            // 2. Fetch all items for these releases
+            // Optimally we'd use a join, but RLS/Policies might complicate types. Two queries is fine for changelog page.
+            const releaseIds = releases.map(r => r.id);
+            if (releaseIds.length === 0) {
+                setChangelogData([]);
+                setLoading(false);
+                return;
+            }
+
+            const { data: items, error: itemsError } = await supabaseClient
+                .from("changelog_items")
+                .select("*")
+                .in("release_id", releaseIds)
+                .order("order", { ascending: true });
+
+            if (itemsError) {
+                console.error("Error fetching items:", itemsError);
+            }
+
+            // 3. Assemble and Localize
+            const itemsByRelease: Record<string, DBChangeItem[]> = {};
+            items?.forEach((item: DBChangeItem) => {
+                if (!itemsByRelease[item.release_id]) itemsByRelease[item.release_id] = [];
+                itemsByRelease[item.release_id].push(item);
+            });
+
+            const formattedData: RenderRelease[] = releases.map((r: DBRelease) => {
+                const releaseItems = itemsByRelease[r.id] || [];
+                return {
+                    version: r.version,
+                    date: r.publish_date,
+                    changes: releaseItems.map(item => {
+                        // Priority: Exact Locale -> English -> First available key -> Empty
+                        let content = item.description[locale];
+                        if (!content) content = item.description['en'];
+                        if (!content) content = Object.values(item.description)[0] || '';
+
+                        return {
+                            type: item.type,
+                            content
+                        };
+                    })
+                };
+            });
+
+            setChangelogData(formattedData);
+            setLoading(false);
+        }
+
+        fetchChangelog();
+    }, [locale]);
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
@@ -133,8 +226,19 @@ export default function ChangelogClient() {
 
                     {/* Timeline */}
                     <div className="relative border-l border-white/10 ml-4 md:ml-12 stack-loose">
+                        {loading && (
+                            <div className="pl-12 py-12 text-slate-500 animate-pulse">
+                                Loading updates...
+                            </div>
+                        )}
+
+                        {!loading && changelogData.length === 0 && (
+                            <div className="pl-12 py-12 text-slate-500">
+                                No updates published yet.
+                            </div>
+                        )}
+
                         {changelogData.map((release, index) => {
-                            const versionKey = release.version.replace(/\./g, '_');
                             return (
                                 <div key={release.version} className="relative pl-8 md:pl-12">
                                     {/* Timeline Dot */}
@@ -168,8 +272,6 @@ export default function ChangelogClient() {
                                             <ChangeItem
                                                 key={`${release.version}-${idx}`}
                                                 change={change}
-                                                versionKey={versionKey}
-                                                changeIdx={idx}
                                             />
                                         ))}
                                     </div>

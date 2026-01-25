@@ -19,8 +19,8 @@ const toNumber = (value: unknown) =>
 function mapRowToRoadmapItem(row: Record<string, unknown>): RoadmapItem {
   return {
     id: String(row.id ?? randomUUID()),
-    title: String(row.title ?? ""),
-    description: typeof row.description === "string" ? row.description : "",
+    title: (row.title as Record<string, string>) || { en: "" },
+    description: (row.description as Record<string, string>) || { en: "" },
     status: (typeof row.status === "string" ? row.status : "researching") as RoadmapItem["status"],
     category: typeof row.category === "string" ? row.category : undefined,
     eta: typeof row.eta === "string" ? row.eta : undefined,
@@ -30,7 +30,7 @@ function mapRowToRoadmapItem(row: Record<string, unknown>): RoadmapItem {
     targetDate: typeof row.target_date === "string" ? row.target_date : undefined,
     progress: toNumber(row.progress),
     coverImage: typeof row.cover_image === "string" ? row.cover_image : undefined,
-    detailedContent: typeof row.detailed_content === "string" ? row.detailed_content : undefined,
+    detailedContent: (row.detailed_content as Record<string, string>) || { en: "" },
     sourceIdeaId: typeof row.source_idea_id === "string" ? row.source_idea_id : undefined,
   };
 }
@@ -38,8 +38,8 @@ function mapRowToRoadmapItem(row: Record<string, unknown>): RoadmapItem {
 const mockRoadmapItems: RoadmapItem[] = [
   {
     id: "mock-1",
-    title: "Adaptive interview simulator",
-    description: "Dynamic interviewer that mirrors tone, speed, and asks tougher follow-ups when you perform well.",
+    title: { en: "Adaptive interview simulator" },
+    description: { en: "Dynamic interviewer that mirrors tone, speed, and asks tougher follow-ups when you perform well." },
     status: "building",
     category: "Feature",
     eta: "Q1",

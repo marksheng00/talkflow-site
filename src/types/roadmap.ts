@@ -3,8 +3,8 @@ export type RoadmapStatus = "discovery" | "researching" | "building" | "shipping
 
 export type RoadmapItem = {
   id: string;
-  title: string;
-  description: string;
+  title: Record<string, string>; // { en: "...", zh: "..." }
+  description: Record<string, string>;
   status: RoadmapStatus;
   category?: string;
   eta?: string;
@@ -14,7 +14,7 @@ export type RoadmapItem = {
   targetDate?: string;
   progress?: number;
   coverImage?: string;
-  detailedContent?: string;
+  detailedContent?: Record<string, string>;
   sourceIdeaId?: string;  // Link to original idea if applicable
 };
 
