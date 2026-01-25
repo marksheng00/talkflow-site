@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
         // Wrap TMT callback in a promise helper
         const translateText = () => {
-            return new Promise<{ TargetText?: string }>((resolve, reject) => {
+            return new Promise<any>((resolve, reject) => {
                 client.TextTranslate(params, (err, response) => {
                     if (err) {
                         const errMsg = typeof err === 'string' ? err : ((err as any).message || "Tencent API Error");
