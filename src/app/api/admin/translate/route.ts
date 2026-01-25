@@ -53,7 +53,7 @@ export async function POST(req: Request) {
             SourceText: text,
         };
 
-        return new Promise((resolve) => {
+        return new Promise<NextResponse>((resolve) => {
             client.TextTranslate(params, (err, response) => {
                 if (err) {
                     console.error("Tencent Cloud Translation Error:", err);
