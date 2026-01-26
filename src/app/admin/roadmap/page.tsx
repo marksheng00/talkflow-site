@@ -9,8 +9,8 @@ import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
 
 const supabaseClient = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 );
 
 const STATUS_COLUMNS: RoadmapStatus[] = ["researching", "building", "shipping", "released"];
