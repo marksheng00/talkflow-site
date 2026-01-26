@@ -61,7 +61,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     const locale = (params?.locale as string) || 'en';
 
     // Helper to get content based on locale
-    const getLocalizedContent = (input: any) => {
+    const getLocalizedContent = (input: Record<string, string> | null | undefined) => {
         if (!input) return "";
         // Priority: Current Locale -> English -> First Available -> Empty
         return input[locale] || input['en'] || Object.values(input)[0] || "";

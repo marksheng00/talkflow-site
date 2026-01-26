@@ -55,10 +55,10 @@ export async function POST(req: Request) {
 
         // Wrap TMT callback in a promise helper
         const translateText = () => {
-            return new Promise<any>((resolve, reject) => {
+            return new Promise<{ TargetText?: string }>((resolve, reject) => {
                 client.TextTranslate(params, (err, response) => {
                     if (err) {
-                        const errMsg = typeof err === 'string' ? err : ((err as any).message || "Tencent API Error");
+                        const errMsg = (err as unknown as Error).message || String(err) || "Tencent API Error";
                         reject(new Error(errMsg));
                         return;
                     }
@@ -70,13 +70,13 @@ export async function POST(req: Request) {
         try {
             const response = await translateText();
             return NextResponse.json({ translatedText: response.TargetText });
-        } catch (apiError: any) {
+        } catch (apiError) {
             console.error("Tencent Cloud Translation Error:", apiError);
-            return NextResponse.json({ error: apiError.message }, { status: 500 });
+            return NextResponse.json({ error: (apiError as Error).message || "Translation failed" }, { status: 500 });
         }
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("Translation handler error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: (error as Error).message || "Internal server error" }, { status: 500 });
     }
 }

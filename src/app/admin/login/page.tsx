@@ -35,8 +35,8 @@ export default function AdminLoginPage() {
             // But usually we do it in the Layout for better protection
             router.push("/admin/roadmap");
             router.refresh();
-        } catch (err: any) {
-            setError(err.message || "Login failed. Please check your credentials.");
+        } catch (err) {
+            setError((err as Error).message || "Login failed. Please check your credentials.");
         } finally {
             setLoading(false);
         }
@@ -53,13 +53,14 @@ export default function AdminLoginPage() {
             <div className="w-full max-w-md relative">
                 {/* Branding */}
                 <div className="text-center mb-10 group">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-0.5 mb-6 shadow-2xl shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-500">
-                        <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center">
-                            <Sparkles className="w-8 h-8 text-indigo-400" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 p-0.5 mb-6 shadow-2xl group-hover:scale-110 transition-transform duration-500 overflow-hidden">
+                        <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center p-3">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src="/talkflo_logo.png" alt="talkflo" className="w-full h-full object-contain" />
                         </div>
                     </div>
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 tracking-tight">
-                        TalkFlow Admin
+                        talkflo Admin
                     </h1>
                     <p className="text-slate-500 mt-2 text-sm font-medium">Restricted Access • System Security</p>
                 </div>
@@ -85,7 +86,7 @@ export default function AdminLoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-white/[0.05] border border-white/10 focus:border-indigo-500/50 rounded-2xl py-3.5 pl-12 pr-4 text-white outline-none transition-all placeholder:text-slate-600 focus:ring-4 focus:ring-indigo-500/10"
-                                    placeholder="admin@talkflow.com"
+                                    placeholder="admin@talkflo.ai"
                                 />
                             </div>
                         </div>
@@ -116,7 +117,7 @@ export default function AdminLoginPage() {
                 </div>
 
                 <div className="text-center mt-8 text-[11px] text-slate-600 font-medium">
-                    &copy; 2026 TalkFlow Systems. All rights reserved.
+                    &copy; 2026 talkflo. All rights reserved.
                 </div>
             </div>
         </div>

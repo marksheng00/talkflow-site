@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { locales, Locale } from "@/i18n/config";
 import "../globals.css";
 import FluentBackground from "@/components/ui/FluentBackground";
+import PresenceTracker from "@/components/realtime/PresenceTracker";
 
 const heading = Space_Grotesk({
   variable: "--font-heading",
@@ -87,6 +88,7 @@ export default async function LocaleLayout({
       <body className={`${heading.variable} ${body.variable} antialiased overflow-x-hidden`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <FluentBackground />
+          <PresenceTracker />
           <div className="relative z-10 min-h-screen bg-transparent text-slate-100 selection:bg-emerald-500/30 overflow-x-hidden">
             {children}
           </div>

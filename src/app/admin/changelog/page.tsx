@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 import {
     Plus,
@@ -9,17 +9,15 @@ import {
     ArrowLeft,
     Calendar,
     Layers,
-    Edit2,
     ChevronRight,
-    Hash,
     Search,
-    MoreVertical,
-    ExternalLink,
-    Filter,
     CheckCircle2,
     Clock,
     Sparkles,
-    Loader2
+    Loader2,
+    Settings,
+    Check,
+    AlertCircle
 } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
@@ -45,7 +43,7 @@ const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 );
 
-const LOCALES = ["en", "zh", "ko", "ja", "es", "zh-Hant"];
+const LOCALES = ["EN", "ZH", "KO", "JA", "ES", "ZH-Hant"];
 
 const TYPE_LABELS: Record<string, string> = {
     feature: "New Feature",
@@ -55,10 +53,10 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-    feature: "bg-blue-500/20 text-blue-400 border-blue-500/20",
-    fix: "bg-rose-500/20 text-rose-400 border-rose-500/20",
-    improvement: "bg-purple-500/20 text-purple-400 border-purple-500/20",
-    perf: "bg-amber-500/20 text-amber-400 border-amber-500/20",
+    feature: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    fix: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+    improvement: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    perf: "bg-amber-500/10 text-amber-400 border-amber-500/20",
 };
 
 export default function AdminChangelogPage() {
@@ -69,49 +67,49 @@ export default function AdminChangelogPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [translating, setTranslating] = useState(false);
 
-    // View State: 'grid' -> 'release' -> 'item'
-    const [viewMode, setViewMode] = useState<"grid" | "release" | "item">("grid");
-
-    // Item Editing State
+    // UI state
     const [editingItem, setEditingItem] = useState<ChangeItem | null>(null);
-    const [activeLocale, setActiveLocale] = useState<string>("en");
+    const [activeLocale, setActiveLocale] = useState<string>("EN");
+    const [showSettings, setShowSettings] = useState(false);
+    const [translateFeedback, setTranslateFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-    // Fetch releases list
+    // Fetch releases
     const fetchReleases = async () => {
         setLoading(true);
         const { data } = await supabaseClient
             .from("changelog_releases")
             .select("*")
             .order("publish_date", { ascending: false });
-
         setReleases(data || []);
         setLoading(false);
     };
 
-    // Fetch changes for selected release
-    const fetchChanges = async (releaseId: string) => {
+    // Fetch changes
+    const fetchChanges = useCallback(async (releaseId: string) => {
         const { data } = await supabaseClient
             .from("changelog_items")
             .select("*")
             .eq("release_id", releaseId)
             .order("order", { ascending: true });
-        setChanges(data || []);
-    };
 
-    useEffect(() => {
-        fetchReleases();
-    }, []);
+        const items = data || [];
+        setChanges(items);
+        if (items.length > 0 && !editingItem) {
+            setEditingItem(items[0]);
+        }
+    }, [editingItem]);
+
+    useEffect(() => { fetchReleases(); }, []);
 
     useEffect(() => {
         if (selectedRelease) {
             fetchChanges(selectedRelease.id);
-            if (!editingItem) {
-                setViewMode("release");
-            }
         } else {
-            setViewMode("grid");
+            setEditingItem(null);
+            setChanges([]);
         }
-    }, [selectedRelease]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedRelease?.id]);
 
     const handleCreateRelease = async () => {
         const { data, error } = await supabaseClient
@@ -120,8 +118,7 @@ export default function AdminChangelogPage() {
             .select()
             .single();
 
-        if (error) alert(error.message);
-        else {
+        if (!error) {
             setReleases([data, ...releases]);
             setSelectedRelease(data);
         }
@@ -132,23 +129,14 @@ export default function AdminChangelogPage() {
         const updated = { ...selectedRelease, ...updates };
         setSelectedRelease(updated);
         setReleases(releases.map((r) => (r.id === selectedRelease.id ? updated : r)));
-
-        await supabaseClient
-            .from("changelog_releases")
-            .update(updates)
-            .eq("id", selectedRelease.id);
+        await supabaseClient.from("changelog_releases").update(updates).eq("id", selectedRelease.id);
     };
 
-    const handleDeleteRelease = async (e: React.MouseEvent, id: string, version: string) => {
-        e.stopPropagation();
-        if (!confirm(`Delete ${version}?`)) return;
-
+    const handleDeleteRelease = async (id: string) => {
+        if (!confirm(`Delete this release?`)) return;
         await supabaseClient.from("changelog_releases").delete().eq("id", id);
         setReleases(releases.filter((r) => r.id !== id));
-        if (selectedRelease?.id === id) {
-            setSelectedRelease(null);
-            setViewMode("grid");
-        }
+        setSelectedRelease(null);
     };
 
     const handleAddChange = async () => {
@@ -164,11 +152,9 @@ export default function AdminChangelogPage() {
             .select()
             .single();
 
-        if (error) alert(error.message);
-        else {
+        if (!error) {
             setChanges([...changes, data]);
             setEditingItem(data);
-            setViewMode("item");
         }
     };
 
@@ -183,175 +169,87 @@ export default function AdminChangelogPage() {
 
     const handleDeleteChangeItem = async (itemId: string) => {
         if (!confirm("Delete this item?")) return;
-        setChanges(changes.filter((c) => c.id !== itemId));
-        if (editingItem?.id === itemId) {
-            setEditingItem(null);
-            setViewMode("release");
-        }
+        const remaining = changes.filter((c) => c.id !== itemId);
+        setChanges(remaining);
+        if (editingItem?.id === itemId) setEditingItem(remaining[0] || null);
         await supabaseClient.from("changelog_items").delete().eq("id", itemId);
     };
 
     const handleAutoTranslate = async () => {
         if (!editingItem) return;
-        // Strip HTML for better translation with some engines, though Tiptap usually handles it
-        const sourceText = editingItem.description[activeLocale];
-        if (!sourceText || sourceText === "<p></p>" || sourceText.trim() === "") {
-            alert("Please enter some content in the current language first.");
-            return;
-        }
+        const sourceText = editingItem.description[activeLocale.toLowerCase()];
+        if (!sourceText || sourceText === "<p></p>" || sourceText.trim() === "") return;
 
         setTranslating(true);
+        setTranslateFeedback(null);
         const updatedDesc = { ...editingItem.description };
 
         try {
-            // Translate to all other locales
-            const targetLocales = LOCALES.filter(l => l !== activeLocale);
-
-            // Sequential translation to avoid rate limits on free engines
+            const targetLocales = LOCALES.map(l => l.toLowerCase()).filter(l => l !== activeLocale.toLowerCase());
             for (const lang of targetLocales) {
                 const res = await fetch("/api/admin/translate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: sourceText, from: activeLocale, to: lang })
+                    body: JSON.stringify({ text: sourceText, from: activeLocale.toLowerCase(), to: lang })
                 });
                 const data = await res.json();
-                if (data.translatedText) {
-                    updatedDesc[lang] = data.translatedText;
-                }
-                // Optional: add a small delay if needed
+                if (data.translatedText) updatedDesc[lang] = data.translatedText;
             }
-
             const updatedItem = { ...editingItem, description: updatedDesc };
             setEditingItem(updatedItem);
             handleUpdateChangeItem(updatedItem);
+            setTranslateFeedback({ type: 'success', message: '' });
         } catch (err) {
             console.error("Auto-translate error:", err);
-            alert("Some translations failed. Please check the network.");
+            setTranslateFeedback({ type: 'error', message: '' });
         } finally {
             setTranslating(false);
+            setTimeout(() => setTranslateFeedback(null), 3000);
         }
     };
 
-    const filteredReleases = releases.filter(r =>
-        r.version.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredReleases = releases.filter(r => r.version.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    if (loading) return (
+        <div className="h-full flex items-center justify-center text-zinc-500">
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Initializing Workspace...
+        </div>
     );
 
     // ==========================================
-    // 3. ITEM EDITOR VIEW
-    // ==========================================
-    if (viewMode === "item" && editingItem && selectedRelease) {
+    // 1. DASHBOARD VIEW
+    if (!selectedRelease) {
         return (
-            <div className="space-y-6 h-full flex flex-col animate-in fade-in slide-in-from-right-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="h-full flex flex-col bg-[#09090b]">
+                <div className="h-16 border-b border-white/[0.06] flex items-center justify-between px-6 bg-[#09090b]/50 backdrop-blur-xl shrink-0">
                     <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => { setEditingItem(null); setViewMode("release"); }}
-                            className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </button>
-                        <div className="flex items-center gap-2 text-slate-400 text-sm">
-                            <span className="font-heading font-bold text-slate-500">{selectedRelease.version}</span>
-                            <ChevronRight className="w-4 h-4" />
-                            <span className="text-white font-bold flex items-center gap-2">
-                                <Edit2 className="w-4 h-4 text-emerald-500" /> Edit Item
-                            </span>
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => handleDeleteChangeItem(editingItem.id)}
-                        className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-bold rounded-lg text-sm border border-rose-500/20 transition-colors flex items-center gap-2"
-                    >
-                        <Trash2 className="w-4 h-4" /> Delete Item
-                    </button>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-full overflow-hidden pb-4">
-                    <div className="lg:col-span-3 flex flex-col h-full bg-black/20 border border-white/10 rounded-xl overflow-hidden">
-                        <div className="flex items-center gap-1 p-2 border-b border-white/10 bg-white/[0.02]">
-                            {LOCALES.map((lang) => (
-                                <button
-                                    key={lang}
-                                    onClick={() => setActiveLocale(lang)}
-                                    disabled={translating}
-                                    className={cn(
-                                        "px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all",
-                                        activeLocale === lang ? "bg-emerald-500/20 text-emerald-400" : "text-slate-500 hover:text-slate-300 hover:bg-white/5",
-                                        translating && "opacity-50 cursor-not-allowed"
-                                    )}
-                                >
-                                    {lang}
-                                </button>
-                            ))}
-                            <div className="flex-1" />
-                            <button
-                                onClick={handleAutoTranslate}
-                                disabled={translating}
-                                className={cn(
-                                    "flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase transition-all mr-2",
-                                    translating
-                                        ? "bg-amber-500/10 border-amber-500/20 text-amber-500 animate-pulse"
-                                        : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-black"
-                                )}
-                            >
-                                {translating ? (
-                                    <>
-                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                        Translating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Sparkles className="w-3 h-3" />
-                                        Magic Translate
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                        <div className="flex-1 overflow-y-auto">
-                            <TiptapEditor
-                                content={editingItem.description[activeLocale] || ""}
-                                onChange={(val) => {
-                                    const updatedDesc = { ...editingItem.description, [activeLocale]: val };
-                                    const updatedItem = { ...editingItem, description: updatedDesc };
-                                    setEditingItem(updatedItem);
-                                    handleUpdateChangeItem(updatedItem);
-                                }}
+                        <h1 className="text-lg font-bold text-zinc-100 tracking-tight">Changelog</h1>
+                        <div className="h-4 w-[1px] bg-white/10" />
+                        <div className="relative">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                            <input
+                                type="text" placeholder="Search releases..."
+                                value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                                className="bg-white/5 border border-white/10 rounded-md pl-8 pr-3 py-1.5 text-xs text-zinc-400 w-48 focus:border-indigo-500/30 outline-none"
                             />
                         </div>
                     </div>
-
-                    <div className="space-y-6">
-                        <div className="bg-black/20 border border-white/10 rounded-xl p-6 space-y-6">
-                            <h3 className="text-sm font-bold text-white border-b border-white/10 pb-2">Properties</h3>
-                            <div>
-                                <label className="block text-xs uppercase text-slate-500 font-bold mb-2">Change Type</label>
-                                <div className="space-y-2">
-                                    {Object.entries(TYPE_LABELS).map(([value, label]) => (
-                                        <button
-                                            key={value}
-                                            onClick={() => {
-                                                const newItem = { ...editingItem, type: value as any };
-                                                setEditingItem(newItem);
-                                                handleUpdateChangeItem(newItem);
-                                            }}
-                                            className={cn(
-                                                "w-full text-left px-4 py-3 rounded-lg border transition-all flex items-center justify-between",
-                                                editingItem.type === value ? TYPE_COLORS[value] + " border-opacity-50" : "bg-white/5 border-transparent text-slate-400 hover:bg-white/10"
-                                            )}
-                                        >
-                                            <span className="font-bold text-sm">{label}</span>
-                                            {editingItem.type === value && <div className="w-2 h-2 rounded-full bg-current" />}
-                                        </button>
-                                    ))}
+                    <button onClick={handleCreateRelease} className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-md text-xs transition-all flex items-center gap-1.5">
+                        <Plus className="w-3.5 h-3.5" /> New Release
+                    </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6 scrollbar-zinc">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {filteredReleases.map(r => (
+                            <div key={r.id} onClick={() => setSelectedRelease(r)} className="group bg-zinc-900/40 border border-white/[0.04] p-5 rounded-xl hover:bg-zinc-900 hover:border-zinc-700/50 transition-all cursor-pointer">
+                                <div className="flex justify-between mb-4">
+                                    <div className="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors"><Layers className="w-4 h-4" /></div>
+                                    <StatusBadge status={r.status} />
                                 </div>
+                                <h3 className="text-sm font-bold text-zinc-200 group-hover:text-white mb-1">{r.version}</h3>
+                                <p className="text-[10px] text-zinc-500 font-mono uppercase">{new Date(r.publish_date).toLocaleDateString()}</p>
                             </div>
-                            <div>
-                                <label className="block text-xs uppercase text-slate-500 font-bold mb-2">Item ID</label>
-                                <div className="flex items-center gap-2 text-xs text-slate-500 bg-white/5 p-2 rounded font-mono break-all leading-tight">
-                                    <Hash className="w-3 h-3 shrink-0" /> {editingItem.id}
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -359,248 +257,222 @@ export default function AdminChangelogPage() {
     }
 
     // ==========================================
-    // 2. RELEASE EDITOR VIEW
-    // ==========================================
-    if (viewMode === "release" && selectedRelease) {
-        return (
-            <div className="space-y-6 h-full flex flex-col animate-in fade-in slide-in-from-right-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSelectedRelease(null)}
-                            className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </button>
-                        <h1 className="text-xl font-bold font-heading text-slate-200">Edit Release</h1>
-                    </div>
-                    <div className="flex gap-3">
-                        {selectedRelease.status === "draft" ? (
-                            <button
-                                onClick={() => handleUpdateRelease({ status: "published" })}
-                                className="px-4 py-2 bg-emerald-500 text-black font-bold rounded-lg hover:bg-emerald-400 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20"
-                            >
-                                <Rocket className="w-4 h-4" /> Publish
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => handleUpdateRelease({ status: "draft" })}
-                                className="px-4 py-2 bg-white/5 text-slate-300 font-bold rounded-lg border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2"
-                            >
-                                <Layers className="w-4 h-4" /> Unpublish
-                            </button>
-                        )}
-                        <button
-                            onClick={(e) => handleDeleteRelease(e, selectedRelease.id, selectedRelease.version)}
-                            className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-bold rounded-lg text-sm border border-rose-500/20 transition-colors"
-                        >
-                            Delete Release
-                        </button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 overflow-y-auto pb-10">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Change Items</label>
-                                <button
-                                    onClick={handleAddChange}
-                                    className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
-                                >
-                                    <Plus className="w-3 h-3" /> Add Item
-                                </button>
-                            </div>
-                            <div className="space-y-2">
-                                {changes.map((item) => {
-                                    const descText = item.description?.en || Object.values(item.description)[0] || "No description";
-                                    return (
-                                        <button
-                                            key={item.id}
-                                            onClick={() => { setEditingItem(item); setViewMode("item"); }}
-                                            className="w-full text-left bg-black/20 border border-white/10 p-4 rounded-xl hover:bg-white/[0.07] hover:border-white/20 transition-all flex items-start gap-4 group"
-                                        >
-                                            <div className="mt-1 shrink-0">
-                                                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center border border-transparent", TYPE_COLORS[item.type])}>
-                                                    <Layers className="w-4 h-4" />
-                                                </div>
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className={cn("text-[10px] uppercase font-bold px-2 py-0.5 rounded border border-transparent", TYPE_COLORS[item.type])}>
-                                                        {item.type}
-                                                    </span>
-                                                </div>
-                                                <div
-                                                    className="text-sm text-slate-300 line-clamp-1 prose prose-invert prose-sm max-w-none prose-p:my-0 opacity-80"
-                                                    dangerouslySetInnerHTML={{ __html: descText }}
-                                                />
-                                            </div>
-                                            <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <ChevronRight className="w-5 h-5 text-slate-500" />
-                                            </div>
-                                        </button>
-                                    );
-                                })}
-                                {changes.length === 0 && (
-                                    <button onClick={handleAddChange} className="w-full p-8 border border-dashed border-white/20 rounded-xl text-center text-slate-500 text-sm hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-colors">
-                                        <Plus className="w-6 h-6 mx-auto mb-2 opacity-50" />
-                                        <p>No changes yet. Click here to add your first item.</p>
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="bg-black/20 border border-white/10 rounded-xl p-6 space-y-6 sticky top-0">
-                            <h3 className="text-sm font-bold text-white border-b border-white/10 pb-2">Release Info</h3>
-                            <div>
-                                <label className="block text-xs uppercase text-slate-500 font-bold mb-2">Version Name</label>
-                                <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white text-lg font-bold outline-none focus:border-emerald-500 transition-colors"
-                                    value={selectedRelease.version}
-                                    onChange={(e) => handleUpdateRelease({ version: e.target.value })}
-                                    placeholder="e.g. v1.2.0"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs uppercase text-slate-500 font-bold mb-2">Publish Date</label>
-                                <div className="relative">
-                                    <input
-                                        type="date"
-                                        className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-emerald-500 transition-colors [color-scheme:dark]"
-                                        value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
-                                        onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
-                                    />
-                                    <Calendar className="absolute right-3 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // ==========================================
-    // 1. PRO TABLE DASHBOARD VIEW
-    // ==========================================
+    // 2. WORKSPACE BATTLESTATION
     return (
-        <div className="space-y-6 h-full flex flex-col relative animate-in fade-in">
-            {/* Search & Actions Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0A0A0A]/80 backdrop-blur-xl sticky top-0 z-10 pb-4 border-b border-white/10">
-                <div>
-                    <h1 className="text-2xl font-bold font-heading mb-1">Changelog Control</h1>
-                    <p className="text-sm text-slate-500">Manage all product versions and updates.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                        <input
-                            type="text"
-                            placeholder="Search version..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white w-64 focus:border-emerald-500/50 outline-none transition-all"
-                        />
+        <div className="h-full flex flex-col bg-[#09090b] text-zinc-300">
+            {/* Top Toolbar */}
+            <div className="h-14 border-b border-white/[0.06] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => setSelectedRelease(null)} className="p-1.5 hover:bg-white/5 rounded-md text-zinc-500 hover:text-white transition-colors"><ArrowLeft className="w-4 h-4" /></button>
+                    <div className="flex flex-col">
+                        <span className="text-[13px] font-bold text-zinc-100 flex items-center gap-2">
+                            {selectedRelease.version}
+                            <span className={cn("text-[8px] px-1.5 py-0.5 rounded border uppercase", selectedRelease.status === 'published' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20')}>
+                                {selectedRelease.status}
+                            </span>
+                        </span>
                     </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    {/* Locale Switcher (Flat) */}
+                    <div className="flex bg-zinc-900 p-0.5 rounded-lg border border-white/5 mr-2">
+                        {LOCALES.map(loc => (
+                            <button
+                                key={loc} onClick={() => setActiveLocale(loc)}
+                                className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold transition-all", activeLocale === loc ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400")}
+                            >
+                                {loc}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="w-px h-4 bg-white/10 mx-1" />
+
+                    <button onClick={() => setShowSettings(!showSettings)} className={cn("p-1.5 rounded-md transition-colors", showSettings ? "bg-indigo-500/20 text-indigo-400" : "text-zinc-500 hover:bg-white/5 hover:text-zinc-200")}>
+                        <Settings className="w-4 h-4" />
+                    </button>
+
                     <button
-                        onClick={handleCreateRelease}
-                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-lg text-sm transition-colors shadow-lg shadow-emerald-500/20 flex items-center gap-2 shrink-0"
+                        onClick={() => handleUpdateRelease({ status: selectedRelease.status === 'published' ? 'draft' : 'published' })}
+                        className={cn("px-3 py-1.5 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-lg",
+                            selectedRelease.status === 'draft' ? "bg-emerald-500 text-black hover:bg-emerald-400 shadow-emerald-500/10" : "bg-zinc-800 text-zinc-300 border border-white/10")}
                     >
-                        <Plus className="w-4 h-4" /> New Release
+                        {selectedRelease.status === 'draft' ? <Rocket className="w-3.5 h-3.5" /> : <Layers className="w-3.5 h-3.5" />}
+                        {selectedRelease.status === 'draft' ? 'Publish' : 'Unpublish'}
                     </button>
                 </div>
             </div>
 
-            {!loading ? (
-                <div className="flex-1 overflow-hidden">
-                    <div className="border border-white/10 rounded-xl bg-black/20 overflow-hidden">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-white/[0.03] border-b border-white/10">
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Version</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Publish Date</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                {filteredReleases.map((release) => (
-                                    <tr
-                                        key={release.id}
-                                        onClick={() => setSelectedRelease(release)}
-                                        className="group hover:bg-white/[0.03] transition-colors cursor-pointer"
-                                    >
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-emerald-400 group-hover:bg-emerald-500/10 transition-colors">
-                                                    <Layers className="w-4 h-4" />
-                                                </div>
-                                                <span className="font-bold text-slate-200 group-hover:text-white">{release.version}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {release.status === 'published' ? (
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wide border border-emerald-500/20">
-                                                    <CheckCircle2 className="w-3 h-3" /> Published
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase tracking-wide border border-amber-500/20">
-                                                    <Clock className="w-3 h-3" /> Draft
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-slate-500 group-hover:text-slate-400 font-mono">
-                                            {new Date(release.publish_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); setSelectedRelease(release); }}
-                                                    className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <Edit2 className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => handleDeleteRelease(e, release.id, release.version)}
-                                                    className="p-2 hover:bg-rose-500/10 rounded-lg text-slate-500 hover:text-rose-500 transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {filteredReleases.length === 0 && (
-                                    <tr>
-                                        <td colSpan={4} className="px-6 py-12 text-center">
-                                            <div className="text-slate-500 flex flex-col items-center gap-2">
-                                                <Search className="w-8 h-8 opacity-20" />
-                                                <p>No releases found matching your search.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
+            <div className="flex-1 flex overflow-hidden">
+                {/* INNER SIDEBAR: Item List */}
+                <aside className="w-[300px] border-r border-white/5 bg-[#0b0b0d] flex flex-col shrink-0">
+                    <div className="p-4 border-b border-white/5 flex items-center justify-between bg-zinc-900/10">
+                        <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Update Items</span>
+                        <button onClick={handleAddChange} className="p-1 hover:bg-white/5 rounded text-emerald-400 transition-colors"><Plus className="w-4 h-4" /></button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-zinc">
+                        {changes.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setEditingItem(item)}
+                                className={cn(
+                                    "w-full text-left p-3 rounded-lg border transition-all flex items-start gap-3 group relative",
+                                    editingItem?.id === item.id
+                                        ? "bg-zinc-900 border-zinc-700/50 shadow-sm"
+                                        : "bg-transparent border-transparent hover:bg-zinc-900/50 text-zinc-500 hover:text-zinc-300"
                                 )}
-                            </tbody>
-                        </table>
+                            >
+                                <div className={cn("mt-1 w-1.5 h-1.5 rounded-full shrink-0", TYPE_COLORS[item.type].split(' ')[1].replace('text-', 'bg-'))} />
+                                <div className="flex-1 min-w-0 pr-4">
+                                    <p className="text-[12px] font-bold truncate mb-0.5">{item.type.toUpperCase()}</p>
+                                    <div
+                                        className="text-[11px] opacity-60 line-clamp-1 pointer-events-none"
+                                        dangerouslySetInnerHTML={{ __html: item.description?.en || "No content..." }}
+                                    />
+                                </div>
+                                {editingItem?.id === item.id && <ChevronRight className="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-zinc-700" />}
+                            </button>
+                        ))}
+                        {changes.length === 0 && (
+                            <div className="py-12 px-4 text-center">
+                                <p className="text-[11px] text-zinc-700 italic">No items yet. Add one to begin.</p>
+                            </div>
+                        )}
                     </div>
-                    <div className="mt-4 text-xs text-slate-600 flex justify-between items-center px-2">
-                        <span>Showing {filteredReleases.length} of {releases.length} releases</span>
-                        <span className="font-mono">TalkFlow Changelog Engine v2.1</span>
+                    <div className="p-4 border-t border-white/5">
+                        <button onClick={() => handleDeleteRelease(selectedRelease.id)} className="w-full py-2 rounded-md text-[10px] font-bold text-rose-500/50 hover:text-rose-500 hover:bg-rose-500/5 transition-all uppercase tracking-widest">Delete Release</button>
                     </div>
-                </div>
-            ) : (
-                <div className="flex-1 flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-4 text-slate-500">
-                        <div className="w-12 h-12 rounded-full border-2 border-slate-800 border-t-emerald-500 animate-spin" />
-                        <p className="animate-pulse">Loading engine data...</p>
-                    </div>
-                </div>
-            )}
+                </aside>
+
+                {/* MAIN CONTENT AREA */}
+                <main className="flex-1 flex flex-col bg-black/20 min-w-0 relative">
+                    {editingItem ? (
+                        <>
+                            {/* Editor Header / Item Actions */}
+                            <div className="h-12 border-b border-white/5 flex items-center justify-between px-6 bg-zinc-900/5 shrink-0">
+                                <div className="flex items-center gap-1">
+                                    {Object.entries(TYPE_LABELS).map(([val, label]) => (
+                                        <button
+                                            key={val} onClick={() => {
+                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                                handleUpdateChangeItem({ ...editingItem, type: val as any });
+                                            }}
+                                            className={cn("px-2.5 py-1 rounded text-[10px] font-bold transition-all border",
+                                                editingItem.type === val ? TYPE_COLORS[val] : "bg-transparent border-transparent text-zinc-600 hover:text-zinc-400 hover:bg-white/5")}
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={handleAutoTranslate}
+                                        disabled={translating}
+                                        className={cn(
+                                            "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all border",
+                                            translating
+                                                ? "bg-amber-500/5 text-amber-500 border-amber-500/10 animate-pulse cursor-not-allowed"
+                                                : translateFeedback?.type === 'success'
+                                                    ? "bg-emerald-500/5 text-emerald-400 border-emerald-500/10"
+                                                    : translateFeedback?.type === 'error'
+                                                        ? "bg-rose-500/5 text-rose-400 border-rose-500/10"
+                                                        : "bg-white/5 text-zinc-400 border-white/5 hover:bg-white/10 hover:text-zinc-200"
+                                        )}
+                                    >
+                                        {translating ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : translateFeedback?.type === 'success' ? (
+                                            <Check className="w-3 h-3 text-emerald-400" />
+                                        ) : translateFeedback?.type === 'error' ? (
+                                            <AlertCircle className="w-3 h-3 text-rose-400" />
+                                        ) : (
+                                            <Sparkles className="w-3 h-3 text-zinc-400 group-hover:text-zinc-200" />
+                                        )}
+                                        <span>
+                                            {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}
+                                        </span>
+                                    </button>
+                                    <button onClick={() => handleDeleteChangeItem(editingItem.id)} className="p-1.5 text-zinc-700 hover:text-rose-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                                </div>
+                            </div>
+
+                            {/* Tiptap Container */}
+                            <div className="flex-1 overflow-y-auto scrollbar-zinc bg-[#09090b]">
+                                <TiptapEditor
+                                    content={editingItem.description[activeLocale.toLowerCase()] || ""}
+                                    onChange={(val) => {
+                                        const updatedItem = { ...editingItem, description: { ...editingItem.description, [activeLocale.toLowerCase()]: val } };
+                                        setEditingItem(updatedItem);
+                                        handleUpdateChangeItem(updatedItem);
+                                    }}
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-zinc-600 space-y-4">
+                            <Layers className="w-12 h-12 opacity-10" />
+                            <p className="text-xs">Select an item from the list or add a new one.</p>
+                        </div>
+                    )}
+
+                    {/* SETTINGS OVERLAY / DRAWER */}
+                    {showSettings && (
+                        <div className="absolute inset-y-0 right-0 w-80 bg-[#0d0d0f] border-l border-white/10 shadow-2xl z-20 animate-in slide-in-from-right duration-300 flex flex-col">
+                            <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Release Settings</span>
+                                <button onClick={() => setShowSettings(false)} className="text-zinc-500 hover:text-white transition-colors truncate">×</button>
+                            </div>
+                            <div className="p-6 space-y-8">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-zinc-600 uppercase">Version</label>
+                                    <input
+                                        className="w-full bg-zinc-900 border border-white/5 rounded-md px-3 py-2 text-sm text-zinc-200 outline-none focus:border-indigo-500/30"
+                                        value={selectedRelease.version} onChange={(e) => handleUpdateRelease({ version: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-zinc-600 uppercase">Date</label>
+                                    <div className="relative">
+                                        <input
+                                            type="date"
+                                            className="w-full bg-zinc-900 border border-white/5 rounded-md px-3 py-2 text-sm text-zinc-200 outline-none focus:border-indigo-500/30 font-mono [color-scheme:dark]"
+                                            value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
+                                            onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
+                                        />
+                                        <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-zinc-700 pointer-events-none" />
+                                    </div>
+                                </div>
+                                <div className="pt-6 border-t border-white/5">
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="p-3 bg-white/[0.02] rounded-lg border border-white/5">
+                                            <p className="text-[9px] text-zinc-700 uppercase font-bold">Total Items</p>
+                                            <p className="text-lg font-bold text-zinc-400">{changes.length}</p>
+                                        </div>
+                                        <div className="p-3 bg-white/[0.02] rounded-lg border border-white/5">
+                                            <p className="text-[9px] text-zinc-700 uppercase font-bold">ID Hash</p>
+                                            <p className="text-[9px] font-mono break-all opacity-30">{selectedRelease.id.slice(0, 8)}...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </main>
+            </div>
         </div>
+    );
+}
+
+function StatusBadge({ status }: { status: "draft" | "published" }) {
+    if (status === 'published') return (
+        <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <CheckCircle2 className="w-2.5 h-2.5" /> Published
+        </span>
+    );
+    return (
+        <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <Clock className="w-2.5 h-2.5" /> Draft
+        </span>
     );
 }

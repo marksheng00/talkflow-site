@@ -70,7 +70,7 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
         if (editor) {
             editor.commands.setContent(content);
         }
-    }, [content]); // Warning: this might reset cursor on every keystroke if parent updates 'content' prop on every change.
+    }, [content, editor]); // Warning: this might reset cursor on every keystroke if parent updates 'content' prop on every change.
     // To solve this: The parent should only pass `content` for INITIAL LOADING, not for controlled syncing back.
     // Or we use a ref to track if it's the same task ID.
     // For now, let's assume the parent handles key changes by remounting or we just set content when `content` changes significantly.
