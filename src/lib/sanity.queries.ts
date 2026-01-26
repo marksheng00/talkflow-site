@@ -14,6 +14,7 @@ const postFields = groq`
   "categories": categories[]->{
     "title": coalesce(
       title[$language], 
+      select($language == "zh-Hant" => title.zh_Hant),
       title.en,
       title
     ),
@@ -46,6 +47,7 @@ export const categoriesQuery = groq`
   *[_type == "category"] | order(coalesce(title.en, title) asc) {
     "title": coalesce(
       title[$language], 
+      select($language == "zh-Hant" => title.zh_Hant),
       title.en,
       title
     ),

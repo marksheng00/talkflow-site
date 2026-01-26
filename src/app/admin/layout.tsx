@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient, User } from "@supabase/supabase-js";
 import {
     LayoutDashboard, Map, Lightbulb, Bug, FileText,
-    ExternalLink, LogOut, Loader2
+    LogOut, Loader2, Database
 } from "lucide-react";
 import "@/app/globals.css";
 
@@ -95,16 +95,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         { name: "Ideas", href: "/admin/ideas", icon: Lightbulb },
         { name: "Bugs", href: "/admin/bugs", icon: Bug },
         { name: "Changelog", href: "/admin/changelog", icon: FileText },
+        { name: "Blog CMS", href: "/admin/studio", icon: Database },
     ];
 
     return (
         <html lang="en" className="dark">
-            <body className="bg-[#09090b] antialiased">
-                <div className="flex min-h-screen text-zinc-300 font-sans selection:bg-indigo-500/20">
+            <body className="bg-[#09090b] antialiased overflow-hidden">
+                <div className="flex h-screen text-zinc-300 font-sans selection:bg-indigo-500/20 overflow-hidden">
                     {/* Sidebar */}
-                    <aside className="w-[240px] border-r border-white/[0.04] flex flex-col bg-[#09090b] sticky top-0 h-screen z-50">
+                    <aside className="w-[240px] border-r border-white/[0.04] flex flex-shrink-0 flex-col bg-[#09090b] h-full z-50">
                         {/* Header */}
-                        <div className="h-14 flex items-center px-4 border-b border-white/[0.04]">
+                        <div className="h-14 flex items-center px-4 border-b border-white/[0.04] shrink-0">
                             <div className="flex items-center gap-2.5">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src="/talkflo_logo.png" alt="talkflo" className="w-6 h-6 object-contain" />
@@ -132,26 +133,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                 );
                             })}
 
-                            <div className="mt-6 pt-4 border-t border-white/[0.04]">
-                                <p className="px-2 pb-2 text-[10px] font-medium text-zinc-500 uppercase tracking-wider">External</p>
-                                <a
-                                    href="http://localhost:3333"
-                                    target="_blank"
-                                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 transition-all duration-200 group"
-                                >
-                                    <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
-                                    <span className="text-[13px]">Sanity Studio</span>
-                                </a>
-                            </div>
+
                         </nav>
 
                         {/* User Footer */}
-                        <div className="p-2 border-t border-white/[0.04] bg-[#09090b]">
+                        <div className="p-2 border-t border-white/[0.04] bg-[#09090b] shrink-0">
                             <div className="px-2 py-2 rounded-md hover:bg-zinc-900/50 flex items-center gap-3 transition-colors group cursor-default">
                                 <div className="w-7 h-7 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-[10px] font-bold text-indigo-400 shrink-0">
                                     {user?.email?.[0].toUpperCase()}
                                 </div>
-                                <div className="flex-1 min-w-0 overflow-hidden">
+                                <div className="flex-1 min-w-0 overflow-hidden text-left">
                                     <p className="text-[12px] font-medium text-zinc-300 truncate group-hover:text-white transition-colors">Admin User</p>
                                     <p className="text-[10px] text-zinc-600 truncate font-mono">{user?.email}</p>
                                 </div>
@@ -167,9 +158,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     </aside>
 
                     {/* Main Content */}
-                    <main className="flex-1 min-w-0 bg-[#09090b] flex flex-col">
+                    <main className="flex-1 min-w-0 bg-[#09090b] flex flex-col h-full overflow-hidden">
                         {/* Optional Topbar or Breadcrumb could go here */}
-                        <div className="flex-1 overflow-y-auto">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar">
                             {/* Pro-tip: Add max-width constraint for readability if content assumes it, but for dashboards full width is often better */}
                             {children}
                         </div>

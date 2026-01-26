@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { Loader2, Lock, Mail, Sparkles } from "lucide-react";
+import { Loader2, Lock, Mail } from "lucide-react";
 
 // Initialize Supabase
 const supabase = createClient(

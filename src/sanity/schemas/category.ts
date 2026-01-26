@@ -12,7 +12,7 @@ export default defineType({
             fields: [
                 { name: 'en', title: 'English', type: 'string' },
                 { name: 'zh', title: 'Simplified Chinese', type: 'string' },
-                { name: 'zh-Hant', title: 'Traditional Chinese', type: 'string' },
+                { name: 'zh_Hant', title: 'Traditional Chinese', type: 'string' },
                 { name: 'es', title: 'Spanish', type: 'string' },
                 { name: 'ko', title: 'Korean', type: 'string' },
                 { name: 'ja', title: 'Japanese', type: 'string' },
