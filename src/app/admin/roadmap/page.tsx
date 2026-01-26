@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { RoadmapItem, RoadmapStatus } from "@/types/roadmap";
 import { createClient } from "@supabase/supabase-js";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { Plus, X, Loader2, Calendar, ArrowLeft, Sparkles, Check, AlertCircle, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload } from "lucide-react";
+import { Plus, X, Loader2, Calendar, ArrowLeft, Sparkles, Check, AlertCircle, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload, CalendarDays } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
 
@@ -168,6 +168,8 @@ export default function AdminRoadmapPage() {
             description: task.description,
             category: task.category,
             eta: task.eta,
+            start_date: task.startDate,
+            target_date: task.targetDate,
             progress: finalProgress,
             status: finalStatus,
             accelerations: task.accelerations || 0,
@@ -473,15 +475,51 @@ export default function AdminRoadmapPage() {
                                     </select>
                                 </div>
 
-                                {/* ETA */}
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">ETA</label>
-                                    <input
-                                        className="w-full bg-black/20 border border-white/10 rounded-md py-2 px-3 text-[13px] text-zinc-300 outline-none focus:border-indigo-500/30 font-mono placeholder:text-zinc-700"
-                                        placeholder="e.g. Q1 2026"
-                                        value={editingTask.eta || ''}
-                                        onChange={e => setEditingTask({ ...editingTask, eta: e.target.value })}
-                                    />
+                                {/* Dates Section */}
+                                <div className="space-y-4 pt-4 border-t border-white/[0.04]">
+                                    <h4 className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest pl-1">Timing & ETA</h4>
+
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between px-1">
+                                            <label className="text-[10px] uppercase font-bold text-zinc-600">Expected ETA</label>
+                                            <span className="text-[9px] text-emerald-500/60 font-mono">Deadline</span>
+                                        </div>
+                                        <div className="relative group">
+                                            <input
+                                                type="date"
+                                                className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-3 pl-10 text-[13px] text-zinc-300 outline-none focus:border-emerald-500/50 transition-all font-mono [color-scheme:dark]"
+                                                value={editingTask.eta || ''}
+                                                onChange={e => setEditingTask({ ...editingTask, eta: e.target.value })}
+                                            />
+                                            <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-emerald-500 transition-colors" />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1.5">
+                                            <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">Start Date</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="date"
+                                                    className="w-full bg-black/20 border border-white/10 rounded-lg py-2 px-3 text-[12px] text-zinc-400 outline-none focus:border-zinc-700 transition-all font-mono [color-scheme:dark]"
+                                                    value={editingTask.startDate || ''}
+                                                    onChange={e => setEditingTask({ ...editingTask, startDate: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">Target Date</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="date"
+                                                    className="w-full bg-black/20 border border-white/10 rounded-lg py-2 px-3 text-[12px] text-zinc-400 outline-none focus:border-zinc-700 transition-all font-mono [color-scheme:dark]"
+                                                    value={editingTask.targetDate || ''}
+                                                    onChange={e => setEditingTask({ ...editingTask, targetDate: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="px-1 text-[9px] text-zinc-800 leading-tight">Dates control the positioning on the public Gantt chart timeline.</p>
                                 </div>
 
                                 {/* Progress */}
