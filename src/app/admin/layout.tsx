@@ -105,11 +105,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     {/* Sidebar */}
                     <aside className="w-[240px] border-r border-white/[0.04] flex flex-shrink-0 flex-col bg-[#09090b] h-full z-50">
                         {/* Header */}
-                        <div className="h-14 flex items-center px-4 border-b border-white/[0.04] shrink-0">
-                            <div className="flex items-center gap-2.5">
+                        <div className="h-20 flex items-center px-6 border-b border-white/[0.04] shrink-0">
+                            <div className="flex items-center gap-3">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="/talkflo_logo.png" alt="talkflo" className="w-6 h-6 object-contain" />
-                                <span className="text-[13px] font-semibold tracking-tight text-zinc-100">talkflo Admin</span>
+                                <img src="/talkflo_logo.png" alt="talkflo" className="w-9 h-9 object-contain" />
+                                <div className="flex flex-col leading-tight">
+                                    <span className="text-[16px] font-bold tracking-tight text-white">talkflo</span>
+                                    <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-[0.2em]">Admin Center</span>
+                                </div>
                             </div>
                         </div>
 
