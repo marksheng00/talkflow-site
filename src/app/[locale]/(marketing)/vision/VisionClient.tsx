@@ -68,7 +68,7 @@ export default function VisionClient() {
                             <h2 className="font-heading text-4xl md:text-5xl font-bold text-white">
                                 {t('Stages.title')}
                             </h2>
-                            <p className="text-lg text-slate-400 text-balance">
+                            <p className="text-lg text-neutral-400 text-balance">
                                 {t('Stages.subtitle')}
                             </p>
                         </div>
@@ -106,7 +106,7 @@ export default function VisionClient() {
                             <h3 className="font-heading text-3xl md:text-4xl font-bold text-white">
                                 {t('Security.title')}
                             </h3>
-                            <p className="text-lg text-slate-400 text-balance">
+                            <p className="text-lg text-neutral-400 text-balance">
                                 {t('Security.subtitle')}
                             </p>
                         </div>
@@ -118,7 +118,7 @@ export default function VisionClient() {
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-base font-semibold text-white">{item.title}</p>
-                                        <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                                        <p className="text-sm text-neutral-400 leading-relaxed">{item.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -133,7 +133,7 @@ export default function VisionClient() {
                             <h4 className="font-heading text-4xl md:text-5xl font-bold text-white">
                                 {t('CTA.title')}
                             </h4>
-                            <p className="text-lg text-slate-400 text-balance">
+                            <p className="text-lg text-neutral-400 text-balance">
                                 {t('CTA.subtitle')}
                             </p>
                         </div>

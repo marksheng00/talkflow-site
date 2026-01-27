@@ -164,7 +164,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                 <Link
                                     href="/blog"
                                     locale={locale}
-                                    className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group text-sm font-bold"
+                                    className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
                                 >
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                     {t('Post.back')}
@@ -180,7 +180,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                 <Link
                                     href="/blog"
                                     locale={locale}
-                                    className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group text-sm font-bold"
+                                    className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
                                 >
                                     <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                     {t('Post.back')}

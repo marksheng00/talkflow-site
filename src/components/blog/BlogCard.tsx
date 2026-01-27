@@ -48,7 +48,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                     {post.title}
                 </h3>
 
-                <p className="text-sm text-slate-400 line-clamp-3 leading-relaxed">
+                <p className="text-sm text-neutral-400 line-clamp-3 leading-relaxed">
                     {post.excerpt}
                 </p>
 
@@ -63,7 +63,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                                 className="rounded-full"
                             />
                         )}
-                        <span className="font-medium text-slate-400">{post.author?.name}</span>
+                        <span className="font-medium text-neutral-400">{post.author?.name}</span>
                     </div>
 
                     <div className="flex items-center gap-3">

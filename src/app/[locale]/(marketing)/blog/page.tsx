@@ -90,7 +90,7 @@ export default async function BlogPage({
                                     locale={locale}
                                     className={`px-3 py-2 rounded-xl text-sm transition-all ${!categorySlug
                                         ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
-                                        : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                        : 'text-neutral-400 hover:bg-white/5 hover:text-white'
                                         }`}
                                 >
                                     {t('Sidebar.allPosts')}
@@ -102,7 +102,7 @@ export default async function BlogPage({
                                         locale={locale}
                                         className={`px-3 py-2 rounded-xl text-sm transition-all ${categorySlug === cat.slug.current
                                             ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
-                                            : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                            : 'text-neutral-400 hover:bg-white/5 hover:text-white'
                                             }`}
                                     >
                                         {cat.title}
@@ -120,7 +120,7 @@ export default async function BlogPage({
                                     locale={locale}
                                     className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${!categorySlug
                                         ? 'bg-teal-500 text-black border-teal-500'
-                                        : 'bg-white/5 border-white/10 text-slate-400'
+                                        : 'bg-white/5 border-white/10 text-neutral-400'
                                         }`}
                                 >
                                     {t('Hero.latest')}
@@ -132,7 +132,7 @@ export default async function BlogPage({
                                         locale={locale}
                                         className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${categorySlug === cat.slug.current
                                             ? 'bg-teal-500 text-black border-teal-500'
-                                            : 'bg-white/5 border-white/10 text-slate-400'
+                                            : 'bg-white/5 border-white/10 text-neutral-400'
                                             }`}
                                     >
                                         {cat.title}
@@ -181,7 +181,7 @@ export default async function BlogPage({
                             ) : (
                                 <div className="flex flex-col items-center justify-center py-24 bg-white/5 rounded-2xl border border-white/10 border-dashed text-center">
                                     <BookOpen className="w-10 h-10 text-slate-600 mb-3" />
-                                    <p className="text-slate-400 mb-4">{t('Empty.title')}</p>
+                                    <p className="text-neutral-400 mb-4">{t('Empty.title')}</p>
                                     <Link
                                         href="/blog"
                                         locale={locale}

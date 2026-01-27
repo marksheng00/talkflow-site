@@ -52,7 +52,7 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
                     <h3 className={cn("font-heading text-2xl font-bold text-white", isUltra && "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400")}>
                         {tier.name}
                     </h3>
-                    <p className="text-sm text-slate-400">{tier.description}</p>
+                    <p className="text-sm text-neutral-400">{tier.description}</p>
                 </div>
 
                 {/* Price */}

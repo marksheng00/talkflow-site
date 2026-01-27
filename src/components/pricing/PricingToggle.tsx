@@ -14,7 +14,7 @@ export const PricingToggle = ({ billingCycle, onChange }: PricingToggleProps) =>
         "relative flex-1 md:flex-initial px-4 md:px-8 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center flex items-center justify-center gap-2",
         isActive
             ? "bg-white text-slate-950 shadow-lg"
-            : "text-slate-400 hover:text-white hover:bg-white/5"
+            : "text-neutral-400 hover:text-white hover:bg-white/5"
     );
 
     return (

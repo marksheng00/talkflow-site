@@ -107,7 +107,7 @@ export default function PricingClient() {
                                         +
                                     </span>
                                 </summary>
-                                <p className="mt-4 text-base text-slate-400 leading-relaxed pr-8">
+                                <p className="mt-4 text-base text-neutral-400 leading-relaxed pr-8">
                                     {t(`FAQ.items.${idx}.a`)}
                                 </p>
                             </details>

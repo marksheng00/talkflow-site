@@ -77,7 +77,7 @@ export default function Home() {
                 <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 transition-transform hover:scale-110 cursor-pointer">
                   <Play className="h-6 w-6 md:h-8 md:w-8 text-white fill-current" />
                 </div>
-                <p className="text-xs md:text-sm font-medium tracking-wide uppercase text-slate-400">{t('Hero.watchIntro')}</p>
+                <p className="text-xs md:text-sm font-medium tracking-wide uppercase text-neutral-400">{t('Hero.watchIntro')}</p>
               </div>
             </div>
 
@@ -106,7 +106,7 @@ export default function Home() {
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
               {t('Features.title')}
             </h2>
-            <p className="text-lg text-slate-400 text-balance">
+            <p className="text-lg text-neutral-400 text-balance">
               {t('Features.subtitle')}
             </p>
           </div>
@@ -122,7 +122,7 @@ export default function Home() {
                 <h3 className="font-heading text-xl font-bold text-white">
                   {t(`Features.cards.${idx}.title`)}
                 </h3>
-                <p className="mt-3 text-base text-slate-400 leading-relaxed">
+                <p className="mt-3 text-base text-neutral-400 leading-relaxed">
                   {t(`Features.cards.${idx}.copy`)}
                 </p>
               </div>
@@ -136,7 +136,7 @@ export default function Home() {
                 <h3 className="font-heading text-3xl font-bold text-white md:text-4xl text-balance">
                   {t('Features.Feedback.title')}
                 </h3>
-                <p className="text-lg text-slate-400 leading-relaxed">
+                <p className="text-lg text-neutral-400 leading-relaxed">
                   {t('Features.Feedback.desc')}
                 </p>
                 <div className="space-y-4">
@@ -192,7 +192,7 @@ export default function Home() {
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
               {t('Tech.title')}
             </h2>
-            <p className="text-lg text-slate-400 text-balance">
+            <p className="text-lg text-neutral-400 text-balance">
               {t('Tech.subtitle')}
             </p>
           </div>
@@ -205,7 +205,7 @@ export default function Home() {
 
               <div className="relative z-10 space-y-2">
                 <h4 className="text-lg font-bold text-white md:text-xl">{t('Tech.cards.partner.title')}</h4>
-                <p className="text-slate-400 leading-relaxed text-xs md:text-sm">
+                <p className="text-neutral-400 leading-relaxed text-xs md:text-sm">
                   {t('Tech.cards.partner.desc')}
                 </p>
               </div>
@@ -261,7 +261,7 @@ export default function Home() {
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-base md:text-lg font-bold text-white">{t('Tech.cards.latency.title')}</h4>
-                <p className="text-slate-400 text-xs md:text-sm mt-0.5 truncate">
+                <p className="text-neutral-400 text-xs md:text-sm mt-0.5 truncate">
                   {t('Tech.cards.latency.desc')}
                 </p>
               </div>
@@ -341,7 +341,7 @@ export default function Home() {
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
               {t('About.title')}
             </h2>
-            <p className="text-lg text-slate-400 text-balance">
+            <p className="text-lg text-neutral-400 text-balance">
               {t('About.subtitle')}
             </p>
           </div>
@@ -379,7 +379,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-200">
-                      <p className="text-xs text-slate-400 italic">{t('About.cards.pedagogy.footer')}</p>
+                      <p className="text-xs text-neutral-400 italic">{t('About.cards.pedagogy.footer')}</p>
                     </div>
                   </div>
                 </div>
@@ -425,7 +425,7 @@ export default function Home() {
                         <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
                         <div className="h-3 w-3 rounded-full bg-green-500/80" />
                       </div>
-                      <span className="text-xs text-slate-400 ml-2 font-mono">talkflo-engine</span>
+                      <span className="text-xs text-neutral-400 ml-2 font-mono">talkflo-engine</span>
                     </div>
 
                     {/* Terminal Content */}
@@ -434,8 +434,8 @@ export default function Home() {
                       <p className="text-slate-500">&gt; {t('About.cards.engineering.terminal.starting')}</p>
                       <p className="text-indigo-300">✓ {t('About.cards.engineering.terminal.voice')}</p>
                       <p className="text-indigo-300">✓ {t('About.cards.engineering.terminal.asr')}</p>
-                      <p className="text-slate-400">⚡ {t('About.cards.engineering.terminal.latency')} <span className="text-emerald-400 font-bold">187ms</span></p>
-                      <p className="text-slate-400">🎯 {t('About.cards.engineering.terminal.interruption')} <span className="text-purple-400 font-bold">{t('About.cards.engineering.terminal.active')}</span></p>
+                      <p className="text-neutral-400">⚡ {t('About.cards.engineering.terminal.latency')} <span className="text-emerald-400 font-bold">187ms</span></p>
+                      <p className="text-neutral-400">🎯 {t('About.cards.engineering.terminal.interruption')} <span className="text-purple-400 font-bold">{t('About.cards.engineering.terminal.active')}</span></p>
                       <p className="text-slate-500 animate-pulse">▊</p>
                     </div>
                   </div>
@@ -482,7 +482,7 @@ export default function Home() {
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
               {t('Testimonials.title')}
             </h2>
-            <p className="text-lg text-slate-400 text-balance">
+            <p className="text-lg text-neutral-400 text-balance">
               {t('Testimonials.subtitle')}
             </p>
           </div>
@@ -534,7 +534,7 @@ export default function Home() {
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 ring-2 ring-white/10" />
                   <div>
                     <p className="font-bold text-white text-sm">{t(`Testimonials.items.${idx}.name`)}</p>
-                    <p className="text-xs text-slate-400">{t(`Testimonials.items.${idx}.role`)}</p>
+                    <p className="text-xs text-neutral-400">{t(`Testimonials.items.${idx}.role`)}</p>
                   </div>
                 </div>
               </div>
@@ -563,7 +563,7 @@ export default function Home() {
                     +
                   </span>
                 </summary>
-                <p className="mt-4 text-base text-slate-400 leading-relaxed pr-8">{t(`FAQ.items.${idx}.a`)}</p>
+                <p className="mt-4 text-base text-neutral-400 leading-relaxed pr-8">{t(`FAQ.items.${idx}.a`)}</p>
               </details>
             ))}
           </div>

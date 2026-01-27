@@ -28,7 +28,7 @@ const MenuButton = ({
         disabled={disabled}
         className={`p-2 rounded-lg transition-colors ${isActive
             ? 'bg-emerald-500/20 text-emerald-400'
-            : 'text-slate-400 hover:text-white hover:bg-white/10'
+            : 'text-neutral-400 hover:text-white hover:bg-white/10'
             } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
         {children}

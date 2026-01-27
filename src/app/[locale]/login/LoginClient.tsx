@@ -127,7 +127,7 @@ export default function LoginClient() {
                                             <h1 className="font-heading text-[26px] font-bold text-white tracking-tight">
                                                 {t('Step1.title')}
                                             </h1>
-                                            <p className="text-slate-400 text-[15px]">
+                                            <p className="text-neutral-400 text-[15px]">
                                                 {t('Step1.subtitle')}
                                             </p>
                                         </div>
@@ -208,7 +208,7 @@ export default function LoginClient() {
                                             <h1 className="font-heading text-[26px] font-bold text-white tracking-tight">
                                                 {t('Step2.title')}
                                             </h1>
-                                            <p className="text-slate-400 text-[15px]">
+                                            <p className="text-neutral-400 text-[15px]">
                                                 {t('Step2.subtitle')}
                                             </p>
                                         </div>
@@ -288,7 +288,7 @@ export default function LoginClient() {
                         <p className="text-[11px] text-slate-500 font-medium tracking-wide">
                             {t('Branding.from')}
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-slate-400">
+                        <div className="flex items-center justify-center gap-2 text-neutral-400">
                             <span className="text-[13px] font-bold tracking-tight">BeyondThink</span>
                         </div>
                     </div>

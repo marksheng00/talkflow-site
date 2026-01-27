@@ -58,7 +58,7 @@ export default function Footer() {
               </p>
               <Link
                 href="/changelog"
-                className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-slate-400 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-700/50 hover:text-white hover:border-slate-600 transition-colors cursor-pointer"
+                className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-neutral-400 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-700/50 hover:text-white hover:border-slate-600 transition-colors cursor-pointer"
                 aria-label="View Changelog"
               >
                 v{packageJson.version}
@@ -68,7 +68,7 @@ export default function Footer() {
         </div>
         {columnsRaw.map((column) => (
           <div key={column.title}>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-400">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-neutral-400">
               {t(`columns.${column.title}`)}
             </p>
             <div className="space-y-3 text-sm text-slate-200">

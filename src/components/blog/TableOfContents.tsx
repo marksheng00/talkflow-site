@@ -61,7 +61,7 @@ export function TableOfContents({ headings, translation }: TableOfContentsProps)
                                     "block text-sm transition-all duration-200",
                                     activeId === heading.id
                                         ? "text-emerald-400 font-medium"
-                                        : "text-slate-400 hover:text-slate-200"
+                                        : "text-neutral-400 hover:text-slate-200"
                                 )}
                             >
                                 <div className={cn(

@@ -415,19 +415,19 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="flex p-1 stack-tight md:gap-1 rounded-xl bg-white/5 border border-white/5 w-full md:w-fit">
                             <button
                                 onClick={() => setActiveTab("roadmap")}
-                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "roadmap" ? "bg-white text-slate-950 shadow-lg" : "text-neutral-400 hover:text-white hover:bg-white/5"}`}
                             >
                                 {t('Tabs.roadmap')}
                             </button>
                             <button
                                 onClick={() => setActiveTab("ideas")}
-                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "ideas" ? "bg-white text-slate-950 shadow-lg" : "text-neutral-400 hover:text-white hover:bg-white/5"}`}
                             >
                                 {t('Tabs.ideas')}
                             </button>
                             <button
                                 onClick={() => setActiveTab("bugs")}
-                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+                                className={`flex-1 md:flex-initial px-2 md:px-6 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center ${activeTab === "bugs" ? "bg-white text-slate-950 shadow-lg" : "text-neutral-400 hover:text-white hover:bg-white/5"}`}
                             >
                                 {t('Tabs.bugs')}
                             </button>
@@ -503,7 +503,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                             <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
                                 <div className="mb-6 pb-4 border-b border-white/10">
                                     <div className="text-center">
-                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{t('RoadmapTab.taskOverview')}</span>
+                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">{t('RoadmapTab.taskOverview')}</span>
                                         <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
                                     </div>
                                 </div>
@@ -552,7 +552,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 const year = date.getFullYear();
                                                 return (
                                                     <div key={i} className="flex-1 text-center min-w-[80px]">
-                                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{monthName}</span>
+                                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">{monthName}</span>
                                                         {i % 12 === 0 && <div className="text-[9px] text-slate-600 mt-0.5">{year}</div>}
                                                     </div>
                                                 );
@@ -679,7 +679,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         </div>
                                     </div>
 
-                                    <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
+                                    <p className="text-sm text-neutral-400 leading-relaxed min-h-[40px] line-clamp-3">
                                         {idea.description}
                                     </p>
 
@@ -761,7 +761,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                         </div>
                                     </div>
 
-                                    <p className="text-sm text-slate-400 leading-relaxed min-h-[40px] line-clamp-3">
+                                    <p className="text-sm text-neutral-400 leading-relaxed min-h-[40px] line-clamp-3">
                                         {bug.description}
                                     </p>
 
@@ -784,7 +784,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                     investigating: { label: t('BugsTab.status.investigating'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
                                                     fixing: { label: t('BugsTab.status.fixing'), color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
                                                     resolved: { label: t('BugsTab.status.resolved'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-                                                    wont_fix: { label: t('BugsTab.status.wont_fix'), color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                                    wont_fix: { label: t('BugsTab.status.wont_fix'), color: 'text-neutral-400 bg-slate-500/10 border-slate-500/20' }
                                                 };
                                                 const status = statusMap[bug.status as keyof typeof statusMap] || statusMap.reported;
                                                 return (
@@ -847,7 +847,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                             {getLocalizedContent(selectedTask.title)}
                                         </h1>
                                         <div className="h-1.5 w-12 bg-emerald-500 mb-8 rounded-full" />
-                                        <p className="text-lg md:text-xl text-slate-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
+                                        <p className="text-lg md:text-xl text-neutral-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
                                             {getLocalizedContent(selectedTask.description)}
                                         </p>
                                     </div>
@@ -884,7 +884,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-full ml-6 z-20 flex-col gap-4">
                             <button
                                 onClick={() => setSelectedTask(null)}
-                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-neutral-400 group"
                             >
                                 <X className="h-6 w-6" />
                             </button>
@@ -894,7 +894,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 disabled={boostedTasks.has(selectedTask.id) || selectedTask.progress === 100}
                                 className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${boostedTasks.has(selectedTask.id) || selectedTask.progress === 100
                                     ? "bg-black/80 border border-emerald-500/50 cursor-default text-emerald-500"
-                                    : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-slate-400"
+                                    : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-neutral-400"
                                     }`}
                             >
                                 {!boostedTasks.has(selectedTask.id) && selectedTask.progress !== 100 ? (
@@ -961,7 +961,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                             {selectedIdea.title}
                                         </h2>
                                     </div>
-                                    <p className="text-base md:text-lg text-slate-400 leading-relaxed font-medium border-l-4 border-white/5 pl-6 italic pb-4">
+                                    <p className="text-base md:text-lg text-neutral-400 leading-relaxed font-medium border-l-4 border-white/5 pl-6 italic pb-4">
                                         {selectedIdea.description}
                                     </p>
                                 </div>
@@ -985,7 +985,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     disabled={votedIdeas.has(selectedIdea.id)}
                                     className={`h-12 w-12 rounded-xl flex items-center justify-center font-bold transition-all ${votedIdeas.has(selectedIdea.id)
                                         ? "bg-slate-800 text-rose-400 cursor-default"
-                                        : "bg-white/5 border border-white/10 text-slate-400 active:bg-white/10"
+                                        : "bg-white/5 border border-white/10 text-neutral-400 active:bg-white/10"
                                         }`}
                                 >
                                     <ArrowDown className="h-5 w-5" />
@@ -997,7 +997,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-full ml-6 z-20 flex-col gap-4">
                             <button
                                 onClick={() => setSelectedIdea(null)}
-                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-neutral-400 group"
                             >
                                 <X className="h-6 w-6" />
                             </button>
@@ -1025,7 +1025,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                 disabled={votedIdeas.has(selectedIdea.id)}
                                 className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedIdea.id)
                                     ? "bg-black/80 border border-rose-500/50 text-rose-500 cursor-default"
-                                    : "bg-black/80 border border-white/10 hover:border-rose-500/50 hover:text-rose-400 hover:scale-105 cursor-pointer text-slate-400"
+                                    : "bg-black/80 border border-white/10 hover:border-rose-500/50 hover:text-rose-400 hover:scale-105 cursor-pointer text-neutral-400"
                                     }`}
                             >
                                 {!votedIdeas.has(selectedIdea.id) ? (
@@ -1076,7 +1076,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                     investigating: { label: t('BugsTab.status.investigating'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
                                                     fixing: { label: t('BugsTab.status.fixing'), color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
                                                     resolved: { label: t('BugsTab.status.resolved'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-                                                    wont_fix: { label: t('BugsTab.status.wont_fix'), color: 'text-slate-400 bg-slate-500/10 border-slate-500/20' }
+                                                    wont_fix: { label: t('BugsTab.status.wont_fix'), color: 'text-neutral-400 bg-slate-500/10 border-slate-500/20' }
                                                 };
                                                 const status = statusMap[selectedBug.status as keyof typeof statusMap] || statusMap.reported;
                                                 return (
@@ -1093,7 +1093,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">{t('BugsTab.modal.description')}</h4>
+                                            <h4 className="text-sm font-bold text-neutral-400 uppercase tracking-wider">{t('BugsTab.modal.description')}</h4>
                                             <p className="text-base text-slate-300 leading-relaxed font-medium border-l-4 border-white/5 pl-4">
                                                 {selectedBug.description}
                                             </p>
@@ -1122,7 +1122,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                         <div className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-full ml-6 z-20 flex-col gap-4">
                             <button
                                 onClick={() => setSelectedBug(null)}
-                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-slate-400 group"
+                                className="flex flex-col items-center justify-center w-16 h-16 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-xl hover:border-white/30 hover:text-white transition-all text-neutral-400 group"
                             >
                                 <X className="h-6 w-6" />
                             </button>

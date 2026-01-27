@@ -11,7 +11,7 @@ export default function NotFound() {
         <AuroraBackground className="flex min-h-screen flex-col items-center justify-center text-center">
             <div className="z-10 flex flex-col items-center justify-center space-y-4">
                 <h2 className="text-6xl font-black text-white md:text-8xl">{t('title')}</h2>
-                <p className="text-xl text-slate-400">{t('subtitle')}</p>
+                <p className="text-xl text-neutral-400">{t('subtitle')}</p>
                 <p className="max-w-md text-slate-500 text-balance">
                     {t('description')}
                 </p>
