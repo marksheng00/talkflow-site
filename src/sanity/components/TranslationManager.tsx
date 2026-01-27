@@ -1,7 +1,7 @@
 import { Card, Stack, Text, Button, Flex, Box, Badge, Grid, useToast } from '@sanity/ui'
 import { useCallback, useState, useEffect } from 'react'
 import { useClient, useFormValue, set } from 'sanity'
-import { LANGUAGES } from '../lib/languages'
+import { LANGUAGES, BASE_LANGUAGE } from '../lib/languages'
 import { TranslateIcon, EditIcon, CheckmarkCircleIcon, AddIcon, WarningOutlineIcon, RefreshIcon, SyncIcon } from '@sanity/icons'
 import { useRouter } from 'sanity/router'
 
@@ -234,7 +234,135 @@ export function TranslationManager(props: any) {
         }
     };
 
-    // Use Sanity router
+    const handleSyncFromMaster = async () => {
+        if (!translationId || !currentLanguage) return;
+
+        const masterLang = BASE_LANGUAGE.id;
+        if (currentLanguage === masterLang) return; // Cannot sync master from master
+
+        if (!window.confirm(`Are you sure you want to sync this ${currentLanguage.toUpperCase()} document from the ${masterLang.toUpperCase()} Master? Current content will be overwritten.`)) {
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // 1. Find the Master Document
+            // We prioritize draft, then published
+            const masterQuery = `*[_type == "post" && translationId == $tid && language == $ml]{_id}`;
+            const masterResults = await client.fetch(masterQuery, { tid: translationId, ml: masterLang });
+
+            if (!masterResults || masterResults.length === 0) {
+                throw new Error("Master document not found. Please create the English version first.");
+            }
+
+            // Pick best master (prefer draft)
+            const masterRef = masterResults.find((m: any) => m._id.startsWith('drafts.')) || masterResults[0];
+
+            // Fetch full master content
+            const masterId = masterRef._id.replace('drafts.', '');
+            const masterDraftId = `drafts.${masterId}`;
+            const masterDoc = await client.fetch(`*[_id == $d || _id == $p][0]`, { d: masterDraftId, p: masterId });
+
+            if (!masterDoc) throw new Error("Could not fetch Master content.");
+
+            // 2. Fetch Current Doc (Self)
+            const currentDraftId = documentId.startsWith('drafts.') ? documentId : `drafts.${documentId}`;
+            const currentPublishedId = documentId.replace('drafts.', '');
+            const currentDoc = await client.fetch(`*[_id == $d || _id == $p][0]`, { d: currentDraftId, p: currentPublishedId });
+
+            if (!currentDoc) throw new Error("Please save the current document first.");
+
+            // A common function would be better, but we duplicate extraction/translation logic for safety/speed now
+            const extractTextNodes = (doc: any) => {
+                const nodes: { path: any[], text: string }[] = [];
+                if (doc.title) nodes.push({ path: ['title'], text: doc.title });
+                if (doc.excerpt) nodes.push({ path: ['excerpt'], text: doc.excerpt });
+                if (doc.seo?.metaTitle) nodes.push({ path: ['seo', 'metaTitle'], text: doc.seo.metaTitle });
+                if (doc.seo?.metaDescription) nodes.push({ path: ['seo', 'metaDescription'], text: doc.seo.metaDescription });
+                if (Array.isArray(doc.body)) {
+                    doc.body.forEach((block: any, blockIndex: number) => {
+                        if (block._type === 'block' && Array.isArray(block.children)) {
+                            block.children.forEach((span: any, spanIndex: number) => {
+                                if (span._type === 'span' && typeof span.text === 'string' && span.text.trim()) {
+                                    nodes.push({ path: ['body', blockIndex, 'children', spanIndex, 'text'], text: span.text });
+                                }
+                            });
+                        }
+                    });
+                }
+                return nodes;
+            };
+
+            const nodesToTranslate = extractTextNodes(masterDoc);
+            console.log(`[SyncFromMaster] Extracted ${nodesToTranslate.length} nodes from Master (${masterDoc._id})`);
+
+            // 3. Translate
+            let translatedTexts: string[] = [];
+            if (nodesToTranslate.length > 0) {
+                toast.push({ status: 'info', title: 'Syncing from Master...', description: `Translating ${nodesToTranslate.length} blocks.` });
+
+                const CHUNK_SIZE = 50;
+                for (let i = 0; i < nodesToTranslate.length; i += CHUNK_SIZE) {
+                    const chunk = nodesToTranslate.slice(i, i + CHUNK_SIZE);
+                    const payload = {
+                        texts: chunk.map(n => n.text),
+                        target: currentLanguage,
+                        source: masterLang
+                    };
+
+                    const response = await fetch('/api/admin/translate', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('Translation API failed');
+                    const data = await response.json();
+                    translatedTexts = translatedTexts.concat(data.translatedTexts);
+                }
+            }
+
+            // 4. Overwrite Current Document with Master Structure + Translated Text
+
+            // We clone MASTER structure to ensure images/structures match master
+            const newDoc = JSON.parse(JSON.stringify(masterDoc));
+
+            // Restore Current ID and Metadata
+            newDoc._id = currentDoc._id.startsWith('drafts.') ? currentDoc._id : `drafts.${currentDoc._id}`;
+            newDoc.language = currentLanguage;
+            newDoc.translationId = translationId;
+            newDoc.slug = currentDoc.slug; // Keep current slug!
+
+            // Apply translated texts to the MASTER structure
+            // NOTE: This assumes we want to mirror master's structure perfectly.
+            nodesToTranslate.forEach((node, index) => {
+                const translatedText = translatedTexts[index];
+                if (translatedText) {
+                    let current = newDoc;
+                    for (let i = 0; i < node.path.length - 1; i++) {
+                        current = current[node.path[i]];
+                    }
+                    current[node.path[node.path.length - 1]] = translatedText;
+                }
+            });
+
+            delete newDoc._createdAt;
+            delete newDoc._updatedAt;
+            delete newDoc._rev;
+
+            console.log("Overwriting current doc with synced content:", newDoc);
+            await client.createOrReplace(newDoc);
+
+            toast.push({ status: 'success', title: 'Sync Complete', description: 'Updated from Master Content.' });
+
+            // Reload page to show changes? Sanity usually auto-reloads.
+
+        } catch (err: any) {
+            console.error(err);
+            toast.push({ status: 'error', title: 'Sync Failed', description: err.message });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const router = useRouter()
 
     const navigateToDoc = useCallback((id: string) => {
@@ -341,6 +469,22 @@ export function TranslationManager(props: any) {
                                                     style={{ width: '100%' }}
                                                 />
                                             )}
+                                        </Box>
+                                    )}
+
+                                    {/* Enable Sync button for current language if it is not Master */}
+                                    {isCurrent && currentLanguage !== BASE_LANGUAGE.id && (
+                                        <Box marginTop={3}>
+                                            <Button
+                                                text={`Sync from ${BASE_LANGUAGE.title}`}
+                                                icon={SyncIcon}
+                                                fontSize={1}
+                                                mode="ghost"
+                                                tone="caution"
+                                                onClick={handleSyncFromMaster}
+                                                disabled={isLoading}
+                                                style={{ width: '100%' }}
+                                            />
                                         </Box>
                                     )}
                                 </Stack>
