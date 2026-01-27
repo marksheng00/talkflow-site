@@ -285,72 +285,73 @@ export default function AdminDashboardPage() {
                     </div>
                 </div>
             </div>
-            );
+        </div>
+    );
 }
 
-            function StatusItem({label, value, color = "text-zinc-300"}: {label: string, value: string, color?: string }) {
+function StatusItem({ label, value, color = "text-zinc-300" }: { label: string, value: string, color?: string }) {
     return (
-            <div className="flex flex-col items-end">
-                <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-wider">{label}</span>
-                <span className={cn("text-xs font-mono font-bold", color)}>{value}</span>
-            </div>
-            );
+        <div className="flex flex-col items-end">
+            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-wider">{label}</span>
+            <span className={cn("text-xs font-mono font-bold", color)}>{value}</span>
+        </div>
+    );
 }
 
-            function DenseMetric({label, value, icon, color = "text-zinc-400", isLive = false}: {label: string, value: string, icon: React.ReactNode, color?: string, isLive?: boolean }) {
+function DenseMetric({ label, value, icon, color = "text-zinc-400", isLive = false }: { label: string, value: string, icon: React.ReactNode, color?: string, isLive?: boolean }) {
     return (
-            <div className="bg-[#09090b] border border-white/[0.04] p-5 rounded-xl flex items-center justify-between group transition-colors hover:border-white/[0.1] hover:bg-zinc-900/40">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{label}</p>
-                    <div className="flex items-center gap-2">
-                        <p className="text-2xl font-bold text-zinc-100 tracking-tight font-mono leading-none">
-                            {value === "..." ? <Loader2 className="w-4 h-4 animate-spin text-zinc-700" /> : value}
-                        </p>
-                        {isLive && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
-                    </div>
-                </div>
-                <div className={cn("p-2 rounded-lg bg-white/[0.02] border border-white/[0.04] group-hover:bg-white/[0.05] transition-colors", color)}>{icon}</div>
-            </div>
-            );
-}
-
-            function InfrastructureRow({name, region, status, load}: {name: string, region: string, status: string, load: string }) {
-    return (
-            <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
-                <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-medium text-zinc-300">{name}</span>
-                    <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-tight">{region}</span>
-                </div>
-                <div className="flex items-center gap-12 text-xs">
-                    <div className="flex flex-col items-end w-20">
-                        <span className="text-[8px] text-zinc-700 uppercase font-bold">Load</span>
-                        <span className="font-mono text-zinc-400 text-[11px]">{load}</span>
-                    </div>
-                    <div className="flex flex-col items-end w-24">
-                        <span className={cn(
-                            "font-bold uppercase text-[9px] px-1.5 py-0.5 rounded border leading-none",
-                            status === 'Operational' ? "text-emerald-500 bg-emerald-500/5 border-emerald-500/10" :
-                                status === 'Processing' ? "text-indigo-400 bg-indigo-500/5 border-indigo-500/10" : "text-zinc-500 bg-zinc-500/5 border-white/5"
-                        )}>{status}</span>
-                    </div>
-                </div>
-            </div>
-            );
-}
-
-            function StatRow({label, count, total, color}: {label: string, count: number, total: number, color: string }) {
-    return (
-            <div className="flex items-center justify-between text-xs">
+        <div className="bg-[#09090b] border border-white/[0.04] p-5 rounded-xl flex items-center justify-between group transition-colors hover:border-white/[0.1] hover:bg-zinc-900/40">
+            <div className="space-y-1">
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{label}</p>
                 <div className="flex items-center gap-2">
-                    <div className={cn("w-2 h-2 rounded-full", color)}></div>
-                    <span className="text-zinc-400">{label}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-white">{count}</span>
-                    <span className="font-mono text-zinc-600 text-[10px]">
-                        {total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"}%
-                    </span>
+                    <p className="text-2xl font-bold text-zinc-100 tracking-tight font-mono leading-none">
+                        {value === "..." ? <Loader2 className="w-4 h-4 animate-spin text-zinc-700" /> : value}
+                    </p>
+                    {isLive && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
                 </div>
             </div>
-            );
+            <div className={cn("p-2 rounded-lg bg-white/[0.02] border border-white/[0.04] group-hover:bg-white/[0.05] transition-colors", color)}>{icon}</div>
+        </div>
+    );
+}
+
+function InfrastructureRow({ name, region, status, load }: { name: string, region: string, status: string, load: string }) {
+    return (
+        <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium text-zinc-300">{name}</span>
+                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-tight">{region}</span>
+            </div>
+            <div className="flex items-center gap-12 text-xs">
+                <div className="flex flex-col items-end w-20">
+                    <span className="text-[8px] text-zinc-700 uppercase font-bold">Load</span>
+                    <span className="font-mono text-zinc-400 text-[11px]">{load}</span>
+                </div>
+                <div className="flex flex-col items-end w-24">
+                    <span className={cn(
+                        "font-bold uppercase text-[9px] px-1.5 py-0.5 rounded border leading-none",
+                        status === 'Operational' ? "text-emerald-500 bg-emerald-500/5 border-emerald-500/10" :
+                            status === 'Processing' ? "text-indigo-400 bg-indigo-500/5 border-indigo-500/10" : "text-zinc-500 bg-zinc-500/5 border-white/5"
+                    )}>{status}</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function StatRow({ label, count, total, color }: { label: string, count: number, total: number, color: string }) {
+    return (
+        <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+                <div className={cn("w-2 h-2 rounded-full", color)}></div>
+                <span className="text-zinc-400">{label}</span>
+            </div>
+            <div className="flex items-center gap-3">
+                <span className="font-mono font-bold text-white">{count}</span>
+                <span className="font-mono text-zinc-600 text-[10px]">
+                    {total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"}%
+                </span>
+            </div>
+        </div>
+    );
 }
