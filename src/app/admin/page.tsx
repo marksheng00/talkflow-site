@@ -358,19 +358,19 @@ function AnalyticsRow({ name, subtitle, stats }: { name: string, subtitle: strin
             </div>
             <div className="flex items-center gap-6">
                 {/* Day */}
-                <div className="flex flex-col items-end gap-0.5">
-                    <span className="font-mono text-zinc-300 text-xs font-bold">{stats.day}</span>
-                    <span className="text-[9px] text-zinc-600 font-bold uppercase">24h</span>
+                <div className="flex flex-col items-end w-12 gap-0.5">
+                    <span className="text-[8px] text-zinc-700 uppercase font-bold">24h</span>
+                    <span className="font-mono text-zinc-300 text-[11px] font-bold">{stats.day}</span>
                 </div>
                 {/* Week */}
-                <div className="flex flex-col items-end gap-0.5">
-                    <span className="font-mono text-zinc-300 text-xs font-bold">{stats.week}</span>
-                    <span className="text-[9px] text-zinc-600 font-bold uppercase">7d</span>
+                <div className="flex flex-col items-end w-12 gap-0.5">
+                    <span className="text-[8px] text-zinc-700 uppercase font-bold">7d</span>
+                    <span className="font-mono text-zinc-300 text-[11px] font-bold">{stats.week}</span>
                 </div>
                 {/* Month */}
-                <div className="flex flex-col items-end gap-0.5">
-                    <span className="font-mono text-zinc-300 text-xs font-bold">{stats.month}</span>
-                    <span className="text-[9px] text-zinc-600 font-bold uppercase">30d</span>
+                <div className="flex flex-col items-end w-12 gap-0.5">
+                    <span className="text-[8px] text-zinc-700 uppercase font-bold">30d</span>
+                    <span className="font-mono text-zinc-300 text-[11px] font-bold">{stats.month}</span>
                 </div>
             </div>
         </div>
