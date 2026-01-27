@@ -23,10 +23,12 @@ export default function AdminDashboardPage() {
         roadmap: 0,
     });
     const [downloadStats, setDownloadStats] = useState({
-        ios: 0,
-        android: 0,
-        web: 0
+        ios: { day: 0, week: 0, month: 0 },
+        android: { day: 0, week: 0, month: 0 },
+        web: { day: 0, week: 0, month: 0 }
     });
+
+
     const [health, setHealth] = useState({
         database: { status: 'checking', latency: 0 },
         cms: { status: 'checking', latency: 0 },
@@ -165,7 +167,7 @@ export default function AdminDashboardPage() {
                 />
                 <DenseMetric
                     label="Total Downloads"
-                    value={loading ? "..." : (downloadStats.ios + downloadStats.android + downloadStats.web).toString()}
+                    value={loading ? "..." : (downloadStats.ios.month + downloadStats.android.month + downloadStats.web.month).toString()}
                     icon={<Download className="w-4 h-4" />}
                     color="text-indigo-400"
                 />
@@ -212,28 +214,22 @@ export default function AdminDashboardPage() {
                             status={health.api.status === 'online' ? 'Operational' : 'Issue'}
                             load={`${health.api.latency}ms`}
                         />
-                        {/* Real Download Analytics as List Items */}
-                        <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-xs font-medium text-zinc-300">iOS App Store</span>
-                                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-tight">Conversion</span>
-                            </div>
-                            <div className="font-mono text-zinc-300 text-xs font-bold">{downloadStats.ios}</div>
-                        </div>
-                        <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-xs font-medium text-zinc-300">Google Play Store</span>
-                                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-tight">Conversion</span>
-                            </div>
-                            <div className="font-mono text-zinc-300 text-xs font-bold">{downloadStats.android}</div>
-                        </div>
-                        <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-xs font-medium text-zinc-300">Web Application</span>
-                                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-tight">Conversion</span>
-                            </div>
-                            <div className="font-mono text-zinc-300 text-xs font-bold">{downloadStats.web}</div>
-                        </div>
+                        {/* Real Download Analytics */}
+                        <AnalyticsRow
+                            name="iOS App Store"
+                            subtitle="Conversion"
+                            stats={downloadStats.ios}
+                        />
+                        <AnalyticsRow
+                            name="Google Play Store"
+                            subtitle="Conversion"
+                            stats={downloadStats.android}
+                        />
+                        <AnalyticsRow
+                            name="Web Application"
+                            subtitle="Conversion"
+                            stats={downloadStats.web}
+                        />
                     </div>
                 </div>
 
@@ -348,6 +344,34 @@ function StatRow({ label, count, total, color }: { label: string, count: number,
                 <span className="font-mono text-zinc-600 text-[10px]">
                     {total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"}%
                 </span>
+            </div>
+        </div>
+    );
+}
+
+function AnalyticsRow({ name, subtitle, stats }: { name: string, subtitle: string, stats: { day: number, week: number, month: number } }) {
+    return (
+        <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
+            <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium text-zinc-300">{name}</span>
+                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-tight">{subtitle}</span>
+            </div>
+            <div className="flex items-center gap-6">
+                {/* Day */}
+                <div className="flex flex-col items-end gap-0.5">
+                    <span className="font-mono text-zinc-300 text-xs font-bold">{stats.day}</span>
+                    <span className="text-[9px] text-zinc-600 font-bold uppercase">24h</span>
+                </div>
+                {/* Week */}
+                <div className="flex flex-col items-end gap-0.5">
+                    <span className="font-mono text-zinc-300 text-xs font-bold">{stats.week}</span>
+                    <span className="text-[9px] text-zinc-600 font-bold uppercase">7d</span>
+                </div>
+                {/* Month */}
+                <div className="flex flex-col items-end gap-0.5">
+                    <span className="font-mono text-zinc-300 text-xs font-bold">{stats.month}</span>
+                    <span className="text-[9px] text-zinc-600 font-bold uppercase">30d</span>
+                </div>
             </div>
         </div>
     );

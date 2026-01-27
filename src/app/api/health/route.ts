@@ -11,7 +11,11 @@ export async function GET() {
         cms: { status: 'unknown', latency: 0 },
         api: { status: 'online', latency: 0 },
         analytics: {
-            downloads: { ios: 0, android: 0, web: 0 }
+            downloads: {
+                ios: { day: 0, week: 0, month: 0 },
+                android: { day: 0, week: 0, month: 0 },
+                web: { day: 0, week: 0, month: 0 }
+            }
         }
     };
 
@@ -28,10 +32,19 @@ export async function GET() {
         // Admin client for restricted analytics data
         const adminSupabase = createClient(supabaseUrl, serviceKey);
 
+        // Date boundaries
+        const now = new Date();
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
         // Parallel execution: database check + analytics fetch
         const [latencyCheck, analyticsCheck] = await Promise.all([
             supabase.from('roadmap_items').select('count', { count: 'exact', head: true }),
-            adminSupabase.from('analytics_events').select('metadata').eq('event_name', 'download_click')
+            adminSupabase.from('analytics_events')
+                .select('metadata, created_at')
+                .eq('event_name', 'download_click')
+                .gte('created_at', thirtyDaysAgo.toISOString()) // Filter last 30 days
         ]);
 
         const sbEnd = performance.now();
@@ -47,10 +60,27 @@ export async function GET() {
                     try { meta = JSON.parse(meta); } catch (e) { }
                 }
                 const target = meta?.target_platform || meta?.target;
+                const eventDate = new Date(event.created_at);
 
-                if (target === 'ios') healthData.analytics.downloads.ios++;
-                else if (target === 'android') healthData.analytics.downloads.android++;
-                else if (target === 'web') healthData.analytics.downloads.web++;
+                let platformKey: 'ios' | 'android' | 'web' | null = null;
+                if (target === 'ios') platformKey = 'ios';
+                else if (target === 'android') platformKey = 'android';
+                else if (target === 'web') platformKey = 'web';
+
+                if (platformKey) {
+                    // Month (30d) - Base: Includes everything fetched (since we filtered by 30 days)
+                    healthData.analytics.downloads[platformKey].month++;
+
+                    // Week (7d)
+                    if (eventDate >= sevenDaysAgo) {
+                        healthData.analytics.downloads[platformKey].week++;
+                    }
+
+                    // Day (24h)
+                    if (eventDate >= oneDayAgo) {
+                        healthData.analytics.downloads[platformKey].day++;
+                    }
+                }
             });
         }
 
