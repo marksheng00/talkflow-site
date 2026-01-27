@@ -376,10 +376,7 @@ export function TranslationManager(props: any) {
         <Card padding={4} radius={2} shadow={1} tone="transparent" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
             <Stack space={4}>
                 <Flex justify="space-between" align="center">
-                    <Box>
-                        <Text weight="bold" size={2}>Translation Hub</Text>
-                        <Text size={1} muted>Manage multi-language versions</Text>
-                    </Box>
+                    <Text weight="bold" size={2}>Translation Hub</Text>
                     <Flex gap={2} align="center">
                         <Badge tone="primary">{currentLanguage?.toUpperCase() || 'EN'}</Badge>
                         <Button

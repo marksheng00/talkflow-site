@@ -125,7 +125,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         <div className={`h-20 flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-6'} border-b border-white/[0.04] shrink-0 overflow-hidden`}>
                             <div className="flex items-center gap-3">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="/talkflo_logo.png" alt="talkflo" className="w-8 h-8 object-contain shrink-0" />
+                                <img src="/talkflo_logo.png" alt="talkflo" className="w-10 h-10 object-contain shrink-0" />
                                 {!isCollapsed && (
                                     <div className="flex flex-col leading-tight whitespace-nowrap opacity-100 transition-opacity duration-300">
                                         <span className="text-[16px] font-bold tracking-tight text-white">talkflo</span>
@@ -200,7 +200,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         </div>
                     </main>
                 </div>
-            </body>
-        </html>
+            </body >
+        </html >
     );
 }
