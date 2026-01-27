@@ -204,7 +204,7 @@ export function TranslationManager(props: any) {
             newDoc.translationId = translationId;
             // Ensure title has a prefix if valid, but usually it's translated now
             // We append language code to slug to ensure uniqueness
-            newDoc.slug = { current: `${currentDoc.slug?.current || 'untitled'}-${langId}` };
+            newDoc.slug = { current: `${currentDoc.slug?.current || 'untitled'}` };
 
             delete newDoc._createdAt;
             delete newDoc._updatedAt;
