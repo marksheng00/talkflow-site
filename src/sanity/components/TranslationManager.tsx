@@ -137,25 +137,32 @@ export function TranslationManager(props: any) {
             let translatedTexts: string[] = [];
 
             if (nodesToTranslate.length > 0) {
-                toast.push({ status: 'info', title: 'Translating Content...' });
+                toast.push({ status: 'info', title: 'Translating Content...', description: `Sending ${nodesToTranslate.length} blocks to AI.` });
 
                 // Chunking (TMT limit is usually around 2000 chars or reasonable number of items)
                 // We'll simplistic chunk by 50 items for safety
                 const CHUNK_SIZE = 50;
                 for (let i = 0; i < nodesToTranslate.length; i += CHUNK_SIZE) {
                     const chunk = nodesToTranslate.slice(i, i + CHUNK_SIZE);
+
+                    const payload = {
+                        texts: chunk.map(n => n.text),
+                        target: langId,
+                        source: currentLanguage || 'en'
+                    };
+                    console.log('[TranslationManager] Sending payload:', payload);
+
                     const response = await fetch('/api/admin/translate', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            texts: chunk.map(n => n.text),
-                            target: langId,
-                            source: currentLanguage || 'en'
-                        })
+                        body: JSON.stringify(payload)
                     });
 
-                    if (!response.ok) throw new Error('Translation API failed');
                     const data = await response.json();
+                    console.log('[TranslationManager] Received response:', data);
+
+                    if (!response.ok) throw new Error(data.error || 'Translation API failed');
+
                     translatedTexts = translatedTexts.concat(data.translatedTexts);
                 }
             }
@@ -212,12 +219,15 @@ export function TranslationManager(props: any) {
         }
     };
 
-    const navigateToDoc = (id: string) => {
-        // Intent link to open the document
-        // We strip 'drafts.' prefix for the intent usually, but passing full ID is safer for 'edit' intent
+    // Use Sanity router
+    const router = useRouter()
+
+    const navigateToDoc = useCallback((id: string) => {
         const finalId = id.replace('drafts.', '');
-        window.location.hash = `/intent/edit/id=${finalId};type=post`;
-    };
+        // Use the router to navigate via intent
+        router.navigateIntent('edit', { id: finalId, type: 'post' });
+    }, [router]);
+
 
     return (
         <Card padding={4} radius={2} shadow={1} tone="transparent" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
