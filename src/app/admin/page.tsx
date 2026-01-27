@@ -78,7 +78,14 @@ export default function AdminDashboardPage() {
             const downloads = { ios: 0, android: 0, web: 0 };
             if (analyticsRes.data) {
                 analyticsRes.data.forEach((event: any) => {
-                    const target = event.metadata?.target_platform;
+                    let meta = event.metadata;
+                    // Handle case where metadata is a string (rare in supbase-js v2 but possible)
+                    if (typeof meta === 'string') {
+                        try { meta = JSON.parse(meta); } catch (e) { }
+                    }
+
+                    const target = meta?.target_platform || meta?.target; // Fallback just in case
+
                     if (target === 'ios') downloads.ios++;
                     else if (target === 'android') downloads.android++;
                     else if (target === 'web') downloads.web++;
