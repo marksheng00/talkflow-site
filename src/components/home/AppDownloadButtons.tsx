@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MonitorPlay } from "lucide-react";
 import { usePlatform } from "@/hooks/use-platform";
 import { useTranslations } from "next-intl";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 import { cn } from "@/lib/utils";
 
@@ -31,15 +32,18 @@ const StoreButton = ({
     label,
     desktopLabel,
     isMobileLayout,
+    onTrack,
 }: {
     href: string;
     icon: React.ElementType;
     label: string;
     desktopLabel?: string;
     isMobileLayout?: boolean;
+    onTrack?: () => void;
 }) => (
     <Link
         href={href}
+        onClick={onTrack}
         className={cn(
             "group flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-white text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 whitespace-nowrap lg:w-auto lg:min-w-[200px]",
             isMobileLayout ? "flex-1 px-3" : "px-6"
@@ -52,9 +56,10 @@ const StoreButton = ({
     </Link>
 );
 
-const WebButton = ({ href, isMobileLayout, label }: { href: string; isMobileLayout?: boolean; label: string }) => (
+const WebButton = ({ href, isMobileLayout, label, onTrack }: { href: string; isMobileLayout?: boolean; label: string; onTrack?: () => void }) => (
     <Link
         href={href}
+        onClick={onTrack}
         className={cn(
             "group flex h-14 w-full lg:w-auto lg:min-w-[200px] items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 lg:flex-initial whitespace-nowrap",
             isMobileLayout ? "flex-1 px-3" : "px-6"
@@ -75,6 +80,11 @@ export const AppDownloadButtons = ({
 }: AppDownloadButtonsProps & { className?: string }) => {
     const t = useTranslations('HomePage.AppButtons');
     const platform = usePlatform();
+    const { trackEvent } = useAnalytics();
+
+    const handleTrack = (target: string) => {
+        trackEvent('download_click', { target_platform: target });
+    };
 
     // Prevent hydration mismatch/flash by rendering a placeholder until platform is detected
     if (platform === null) {
@@ -92,6 +102,7 @@ export const AppDownloadButtons = ({
                             icon={IOSIcon}
                             label={t('download')}
                             isMobileLayout
+                            onTrack={() => handleTrack('ios')}
                         />
                     )}
 
@@ -101,10 +112,11 @@ export const AppDownloadButtons = ({
                             icon={AndroidIcon}
                             label={t('download')}
                             isMobileLayout
+                            onTrack={() => handleTrack('android')}
                         />
                     )}
 
-                    <WebButton href={webLink} isMobileLayout label={t('tryWeb')} />
+                    <WebButton href={webLink} isMobileLayout label={t('tryWeb')} onTrack={() => handleTrack('web')} />
                 </div>
             )}
 
@@ -115,13 +127,15 @@ export const AppDownloadButtons = ({
                         href={appStoreLink}
                         icon={IOSIcon}
                         label={t('ios')}
+                        onTrack={() => handleTrack('ios')}
                     />
                     <StoreButton
                         href={playStoreLink}
                         icon={AndroidIcon}
                         label={t('android')}
+                        onTrack={() => handleTrack('android')}
                     />
-                    <WebButton href={webLink} label={t('tryWeb')} />
+                    <WebButton href={webLink} label={t('tryWeb')} onTrack={() => handleTrack('web')} />
                 </div>
             )}
         </div>
