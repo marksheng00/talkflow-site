@@ -1,10 +1,21 @@
 import { defineType, defineField } from 'sanity'
+import { TranslationManager } from '../components/TranslationManager'
+import { LANGUAGES } from '../lib/languages'
 
 export default defineType({
     name: 'post',
     title: 'Blog Post',
     type: 'document',
     fields: [
+        defineField({
+            name: 'translationId',
+            title: 'Translation ID',
+            type: 'string',
+            hidden: false, // We want to show the component
+            components: {
+                input: TranslationManager
+            },
+        }),
         defineField({
             name: 'title',
             title: 'Title',
@@ -16,14 +27,7 @@ export default defineType({
             title: 'Language',
             type: 'string',
             options: {
-                list: [
-                    { title: 'English', value: 'en' },
-                    { title: 'Simplified Chinese', value: 'zh' },
-                    { title: 'Traditional Chinese', value: 'zh-Hant' },
-                    { title: 'Spanish', value: 'es' },
-                    { title: 'Korean', value: 'ko' },
-                    { title: 'Japanese', value: 'ja' },
-                ],
+                list: LANGUAGES.map(l => ({ title: l.title, value: l.id })),
             },
             initialValue: 'en',
             validation: (Rule) => Rule.required(),
