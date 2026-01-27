@@ -160,7 +160,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         {/* Toggle Button (Absolute on border) */}
                         <button
                             onClick={toggleSidebar}
-                            className="absolute -right-3 top-24 w-6 h-6 bg-[#09090b] border border-white/[0.1] rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer z-50 hover:bg-zinc-800"
+                            className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#09090b] border border-white/[0.1] rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer z-50 hover:bg-zinc-800"
                             style={{ boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}
                         >
                             {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
