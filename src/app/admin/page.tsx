@@ -22,6 +22,11 @@ export default function AdminDashboardPage() {
         bugs: 0,
         roadmap: 0,
     });
+    const [downloadStats, setDownloadStats] = useState({
+        ios: 0,
+        android: 0,
+        web: 0
+    });
     const [activeUsers, setActiveUsers] = useState<PresenceUser[]>([]); // Detailed presence objects
     const [loading, setLoading] = useState(true);
     const [pulse, setPulse] = useState(0);
@@ -29,10 +34,11 @@ export default function AdminDashboardPage() {
     // 1. Fetch real DB metrics (Ideas/Bugs/Roadmap)
     useEffect(() => {
         const fetchRealStats = async () => {
-            const [ideasRes, bugsRes, roadmapRes] = await Promise.all([
+            const [ideasRes, bugsRes, roadmapRes, analyticsRes] = await Promise.all([
                 supabaseClient.from("community_ideas").select("id", { count: "exact" }).eq("status", "open"),
                 supabaseClient.from("bug_reports").select("id", { count: "exact" }).not("status", "in", '("resolved","wont_fix")'),
-                supabaseClient.from("roadmap_items").select("id", { count: "exact" })
+                supabaseClient.from("roadmap_items").select("id", { count: "exact" }),
+                supabaseClient.from("analytics_events").select("metadata").eq("event_name", "download_click")
             ]);
 
             setStats({
@@ -40,6 +46,19 @@ export default function AdminDashboardPage() {
                 bugs: bugsRes.count || 0,
                 roadmap: roadmapRes.count || 0,
             });
+
+            // Process Analytics
+            const downloads = { ios: 0, android: 0, web: 0 };
+            if (analyticsRes.data) {
+                analyticsRes.data.forEach((event: any) => {
+                    const target = event.metadata?.target_platform;
+                    if (target === 'ios') downloads.ios++;
+                    else if (target === 'android') downloads.android++;
+                    else if (target === 'web') downloads.web++;
+                });
+            }
+            setDownloadStats(downloads);
+
             setLoading(false);
         };
         fetchRealStats();
@@ -136,68 +155,113 @@ export default function AdminDashboardPage() {
                 />
             </div>
 
-            {/* Operational Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden">
-                    <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
-                        <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                            <HardDrive className="w-3 h-3" /> System Components
-                        </h3>
-                        <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                            <span className="text-[9px] font-mono text-emerald-500 uppercase">Live Pipeline</span>
-                        </div>
-                    </div>
-                    <div className="divide-y divide-white/[0.05]">
-                        <InfrastructureRow name="Primary Database" region="us-east-1" status="Operational" load={`${getLoad(12)}%`} />
-                        <InfrastructureRow name="AI Inference Node" region="us-west-2" status="Processing" load={`${getLoad(42)}%`} />
-                        <InfrastructureRow name="Media CDN" region="global" status="Operational" load={`${getLoad(4)}%`} />
-                        <InfrastructureRow name="Translation Engine" region="internal" status="Idle" load="0.0%" />
+            {/* Downloads Analytics */}
+            <div className="lg:col-span-2 border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col">
+                <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
+                    <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                        <TrendingUp className="w-3 h-3" /> Conversion Metrics
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-mono text-zinc-500 uppercase">Real-time Clicks</span>
                     </div>
                 </div>
 
-                {/* Live Audit / User Footprints */}
-                <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col min-h-[400px]">
-                    <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02]">
-                        <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                            <Monitor className="w-3 h-3" /> Live Audit Trail
-                        </h3>
-                    </div>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                        {activeUsers.map((user, idx) => (
-                            <div key={idx} className="flex items-start gap-3 group">
-                                <div className={cn(
-                                    "mt-1 p-1.5 rounded-md border shrink-0",
-                                    user.type === 'admin' ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                )}>
-                                    <UserIcon className="w-3 h-3" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex justify-between items-center mb-0.5">
-                                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">
-                                            {user.type === 'admin' ? 'Operator' : 'Guest Member'}
-                                        </span>
-                                        <span className="text-[9px] font-mono text-zinc-600">Active</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-xs text-zinc-200 truncate">
-                                        <Globe className="w-3 h-3 text-zinc-600" />
-                                        <span className="font-mono bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/5">{user.path || '/'}</span>
-                                    </div>
-                                </div>
+                <div className="p-6 flex-1 flex flex-col justify-center">
+                    <div className="grid grid-cols-3 gap-4 mb-8">
+                        <div className="p-4 bg-white/[0.02] rounded-lg border border-white/[0.05] text-center">
+                            <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Total Clicks</div>
+                            <div className="text-3xl font-mono font-bold text-white tracking-tighter">
+                                {loading ? "..." : (downloadStats.ios + downloadStats.android + downloadStats.web)}
                             </div>
-                        ))}
-                        {activeUsers.length === 0 && (
-                            <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 grayscale">
-                                <Activity className="w-8 h-8 mb-2" />
-                                <p className="text-[10px] font-bold uppercase tracking-widest">No active stream</p>
-                            </div>
-                        )}
-                    </div>
-                    <div className="p-4 border-t border-white/[0.05] bg-black/20">
-                        <div className="flex items-center justify-between">
-                            <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-none">Global Connections</span>
-                            <span className="text-xs font-mono text-emerald-500 font-bold">{activeUsers.length.toString().padStart(2, '0')}</span>
                         </div>
+                        <div className="col-span-2 flex items-end justify-between px-4 pb-2">
+                            {/* Simple Visual Bar Chart */}
+                            <div className="w-full h-16 flex items-end gap-4">
+                                {/* iOS Bar */}
+                                <div className="flex-1 flex flex-col gap-2 group">
+                                    <div className="w-full bg-indigo-500/20 rounded-t-sm relative group-hover:bg-indigo-500/30 transition-colors" style={{ height: `${Math.max(15, (downloadStats.ios / Math.max(1, (downloadStats.ios + downloadStats.android + downloadStats.web))) * 100)}%` }}>
+                                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-indigo-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            {downloadStats.ios}
+                                        </div>
+                                    </div>
+                                    <div className="h-0.5 w-full bg-indigo-500/50"></div>
+                                    <div className="text-[9px] text-center font-bold text-zinc-500 uppercase tracking-wider">iOS</div>
+                                </div>
+
+                                {/* Android Bar */}
+                                <div className="flex-1 flex flex-col gap-2 group">
+                                    <div className="w-full bg-emerald-500/20 rounded-t-sm relative group-hover:bg-emerald-500/30 transition-colors" style={{ height: `${Math.max(15, (downloadStats.android / Math.max(1, (downloadStats.ios + downloadStats.android + downloadStats.web))) * 100)}%` }}>
+                                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            {downloadStats.android}
+                                        </div>
+                                    </div>
+                                    <div className="h-0.5 w-full bg-emerald-500/50"></div>
+                                    <div className="text-[9px] text-center font-bold text-zinc-500 uppercase tracking-wider">Android</div>
+                                </div>
+
+                                {/* Web Bar */}
+                                <div className="flex-1 flex flex-col gap-2 group">
+                                    <div className="w-full bg-zinc-500/20 rounded-t-sm relative group-hover:bg-zinc-500/30 transition-colors" style={{ height: `${Math.max(15, (downloadStats.web / Math.max(1, (downloadStats.ios + downloadStats.android + downloadStats.web))) * 100)}%` }}>
+                                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            {downloadStats.web}
+                                        </div>
+                                    </div>
+                                    <div className="h-0.5 w-full bg-zinc-500/50"></div>
+                                    <div className="text-[9px] text-center font-bold text-zinc-500 uppercase tracking-wider">Web</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <StatRow label="iOS App Store" count={downloadStats.ios} total={downloadStats.ios + downloadStats.android + downloadStats.web} color="bg-indigo-500" />
+                        <StatRow label="Google Play Store" count={downloadStats.android} total={downloadStats.ios + downloadStats.android + downloadStats.web} color="bg-emerald-500" />
+                        <StatRow label="Web Application" count={downloadStats.web} total={downloadStats.ios + downloadStats.android + downloadStats.web} color="bg-zinc-500" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Live Audit / User Footprints */}
+            <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col min-h-[400px]">
+                <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02]">
+                    <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                        <Monitor className="w-3 h-3" /> Live Audit Trail
+                    </h3>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {activeUsers.map((user, idx) => (
+                        <div key={idx} className="flex items-start gap-3 group">
+                            <div className={cn(
+                                "mt-1 p-1.5 rounded-md border shrink-0",
+                                user.type === 'admin' ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                            )}>
+                                <UserIcon className="w-3 h-3" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex justify-between items-center mb-0.5">
+                                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">
+                                        {user.type === 'admin' ? 'Operator' : 'Guest Member'}
+                                    </span>
+                                    <span className="text-[9px] font-mono text-zinc-600">Active</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-xs text-zinc-200 truncate">
+                                    <Globe className="w-3 h-3 text-zinc-600" />
+                                    <span className="font-mono bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/5">{user.path || '/'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    {activeUsers.length === 0 && (
+                        <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 grayscale">
+                            <Activity className="w-8 h-8 mb-2" />
+                            <p className="text-[10px] font-bold uppercase tracking-widest">No active stream</p>
+                        </div>
+                    )}
+                </div>
+                <div className="p-4 border-t border-white/[0.05] bg-black/20">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-none">Global Connections</span>
+                        <span className="text-xs font-mono text-emerald-500 font-bold">{activeUsers.length.toString().padStart(2, '0')}</span>
                     </div>
                 </div>
             </div>
@@ -250,6 +314,23 @@ function InfrastructureRow({ name, region, status, load }: { name: string, regio
                             status === 'Processing' ? "text-indigo-400 bg-indigo-500/5 border-indigo-500/10" : "text-zinc-500 bg-zinc-500/5 border-white/5"
                     )}>{status}</span>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+function StatRow({ label, count, total, color }: { label: string, count: number, total: number, color: string }) {
+    return (
+        <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+                <div className={cn("w-2 h-2 rounded-full", color)}></div>
+                <span className="text-zinc-400">{label}</span>
+            </div>
+            <div className="flex items-center gap-3">
+                <span className="font-mono font-bold text-white">{count}</span>
+                <span className="font-mono text-zinc-600 text-[10px]">
+                    {total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"}%
+                </span>
             </div>
         </div>
     );
