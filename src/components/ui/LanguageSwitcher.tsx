@@ -39,10 +39,10 @@ export function LanguageSwitcher() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "flex items-center justify-center w-10 h-10 rounded-xl border transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl active:scale-90 text-2xl",
+                    "flex items-center justify-center w-10 h-10 rounded-xl border transition-all active:scale-90 text-2xl backdrop-blur-[16px] shadow-[0_4px_24px_rgba(0,0,0,0.2),0_0_1px_rgba(255,255,255,0.1)]",
                     isOpen
                         ? "bg-white/20 border-white/40"
-                        : "bg-white/5 border-white/10 hover:bg-white/10"
+                        : "bg-white/10 border-white/20 hover:bg-white/20"
                 )}
                 aria-label={`Current language: ${currentLang.label}`}
             >
