@@ -2,7 +2,7 @@ import { Card, Stack, Text, Button, Flex, Box, Badge, Grid, useToast } from '@sa
 import { useCallback, useState, useEffect } from 'react'
 import { useClient, useFormValue, set } from 'sanity'
 import { LANGUAGES } from '../lib/languages'
-import { TranslateIcon, EditIcon, CheckmarkCircleIcon, AddIcon, WarningOutlineIcon, RefreshIcon } from '@sanity/icons'
+import { TranslateIcon, EditIcon, CheckmarkCircleIcon, AddIcon, WarningOutlineIcon, RefreshIcon, SyncIcon } from '@sanity/icons'
 import { useRouter } from 'sanity/router'
 
 // Simple UUID generator
@@ -82,6 +82,13 @@ export function TranslationManager(props: any) {
             return;
         }
 
+        const existingTranslation = translations.find(t => t.language === langId);
+        if (existingTranslation) {
+            if (!window.confirm(`Are you sure you want to overwrite the existing ${langId.toUpperCase()} translation? This will replace current content with a new AI translation.`)) {
+                return;
+            }
+        }
+
         setIsLoading(true);
         try {
             // 1. Fetch the FULL current document content to clone
@@ -131,7 +138,7 @@ export function TranslationManager(props: any) {
             };
 
             const nodesToTranslate = extractTextNodes(currentDoc);
-            console.log(`Extracted ${nodesToTranslate.length} nodes for translation`);
+            console.log(`[TranslationManager] Extracted ${nodesToTranslate.length} nodes from ${currentDoc._id}`);
 
             // 3. Call Translation API
             let translatedTexts: string[] = [];
@@ -184,7 +191,15 @@ export function TranslationManager(props: any) {
             });
 
             // Set metadata
-            newDoc._id = `drafts.${generateUUID()}`;
+            // Reuse ID if exists, OR generate new
+            let targetId = existingTranslation ? existingTranslation._id : `drafts.${generateUUID()}`;
+            // Ensure targetId is a draft ID for safety when editing
+            if (!targetId.startsWith('drafts.')) {
+                // If the existing one is published, we want to create a draft OF it.
+                targetId = `drafts.${targetId}`;
+            }
+
+            newDoc._id = targetId;
             newDoc.language = langId;
             newDoc.translationId = translationId;
             // Ensure title has a prefix if valid, but usually it's translated now
@@ -195,13 +210,13 @@ export function TranslationManager(props: any) {
             delete newDoc._updatedAt;
             delete newDoc._rev;
 
-            console.log("Creating new translation:", newDoc);
-            await client.create(newDoc);
+            console.log("Creating/Updating translation:", newDoc);
+            await client.createOrReplace(newDoc);
 
             toast.push({
                 status: 'success',
                 title: 'Translation Complete',
-                description: `Created ${langId.toUpperCase()} version with AI Content.`
+                description: `Updated ${langId.toUpperCase()} version.`
             })
 
             // 5. Update the list
@@ -291,16 +306,28 @@ export function TranslationManager(props: any) {
                                     {!isCurrent && (
                                         <Box>
                                             {existing ? (
-                                                <Button
-                                                    text="Edit"
-                                                    icon={EditIcon}
-                                                    fontSize={1}
-                                                    mode="ghost"
-                                                    tone="primary"
-                                                    onClick={() => navigateToDoc(existing._id)}
-                                                    padding={3}
-                                                    style={{ width: '100%' }}
-                                                />
+                                                <Flex gap={2}>
+                                                    <Button
+                                                        text="Edit"
+                                                        icon={EditIcon}
+                                                        fontSize={1}
+                                                        mode="ghost"
+                                                        tone="primary"
+                                                        onClick={() => navigateToDoc(existing._id)}
+                                                        padding={3}
+                                                        style={{ flex: 1 }}
+                                                    />
+                                                    <Button
+                                                        icon={SyncIcon}
+                                                        fontSize={1}
+                                                        mode="ghost"
+                                                        tone="caution"
+                                                        title="Regenerate Translation"
+                                                        onClick={() => handleCreateTranslation(lang.id)}
+                                                        padding={3}
+                                                        disabled={isLoading}
+                                                    />
+                                                </Flex>
                                             ) : (
                                                 <Button
                                                     text="Create"
