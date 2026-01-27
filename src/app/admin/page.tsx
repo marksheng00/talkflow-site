@@ -154,37 +154,39 @@ export default function AdminDashboardPage() {
                         <span className="text-[10px] font-mono text-zinc-500 font-normal px-2 py-0.5 bg-white/5 rounded border border-white/5 uppercase">Real-Time Core</span>
                     </h1>
                 </div>
+            </div>
 
 
-                {/* Quick Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <DenseMetric
-                        label="Open Ideas"
-                        value={loading ? "..." : stats.ideas.toString()}
-                        icon={<Lightbulb className="w-4 h-4" />}
-                    />
-                    <DenseMetric
-                        label="Active Now"
-                        value={activeUsers.length.toString().padStart(2, '0')}
-                        icon={<Activity className="w-4 h-4" />}
-                        color="text-emerald-500"
-                        isLive
-                    />
-                    <DenseMetric
-                        label="Urgent Bugs"
-                        value={loading ? "..." : stats.bugs.toString().padStart(2, '0')}
-                        icon={<Bug className="w-4 h-4" />}
-                        color="text-rose-400"
-                    />
-                    <DenseMetric
-                        label="Total Downloads"
-                        value={loading ? "..." : (downloadStats.ios + downloadStats.android + downloadStats.web).toString()}
-                        icon={<Download className="w-4 h-4" />}
-                        color="text-indigo-400"
-                    />
-                </div>
+            {/* Quick Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <DenseMetric
+                    label="Open Ideas"
+                    value={loading ? "..." : stats.ideas.toString()}
+                    icon={<Lightbulb className="w-4 h-4" />}
+                />
+                <DenseMetric
+                    label="Active Now"
+                    value={activeUsers.length.toString().padStart(2, '0')}
+                    icon={<Activity className="w-4 h-4" />}
+                    color="text-emerald-500"
+                    isLive
+                />
+                <DenseMetric
+                    label="Urgent Bugs"
+                    value={loading ? "..." : stats.bugs.toString().padStart(2, '0')}
+                    icon={<Bug className="w-4 h-4" />}
+                    color="text-rose-400"
+                />
+                <DenseMetric
+                    label="Total Downloads"
+                    value={loading ? "..." : (downloadStats.ios + downloadStats.android + downloadStats.web).toString()}
+                    icon={<Download className="w-4 h-4" />}
+                    color="text-indigo-400"
+                />
+            </div>
 
-                {/* System & Analytics List (Simplified) */}
+            {/* System & Analytics List (Simplified) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col">
                     <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
                         <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
