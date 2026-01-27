@@ -6,14 +6,13 @@
 
 ## 第一阶段：进入管理后台 (Sanity Studio)
 
-1.  **启动后台**：
-    在本地开发环境下，打开终端：
-    ```bash
-    cd sanity
-    npm run dev
-    ```
+1.  **访问方式**：
+    Sanity Studio 现在已深度集成在 talkflo 站点的管理后台中。你无需再运行独立的命令。
 2.  **访问地址**：
-    打开浏览器访问 `http://localhost:3333`（如果你已部署 Sanity，请访问你的生产环境 Studio URL）。
+    *   **本地开发**：打开浏览器访问 `http://localhost:3000/admin/studio`。
+    *   **生产环境**：访问 `https://(你的域名)/admin/studio`。
+3.  **导航**：
+    在登录 `talkflo Admin` 后台后，点击左侧侧边栏的 **"Blog Studio"** 图标即可直接进入。
 
 ---
 
