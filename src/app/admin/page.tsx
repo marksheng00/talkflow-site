@@ -27,9 +27,36 @@ export default function AdminDashboardPage() {
         android: 0,
         web: 0
     });
+    const [health, setHealth] = useState({
+        database: { status: 'checking', latency: 0 },
+        cms: { status: 'checking', latency: 0 },
+        api: { status: 'checking', latency: 0 }
+    });
     const [activeUsers, setActiveUsers] = useState<PresenceUser[]>([]); // Detailed presence objects
     const [loading, setLoading] = useState(true);
     const [pulse, setPulse] = useState(0);
+
+    // 1. Poll System Health (Real)
+    useEffect(() => {
+        const checkHealth = async () => {
+            try {
+                const res = await fetch('/api/health');
+                const data = await res.json();
+                setHealth(data);
+            } catch (e) {
+                console.error("Health check failed", e);
+                setHealth({
+                    database: { status: 'error', latency: 0 },
+                    cms: { status: 'error', latency: 0 },
+                    api: { status: 'error', latency: 0 }
+                });
+            }
+        };
+
+        checkHealth();
+        const interval = setInterval(checkHealth, 30000); // Poll every 30s
+        return () => clearInterval(interval);
+    }, []);
 
     // 1. Fetch real DB metrics (Ideas/Bugs/Roadmap)
     useEffect(() => {
@@ -171,8 +198,20 @@ export default function AdminDashboardPage() {
                     <InfrastructureRow
                         name="Supabase Database"
                         region="us-east-1"
-                        status="Operational"
-                        load={`${(20 + Math.random() * 10).toFixed(0)}ms`}
+                        status={health.database.status === 'operational' ? 'Operational' : 'Issue'}
+                        load={`${health.database.latency}ms`}
+                    />
+                    <InfrastructureRow
+                        name="Sanity CMS"
+                        region="global"
+                        status={health.cms.status === 'operational' ? 'Operational' : 'Issue'}
+                        load={`${health.cms.latency}ms`}
+                    />
+                    <InfrastructureRow
+                        name="Backend API"
+                        region="vercel-edge"
+                        status={health.api.status === 'online' ? 'Operational' : 'Issue'}
+                        load={`${health.api.latency}ms`}
                     />
                     {/* Real Download Analytics as List Items */}
                     <div className="px-4 py-3 flex items-center justify-between hover:bg-white/[0.01] transition-colors">
