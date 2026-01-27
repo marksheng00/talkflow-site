@@ -1,8 +1,8 @@
-import { Card, Stack, Text, Button, Flex, Box, Badge, Grid, Label } from '@sanity/ui'
+import { Card, Stack, Text, Button, Flex, Box, Badge, Grid, useToast } from '@sanity/ui'
 import { useCallback, useState, useEffect } from 'react'
-import { useClient, useFormValue, useWorkspace } from 'sanity'
-import { LANGUAGES, BASE_LANGUAGE } from '../lib/languages'
-import { RefreshIcon, TranslateIcon, EditIcon, CheckmarkCircleIcon, AddIcon } from '@sanity/icons'
+import { useClient, useFormValue, set } from 'sanity'
+import { LANGUAGES } from '../lib/languages'
+import { TranslateIcon, EditIcon, CheckmarkCircleIcon, AddIcon, WarningOutlineIcon, RefreshIcon } from '@sanity/icons'
 import { useRouter } from 'sanity/router'
 
 // Simple UUID generator
@@ -19,20 +19,16 @@ export function TranslationManager(props: any) {
     const docTitle = useFormValue(['title']) as string
 
     // Use Sanity client to query siblings
-    const client = useClient({ apiVersion: '2024-01-01' })
+    const client = useClient({ apiVersion: '2021-10-21' })
     const [translations, setTranslations] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
-    const router = useRouter()
+    const toast = useToast()
 
     // Initialize translationId if missing
     useEffect(() => {
         if (!translationId && onChange) {
-            // If this is a new document or missing ID, generate one
-            // We use a patch to set it
-            // Note: onChange is the form patcher for this field
-            import('sanity').then(({ set }) => {
-                onChange(set(generateUUID()))
-            })
+            // Automatically assign a translation ID if missing
+            onChange(set(generateUUID()))
         }
     }, [translationId, onChange])
 
@@ -40,16 +36,33 @@ export function TranslationManager(props: any) {
         if (!translationId) return
         setIsLoading(true)
         try {
-            // Find all posts with this translationId
-            const query = `*[_type == "post" && translationId == $tid && !(_id in path("drafts.**"))]{
-        _id,
-        language,
-        title
-      }`
+            // Find all posts with this translationId (both drafts and published)
+            // We use a query that gets ANY document with this translationId
+            const query = `*[_type == "post" && translationId == $tid]{
+                _id,
+                language,
+                title
+            }`
             const result = await client.fetch(query, { tid: translationId })
-            setTranslations(result)
+
+            // Deduplicate: If we have draft and published, prefer draft
+            // Simplified logic: Just keep one entry per language, prefer draft ID if exists
+            const uniqueTranslations = result.reduce((acc: any[], curr: any) => {
+                const existingIndex = acc.findIndex(item => item.language === curr.language);
+                if (existingIndex >= 0) {
+                    // If current is draft, replace existing
+                    if (curr._id.startsWith('drafts.')) {
+                        acc[existingIndex] = curr;
+                    }
+                } else {
+                    acc.push(curr);
+                }
+                return acc;
+            }, []);
+
+            setTranslations(uniqueTranslations)
         } catch (err) {
-            console.error(err)
+            console.error("Error fetching translations:", err)
         } finally {
             setIsLoading(false)
         }
@@ -60,32 +73,46 @@ export function TranslationManager(props: any) {
     }, [fetchTranslations])
 
     const handleCreateTranslation = async (langId: string) => {
-        if (!translationId) return;
+        if (!translationId) {
+            toast.push({
+                status: 'error',
+                title: 'Missing Translation ID',
+                description: 'Please wait for the Translation ID to be generated.'
+            })
+            return;
+        }
+
         setIsLoading(true);
         try {
-            // Clone current document
-            // We get the current full document first
-            // Note: We can't easily get the full current draft from here without fetching or using complex form state.
-            // For simplicity/robustness, we fetch the current published or draft version.
-            const currentDoc = await client.fetch(`*[_id == $id || _id == $draftId][0]`, {
-                id: documentId.replace('drafts.', ''),
-                draftId: `drafts.${documentId.replace('drafts.', '')}`
+            // 1. Fetch the FULL current document content to clone
+            // We try to find the document by its ID (handling draft/published)
+            const draftId = documentId.startsWith('drafts.') ? documentId : `drafts.${documentId}`;
+            const publishedId = documentId.replace('drafts.', '');
+
+            const currentDoc = await client.fetch(`*[_id == $draftId || _id == $publishedId][0]`, {
+                draftId,
+                publishedId
             });
 
             if (!currentDoc) {
-                alert('Please save the current document first before translating.');
+                toast.push({
+                    status: 'warning',
+                    title: 'Document Not Saved',
+                    description: 'Please Ctrl+S (Save) this document first before translating.'
+                })
                 return;
             }
 
+            // 2. Prepare new document
+            const newDocId = `drafts.${generateUUID()}`;
             const newDoc = {
                 ...currentDoc,
-                _id: `drafts.${generateUUID()}`, // New Draft ID
+                _id: newDocId,
                 _type: 'post',
                 language: langId,
                 translationId: translationId,
-                title: `[Draft] ${currentDoc.title} (${langId})`,
-                // Potentially we would call the AI translation API here in a real implementation
-                // For now we clone content
+                title: `[Draft] ${currentDoc.title || 'Untitled'} (${langId.toUpperCase()})`,
+                slug: { current: `${currentDoc.slug?.current || 'untitled'}-${langId}` } // simple slug suffix
             };
 
             // Remove system fields
@@ -93,36 +120,71 @@ export function TranslationManager(props: any) {
             delete newDoc._updatedAt;
             delete newDoc._rev;
 
+            console.log("Creating new translation:", newDoc);
+
+            // 3. Create the document
             await client.create(newDoc);
 
-            // Refresh list
+            toast.push({
+                status: 'success',
+                title: 'Translation Created',
+                description: `Created ${langId.toUpperCase()} version.`
+            })
+
+            // 4. Update the list
             await fetchTranslations();
 
-            // Ideally we could offer to navigate to it, but the list update will show the 'Edit' button
         } catch (err) {
             console.error('Failed to create translation', err);
-            alert('Failed to create translation. Check console.');
+            toast.push({
+                status: 'error',
+                title: 'Creation Failed',
+                description: (err as Error).message
+            })
         } finally {
             setIsLoading(false);
         }
     };
 
     const navigateToDoc = (id: string) => {
-        // Navigate to the document
-        // We can use the intent link structure
-        window.location.hash = `/intent/edit/id=${id};type=post`;
+        // Intent link to open the document
+        // We strip 'drafts.' prefix for the intent usually, but passing full ID is safer for 'edit' intent
+        const finalId = id.replace('drafts.', '');
+        window.location.hash = `/intent/edit/id=${finalId};type=post`;
     };
 
     return (
-        <Card padding={4} radius={2} shadow={1} tone="transparent">
+        <Card padding={4} radius={2} shadow={1} tone="transparent" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
             <Stack space={4}>
                 <Flex justify="space-between" align="center">
                     <Box>
                         <Text weight="bold" size={2}>Translation Hub</Text>
-                        <Text size={1} muted>Manage multi-language versions of this post</Text>
+                        <Text size={1} muted>Manage multi-language versions</Text>
                     </Box>
-                    <Badge tone="primary">{currentLanguage?.toUpperCase() || 'UNKNOWN'}</Badge>
+                    <Flex gap={2} align="center">
+                        <Badge tone="primary">{currentLanguage?.toUpperCase() || 'EN'}</Badge>
+                        <Button
+                            icon={RefreshIcon}
+                            fontSize={1}
+                            mode="ghost"
+                            onClick={fetchTranslations}
+                            padding={2}
+                            title="Refresh List"
+                        />
+                    </Flex>
                 </Flex>
+
+                {!translationId && (
+                    <Card padding={3} tone="caution" radius={2} border>
+                        <Flex align="center" gap={3}>
+                            <WarningOutlineIcon />
+                            <Box flex={1}>
+                                <Text size={1} weight="semibold">Initializing Hub...</Text>
+                                <Text size={1} muted>Generating Translation ID for synchronization.</Text>
+                            </Box>
+                        </Flex>
+                    </Card>
+                )}
 
                 {/* Status Grid */}
                 <Grid columns={[1, 2, 3]} gap={3}>
@@ -131,7 +193,7 @@ export function TranslationManager(props: any) {
                         const isCurrent = currentLanguage === lang.id;
 
                         return (
-                            <Card key={lang.id} border padding={3} radius={2} tone={isCurrent ? 'primary' : 'default'}>
+                            <Card key={lang.id} border padding={3} radius={2} tone={isCurrent ? 'primary' : 'default'} style={{ opacity: isCurrent ? 1 : 0.9 }}>
                                 <Stack space={3}>
                                     <Flex justify="space-between" align="center">
                                         <Text weight="semibold" size={1}>{lang.title}</Text>
@@ -140,7 +202,7 @@ export function TranslationManager(props: any) {
 
                                     {existing ? (
                                         <Flex align="center" gap={2}>
-                                            <CheckmarkCircleIcon style={{ color: 'green' }} />
+                                            <CheckmarkCircleIcon style={{ color: '#1dbf73' }} />
                                             <Text size={1} muted>Created</Text>
                                         </Flex>
                                     ) : (
@@ -160,7 +222,8 @@ export function TranslationManager(props: any) {
                                                     mode="ghost"
                                                     tone="primary"
                                                     onClick={() => navigateToDoc(existing._id)}
-                                                    padding={2}
+                                                    padding={3}
+                                                    style={{ width: '100%' }}
                                                 />
                                             ) : (
                                                 <Button
@@ -169,9 +232,10 @@ export function TranslationManager(props: any) {
                                                     fontSize={1}
                                                     mode="ghost"
                                                     tone="positive"
-                                                    disabled={isLoading}
+                                                    disabled={isLoading || !translationId}
                                                     onClick={() => handleCreateTranslation(lang.id)}
-                                                    padding={2}
+                                                    padding={3}
+                                                    style={{ width: '100%' }}
                                                 />
                                             )}
                                         </Box>
@@ -181,11 +245,6 @@ export function TranslationManager(props: any) {
                         );
                     })}
                 </Grid>
-
-                {/* Debug Info */}
-                {/* <Card padding={2} tone="caution">
-             <Text size={0}>Translation ID: {translationId}</Text>
-        </Card> */}
             </Stack>
         </Card>
     )
