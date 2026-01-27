@@ -85,7 +85,6 @@ export function TranslationManager(props: any) {
         setIsLoading(true);
         try {
             // 1. Fetch the FULL current document content to clone
-            // We try to find the document by its ID (handling draft/published)
             const draftId = documentId.startsWith('drafts.') ? documentId : `drafts.${documentId}`;
             const publishedId = documentId.replace('drafts.', '');
 
@@ -103,35 +102,102 @@ export function TranslationManager(props: any) {
                 return;
             }
 
-            // 2. Prepare new document
-            const newDocId = `drafts.${generateUUID()}`;
-            const newDoc = {
-                ...currentDoc,
-                _id: newDocId,
-                _type: 'post',
-                language: langId,
-                translationId: translationId,
-                title: `[Draft] ${currentDoc.title || 'Untitled'} (${langId.toUpperCase()})`,
-                slug: { current: `${currentDoc.slug?.current || 'untitled'}-${langId}` } // simple slug suffix
+            // 2. Extract translatable content
+            const extractTextNodes = (doc: any) => {
+                const nodes: { path: any[], text: string }[] = [];
+
+                // Fields to translate
+                if (doc.title) nodes.push({ path: ['title'], text: doc.title });
+                if (doc.excerpt) nodes.push({ path: ['excerpt'], text: doc.excerpt });
+                if (doc.seo?.metaTitle) nodes.push({ path: ['seo', 'metaTitle'], text: doc.seo.metaTitle });
+                if (doc.seo?.metaDescription) nodes.push({ path: ['seo', 'metaDescription'], text: doc.seo.metaDescription });
+
+                // Body (Portable Text)
+                if (Array.isArray(doc.body)) {
+                    doc.body.forEach((block: any, blockIndex: number) => {
+                        if (block._type === 'block' && Array.isArray(block.children)) {
+                            block.children.forEach((span: any, spanIndex: number) => {
+                                if (span._type === 'span' && typeof span.text === 'string' && span.text.trim()) {
+                                    nodes.push({
+                                        path: ['body', blockIndex, 'children', spanIndex, 'text'],
+                                        text: span.text
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+                return nodes;
             };
 
-            // Remove system fields
+            const nodesToTranslate = extractTextNodes(currentDoc);
+            console.log(`Extracted ${nodesToTranslate.length} nodes for translation`);
+
+            // 3. Call Translation API
+            let translatedTexts: string[] = [];
+
+            if (nodesToTranslate.length > 0) {
+                toast.push({ status: 'info', title: 'Translating Content...' });
+
+                // Chunking (TMT limit is usually around 2000 chars or reasonable number of items)
+                // We'll simplistic chunk by 50 items for safety
+                const CHUNK_SIZE = 50;
+                for (let i = 0; i < nodesToTranslate.length; i += CHUNK_SIZE) {
+                    const chunk = nodesToTranslate.slice(i, i + CHUNK_SIZE);
+                    const response = await fetch('/api/admin/translate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            texts: chunk.map(n => n.text),
+                            target: langId,
+                            source: currentLanguage || 'en'
+                        })
+                    });
+
+                    if (!response.ok) throw new Error('Translation API failed');
+                    const data = await response.json();
+                    translatedTexts = translatedTexts.concat(data.translatedTexts);
+                }
+            }
+
+            // 4. Reconstruct new document
+            const newDoc = JSON.parse(JSON.stringify(currentDoc)); // Deep clone
+
+            // Apply translations
+            nodesToTranslate.forEach((node, index) => {
+                const translatedText = translatedTexts[index];
+                if (translatedText) {
+                    // Navigate to path and set value
+                    let current = newDoc;
+                    for (let i = 0; i < node.path.length - 1; i++) {
+                        current = current[node.path[i]];
+                    }
+                    current[node.path[node.path.length - 1]] = translatedText;
+                }
+            });
+
+            // Set metadata
+            newDoc._id = `drafts.${generateUUID()}`;
+            newDoc.language = langId;
+            newDoc.translationId = translationId;
+            // Ensure title has a prefix if valid, but usually it's translated now
+            // We append language code to slug to ensure uniqueness
+            newDoc.slug = { current: `${currentDoc.slug?.current || 'untitled'}-${langId}` };
+
             delete newDoc._createdAt;
             delete newDoc._updatedAt;
             delete newDoc._rev;
 
             console.log("Creating new translation:", newDoc);
-
-            // 3. Create the document
             await client.create(newDoc);
 
             toast.push({
                 status: 'success',
-                title: 'Translation Created',
-                description: `Created ${langId.toUpperCase()} version.`
+                title: 'Translation Complete',
+                description: `Created ${langId.toUpperCase()} version with AI Content.`
             })
 
-            // 4. Update the list
+            // 5. Update the list
             await fetchTranslations();
 
         } catch (err) {

@@ -1,15 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import * as tencentcloud from "tencentcloud-sdk-nodejs-tmt";
+
+// Map Sanity language codes to Tencent TMT codes
+const LANG_MAP: Record<string, string> = {
+    'en': 'en',
+    'zh': 'zh',      // Simplified
+    'zh-Hant': 'zh-TW', // Traditional
+    'es': 'es',
+    'ko': 'ko',
+    'ja': 'ja',
+};
 
 const TmtClient = tencentcloud.tmt.v20180321.Client;
 
-// Initialize Client only if keys are present
 const clientConfig = {
     credential: {
-        secretId: process.env.TENCENT_SECRET_ID || "",
-        secretKey: process.env.TENCENT_SECRET_KEY || "",
+        secretId: process.env.TENCENT_SECRET_ID,
+        secretKey: process.env.TENCENT_SECRET_KEY,
     },
-    region: "ap-guangzhou",
+    region: "ap-shanghai",
     profile: {
         httpProfile: {
             endpoint: "tmt.tencentcloudapi.com",
@@ -19,64 +28,54 @@ const clientConfig = {
 
 const client = new TmtClient(clientConfig);
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
-        const { text, from, to } = await req.json();
+        const { texts, target, source } = await req.json();
 
-        if (!text || !to) {
-            return NextResponse.json({ error: "Missing text or target language" }, { status: 400 });
+        if (!texts || !Array.isArray(texts) || texts.length === 0) {
+            return NextResponse.json({ error: 'Missing or empty "texts" array' }, { status: 400 });
         }
 
-        if (!process.env.TENCENT_SECRET_ID || !process.env.TENCENT_SECRET_KEY) {
-            return NextResponse.json({ error: "Server missing Tencent Cloud credentials" }, { status: 500 });
+        if (!target) {
+            return NextResponse.json({ error: 'Missing "target" language' }, { status: 400 });
         }
 
-        // Locale mapping for Tencent Cloud TMT
-        // Reference: https://cloud.tencent.com/document/product/551/15619
-        const localeMapping: Record<string, string> = {
-            'zh': 'zh',      // Simplified Chinese
-            'zh-Hant': 'zh-TW', // Traditional Chinese
-            'en': 'en',
-            'ja': 'ja',
-            'ko': 'ko',
-            'es': 'es'
-        };
+        const tencentTarget = LANG_MAP[target] || target;
+        const tencentSource = source ? (LANG_MAP[source] || source) : 'auto';
 
-        const Target = localeMapping[to] || to;
-        // Use 'auto' for English source to let Tencent's engine handle detection, which is often more robust
-        const Source = from === 'en' ? 'auto' : (localeMapping[from] || 'auto');
+        // Tencent limit: 5 requests per second usually. Batch limit depends.
+        // We'll trust the input is reasonably sized (title, excerpt, body paragraphs).
 
-        const params = {
-            Source,
-            Target,
+        // We need to filter out empty strings to avoid errors, but keep indices aligned
+        const nonEmptyItems = texts.map((t, i) => ({ text: t, index: i })).filter(item => item.text && item.text.trim().length > 0);
+
+        if (nonEmptyItems.length === 0) {
+            return NextResponse.json({ translatedTexts: texts }); // All empty
+        }
+
+        const payload = {
+            Source: tencentSource,
+            Target: tencentTarget,
             ProjectId: 0,
-            SourceText: text,
+            SourceTextList: nonEmptyItems.map(item => item.text),
         };
 
-        // Wrap TMT callback in a promise helper
-        const translateText = () => {
-            return new Promise<{ TargetText?: string }>((resolve, reject) => {
-                client.TextTranslate(params, (err, response) => {
-                    if (err) {
-                        const errMsg = (err as unknown as Error).message || String(err) || "Tencent API Error";
-                        reject(new Error(errMsg));
-                        return;
-                    }
-                    resolve(response);
-                });
-            });
-        };
+        const result = await client.TextTranslateBatch(payload);
 
-        try {
-            const response = await translateText();
-            return NextResponse.json({ translatedText: response.TargetText });
-        } catch (apiError) {
-            console.error("Tencent Cloud Translation Error:", apiError);
-            return NextResponse.json({ error: (apiError as Error).message || "Translation failed" }, { status: 500 });
+        if (!result.TargetTextList || result.TargetTextList.length !== nonEmptyItems.length) {
+            throw new Error("Translation API returned mismatched results");
         }
 
-    } catch (error) {
-        console.error("Translation handler error:", error);
-        return NextResponse.json({ error: (error as Error).message || "Internal server error" }, { status: 500 });
+        // Reconstruct the array
+        const finalTranslations = [...texts];
+        nonEmptyItems.forEach((item, idx) => {
+            finalTranslations[item.index] = result.TargetTextList![idx];
+        });
+
+        return NextResponse.json({ translatedTexts: finalTranslations });
+
+    } catch (error: any) {
+        console.error('Translation API Error:', error);
+        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
     }
 }
