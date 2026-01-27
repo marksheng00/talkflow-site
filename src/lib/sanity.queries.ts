@@ -70,7 +70,7 @@ export const postBySlugQuery = groq`
   *[_type == "post" && slug.current == $slug && (language == $language || language == "en" || !defined(language))] | order(select(language == $language => 0, 1) asc)[0] {
     ${postFields},
     seo,
-    "translations": *[_type == "post" && _id in path("translations." + ^._id + ".*") || _id == ^._translationOrigin._ref] {
+    "translations": *[_type == "post" && translationId == ^.translationId && _id != ^._id && defined(translationId)] {
       language,
       slug
     }
