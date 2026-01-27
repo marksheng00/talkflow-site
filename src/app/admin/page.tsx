@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bug, Lightbulb, HardDrive, Loader2, Activity, TrendingUp, Monitor, User as UserIcon, Globe, Download } from "lucide-react";
+import { Bug, Lightbulb, HardDrive, Loader2, Activity, TrendingUp, Monitor, User as UserIcon, Globe, Download, RotateCw } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { cn } from "@/lib/utils";
 
@@ -35,30 +35,33 @@ export default function AdminDashboardPage() {
     const [activeUsers, setActiveUsers] = useState<PresenceUser[]>([]); // Detailed presence objects
     const [loading, setLoading] = useState(true);
     const [pulse, setPulse] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
 
-    // 1. Poll System Health (Real)
-    useEffect(() => {
-        const checkHealth = async () => {
-            try {
-                const res = await fetch('/api/health');
-                const data = await res.json();
-                setHealth(data);
-                if (data.analytics && data.analytics.downloads) {
-                    setDownloadStats(data.analytics.downloads);
-                }
-            } catch (e) {
-                console.error("Health check failed", e);
-                setHealth({
-                    database: { status: 'error', latency: 0 },
-                    cms: { status: 'error', latency: 0 },
-                    api: { status: 'error', latency: 0 }
-                });
+    // 1. System Health Check Function (Manual)
+    const refreshHealth = async () => {
+        setRefreshing(true);
+        try {
+            const res = await fetch('/api/health');
+            const data = await res.json();
+            setHealth(data);
+            if (data.analytics && data.analytics.downloads) {
+                setDownloadStats(data.analytics.downloads);
             }
-        };
+        } catch (e) {
+            console.error("Health check failed", e);
+            setHealth({
+                database: { status: 'error', latency: 0 },
+                cms: { status: 'error', latency: 0 },
+                api: { status: 'error', latency: 0 }
+            });
+        } finally {
+            setRefreshing(false);
+        }
+    };
 
-        checkHealth();
-        const interval = setInterval(checkHealth, 60000); // Poll every 60s
-        return () => clearInterval(interval);
+    // Initial Load
+    useEffect(() => {
+        refreshHealth();
     }, []);
 
     // 1. Fetch real DB metrics (Ideas/Bugs/Roadmap) - Analytics handled by Health API now
@@ -176,7 +179,16 @@ export default function AdminDashboardPage() {
                             <Activity className="w-3 h-3" /> System & Analytics
                         </h3>
                         <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-mono text-zinc-500 uppercase">Real-time</span>
+                            <button
+                                onClick={refreshHealth}
+                                disabled={refreshing}
+                                className="group flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50"
+                            >
+                                <span className="text-[9px] font-mono text-zinc-400 group-hover:text-zinc-200 uppercase transition-colors">
+                                    {refreshing ? 'Refreshing...' : 'Refresh'}
+                                </span>
+                                <RotateCw className={cn("w-3 h-3 text-zinc-500 group-hover:text-zinc-300 transition-colors", refreshing && "animate-spin")} />
+                            </button>
                         </div>
                     </div>
 
