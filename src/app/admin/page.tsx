@@ -43,6 +43,9 @@ export default function AdminDashboardPage() {
                 const res = await fetch('/api/health');
                 const data = await res.json();
                 setHealth(data);
+                if (data.analytics && data.analytics.downloads) {
+                    setDownloadStats(data.analytics.downloads);
+                }
             } catch (e) {
                 console.error("Health check failed", e);
                 setHealth({
@@ -58,14 +61,13 @@ export default function AdminDashboardPage() {
         return () => clearInterval(interval);
     }, []);
 
-    // 1. Fetch real DB metrics (Ideas/Bugs/Roadmap)
+    // 1. Fetch real DB metrics (Ideas/Bugs/Roadmap) - Analytics handled by Health API now
     useEffect(() => {
         const fetchRealStats = async () => {
-            const [ideasRes, bugsRes, roadmapRes, analyticsRes] = await Promise.all([
+            const [ideasRes, bugsRes, roadmapRes] = await Promise.all([
                 supabaseClient.from("community_ideas").select("id", { count: "exact" }).eq("status", "open"),
                 supabaseClient.from("bug_reports").select("id", { count: "exact" }).not("status", "in", '("resolved","wont_fix")'),
                 supabaseClient.from("roadmap_items").select("id", { count: "exact" }),
-                supabaseClient.from("analytics_events").select("metadata").eq("event_name", "download_click")
             ]);
 
             setStats({
@@ -73,25 +75,6 @@ export default function AdminDashboardPage() {
                 bugs: bugsRes.count || 0,
                 roadmap: roadmapRes.count || 0,
             });
-
-            // Process Analytics
-            const downloads = { ios: 0, android: 0, web: 0 };
-            if (analyticsRes.data) {
-                analyticsRes.data.forEach((event: any) => {
-                    let meta = event.metadata;
-                    // Handle case where metadata is a string (rare in supbase-js v2 but possible)
-                    if (typeof meta === 'string') {
-                        try { meta = JSON.parse(meta); } catch (e) { }
-                    }
-
-                    const target = meta?.target_platform || meta?.target; // Fallback just in case
-
-                    if (target === 'ios') downloads.ios++;
-                    else if (target === 'android') downloads.android++;
-                    else if (target === 'web') downloads.web++;
-                });
-            }
-            setDownloadStats(downloads);
 
             setLoading(false);
         };
