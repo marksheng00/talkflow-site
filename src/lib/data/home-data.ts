@@ -22,70 +22,7 @@ export const featureCards = [
     },
 ];
 
-export const benefits = [
-    "Native-like cadence and intonation feedback in real time.",
-    "Role-play that adapts to confidence level and accent.",
-    "Safe space to make mistakes with coaching from linguists and AI.",
-    "Roadmap driven by community voting and task acceleration.",
-];
 
-export const proofPoints = [
-    { label: "Learners worldwide", value: "180K+" },
-    { label: "Average weekly sessions", value: "4.7" },
-    { label: "Confidence lift after 14 days", value: "2.1x" },
-];
-
-export const highlights = [
-    {
-        title: "Feels like a human coach",
-        desc: "Turn-taking, interruptions, and clarifying questions make every session feel natural.",
-    },
-    {
-        title: "Feedback you can act on",
-        desc: "Pronunciation heatmaps, pacing hints, and suggested rewrites delivered instantly.",
-    },
-    {
-        title: "Transparent roadmap",
-        desc: "Vote on what's next, accelerate tasks you care about, or submit your own ideas.",
-    },
-];
-
-export const testimonials = [
-    {
-        quote: "talkflo feels like a calm coach in my ear. I stopped overthinking and finally sound confident in interviews.",
-        name: "Andrea M.",
-        title: "Product Manager relocating to Berlin",
-    },
-    {
-        quote: "The role-play interruptions are the magic. It forced me to recover quickly, just like real customers do.",
-        name: "Jason L.",
-        title: "Customer Success lead",
-    },
-    {
-        quote: "As an English teacher, I’m surprised by how precise the pacing and intonation feedback is.",
-        name: "Mei Chen",
-        title: "Language instructor",
-    },
-];
-
-export const faqs = [
-    {
-        q: "Do I need the mobile app?",
-        a: "No. You can start on web instantly. Mobile apps keep your sessions and feedback in sync across devices.",
-    },
-    {
-        q: "How does the feedback work?",
-        a: "We blend ASR, acoustic analysis, and linguist-built rubrics to give precise pacing, clarity, and filler-word feedback.",
-    },
-    {
-        q: "Is my audio stored?",
-        a: "Sessions are processed for feedback and stored only if you opt in. Supabase keys stay on the server side.",
-    },
-    {
-        q: "Can I influence the roadmap?",
-        a: "Yes. Submit ideas, vote, or accelerate tasks directly on the Roadmap page.",
-    },
-];
 
 export interface FeedbackCardData {
     type: string;

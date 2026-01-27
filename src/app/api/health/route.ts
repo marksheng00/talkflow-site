@@ -57,7 +57,7 @@ export async function GET() {
             analyticsCheck.data.forEach((event: any) => {
                 let meta = event.metadata;
                 if (typeof meta === 'string') {
-                    try { meta = JSON.parse(meta); } catch (e) { }
+                    try { meta = JSON.parse(meta); } catch { }
                 }
                 const target = meta?.target_platform || meta?.target;
                 const eventDate = new Date(event.created_at);
@@ -98,7 +98,7 @@ export async function GET() {
 
         healthData.cms.latency = Math.round(sanityEnd - sanityStart);
         healthData.cms.status = 'operational';
-    } catch (e) {
+    } catch {
         healthData.cms.status = 'error';
     }
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Link, usePathname } from "@/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+
 import {
   Navbar,
   NavBody,

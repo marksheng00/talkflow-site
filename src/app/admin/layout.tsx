@@ -24,19 +24,19 @@ const supabase = createClient(
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem("adminSidebarCollapsed") === "true";
+        }
+        return false;
+    });
+
     const pathname = usePathname();
     const router = useRouter();
 
     const isLoginPage = pathname?.includes("/admin/login"); // Verify user is whitelisted
 
     useEffect(() => {
-        // Restore sidebar state
-        const savedState = localStorage.getItem("adminSidebarCollapsed");
-        if (savedState) {
-            setIsCollapsed(savedState === "true");
-        }
-
         const checkAuth = async () => {
             // ... (keep auth logic same as before) ...
             const { data: { session } } = await supabase.auth.getSession();

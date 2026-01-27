@@ -16,7 +16,7 @@ export function TranslationManager(props: any) {
     const { value: translationId, onChange } = props
     const documentId = useFormValue(['_id']) as string
     const currentLanguage = useFormValue(['language']) as string
-    const docTitle = useFormValue(['title']) as string
+
 
     // Use Sanity client to query siblings
     const client = useClient({ apiVersion: '2021-10-21' })

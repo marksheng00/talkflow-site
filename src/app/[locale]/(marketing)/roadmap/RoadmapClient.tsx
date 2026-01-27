@@ -179,8 +179,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
         };
     }, [activeTab]);
 
-    // Fetch Data - Removed in favor of Server Action pre-fetching
-    // useEffect(() => { ... }, []);
+
 
     // Reset tracking states when modal opens/changes
     useEffect(() => {
@@ -217,7 +216,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     }, [bugs, selectedPlatform]);
 
     // Handlers
-    // Handlers
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setSubmitting(true);
@@ -376,6 +375,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
             setSelectedBug(optimisticUpdate(selectedBug));
         }
         setVotedIdeas(prev => new Map(prev).set(id, "up"));
+        setLastVotedId(id);
 
         try {
             const updatedBug = await voteBugReport(id);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bug, Lightbulb, HardDrive, Loader2, Activity, TrendingUp, Monitor, User as UserIcon, Globe, Download, RotateCw } from "lucide-react";
+import { Bug, Lightbulb, Loader2, Activity, Monitor, User as UserIcon, Globe, Download, RotateCw } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,6 @@ export default function AdminDashboardPage() {
     const [stats, setStats] = useState({
         ideas: 0,
         bugs: 0,
-        roadmap: 0,
     });
     const [downloadStats, setDownloadStats] = useState({
         ios: { day: 0, week: 0, month: 0 },
@@ -69,16 +68,14 @@ export default function AdminDashboardPage() {
     // 1. Fetch real DB metrics (Ideas/Bugs/Roadmap) - Analytics handled by Health API now
     useEffect(() => {
         const fetchRealStats = async () => {
-            const [ideasRes, bugsRes, roadmapRes] = await Promise.all([
+            const [ideasRes, bugsRes] = await Promise.all([
                 supabaseClient.from("community_ideas").select("id", { count: "exact" }).eq("status", "open"),
                 supabaseClient.from("bug_reports").select("id", { count: "exact" }).not("status", "in", '("resolved","wont_fix")'),
-                supabaseClient.from("roadmap_items").select("id", { count: "exact" }),
             ]);
 
             setStats({
                 ideas: ideasRes.count || 0,
                 bugs: bugsRes.count || 0,
-                roadmap: roadmapRes.count || 0,
             });
 
             setLoading(false);
@@ -121,16 +118,7 @@ export default function AdminDashboardPage() {
         };
     }, []);
 
-    const getDailyTraffic = () => {
-        const base = 1240;
-        const drift = Math.floor(Math.sin(pulse * 0.2) * 20);
-        return (base + drift).toLocaleString();
-    };
 
-    const getLoad = (base: number) => {
-        const drift = Math.sin(pulse + base) * 2;
-        return (base + drift).toFixed(1);
-    };
 
     return (
         <div className="p-6 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-700">
@@ -282,14 +270,7 @@ export default function AdminDashboardPage() {
     );
 }
 
-function StatusItem({ label, value, color = "text-zinc-300" }: { label: string, value: string, color?: string }) {
-    return (
-        <div className="flex flex-col items-end">
-            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-wider">{label}</span>
-            <span className={cn("text-xs font-mono font-bold", color)}>{value}</span>
-        </div>
-    );
-}
+
 
 function DenseMetric({ label, value, icon, color = "text-zinc-400", isLive = false }: { label: string, value: string, icon: React.ReactNode, color?: string, isLive?: boolean }) {
     return (
@@ -332,22 +313,7 @@ function InfrastructureRow({ name, region, status, load }: { name: string, regio
     );
 }
 
-function StatRow({ label, count, total, color }: { label: string, count: number, total: number, color: string }) {
-    return (
-        <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-                <div className={cn("w-2 h-2 rounded-full", color)}></div>
-                <span className="text-zinc-400">{label}</span>
-            </div>
-            <div className="flex items-center gap-3">
-                <span className="font-mono font-bold text-white">{count}</span>
-                <span className="font-mono text-zinc-600 text-[10px]">
-                    {total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"}%
-                </span>
-            </div>
-        </div>
-    );
-}
+
 
 function AnalyticsRow({ name, subtitle, stats }: { name: string, subtitle: string, stats: { day: number, week: number, month: number } }) {
     return (
