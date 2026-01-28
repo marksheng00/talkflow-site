@@ -401,7 +401,9 @@
             },
             "status": {
                 "planned": "已计划",
-                "open": "开放中"
+                "open": "开放中",
+                "under_review": "审核中",
+                "declined": "暂不考虑"
             },
             "vote": "赞成",
             "modal": {
@@ -409,7 +411,7 @@
             }
         },
         "BugsTab": {
-            "reportCard": {
+            "submitCard": {
                 "title": "反馈 Bug",
                 "subtitle": "发现哪里出了问题？帮我们消灭它。"
             },

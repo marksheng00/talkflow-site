@@ -161,8 +161,8 @@ function mapRowToIdea(row: Record<string, unknown>): CommunityIdea {
 }
 
 const ideaSubmissionSchema = z.object({
-  title: z.string().min(6, "Title is too short").max(140),
-  description: z.string().min(12, "Tell us more about the idea").max(800),
+  title: z.string().min(3, "Title is too short").max(140),
+  description: z.string().min(5, "Tell us more about the idea").max(800),
   category: z.string().max(80).optional(),
 });
 
@@ -283,10 +283,10 @@ function mapRowToBugReport(row: Record<string, unknown>): BugReport {
 }
 
 const bugSubmissionSchema = z.object({
-  title: z.string().min(6, "Title is too short").max(140),
-  stepsToReproduce: z.string().min(10, "Please describe how to reproduce").max(1000),
-  expectedResult: z.string().min(5, "Tell us what should happen").max(500),
-  actualResult: z.string().min(5, "Tell us what actually happens").max(500),
+  title: z.string().min(3, "Title is too short").max(140),
+  stepsToReproduce: z.string().min(5, "Please provide more details").max(1000),
+  expectedResult: z.string().max(500).optional(),
+  actualResult: z.string().max(500).optional(),
   severity: z.enum(["minor", "major", "blocker"]).optional(),
   platform: z.enum(["iOS", "Android", "Web"]),
 });

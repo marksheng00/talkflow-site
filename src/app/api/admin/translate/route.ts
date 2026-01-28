@@ -5,7 +5,8 @@ import * as tencentcloud from "tencentcloud-sdk-nodejs-tmt";
 const LANG_MAP: Record<string, string> = {
     'en': 'en',
     'zh': 'zh',      // Simplified
-    'zh-Hant': 'zh-TW', // Traditional
+    'zh-hant': 'zh-TW', // Traditional
+    'zh-tw': 'zh-TW',
     'es': 'es',
     'ko': 'ko',
     'ja': 'ja',
@@ -30,27 +31,36 @@ const client = new TmtClient(clientConfig);
 
 export async function POST(req: NextRequest) {
     try {
-        const { texts, target, source } = await req.json();
+        const body = await req.json();
+        const { texts, text, target, to, source, from } = body;
 
-        if (!texts || !Array.isArray(texts) || texts.length === 0) {
-            return NextResponse.json({ error: 'Missing or empty "texts" array' }, { status: 400 });
+        // Support both batch (texts/target/source) and single (text/to/from) formats
+        const isBatch = Array.isArray(texts);
+        const finalTexts = isBatch ? texts : [text];
+        const finalTarget = (target || to || '').toLowerCase();
+        const finalSource = (source || from || '').toLowerCase();
+
+        if (!finalTexts || !Array.isArray(finalTexts) || finalTexts.length === 0 || (finalTexts.length === 1 && !finalTexts[0])) {
+            return NextResponse.json({ error: 'Missing or empty "texts" or "text"' }, { status: 400 });
         }
 
-        if (!target) {
-            return NextResponse.json({ error: 'Missing "target" language' }, { status: 400 });
+        if (!finalTarget) {
+            return NextResponse.json({ error: 'Missing "target" or "to" language' }, { status: 400 });
         }
 
-        const tencentTarget = LANG_MAP[target] || target;
-        const tencentSource = source ? (LANG_MAP[source] || source) : 'auto';
+        const tencentTarget = LANG_MAP[finalTarget] || finalTarget;
+        const tencentSource = finalSource ? (LANG_MAP[finalSource] || finalSource) : 'auto';
 
         // Tencent limit: 5 requests per second usually. Batch limit depends.
         // We'll trust the input is reasonably sized (title, excerpt, body paragraphs).
 
         // We need to filter out empty strings to avoid errors, but keep indices aligned
-        const nonEmptyItems = texts.map((t, i) => ({ text: t, index: i })).filter(item => item.text && item.text.trim().length > 0);
+        const nonEmptyItems = finalTexts.map((t, i) => ({ text: t, index: i })).filter(item => item && item.text && item.text.trim().length > 0);
 
         if (nonEmptyItems.length === 0) {
-            return NextResponse.json({ translatedTexts: texts }); // All empty
+            return isBatch 
+                ? NextResponse.json({ translatedTexts: finalTexts }) 
+                : NextResponse.json({ translatedText: text });
         }
 
         const payload = {
@@ -67,12 +77,16 @@ export async function POST(req: NextRequest) {
         }
 
         // Reconstruct the array
-        const finalTranslations = [...texts];
+        const finalTranslations = [...finalTexts];
         nonEmptyItems.forEach((item, idx) => {
             finalTranslations[item.index] = result.TargetTextList![idx];
         });
 
-        return NextResponse.json({ translatedTexts: finalTranslations });
+        if (isBatch) {
+            return NextResponse.json({ translatedTexts: finalTranslations });
+        } else {
+            return NextResponse.json({ translatedText: finalTranslations[0] });
+        }
 
     } catch (error: any) {
         console.error('Translation API Error:', error);

@@ -401,7 +401,9 @@
             },
             "status": {
                 "planned": "已計劃",
-                "open": "開放"
+                "open": "開放中",
+                "under_review": "審核中",
+                "declined": "暫不考慮"
             },
             "vote": "贊成",
             "modal": {
@@ -409,7 +411,7 @@
             }
         },
         "BugsTab": {
-            "reportCard": {
+            "submitCard": {
                 "title": "報告 Bug",
                 "subtitle": "發現了破損之處？幫助我們消除它。"
             },

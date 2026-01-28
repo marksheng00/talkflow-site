@@ -401,7 +401,9 @@
             },
             "status": {
                 "planned": "Planificado",
-                "open": "Abierto"
+                "open": "Abierto",
+                "under_review": "En revisión",
+                "declined": "Rechazado"
             },
             "vote": "Votar",
             "modal": {
@@ -409,7 +411,7 @@
             }
         },
         "BugsTab": {
-            "reportCard": {
+            "submitCard": {
                 "title": "Reportar un Bug",
                 "subtitle": "¿Encontraste algo roto? Ayúdanos a aplastarlo."
             },

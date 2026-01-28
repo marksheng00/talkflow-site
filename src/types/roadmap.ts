@@ -1,5 +1,5 @@
 // Types for Roadmap (Official Dev Tasks)
-export type RoadmapStatus = "discovery" | "researching" | "building" | "shipping" | "released" | "done";
+export type RoadmapStatus = "researching" | "building" | "shipping" | "released" | "done";
 
 export type RoadmapItem = {
   id: string;
@@ -61,8 +61,8 @@ export type BugReport = {
 export type BugSubmission = {
   title: string;
   stepsToReproduce: string;
-  expectedResult: string;
-  actualResult: string;
+  expectedResult?: string;
+  actualResult?: string;
   severity?: BugSeverity;
   platform: BugPlatform;
 };

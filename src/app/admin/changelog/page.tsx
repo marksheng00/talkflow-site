@@ -43,7 +43,7 @@ const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 );
 
-const LOCALES = ["EN", "ZH", "KO", "JA", "ES", "ZH-Hant"];
+const LOCALES = ["en", "zh", "zh-hant", "es", "ja", "ko"];
 
 const TYPE_LABELS: Record<string, string> = {
     feature: "New Feature",
@@ -280,11 +280,31 @@ export default function AdminChangelogPage() {
                         {LOCALES.map(loc => (
                             <button
                                 key={loc} onClick={() => setActiveLocale(loc)}
-                                className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold transition-all", activeLocale === loc ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400")}
+                                className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold transition-all uppercase", activeLocale.toLowerCase() === loc.toLowerCase() ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400")}
                             >
                                 {loc}
                             </button>
                         ))}
+                        <div className="w-[1px] h-3 bg-white/10 mx-1 my-auto" />
+                        <button
+                            onClick={handleAutoTranslate}
+                            disabled={translating}
+                            title="Auto-translate all languages"
+                            className={cn(
+                                "px-2 py-1 rounded-md transition-all flex items-center",
+                                translating
+                                    ? "text-amber-500 bg-amber-500/5"
+                                    : translateFeedback?.type === 'success'
+                                        ? "text-emerald-400 bg-emerald-500/5"
+                                        : translateFeedback?.type === 'error'
+                                            ? "text-rose-400 bg-rose-500/5"
+                                            : "text-zinc-500 hover:text-indigo-400 hover:bg-white/5"
+                            )}
+                        >
+                            <span className="text-[10px] font-bold uppercase">
+                                {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}
+                            </span>
+                        </button>
                     </div>
 
                     <div className="w-px h-4 bg-white/10 mx-1" />
@@ -367,33 +387,12 @@ export default function AdminChangelogPage() {
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <button
-                                        onClick={handleAutoTranslate}
-                                        disabled={translating}
-                                        className={cn(
-                                            "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all border",
-                                            translating
-                                                ? "bg-amber-500/5 text-amber-500 border-amber-500/10 animate-pulse cursor-not-allowed"
-                                                : translateFeedback?.type === 'success'
-                                                    ? "bg-emerald-500/5 text-emerald-400 border-emerald-500/10"
-                                                    : translateFeedback?.type === 'error'
-                                                        ? "bg-rose-500/5 text-rose-400 border-rose-500/10"
-                                                        : "bg-white/5 text-zinc-400 border-white/5 hover:bg-white/10 hover:text-zinc-200"
-                                        )}
+                                        onClick={() => handleDeleteChangeItem(editingItem.id)}
+                                        className="p-1.5 text-zinc-700 hover:text-rose-500 transition-colors"
+                                        title="Delete Item"
                                     >
-                                        {translating ? (
-                                            <Loader2 className="w-3 h-3 animate-spin" />
-                                        ) : translateFeedback?.type === 'success' ? (
-                                            <Check className="w-3 h-3 text-emerald-400" />
-                                        ) : translateFeedback?.type === 'error' ? (
-                                            <AlertCircle className="w-3 h-3 text-rose-400" />
-                                        ) : (
-                                            <Sparkles className="w-3 h-3 text-zinc-400 group-hover:text-zinc-200" />
-                                        )}
-                                        <span>
-                                            {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}
-                                        </span>
+                                        <Trash2 className="w-3.5 h-3.5" />
                                     </button>
-                                    <button onClick={() => handleDeleteChangeItem(editingItem.id)} className="p-1.5 text-zinc-700 hover:text-rose-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                                 </div>
                             </div>
 

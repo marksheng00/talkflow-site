@@ -184,7 +184,7 @@ INSERT INTO public.community_ideas
 VALUES
   ('Dark mode for mobile app', 'I often study at night and the white background is too bright.', 'UIUX', 'open', 45, 0),
   ('German language support', 'Would love to practice German interview prep as well.', 'Content', 'open', 32, 0),
-  ('Mock exam timer', 'Add a visible countdown timer for Part 2 speaking.', 'under_review', 'AI Core', 89, 0),
+  ('Mock exam test', 'Add a visible countdown timer for Part 2 speaking.', 'under_review', 'AI Core', 90, 0),
   ('Export transcripts to PDF', 'I want to print my mistakes and show them to my tutor.', 'planned', 'Feature', 120, 0),
   ('Mobile app companion', 'A dedicated mobile app to manage tasks and view roadmap on the go. Push notifications for updates would be great.', 'under_review', 'UIUX', 85, 2),
   ('Legacy Import Tool', 'Allow importing data from older legacy systems. Not super critical but would help migration.', 'open', 'Feature', 12, 5);

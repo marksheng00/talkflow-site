@@ -14,7 +14,7 @@ const supabaseClient = createClient(
 );
 
 const STATUS_COLUMNS: RoadmapStatus[] = ["researching", "building", "shipping", "released"];
-const LOCALES = ["en", "zh", "ko", "ja", "es", "zh-Hant"];
+const LOCALES = ["en", "zh", "zh-Hant", "es", "ja", "ko"];
 
 export default function AdminRoadmapPage() {
     const [tasks, setTasks] = useState<RoadmapItem[]>([]);
@@ -331,7 +331,7 @@ export default function AdminRoadmapPage() {
                         <div className="h-4 w-px bg-white/[0.04] mx-2" />
 
                         {/* Language Switcher in Editor */}
-                        <div className="flex items-center gap-1 ml-1">
+                        <div className="flex items-center bg-zinc-900/50 p-0.5 rounded-lg border border-white/5 ml-1">
                             {LOCALES.map(loc => (
                                 <button
                                     key={loc}
@@ -339,44 +339,36 @@ export default function AdminRoadmapPage() {
                                     className={cn(
                                         "px-2 py-1 rounded text-[10px] font-bold uppercase transition-all",
                                         activeLocale === loc
-                                            ? "bg-zinc-800 text-zinc-100"
-                                            : "text-zinc-600 hover:text-zinc-400 hover:bg-white/5"
+                                            ? "bg-zinc-800 text-zinc-100 shadow-sm"
+                                            : "text-zinc-600 hover:text-zinc-400"
                                     )}
                                 >
                                     {loc}
                                 </button>
                             ))}
+                            <div className="w-[1px] h-3 bg-white/10 mx-1" />
+                            <button
+                                onClick={handleAutoTranslate}
+                                disabled={translating}
+                                title="Auto-translate all languages"
+                                className={cn(
+                                    "px-2 py-1 rounded-md transition-all flex items-center",
+                                    translating
+                                        ? "text-amber-500 bg-amber-500/5"
+                                        : translateFeedback?.type === 'success'
+                                            ? "text-emerald-400 bg-emerald-500/5"
+                                            : translateFeedback?.type === 'error'
+                                                ? "text-rose-400 bg-rose-500/5"
+                                                : "text-zinc-500 hover:text-indigo-400 hover:bg-white/5"
+                                )}
+                            >
+                                <span className="text-[10px] font-bold uppercase">
+                                    {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}
+                                </span>
+                            </button>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        {/* Translate Button in Editor */}
-                        <button
-                            onClick={handleAutoTranslate}
-                            disabled={translating}
-                            className={cn(
-                                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all border",
-                                translating
-                                    ? "bg-amber-500/5 text-amber-500 border-amber-500/10 animate-pulse cursor-not-allowed"
-                                    : translateFeedback?.type === 'success'
-                                        ? "bg-emerald-500/5 text-emerald-400 border-emerald-500/10"
-                                        : translateFeedback?.type === 'error'
-                                            ? "bg-rose-500/5 text-rose-400 border-rose-500/10"
-                                            : "bg-white/5 text-zinc-400 border-white/5 hover:bg-white/10 hover:text-zinc-200"
-                            )}
-                        >
-                            {translating ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                            ) : translateFeedback?.type === 'success' ? (
-                                <Check className="w-3.5 h-3.5" />
-                            ) : translateFeedback?.type === 'error' ? (
-                                <AlertCircle className="w-3.5 h-3.5" />
-                            ) : (
-                                <Sparkles className="w-3.5 h-3.5" />
-                            )}
-                            <span>{translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}</span>
-                        </button>
-
-
                         <button
                             onClick={() => handleSaveTask(editingTask)}
                             className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black rounded-md text-[12px] font-bold transition-colors shadow-sm"

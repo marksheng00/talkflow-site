@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from "react";
 
-export function AnimatedCounter({ from, to, skipAnimation = false }: { from: number; to: number; skipAnimation?: boolean }) {
+export function AnimatedCounter({ 
+    from, 
+    to, 
+    skipAnimation = false,
+    className = "text-2xl font-black"
+}: { 
+    from: number; 
+    to: number; 
+    skipAnimation?: boolean;
+    className?: string;
+}) {
     const [count, setCount] = useState(from);
     const [isComplete, setIsComplete] = useState(false);
 
@@ -44,7 +54,7 @@ export function AnimatedCounter({ from, to, skipAnimation = false }: { from: num
     const complete = skipAnimation ? true : isComplete;
 
     return (
-        <span className={`text-2xl font-black transition-colors ${skipAnimation ? '' : 'animate-in zoom-in-50 duration-300'} ${complete ? '' : 'text-white'}`}>
+        <span className={`${className} transition-colors ${skipAnimation ? '' : 'animate-in zoom-in-50 duration-300'} ${complete ? '' : 'text-white'}`}>
             {displayCount}
         </span>
     );

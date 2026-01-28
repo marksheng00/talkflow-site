@@ -401,7 +401,9 @@
             },
             "status": {
                 "planned": "계획됨",
-                "open": "열림"
+                "open": "진행 중",
+                "under_review": "검토 중",
+                "declined": "반려됨"
             },
             "vote": "추천",
             "modal": {
@@ -409,7 +411,7 @@
             }
         },
         "BugsTab": {
-            "reportCard": {
+            "submitCard": {
                 "title": "버그 리포트",
                 "subtitle": "문제가 발견되었나요? 해결을 도와주세요."
             },

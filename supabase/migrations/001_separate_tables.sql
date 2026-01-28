@@ -68,7 +68,7 @@ ALTER TABLE public.roadmap_items DROP CONSTRAINT IF EXISTS roadmap_items_status_
 
 -- Add new constraint for roadmap-only statuses
 ALTER TABLE public.roadmap_items ADD CONSTRAINT roadmap_items_status_check 
-CHECK (status IN ('discovery', 'researching', 'building', 'shipping', 'released', 'done'));
+CHECK (status IN ('researching', 'building', 'shipping', 'released', 'done'));
 
 -- 7. Add source_idea_id to roadmap_items for traceability (optional link)
 ALTER TABLE public.roadmap_items 
