@@ -2,7 +2,7 @@
 
 import { randomUUID } from "crypto";
 import { z } from "zod";
-import { getSupabaseClient } from "./supabase/server";
+import { getSupabaseClient } from "@/lib/supabase";
 import type { RoadmapItem, CommunityIdea, BugReport, IdeaSubmission, BugSubmission } from "@/types/roadmap";
 
 // ==========================================
@@ -93,6 +93,53 @@ export async function accelerateRoadmapItem(id: string): Promise<RoadmapItem> {
   }
 
   return mapRowToRoadmapItem(data);
+}
+
+// ==========================================
+// SHARED VOTING LOGIC
+// ==========================================
+
+/**
+ * Generic function to vote for an item
+ * Consolidates voting logic for ideas, bugs, and other votable items
+ */
+export async function voteForItem<T extends { upvotes: number; downvotes?: number }>(
+    table: 'community_ideas' | 'bug_reports',
+    id: string,
+    direction: 'up' | 'down',
+    mapRow: (row: Record<string, unknown>) => T
+): Promise<T> {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+        throw new Error("Database not available");
+    }
+
+    const { data: existing, error: fetchError } = await supabase
+        .from(table)
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (fetchError || !existing) {
+        throw new Error(fetchError?.message ?? "Item not found");
+    }
+
+    const updates = direction === "up"
+        ? { upvotes: (existing.upvotes ?? 0) + 1 }
+        : { downvotes: ((existing.downvotes ?? 0) + 1) };
+
+    const { data, error } = await supabase
+        .from(table)
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+    if (error || !data) {
+        throw new Error(error?.message ?? "Vote failed");
+    }
+
+    return mapRow(data);
 }
 
 // ==========================================

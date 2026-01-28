@@ -10,13 +10,10 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { createClient } from "@supabase/supabase-js";
+import { getPublicSupabaseClient } from "@/lib/supabase";
 
 // Initialize Supabase Client
-const supabaseClient = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseClient = getPublicSupabaseClient();
 
 type ChangeType = "feature" | "fix" | "improvement" | "perf";
 
@@ -139,6 +136,13 @@ export default function ChangelogClient() {
     useEffect(() => {
         async function fetchChangelog() {
             setLoading(true);
+
+            // Check if Supabase client is available
+            if (!supabaseClient) {
+                console.warn('Supabase client not available');
+                setLoading(false);
+                return;
+            }
 
             // 1. Fetch published releases
             const { data: releases, error: releasesError } = await supabaseClient

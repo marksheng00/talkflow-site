@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { getDeviceType } from "@/lib/device-detection";
 
 /**
  * Hook for tracking custom analytic events.
@@ -13,7 +14,7 @@ export function useAnalytics() {
             event_name: eventName,
             page_url: typeof window !== 'undefined' ? window.location.href : '',
             referrer: typeof document !== 'undefined' ? document.referrer : '',
-            device_type: getDeviceType(), // Simple helper
+            device_type: getDeviceType(),
             country: null, // Could be filled by Cloudflare/Vercel headers on backend if wanted, frontend usually knows timezone
             metadata
         };
@@ -33,16 +34,4 @@ export function useAnalytics() {
     }, []);
 
     return { trackEvent };
-}
-
-function getDeviceType() {
-    if (typeof navigator === 'undefined') return 'unknown';
-    const ua = navigator.userAgent;
-    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-        return "tablet";
-    }
-    else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-        return "mobile";
-    }
-    return "desktop";
 }

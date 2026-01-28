@@ -35,6 +35,7 @@ import {
     createIdea,
     createBugReport
 } from "@/lib/roadmap";
+import { getLocalizedContent } from "@/lib/i18n-helpers";
 
 // Form State
 type FormState = {
@@ -60,11 +61,9 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
     const params = useParams();
     const locale = (params?.locale as string) || 'en';
 
-    // Helper to get content based on locale
-    const getLocalizedContent = (input: Record<string, string> | null | undefined) => {
-        if (!input) return "";
-        // Priority: Current Locale -> English -> First Available -> Empty
-        return input[locale] || input['en'] || Object.values(input)[0] || "";
+    // Use centralized localization helper
+    const getLocalizedString = (input: Record<string, string> | null | undefined) => {
+        return getLocalizedContent(input, locale, 'en');
     };
 
     const [activeTab, setActiveTab] = useState<Tab>("roadmap");
@@ -519,7 +518,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                                 >
                                                     <div className="space-y-1">
                                                         <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
-                                                            {getLocalizedContent(task.title)}
+                                                            {getLocalizedString(task.title)}
                                                         </h4>
                                                         <div className="hidden md:flex items-center gap-2">
                                                             <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
@@ -823,7 +822,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                     <div className="relative h-[200px] md:h-[300px] overflow-hidden shrink-0">
                                         <Image
                                             src={selectedTask.coverImage}
-                                            alt={getLocalizedContent(selectedTask.title)}
+                                            alt={getLocalizedString(selectedTask.title)}
                                             fill
                                             className="object-cover"
                                         />
@@ -844,18 +843,18 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                                             )}
                                         </div>
                                         <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4 leading-tight">
-                                            {getLocalizedContent(selectedTask.title)}
+                                            {getLocalizedString(selectedTask.title)}
                                         </h1>
                                         <div className="h-1.5 w-12 bg-emerald-500 mb-8 rounded-full" />
                                         <p className="text-lg md:text-xl text-neutral-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
-                                            {getLocalizedContent(selectedTask.description)}
+                                            {getLocalizedString(selectedTask.description)}
                                         </p>
                                     </div>
 
                                     {selectedTask.detailedContent && (
                                         <div className="prose prose-invert prose-emerald max-w-none">
                                             <div className="text-base text-slate-300 leading-relaxed space-y-6 whitespace-pre-line font-medium">
-                                                <div dangerouslySetInnerHTML={{ __html: getLocalizedContent(selectedTask.detailedContent) }} />
+                                                <div dangerouslySetInnerHTML={{ __html: getLocalizedString(selectedTask.detailedContent) }} />
                                             </div>
                                         </div>
                                     )}

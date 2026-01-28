@@ -1,16 +1,9 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
+import { detectPlatform, type Platform } from "@/lib/device-detection";
 
-export type Platform = "ios" | "android" | "desktop";
-
-const detectPlatform = (): Platform | null => {
-    if (typeof navigator === "undefined") return null;
-    const ua = navigator.userAgent.toLowerCase();
-    if (/iphone|ipad|ipod/.test(ua)) return "ios";
-    if (/android/.test(ua)) return "android";
-    return "desktop";
-};
+export { type Platform };
 
 export function usePlatform(): Platform | null {
     const subscribe = useCallback(() => () => undefined, []);

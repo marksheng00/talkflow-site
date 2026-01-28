@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-// Use SERVICE_ROLE key directly for analytics insertion if needed, 
-// OR just use standard client since we enabled RLS for ANON inserts.
-// Using standard ENV vars here which likely have anon key is fine due to policy.
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { getSupabaseClient } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
     try {
@@ -16,6 +9,13 @@ export async function POST(req: NextRequest) {
         // Basic validation
         if (!event_name) {
             return NextResponse.json({ error: 'Missing event_name' }, { status: 400 });
+        }
+
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            console.warn('Supabase client not available, logging event instead');
+            console.log('Analytics event:', { event_name, page_url, referrer, device_type, country, metadata });
+            return NextResponse.json({ success: true, cached: true });
         }
 
         // Insert into Supabase
