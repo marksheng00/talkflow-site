@@ -11,13 +11,13 @@ import {
     Layers,
     ChevronRight,
     Search,
-    CheckCircle2,
-    Clock,
-    Sparkles,
     Loader2,
     Settings,
-    Check,
-    AlertCircle
+    Activity,
+    FileText,
+    ArrowRight,
+    Clock,
+    RotateCw
 } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,7 @@ type ChangeItem = {
     id: string;
     release_id: string;
     type: "feature" | "fix" | "improvement" | "perf";
-    description: Record<string, string>; // { "en": "...", "zh": "..." }
+    description: Record<string, string>;
     order: number;
 };
 
@@ -43,7 +43,7 @@ const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 );
 
-const LOCALES = ["en", "zh", "zh-hant", "es", "ja", "ko"];
+const LOCALES = ["en", "zh", "zh-Hant", "es", "ja", "ko"];
 
 const TYPE_LABELS: Record<string, string> = {
     feature: "New Feature",
@@ -67,21 +67,42 @@ export default function AdminChangelogPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [translating, setTranslating] = useState(false);
 
-    // UI state
+    // Editor State
     const [editingItem, setEditingItem] = useState<ChangeItem | null>(null);
-    const [activeLocale, setActiveLocale] = useState<string>("EN");
-    const [showSettings, setShowSettings] = useState(false);
+    const [activeLocale, setActiveLocale] = useState<string>("en");
     const [translateFeedback, setTranslateFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+    const [localVersion, setLocalVersion] = useState<string>("");
+
+    useEffect(() => {
+        if (selectedRelease) {
+            setLocalVersion(selectedRelease.version);
+        }
+    }, [selectedRelease?.id]);
+
+    const getLocalizedContent = (input: Record<string, string> | null | undefined) => {
+        if (!input) return "";
+        return input[activeLocale] || input['en'] || Object.values(input)[0] || "";
+    };
 
     // Fetch releases
     const fetchReleases = async () => {
         setLoading(true);
-        const { data } = await supabaseClient
-            .from("changelog_releases")
-            .select("*")
-            .order("publish_date", { ascending: false });
-        setReleases(data || []);
-        setLoading(false);
+        try {
+            const { data, error } = await supabaseClient
+                .from("changelog_releases")
+                .select("*")
+                .order("publish_date", { ascending: false });
+            
+            if (error) {
+                console.error("Error fetching releases:", error);
+            } else {
+                setReleases(data || []);
+            }
+        } catch (err) {
+            console.error("Unexpected error fetching releases:", err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Fetch changes
@@ -94,10 +115,10 @@ export default function AdminChangelogPage() {
 
         const items = data || [];
         setChanges(items);
-        if (items.length > 0 && !editingItem) {
+        if (items.length > 0) {
             setEditingItem(items[0]);
         }
-    }, [editingItem]);
+    }, []);
 
     useEffect(() => { fetchReleases(); }, []);
 
@@ -108,17 +129,57 @@ export default function AdminChangelogPage() {
             setEditingItem(null);
             setChanges([]);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedRelease?.id]);
+    }, [selectedRelease?.id, fetchChanges]);
+
+    const VERSION_REGEX = /^v\d+\.\d+\.\d+$/;
 
     const handleCreateRelease = async () => {
+        // 1. Get the latest version from existing releases
+        let nextVersion = "v1.0.0";
+        
+        if (releases.length > 0) {
+            // Find the highest version that matches our format
+            const validVersions = releases
+                .filter(r => VERSION_REGEX.test(r.version))
+                .sort((a, b) => {
+                    const partsA = a.version.substring(1).split('.').map(Number);
+                    const partsB = b.version.substring(1).split('.').map(Number);
+                    for (let i = 0; i < 3; i++) {
+                        if (partsA[i] !== partsB[i]) return partsB[i] - partsA[i];
+                    }
+                    return 0;
+                });
+
+            if (validVersions.length > 0) {
+                const latest = validVersions[0].version;
+                const parts = latest.substring(1).split('.').map(Number);
+                // Increment the patch version (the last digit)
+                parts[2] = parts[2] + 1;
+                nextVersion = `v${parts.join('.')}`;
+            }
+        }
+        
         const { data, error } = await supabaseClient
             .from("changelog_releases")
-            .insert({ version: "v1.0.0 (Draft)", status: "draft", publish_date: new Date().toISOString() })
+            .insert({ 
+                version: nextVersion, 
+                status: "draft", 
+                publish_date: new Date().toISOString() 
+            })
             .select()
             .single();
 
-        if (!error) {
+        if (error) {
+            console.error("Error creating release:", error);
+            if (error.code === '23505') {
+                alert(`Failed to create: Version "${nextVersion}" already exists.`);
+            } else {
+                alert(`Failed to create release: ${error.message}`);
+            }
+            return;
+        }
+
+        if (data) {
             setReleases([data, ...releases]);
             setSelectedRelease(data);
         }
@@ -126,14 +187,48 @@ export default function AdminChangelogPage() {
 
     const handleUpdateRelease = async (updates: Partial<Release>) => {
         if (!selectedRelease) return;
+        
+        const previousRelease = { ...selectedRelease };
         const updated = { ...selectedRelease, ...updates };
+
+        // 1. Update local editing state
         setSelectedRelease(updated);
+
+        // 2. If version is being updated, validate format before syncing to DB
+        if (updates.version !== undefined && !VERSION_REGEX.test(updates.version)) {
+            return; 
+        }
+
+        // 3. Sync to Database
+        const { error } = await supabaseClient.from("changelog_releases").update(updates).eq("id", selectedRelease.id);
+        
+        if (error) {
+            console.error("Error updating release:", {
+                message: error.message,
+                code: error.code,
+                details: error.details,
+                hint: error.hint
+            });
+            
+            if (error.code === '23505') {
+                alert(`Version "${updates.version}" already exists. Reverting change.`);
+            }
+            
+            // Revert local states
+            setSelectedRelease(previousRelease);
+            if (updates.version !== undefined) {
+                setLocalVersion(previousRelease.version);
+            }
+            return;
+        }
+
+        // 4. Update the main releases list only on successful DB sync
         setReleases(releases.map((r) => (r.id === selectedRelease.id ? updated : r)));
-        await supabaseClient.from("changelog_releases").update(updates).eq("id", selectedRelease.id);
     };
 
     const handleDeleteRelease = async (id: string) => {
-        if (!confirm(`Delete this release?`)) return;
+        const ok = window.confirm("Delete this release permanently?");
+        if (!ok) return;
         await supabaseClient.from("changelog_releases").delete().eq("id", id);
         setReleases(releases.filter((r) => r.id !== id));
         setSelectedRelease(null);
@@ -152,7 +247,13 @@ export default function AdminChangelogPage() {
             .select()
             .single();
 
-        if (!error) {
+        if (error) {
+            console.error("Error adding change item:", error);
+            alert(`Failed to add change item: ${error.message}`);
+            return;
+        }
+
+        if (data) {
             setChanges([...changes, data]);
             setEditingItem(data);
         }
@@ -168,7 +269,8 @@ export default function AdminChangelogPage() {
     };
 
     const handleDeleteChangeItem = async (itemId: string) => {
-        if (!confirm("Delete this item?")) return;
+        const ok = window.confirm("Delete this item?");
+        if (!ok) return;
         const remaining = changes.filter((c) => c.id !== itemId);
         setChanges(remaining);
         if (editingItem?.id === itemId) setEditingItem(remaining[0] || null);
@@ -211,45 +313,89 @@ export default function AdminChangelogPage() {
     const filteredReleases = releases.filter(r => r.version.toLowerCase().includes(searchQuery.toLowerCase()));
 
     if (loading) return (
-        <div className="h-full flex items-center justify-center text-zinc-500">
+        <div className="h-96 flex items-center justify-center text-zinc-500">
             <Loader2 className="w-5 h-5 animate-spin mr-2" /> Initializing Workspace...
         </div>
     );
 
     // ==========================================
-    // 1. DASHBOARD VIEW
+    // 1. DASHBOARD LIST VIEW
     if (!selectedRelease) {
         return (
-            <div className="h-full flex flex-col bg-[#09090b]">
-                <div className="h-16 border-b border-white/[0.06] flex items-center justify-between px-6 bg-[#09090b]/50 backdrop-blur-xl shrink-0">
+            <div className="p-6 space-y-4 max-w-[1600px] mx-auto animate-in fade-in duration-700 h-full flex flex-col">
+                {/* Command Header */}
+                <div className="flex items-center justify-between pb-2 shrink-0">
                     <div className="flex items-center gap-4">
-                        <h1 className="text-lg font-bold text-zinc-100 tracking-tight">Changelog</h1>
-                        <div className="h-4 w-[1px] bg-white/10" />
+                        <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
+                            Changelog
+                        </h1>
+                    </div>
+
+                    <div className="flex items-center gap-3">
                         <div className="relative">
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
                             <input
                                 type="text" placeholder="Search releases..."
                                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-md pl-8 pr-3 py-1.5 text-xs text-zinc-400 w-48 focus:border-indigo-500/30 outline-none"
+                                className="bg-white/5 border border-white/5 rounded-lg pl-8 pr-3 py-1.5 text-[10px] text-zinc-400 w-48 focus:border-white/10 outline-none transition-all font-bold uppercase"
                             />
                         </div>
+                        <div className="h-4 w-[1px] bg-white/10 mx-1" />
+                        <button onClick={handleCreateRelease} className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-xs transition-all flex items-center gap-1.5">
+                            <Plus className="w-3.5 h-3.5" /> New Release
+                        </button>
                     </div>
-                    <button onClick={handleCreateRelease} className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-md text-xs transition-all flex items-center gap-1.5">
-                        <Plus className="w-3.5 h-3.5" /> New Release
-                    </button>
                 </div>
-                <div className="flex-1 overflow-y-auto p-6 scrollbar-zinc">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {filteredReleases.map(r => (
-                            <div key={r.id} onClick={() => setSelectedRelease(r)} className="group bg-zinc-900/40 border border-white/[0.04] p-5 rounded-xl hover:bg-zinc-900 hover:border-zinc-700/50 transition-all cursor-pointer">
-                                <div className="flex justify-between mb-4">
-                                    <div className="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 transition-colors"><Layers className="w-4 h-4" /></div>
-                                    <StatusBadge status={r.status} />
-                                </div>
-                                <h3 className="text-sm font-bold text-zinc-200 group-hover:text-white mb-1">{r.version}</h3>
-                                <p className="text-[10px] text-zinc-500 font-mono uppercase">{new Date(r.publish_date).toLocaleDateString()}</p>
+
+                {/* Table View (Scalable) */}
+                <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col mb-4">
+                    <div className="overflow-y-auto custom-scrollbar flex-1">
+                        <table className="w-full text-left border-collapse border-spacing-0">
+                            <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+                                <tr className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                    <th className="px-6 py-4 font-bold">Version</th>
+                                    <th className="px-6 py-4 font-bold">Status</th>
+                                    <th className="px-6 py-4 font-bold text-right">Publish Date</th>
+                                    <th className="px-6 py-4 w-12"></th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/[0.02]">
+                                {filteredReleases.map(r => (
+                                    <tr
+                                        key={r.id}
+                                        onClick={() => setSelectedRelease(r)}
+                                        className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                    >
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 group-hover:border-emerald-500/20 transition-all shrink-0">
+                                                    <Layers className="w-4 h-4" />
+                                                </div>
+                                                <span className="text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">{r.version}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <StatusBadge status={r.status} />
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest">
+                                                {new Date(r.publish_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors" />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {filteredReleases.length === 0 && (
+                            <div className="py-20 flex flex-col items-center justify-center opacity-20 grayscale">
+                                <Activity className="w-8 h-8 mb-2 text-zinc-500" />
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">No releases found</p>
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             </div>
@@ -257,26 +403,50 @@ export default function AdminChangelogPage() {
     }
 
     // ==========================================
-    // 2. WORKSPACE BATTLESTATION
+    // 2. EDITOR VIEW
     return (
-        <div className="h-full flex flex-col bg-[#09090b] text-zinc-300">
-            {/* Top Toolbar */}
-            <div className="h-14 border-b border-white/[0.06] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
+        <div className="h-full flex flex-col bg-[#0b0b0d] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
+            {/* 1. Header Bar */}
+            <div className="h-16 flex items-center justify-between px-6 bg-[#0c0c0e] shrink-0">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => setSelectedRelease(null)} className="p-1.5 hover:bg-white/5 rounded-md text-zinc-500 hover:text-white transition-colors"><ArrowLeft className="w-4 h-4" /></button>
+                    <button onClick={() => setSelectedRelease(null)} className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"><ArrowLeft className="w-4.5 h-4.5" /></button>
                     <div className="flex flex-col">
-                        <span className="text-[13px] font-bold text-zinc-100 flex items-center gap-2">
-                            {selectedRelease.version}
-                            <span className={cn("text-[8px] px-1.5 py-0.5 rounded border uppercase", selectedRelease.status === 'published' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20')}>
-                                {selectedRelease.status}
-                            </span>
-                        </span>
+                        <input
+                            className="bg-transparent border-none p-0 text-sm font-bold text-zinc-100 outline-none placeholder:text-zinc-800 focus:ring-0 w-64"
+                            placeholder="Enter version..."
+                            value={localVersion}
+                            onChange={(e) => setLocalVersion(e.target.value)}
+                            onBlur={() => {
+                                if (localVersion !== selectedRelease.version) {
+                                    handleUpdateRelease({ version: localVersion });
+                                }
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    (e.target as HTMLInputElement).blur();
+                                }
+                            }}
+                        />
+                        <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter leading-none">ID: {selectedRelease.id.slice(0, 8)}</span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    {/* Locale Switcher (Flat) */}
-                    <div className="flex bg-zinc-900 p-0.5 rounded-lg border border-white/5 mr-2">
+                <div className="flex items-center gap-3">
+                    {/* Date Picker */}
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg border border-white/5">
+                        <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+                        <input
+                            type="date"
+                            className="bg-transparent text-[10px] font-bold text-zinc-400 outline-none [color-scheme:dark] cursor-pointer hover:text-zinc-200 transition-colors uppercase tracking-widest"
+                            value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
+                            onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
+                        />
+                    </div>
+
+                    <div className="h-4 w-px bg-white/10 mx-1" />
+
+                    {/* Locale Switcher */}
+                    <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/5">
                         {LOCALES.map(loc => (
                             <button
                                 key={loc} onClick={() => setActiveLocale(loc)}
@@ -285,193 +455,124 @@ export default function AdminChangelogPage() {
                                 {loc}
                             </button>
                         ))}
-                        <div className="w-[1px] h-3 bg-white/10 mx-1 my-auto" />
-                        <button
-                            onClick={handleAutoTranslate}
-                            disabled={translating}
-                            title="Auto-translate all languages"
-                            className={cn(
-                                "px-2 py-1 rounded-md transition-all flex items-center",
-                                translating
-                                    ? "text-amber-500 bg-amber-500/5"
-                                    : translateFeedback?.type === 'success'
-                                        ? "text-emerald-400 bg-emerald-500/5"
-                                        : translateFeedback?.type === 'error'
-                                            ? "text-rose-400 bg-rose-500/5"
-                                            : "text-zinc-500 hover:text-indigo-400 hover:bg-white/5"
-                            )}
-                        >
-                            <span className="text-[10px] font-bold uppercase">
-                                {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}
-                            </span>
-                        </button>
                     </div>
 
-                    <div className="w-px h-4 bg-white/10 mx-1" />
-
-                    <button onClick={() => setShowSettings(!showSettings)} className={cn("p-1.5 rounded-md transition-colors", showSettings ? "bg-indigo-500/20 text-indigo-400" : "text-zinc-500 hover:bg-white/5 hover:text-zinc-200")}>
-                        <Settings className="w-4 h-4" />
+                    <button
+                        onClick={handleAutoTranslate}
+                        disabled={translating}
+                        className={cn("px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all flex items-center bg-white/5 border border-white/5",
+                            translating ? "text-amber-500" : translateFeedback?.type === 'success' ? "text-emerald-400" : "text-zinc-400 hover:text-white hover:bg-white/10"
+                        )}
+                    >
+                        {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
                     </button>
 
                     <button
-                        onClick={() => handleUpdateRelease({ status: selectedRelease.status === 'published' ? 'draft' : 'published' })}
-                        className={cn("px-3 py-1.5 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-lg",
-                            selectedRelease.status === 'draft' ? "bg-emerald-500 text-black hover:bg-emerald-400 shadow-emerald-500/10" : "bg-zinc-800 text-zinc-300 border border-white/10")}
+                        onClick={() => {
+                            const newStatus = selectedRelease.status === 'published' ? 'draft' : 'published';
+                            const updates: Partial<Release> = { status: newStatus };
+                            if (newStatus === 'published' && selectedRelease.version.includes('(Draft)')) {
+                                updates.version = selectedRelease.version.replace('(Draft)', '').trim();
+                            }
+                            handleUpdateRelease(updates);
+                        }}
+                        className="px-5 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5 shadow-lg"
                     >
-                        {selectedRelease.status === 'draft' ? <Rocket className="w-3.5 h-3.5" /> : <Layers className="w-3.5 h-3.5" />}
-                        {selectedRelease.status === 'draft' ? 'Publish' : 'Unpublish'}
+                        {selectedRelease.status === 'draft' ? <Rocket className="w-3.5 h-3.5" /> : <Activity className="w-3.5 h-3.5" />}
+                        {selectedRelease.status === 'draft' ? 'Publish Release' : 'Unpublish'}
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 flex overflow-hidden">
-                {/* INNER SIDEBAR: Item List */}
-                <aside className="w-[300px] border-r border-white/5 bg-[#0b0b0d] flex flex-col shrink-0">
-                    <div className="p-4 border-b border-white/5 flex items-center justify-between bg-zinc-900/10">
-                        <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Update Items</span>
-                        <button onClick={handleAddChange} className="p-1 hover:bg-white/5 rounded text-emerald-400 transition-colors"><Plus className="w-4 h-4" /></button>
-                    </div>
-                    <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-zinc">
-                        {changes.map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => setEditingItem(item)}
-                                className={cn(
-                                    "w-full text-left p-3 rounded-lg border transition-all flex items-start gap-3 group relative",
-                                    editingItem?.id === item.id
-                                        ? "bg-zinc-900 border-zinc-700/50 shadow-sm"
-                                        : "bg-transparent border-transparent hover:bg-zinc-900/50 text-zinc-500 hover:text-zinc-300"
-                                )}
-                            >
-                                <div className={cn("mt-1 w-1.5 h-1.5 rounded-full shrink-0", TYPE_COLORS[item.type].split(' ')[1].replace('text-', 'bg-'))} />
-                                <div className="flex-1 min-w-0 pr-4">
-                                    <p className="text-[12px] font-bold truncate mb-0.5">{item.type.toUpperCase()}</p>
-                                    <div
-                                        className="text-[11px] opacity-60 line-clamp-1 pointer-events-none"
-                                        dangerouslySetInnerHTML={{ __html: item.description?.en || "No content..." }}
-                                    />
-                                </div>
-                                {editingItem?.id === item.id && <ChevronRight className="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-zinc-700" />}
-                            </button>
-                        ))}
-                        {changes.length === 0 && (
-                            <div className="py-12 px-4 text-center">
-                                <p className="text-[11px] text-zinc-700 italic">No items yet. Add one to begin.</p>
-                            </div>
-                        )}
-                    </div>
-                    <div className="p-4 border-t border-white/5">
-                        <button onClick={() => handleDeleteRelease(selectedRelease.id)} className="w-full py-2 rounded-md text-[10px] font-bold text-rose-500/50 hover:text-rose-500 hover:bg-rose-500/5 transition-all uppercase tracking-widest">Delete Release</button>
-                    </div>
-                </aside>
-
-                {/* MAIN CONTENT AREA */}
-                <main className="flex-1 flex flex-col bg-black/20 min-w-0 relative">
-                    {editingItem ? (
-                        <>
-                            {/* Editor Header / Item Actions */}
-                            <div className="h-12 border-b border-white/5 flex items-center justify-between px-6 bg-zinc-900/5 shrink-0">
-                                <div className="flex items-center gap-1">
-                                    {Object.entries(TYPE_LABELS).map(([val, label]) => (
-                                        <button
-                                            key={val} onClick={() => {
-                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                                handleUpdateChangeItem({ ...editingItem, type: val as any });
-                                            }}
-                                            className={cn("px-2.5 py-1 rounded text-[10px] font-bold transition-all border",
-                                                editingItem.type === val ? TYPE_COLORS[val] : "bg-transparent border-transparent text-zinc-600 hover:text-zinc-400 hover:bg-white/5")}
-                                        >
-                                            {label}
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="flex items-center gap-3">
+            {/* 3. Main Workspace */}
+            <div className="flex-1 overflow-y-auto scrollbar-zinc pb-20">
+                <div className="max-w-4xl mx-auto py-12 px-6 space-y-12">
+                    {/* Items List */}
+                    <div className="space-y-8">
+                        {changes.map((item, idx) => (
+                            <div key={item.id} className="group relative space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                {/* Item Header */}
+                                <div className="flex items-center justify-between group-hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="text-[10px] font-mono text-zinc-700 w-4 font-bold">{(idx + 1).toString().padStart(2, '0')}</div>
+                                        <div className="flex items-center bg-white/5 rounded-md p-1 border border-white/5 gap-1">
+                                            {Object.entries(TYPE_LABELS).map(([val, label]) => (
+                                                <button
+                                                    key={val}
+                                                    onClick={() => handleUpdateChangeItem({ ...item, type: val as any })}
+                                                    className={cn("px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-all",
+                                                        item.type === val
+                                                            ? "bg-zinc-800 text-zinc-100"
+                                                            : "text-zinc-600 hover:text-zinc-400"
+                                                    )}
+                                                >
+                                                    {label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                     <button
-                                        onClick={() => handleDeleteChangeItem(editingItem.id)}
-                                        className="p-1.5 text-zinc-700 hover:text-rose-500 transition-colors"
-                                        title="Delete Item"
+                                        onClick={() => handleDeleteChangeItem(item.id)}
+                                        className="p-1.5 text-zinc-700 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
                                     </button>
                                 </div>
-                            </div>
 
-                            {/* Tiptap Container */}
-                            <div className="flex-1 overflow-y-auto scrollbar-zinc bg-[#09090b]">
-                                <TiptapEditor
-                                    content={editingItem.description[activeLocale.toLowerCase()] || ""}
-                                    onChange={(val) => {
-                                        const updatedItem = { ...editingItem, description: { ...editingItem.description, [activeLocale.toLowerCase()]: val } };
-                                        setEditingItem(updatedItem);
-                                        handleUpdateChangeItem(updatedItem);
-                                    }}
-                                />
-                            </div>
-                        </>
-                    ) : (
-                        <div className="h-full flex flex-col items-center justify-center text-zinc-600 space-y-4">
-                            <Layers className="w-12 h-12 opacity-10" />
-                            <p className="text-xs">Select an item from the list or add a new one.</p>
-                        </div>
-                    )}
-
-                    {/* SETTINGS OVERLAY / DRAWER */}
-                    {showSettings && (
-                        <div className="absolute inset-y-0 right-0 w-80 bg-[#0d0d0f] border-l border-white/10 shadow-2xl z-20 animate-in slide-in-from-right duration-300 flex flex-col">
-                            <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Release Settings</span>
-                                <button onClick={() => setShowSettings(false)} className="text-zinc-500 hover:text-white transition-colors truncate">×</button>
-                            </div>
-                            <div className="p-6 space-y-8">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-zinc-600 uppercase">Version</label>
-                                    <input
-                                        className="w-full bg-zinc-900 border border-white/5 rounded-md px-3 py-2 text-sm text-zinc-200 outline-none focus:border-indigo-500/30"
-                                        value={selectedRelease.version} onChange={(e) => handleUpdateRelease({ version: e.target.value })}
+                                {/* Rich Text Editor */}
+                                <div className="border border-white/[0.06] rounded-xl bg-zinc-900/10 focus-within:border-white/10 transition-all overflow-hidden">
+                                    <TiptapEditor
+                                        content={item.description[activeLocale.toLowerCase()] || ""}
+                                        onChange={(val) => {
+                                            const updatedItem = { ...item, description: { ...item.description, [activeLocale.toLowerCase()]: val } };
+                                            handleUpdateChangeItem(updatedItem);
+                                        }}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-zinc-600 uppercase">Date</label>
-                                    <div className="relative">
-                                        <input
-                                            type="date"
-                                            className="w-full bg-zinc-900 border border-white/5 rounded-md px-3 py-2 text-sm text-zinc-200 outline-none focus:border-indigo-500/30 font-mono [color-scheme:dark]"
-                                            value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
-                                            onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
-                                        />
-                                        <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-zinc-700 pointer-events-none" />
-                                    </div>
-                                </div>
-                                <div className="pt-6 border-t border-white/5">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div className="p-3 bg-white/[0.02] rounded-lg border border-white/5">
-                                            <p className="text-[9px] text-zinc-700 uppercase font-bold">Total Items</p>
-                                            <p className="text-lg font-bold text-zinc-400">{changes.length}</p>
-                                        </div>
-                                        <div className="p-3 bg-white/[0.02] rounded-lg border border-white/5">
-                                            <p className="text-[9px] text-zinc-700 uppercase font-bold">ID Hash</p>
-                                            <p className="text-[9px] font-mono break-all opacity-30">{selectedRelease.id.slice(0, 8)}...</p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
+                        ))}
+
+                        {/* Empty State / Add First Item */}
+                        {changes.length === 0 && (
+                            <div className="h-64 border border-dashed border-white/5 rounded-2xl flex flex-col items-center justify-center text-zinc-600 opacity-40">
+                                <FileText className="w-8 h-8 mb-3" />
+                                <p className="text-xs font-bold uppercase tracking-widest">No changes documented</p>
+                            </div>
+                        )}
+
+                        {/* Add Item Trigger */}
+                        <div className="pt-4 flex justify-center">
+                            <button
+                                onClick={handleAddChange}
+                                className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full text-xs font-bold text-zinc-400 hover:text-zinc-100 transition-all flex items-center gap-2 group"
+                            >
+                                <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                Add New Change Block
+                            </button>
                         </div>
-                    )}
-                </main>
+                    </div>
+
+                    <div className="h-px bg-white/[0.04] w-full" />
+
+                    {/* Bottom Danger Zone */}
+                    <div className="flex justify-center">
+                        <button
+                            onClick={() => handleDeleteRelease(selectedRelease.id)}
+                            className="text-[10px] font-bold text-rose-500/30 hover:text-rose-500 transition-colors uppercase tracking-[0.2em]"
+                        >
+                            Delete Entire Release
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
 
 function StatusBadge({ status }: { status: "draft" | "published" }) {
-    if (status === 'published') return (
-        <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 className="w-2.5 h-2.5" /> Published
-        </span>
-    );
     return (
-        <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">
-            <Clock className="w-2.5 h-2.5" /> Draft
+        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+            {status}
         </span>
     );
 }
