@@ -240,6 +240,7 @@
         }
     },
     "Navigation": {
+        "home": "首页",
         "product": "产品",
         "pricing": "定价",
         "roadmap": "路线图",

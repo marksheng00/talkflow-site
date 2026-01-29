@@ -19,29 +19,18 @@ import {
   featureCards,
   feedbackCards,
 } from "@/lib/data/home-data";
+import FaqJsonLd from "@/components/seo/FaqJsonLd";
 
 export default function Home() {
   const t = useTranslations('HomePage');
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "talkflo",
-    "operatingSystem": "iOS, Android, Web",
-    "applicationCategory": "EducationApplication",
-    "description": t('subtitle'), // Use translated subtitle
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
-  };
-
   return (
     <AuroraBackground className="pb-24 text-white">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <FaqJsonLd
+        questions={[0, 1, 2, 3].map(idx => ({
+          q: t(`FAQ.items.${idx}.q`),
+          a: t(`FAQ.items.${idx}.a`)
+        }))}
       />
       {/* Hero Section */}
       <section className="section-block section-hero relative overflow-hidden w-full">
@@ -594,6 +583,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </AuroraBackground>
+    </AuroraBackground >
   );
 }

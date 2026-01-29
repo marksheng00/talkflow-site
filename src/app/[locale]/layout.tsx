@@ -6,6 +6,8 @@ import { locales, Locale } from "@/i18n/config";
 import "../globals.css";
 import FluentBackground from "@/components/ui/FluentBackground";
 import PresenceTracker from "@/components/realtime/PresenceTracker";
+import BrandJsonLd from "@/components/seo/BrandJsonLd";
+import SoftwareAppJsonLd from "@/components/seo/SoftwareAppJsonLd";
 
 const heading = Outfit({
   variable: "--font-heading",
@@ -32,6 +34,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     metadataBase: new URL("https://talkflo.hicall.ai"),
     alternates: {
       canonical: "/",
+      languages: {
+        'en': '/en',
+        'zh': '/zh',
+        'zh-Hant': '/zh-Hant',
+        'es': '/es',
+        'ja': '/ja',
+        'ko': '/ko',
+        'x-default': '/en'
+      }
     },
     openGraph: {
       title: t('ogTitle'),
@@ -87,6 +98,8 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${heading.variable} ${body.variable} antialiased overflow-x-hidden`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <BrandJsonLd />
+          <SoftwareAppJsonLd />
           <FluentBackground />
           <PresenceTracker />
           <div className="relative z-10 min-h-screen bg-transparent text-slate-100 selection:bg-emerald-500/30 overflow-x-hidden">

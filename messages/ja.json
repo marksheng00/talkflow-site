@@ -240,6 +240,7 @@
         }
     },
     "Navigation": {
+        "home": "ホーム",
         "product": "プロダクト",
         "pricing": "料金",
         "roadmap": "ロードマップ",

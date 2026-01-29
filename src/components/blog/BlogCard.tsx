@@ -59,9 +59,9 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                     ))}
                 </div>
 
-                <h3 className="font-heading text-xl font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
+                <h2 className="font-heading text-xl font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
                     {post.title}
-                </h3>
+                </h2>
 
                 <p className="text-sm text-neutral-400 line-clamp-3 leading-relaxed">
                     {post.excerpt}

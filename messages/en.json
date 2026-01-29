@@ -240,6 +240,7 @@
         }
     },
     "Navigation": {
+        "home": "Home",
         "product": "Product",
         "pricing": "Pricing",
         "roadmap": "Roadmap",

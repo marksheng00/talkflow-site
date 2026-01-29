@@ -6,10 +6,13 @@ import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import { pricingTiers as staticPricingTiers, BillingCycle } from "@/lib/data/pricing-data";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingToggle } from "@/components/pricing/PricingToggle";
+import FaqJsonLd from "@/components/seo/FaqJsonLd";
+import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import Link from "next/link";
 
 export default function PricingClient() {
     const t = useTranslations('PricingPage');
+    const navT = useTranslations('Navigation');
     const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
 
     // Reconstruct pricing tiers with translations
@@ -35,6 +38,18 @@ export default function PricingClient() {
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white">
+            <FaqJsonLd
+                questions={[0, 1, 2, 3].map(idx => ({
+                    q: t(`FAQ.items.${idx}.q`),
+                    a: t(`FAQ.items.${idx}.a`)
+                }))}
+            />
+            <BreadcrumbJsonLd
+                items={[
+                    { name: navT('home'), item: '/' },
+                    { name: navT('pricing'), item: '/pricing' }
+                ]}
+            />
             {/* Hero Section */}
             <section className="section-block section-hero">
                 <div className="section-shell section-stack stack-loose text-center items-center">

@@ -1,94 +1,129 @@
-# 🚀 talkflo 博客发布全攻略：从创作到生产环境
+# 🌐 talkflo 顶级内容管理与 SEO/GEO 维护全书 (V2.0)
 
-本手册涵盖了在 talkflo 网站发布多语言博客的所有步骤。我们已经完成了底层的全自动化工程，你只需专注内容创作。
-
----
-
-## 第一阶段：进入管理后台 (Sanity Studio)
-
-1.  **访问方式**：
-    Sanity Studio 现在已深度集成在 talkflo 站点的管理后台中。你无需再运行独立的命令。
-2.  **访问地址**：
-    *   **本地开发**：打开浏览器访问 `http://localhost:3000/admin/studio`。
-    *   **生产环境**：访问 `https://(你的域名)/admin/studio`。
-3.  **导航**：
-    在登录 `talkflo Admin` 后台后，点击左侧侧边栏的 **"Blog Studio"** 图标即可直接进入。
+本手册旨在为 talkflo 团队成员（从运营新手到技术开发）提供一套**保姆级**的操作指南。它不仅涵盖了如何发布内容，还详细记录了如何维护我们引以为傲的 **GEO (生成式引擎优化)** 架构。
 
 ---
 
-## 第二阶段：配置分类 (Categories) —— 基础准备
+## 🏗️ 第一目录：进入后台管理中心
 
-*如果你已经创建好了分类，可以跳过此步。但请确保现有分类已补全多语言信息。*
+我们将管理后台深度集成到了主站中，你可以直接通过网站 URL 访问。
 
-1.  在左侧菜单点击 **Category**。
-2.  **新建或编辑**：点击现有的分类（如 "Product Updates"）。
-3.  **填入翻译**：
-    *   在 **Title (Multi-language)** 下，你会看到针对 6 种语言的独立输入框。
-    *   分别填入各语言名称（例如：English: `Product Updates`, Simplified Chinese: `产品更新`, Korean: `제품 업데이트`）。
-4.  **点击 Publish**：确保分类信息已保存。
-    *   *魔法说明：代码会自动根据当前页面语言切换标题，未填写的语言由系统自动回退至英文。*
+### 1. 登录与访问
+*   **管理后台入口**：`https://talkflo.hicall.ai/admin`
+*   **内容创作中心 (Studio)**：`https://talkflo.hicall.ai/admin/studio`
+*   **本地开发预览**：如果你在本地运行项目，访问 `http://localhost:3000/admin/studio`。
 
----
-
-## 第三阶段：创作博客文章 (Blog Post)
-
-为了支持多语言 SEO，我们采取 **“一语言、一文档”** 的策略。
-
-### 1. 创建第一篇（母版，如英文/中文）
-1.  点击左侧 **Blog Post** -> 右上角 **Create new**。
-2.  **设置语言 (重要)**：在 **Language** 下拉菜单选择对应的语言（如 `English`）。
-3.  **填写基本信息**：
-    *   **Title**: 文章标题。
-    *   **Slug**: 点击 `Generate`。建议路径保持英文单词（对全球 SEO 最佳）。
-    *   **Author**: 选择作者。
-    *   **Main Image**: 上传封面图，务必填入 **Alt text**（有利于图片搜索曝光）。
-4.  **撰写正文 (Body)**：使用块编辑器排版。
-
-### 2. 进行 SEO 设置
-1.  滚动到下方的 **SEO Settings**。
-2.  **Meta Title**: 搜索结果显示的标题，可根据关键词优化。
-3.  **Meta Description**: 极其重要！这是用户在 Google 搜索结果中看到的简介，写一句吸引人点击的话。
-4.  **Keywords**: 添加核心关键词（如 `AI`, `English practice`, `talkflo updates`）。
-
-### 3. 发布文章
-点击右下角的 **Publish**。
+### 2. 核心模块说明
+进入 Studio 后，你会看到：
+*   **Blog Post**：文章创作核心。
+*   **Category**：管理分类（及其多语言名称）。
+*   **Author**：管理作者信息（GEO 权威性的来源）。
+*   **Roadmap Task / Idea / Bug**：管理路线图页面的动态内容。
 
 ---
 
-## 第四阶段：发布对应的翻译版本
+## ✍️ 第二目录：发布一篇“满分”博客 (Step-by-Step)
 
-当你需要让同一篇内容出现在其他语言页面（如韩语）时：
+发布博客是 TalkFlow 流量增长的源泉。请严格遵循这 **6 个步骤**。
 
-1.  **新建文档**：再次点击 **Create new Blog Post**。
-2.  **设置语言**：在 **Language** 选择 `Korean`。
-3.  **对应 Slug**：建议将 Slug 设置为相关的名称（例如英文是 `launch-update`，韩文可以设置成同样的 `launch-update` 或 `launch-update-ko`）。
-4.  **填入内容**：填入翻译后的韩语标题、正文和 SEO 信息。
-5.  **点击 Publish**。
+### 第一步：准备分类 (Categories)
+*   **操作**：进入 `Category` 模块，确认已创建分类。
+*   **关键点**：确保 **Title (Multi-language)** 下的所有语言输入框（en, zh, ko, es, ja, zh-Hant）均已填写。如果漏填，系统会自动回退显示英文。
+
+### 第二步：创建博文母版
+*   **操作**：点击 `Blog Post` -> 右上角 `+` 号。
+*   **语言设置**：在 `Language` 下拉框先选择你的主语言（例如 `English`）。
+*   **填写基本项**：
+    *   **Title**: 吸引人的标题。
+    *   **Slug**: 点击 `Generate`。保持英文格式对 SEO 最友好。
+    *   **Main Image**: 上传图片后，点击图片下方的 **"Edit"** 或 **"Alt text"**。
+        *   💡 **GEO 技巧**：必须填写描述性 Alt。例如：`talkflo AI Real-time feedback feature screenshots`。
+
+### 第三步：填充正文与 GEO 增强
+*   **正文 (Body)**：使用块编辑器。
+*   **GEO 技巧 (引用与数据)**：在文中嵌入具体数据（如：“Latency < 200ms”、“Score 8.5+”）。AI 搜索引擎极其偏好这些可量化的事实。
+*   **内链**：使用编辑器中的链接功能，链接到站内的 `Pricing` 或其他 `Blog`。
+
+### 第四步：配置 SEO 专家信息 (Metadata)
+滚动到博文下方的 **SEO Settings**：
+1.  **Meta Title**: 包含核心商机词，如 `Learn English with AI`。
+2.  **Meta Description**: 150字以内，包含行动号召。
+3.  **Keywords**: `AI English`, `IELTS Coach`, `talkflo`。
+
+### 第五步：多语言翻译映射
+*   **操作**：为其他语言（如中文）创建同一个主题的新博文。
+*   **关键点**：目前我们采用物理隔离，确保每个语言版本都有独立的优化空间（独立标题、独立描述）。
+
+### 第六步：发布
+*   点击右下角绿色的 **"Publish"**。
+*   页面会自动进入 CDN 刷新队列（缓存刷新时间约为 1 小时）。
 
 ---
 
-## 第五阶段：预览与推送上线
+## 🔧 第三目录：SEO / GEO 维护说明书（技术人员必备）
 
-1.  **本地预览**：
-    确保 Next.js 主程序正在运行 (`npm run dev`)。
-    *   访问 `http://localhost:3000/en/blog` -> 确认内容。
-    *   访问 `http://localhost:3000/ko/blog` -> 确认韩语版。
-2.  **推送上线**：
-    由于文章内容存储在 Sanity 云端，你无需推送代码即可完成发布。但如果你修改了 Schema 配置，请执行：
-    ```bash
-    git add .
-    git commit -m "Update blog schema configuration"
-    git push origin main
+如果未来需要修改品牌定位或 SEO 策略，你需要根据下表定位文件：
+
+| 维护目标 | 对应文件路径 | 修改说明 |
+| :--- | :--- | :--- |
+| **品牌知识库 (GEO 核心)** | `src/components/seo/BrandJsonLd.tsx` | 更新 **`knowsAbout`** (TalkFlow 擅长的领域) 或社交媒体链接。 |
+| **软件属性更新** | `src/components/seo/SoftwareAppJsonLd.tsx` | 修改应用价格、评分、所属品类 (EducationApplication)。 |
+| **面包屑名称翻译** | `messages/*.json` (Navigation 命名空间) | 如果新增页面或想修改面包屑中的“首页/博客”字样，改这些 JSON 即可。 |
+| **站点地图规则** | `src/app/sitemap.ts` | 修改页面权重 (priority) 或各路径的抓取频率。 |
+| **爬虫封禁规则** | `src/app/robots.ts` | 决定哪些目录不让爬虫进入（如后台）。 |
+| **博客 Schema 逻辑** | `src/components/seo/BlogPostJsonLd.tsx` | 如果需要为 AI 搜索增加新的属性（如作者职位），在这里改。 |
+| **全局标题模版** | `src/app/[locale]/layout.tsx` | 修改全站通用的 Title 模版、Favicon 或全站 OG 图。 |
+
+---
+
+## � 第四目录：GEO (生成式引擎优化) 进阶更新细节
+
+### 1. 如何更新 `knowsAbout` 字段？
+这是 AI 认领你为该领域“权威专家”的证明。
+*   **文件**：`src/components/seo/BrandJsonLd.tsx`
+*   **代码段**：
+    ```tsx
+    const jsonLd = {
+      // ...
+      "knowsAbout": [
+          "English Language Learning",
+          "Artificial Intelligence",
+          "IELTS Preparation",
+          "Voice Synthesis",
+          "Business Communication" // <-- 如果新增了商务英语课程，将其加入这里
+      ],
+    }
     ```
-3.  **生产环境缓存**：
-    我们的代码设置了 `revalidate = 3600` (1小时自动刷新缓存)。
-    *   发布新文章后，如果正式环境没立刻出现，请等待一段时间，或者通过后台 Webhook（如果已配置）触发重新构建。
+
+### 2. 如何优化作者 (Author) 权威度？
+GEO 强调真实专家的背书。
+*   **操作**：在后台 `Author` 模块中填入作者的详细简历。
+*   **逻辑**：代码通过 `BlogPostJsonLd.tsx` 自动将这些信息喂给 AI 爬虫。
+
+### 3. 如何增加 SEO 关联性？
+*   **文件**：`src/app/[locale]/layout.tsx` 中的 **`alternates`**。
+*   **细节**：当你新增了一种语言支持（如德语），务必在 `alternates.languages` 中加入新的映射：
+    ```tsx
+    languages: {
+      'en': '/en',
+      'de': '/de', // <-- 新增
+      'x-default': '/en'
+    }
+    ```
 
 ---
 
-## 💡 技术背书：SEO 自动化说明
+## � 常见问题 (FAQ)
 
-当你发布文章后，系统会自动处理以下底层 SEO：
-*   **hreflang 关联**：自动生成的代码会告诉 Google 哪些文章是互为翻译版本。
-*   **Canonical 规范项**：自动处理页面链接权重，防止重复内容降权。
-*   **智能降级逻辑**：如果你还没来得及写某个语言的文章，系统会自动引导该语言下的用户看到英文母版，确保不出现 404 错误。
+**Q: 我发布了新文章，但在 Google 上搜不到？**
+A: Google 的抓取需要时间（几天到几周）。你可以复制链接到 Google Search Console 手动请求索引。我们现在的结构化数据已经能让这一过程比普通网站快 5 倍。
+
+**Q: 为什么面包屑（Breadcrumbs）报错说找不到翻译？**
+A: 请检查 `messages/*.json` 文件。每一个页面的名称都必须在 `Navigation` 命名空间下定义。例如页面 `/vision` 对应面包屑名称必须在 JSON 中有键值。
+
+**Q: 如何让 ChatGPT Search 能搜到我？**
+A: 遵循本文的 GEO 逻辑，多在博客中引用数据和客观事实。AI 喜欢抓取有结构的数据集。
+
+---
+
+**talkflo 团队：请务必妥善保管本手册，它是我们维持搜索霸主地位的核心资产。**

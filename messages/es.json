@@ -240,6 +240,7 @@
         }
     },
     "Navigation": {
+        "home": "Inicio",
         "product": "Producto",
         "pricing": "Precios",
         "roadmap": "Hoja de ruta",

@@ -18,6 +18,8 @@ import type { BlogPost, BlogCategory } from '@/types/blog';
 import type { SanityImageSource } from '@sanity/image-url';
 import type { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
+import BlogPostJsonLd from '@/components/seo/BlogPostJsonLd';
+import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd';
 
 // Helper to generate IDs from text
 const slugify = (text: string) => {
@@ -134,9 +136,10 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
     if (!slug) notFound();
 
-    const [post, t] = await Promise.all([
+    const [post, t, navT] = await Promise.all([
         client.fetch<BlogPost | null>(postBySlugQuery, { slug, language: locale }),
-        getTranslations({ locale, namespace: 'BlogPage' })
+        getTranslations({ locale, namespace: 'BlogPage' }),
+        getTranslations({ locale, namespace: 'Navigation' })
     ]);
 
     if (!post) notFound();
@@ -153,143 +156,153 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     const readingTime = estimateReadingTime(post.body || []);
 
     return (
-        <AuroraBackground className="min-h-screen pb-24 text-white">
-            <section className="section-block section-hero">
-                <div className="section-shell">
+        <>
+            <BlogPostJsonLd post={post} locale={locale} />
+            <BreadcrumbJsonLd
+                items={[
+                    { name: navT('home'), item: '/' },
+                    { name: navT('blog'), item: '/blog' },
+                    { name: post.title, item: `/blog/${post.slug.current}` }
+                ]}
+            />
+            <AuroraBackground className="min-h-screen pb-24 text-white">
+                <section className="section-block section-hero">
+                    <div className="section-shell">
 
-                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-                        {/* Sidebar / TOC */}
-                        <aside className="hidden lg:block w-[220px] flex-shrink-0 sticky top-32">
-                            <div className="space-y-8 pt-3">
-                                <Link
-                                    href="/blog"
-                                    locale={locale}
-                                    className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
-                                >
-                                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                                    {t('Post.back')}
-                                </Link>
-                                <TableOfContents headings={headings} translation={t('Post.toc')} />
-                            </div>
-                        </aside>
+                        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+                            {/* Sidebar / TOC */}
+                            <aside className="hidden lg:block w-[220px] flex-shrink-0 sticky top-32">
+                                <div className="space-y-8 pt-3">
+                                    <Link
+                                        href="/blog"
+                                        locale={locale}
+                                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
+                                    >
+                                        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                        {t('Post.back')}
+                                    </Link>
+                                    <TableOfContents headings={headings} translation={t('Post.toc')} />
+                                </div>
+                            </aside>
 
-                        {/* Main Content */}
-                        <main className="flex-1 min-w-0">
-                            {/* Mobile Back Link */}
-                            <div className="lg:hidden mb-8">
-                                <Link
-                                    href="/blog"
-                                    locale={locale}
-                                    className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
-                                >
-                                    <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                                    {t('Post.back')}
-                                </Link>
-                            </div>
+                            {/* Main Content */}
+                            <main className="flex-1 min-w-0">
+                                {/* Mobile Back Link */}
+                                <div className="lg:hidden mb-8">
+                                    <Link
+                                        href="/blog"
+                                        locale={locale}
+                                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
+                                    >
+                                        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                        {t('Post.back')}
+                                    </Link>
+                                </div>
 
-                            <article>
-                                {/* Header */}
-                                <header className="text-left">
-                                    <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8">
-                                        {post.title}
-                                    </h1>
+                                <article>
+                                    {/* Header */}
+                                    <header className="text-left">
+                                        <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8">
+                                            {post.title}
+                                        </h1>
 
-                                    <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-8 border-y border-white/10 py-6 mb-12 w-full text-left">
-                                        {/* Author */}
-                                        <div className="flex items-center gap-4">
-                                            {post.author?.image && (
-                                                <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-white/10 shrink-0">
-                                                    <Image
-                                                        src={urlFor(post.author.image).width(96).height(96).url()}
-                                                        alt={post.author.name}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="flex flex-col">
-                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.author')}</span>
-                                                <span className="font-bold text-white text-lg whitespace-nowrap">{post.author?.name}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="hidden md:block w-px h-10 bg-white/10" />
-
-                                        {/* Date */}
-                                        <div className="flex flex-col">
-                                            <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.published')}</span>
-                                            <time className="text-white font-medium whitespace-nowrap">
-                                                {post.publishedAt
-                                                    ? format(
-                                                        new Date(post.publishedAt),
-                                                        (locale === 'zh' || locale === 'zh-Hant') ? 'yyyy年MM月dd日' : 'MMMM dd, yyyy',
-                                                        {
-                                                            locale: locale === 'zh' ? zhCN : (locale === 'zh-Hant' ? zhTW : undefined)
-                                                        }
-                                                    )
-                                                    : t('Post.unknown')}
-                                            </time>
-                                        </div>
-
-                                        <div className="hidden md:block w-px h-10 bg-white/10" />
-
-                                        {/* Read Time */}
-                                        <div className="flex flex-col">
-                                            <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.readTime')}</span>
-                                            <div className="flex items-center gap-2 text-white font-medium whitespace-nowrap">
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span>{t('Post.readSuffix', { minutes: readingTime })}</span>
-                                            </div>
-                                        </div>
-
-                                        {post.categories && post.categories.length > 0 && (
-                                            <>
-                                                <div className="hidden md:block w-px h-10 bg-white/10" />
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.category')}</span>
-                                                    <div className="flex items-center gap-2">
-                                                        {post.categories.map((cat: BlogCategory) => (
-                                                            <span
-                                                                key={cat.slug.current}
-                                                                className="text-white font-medium whitespace-nowrap"
-                                                            >
-                                                                {cat.title}
-                                                            </span>
-                                                        ))}
+                                        <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-8 border-y border-white/10 py-6 mb-12 w-full text-left">
+                                            {/* Author */}
+                                            <div className="flex items-center gap-4">
+                                                {post.author?.image && (
+                                                    <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-white/10 shrink-0">
+                                                        <Image
+                                                            src={urlFor(post.author.image).width(96).height(96).url()}
+                                                            alt={post.author.name}
+                                                            fill
+                                                            className="object-cover"
+                                                        />
                                                     </div>
+                                                )}
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.author')}</span>
+                                                    <span className="font-bold text-white text-lg whitespace-nowrap">{post.author?.name}</span>
                                                 </div>
-                                            </>
-                                        )}
-                                    </div>
-                                </header>
+                                            </div>
 
-                                {/* Main Image */}
-                                {post.mainImage && (
-                                    <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-16">
-                                        <Image
-                                            src={urlFor(post.mainImage).width(1200).height(630).url()}
-                                            alt={post.mainImage.alt || post.title}
-                                            fill
-                                            className="object-cover"
-                                            priority
+                                            <div className="hidden md:block w-px h-10 bg-white/10" />
+
+                                            {/* Date */}
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.published')}</span>
+                                                <time className="text-white font-medium whitespace-nowrap">
+                                                    {post.publishedAt
+                                                        ? format(
+                                                            new Date(post.publishedAt),
+                                                            (locale === 'zh' || locale === 'zh-Hant') ? 'yyyy年MM月dd日' : 'MMMM dd, yyyy',
+                                                            {
+                                                                locale: locale === 'zh' ? zhCN : (locale === 'zh-Hant' ? zhTW : undefined)
+                                                            }
+                                                        )
+                                                        : t('Post.unknown')}
+                                                </time>
+                                            </div>
+
+                                            <div className="hidden md:block w-px h-10 bg-white/10" />
+
+                                            {/* Read Time */}
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.readTime')}</span>
+                                                <div className="flex items-center gap-2 text-white font-medium whitespace-nowrap">
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span>{t('Post.readSuffix', { minutes: readingTime })}</span>
+                                                </div>
+                                            </div>
+
+                                            {post.categories && post.categories.length > 0 && (
+                                                <>
+                                                    <div className="hidden md:block w-px h-10 bg-white/10" />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.category')}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            {post.categories.map((cat: BlogCategory) => (
+                                                                <span
+                                                                    key={cat.slug.current}
+                                                                    className="text-white font-medium whitespace-nowrap"
+                                                                >
+                                                                    {cat.title}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </header>
+
+                                    {/* Main Image */}
+                                    {post.mainImage && (
+                                        <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-16">
+                                            <Image
+                                                src={urlFor(post.mainImage).width(1200).height(630).url()}
+                                                alt={post.mainImage.alt || post.title}
+                                                fill
+                                                className="object-cover"
+                                                priority
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* Body */}
+                                    <div className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-a:text-emerald-400 prose-p:text-slate-300 prose-li:text-slate-300">
+                                        <PortableText
+                                            value={post.body}
+                                            components={ptComponents}
                                         />
                                     </div>
-                                )}
-
-                                {/* Body */}
-                                <div className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-a:text-emerald-400 prose-p:text-slate-300 prose-li:text-slate-300">
-                                    <PortableText
-                                        value={post.body}
-                                        components={ptComponents}
-                                    />
-                                </div>
-                            </article>
-                        </main>
+                                </article>
+                            </main>
+                        </div>
                     </div>
-                </div>
-            </section>
-        </AuroraBackground>
+                </section>
+            </AuroraBackground>
+        </>
     );
 }

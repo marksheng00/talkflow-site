@@ -296,7 +296,7 @@ export const NavbarLogo = () => {
         >
             <Image
                 src="/talkflo_logo.png"
-                alt="talkflo Logo"
+                alt="talkflo AI Speaking Coach - Real-time English practice logo"
                 width={48}
                 height={48}
                 className="h-12 w-12 rounded-lg object-contain"

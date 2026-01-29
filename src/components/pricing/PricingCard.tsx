@@ -49,9 +49,9 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
             <div className="relative z-10">
                 {/* Header */}
                 <div className="mb-6 space-y-2">
-                    <h3 className={cn("font-heading text-2xl font-bold text-white", isUltra && "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400")}>
+                    <h2 className={cn("font-heading text-2xl font-bold text-white", isUltra && "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400")}>
                         {tier.name}
-                    </h3>
+                    </h2>
                     <p className="text-sm text-neutral-400">{tier.description}</p>
                 </div>
 

@@ -240,6 +240,7 @@
         }
     },
     "Navigation": {
+        "home": "首頁",
         "product": "產品",
         "pricing": "定價",
         "roadmap": "路線圖",

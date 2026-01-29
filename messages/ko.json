@@ -240,6 +240,7 @@
         }
     },
     "Navigation": {
+        "home": "홈",
         "product": "제품",
         "pricing": "가격",
         "roadmap": "로드맵",

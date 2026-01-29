@@ -8,6 +8,7 @@ import {
     BugReport,
 } from "@/types/roadmap";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
+import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 
 // Hooks
 import { useRoadmapState } from "./hooks/use-roadmap-state";
@@ -33,6 +34,7 @@ interface RoadmapClientProps {
 
 export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs }: RoadmapClientProps) {
     const t = useTranslations('RoadmapPage');
+    const navT = useTranslations('Navigation');
     const params = useParams();
     const locale = (params?.locale as string) || 'en';
 
@@ -123,115 +125,123 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
 
 
     return (
-        <AuroraBackground className="min-h-screen pb-24 text-white overflow-x-hidden">
-            {/* Hero + Content Section */}
-            <section className="section-block section-hero">
-                <div className="section-shell section-stack stack-tight items-center text-center">
-                    <div className="section-heading max-w-none">
-                        <h1 className="max-w-none font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
-                            {t('Hero.titlePrefix')}{" "}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
-                                {t('Hero.titleSuffix')}
-                            </span>
-                        </h1>
-                        <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-5xl mx-auto">
-                            {t('Hero.subtitle')}
-                        </p>
+        <>
+            <BreadcrumbJsonLd
+                items={[
+                    { name: navT('home'), item: '/' },
+                    { name: navT('roadmap'), item: '/roadmap' }
+                ]}
+            />
+            <AuroraBackground className="min-h-screen pb-24 text-white overflow-x-hidden">
+                {/* Hero + Content Section */}
+                <section className="section-block section-hero">
+                    <div className="section-shell section-stack stack-tight items-center text-center">
+                        <div className="section-heading max-w-none">
+                            <h1 className="max-w-none font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
+                                {t('Hero.titlePrefix')}{" "}
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
+                                    {t('Hero.titleSuffix')}
+                                </span>
+                            </h1>
+                            <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-5xl mx-auto">
+                                {t('Hero.subtitle')}
+                            </p>
+                        </div>
+
+                        <div className="flex w-full flex-col stack-tight md:flex-row md:items-center md:justify-between">
+                            <TabSwitcher activeTab={activeTab} setActiveTab={setActiveTab} />
+                            <FilterBar
+                                activeTab={activeTab}
+                                selectedCategory={selectedCategory}
+                                setSelectedCategory={setSelectedCategory}
+                                selectedPlatform={selectedPlatform}
+                                setSelectedPlatform={setSelectedPlatform}
+                            />
+                        </div>
                     </div>
 
-                    <div className="flex w-full flex-col stack-tight md:flex-row md:items-center md:justify-between">
-                        <TabSwitcher activeTab={activeTab} setActiveTab={setActiveTab} />
-                        <FilterBar
-                            activeTab={activeTab}
-                            selectedCategory={selectedCategory}
-                            setSelectedCategory={setSelectedCategory}
-                            selectedPlatform={selectedPlatform}
-                            setSelectedPlatform={setSelectedPlatform}
+                    {/* --- CONTENT TABS --- */}
+                    {activeTab === "roadmap" && (
+                        <RoadmapTab
+                            filteredTasks={filteredTasks}
+                            setSelectedTask={setSelectedTask}
+                            mounted={mounted}
+                            locale={locale}
                         />
-                    </div>
-                </div>
+                    )}
 
-                {/* --- CONTENT TABS --- */}
-                {activeTab === "roadmap" && (
-                    <RoadmapTab
-                        filteredTasks={filteredTasks}
-                        setSelectedTask={setSelectedTask}
-                        mounted={mounted}
-                        locale={locale}
-                    />
-                )}
+                    {activeTab === "ideas" && (
+                        <IdeasTab
+                            filteredIdeals={filteredIdeals}
+                            setSelectedIdea={setSelectedIdea}
+                            votedIdeas={votedIdeas}
+                            handleVote={handleVote}
+                            setIsSubmitModalOpen={setIsSubmitModalOpen}
+                            lastVotedId={lastVotedId}
+                        />
+                    )}
 
-                {activeTab === "ideas" && (
-                    <IdeasTab
-                        filteredIdeals={filteredIdeals}
-                        setSelectedIdea={setSelectedIdea}
-                        votedIdeas={votedIdeas}
-                        handleVote={handleVote}
-                        setIsSubmitModalOpen={setIsSubmitModalOpen}
-                        lastVotedId={lastVotedId}
-                    />
-                )}
+                    {activeTab === "bugs" && (
+                        <BugsTab
+                            filteredBugs={filteredBugs}
+                            setSelectedBug={setSelectedBug}
+                            votedIdeas={votedIdeas}
+                            handleBugVote={handleBugVote}
+                            setIsBugModalOpen={setIsBugModalOpen}
+                            lastVotedId={lastVotedId}
+                        />
+                    )}
+                </section>
 
-                {activeTab === "bugs" && (
-                    <BugsTab
-                        filteredBugs={filteredBugs}
-                        setSelectedBug={setSelectedBug}
-                        votedIdeas={votedIdeas}
-                        handleBugVote={handleBugVote}
-                        setIsBugModalOpen={setIsBugModalOpen}
-                        lastVotedId={lastVotedId}
-                    />
-                )}
-            </section>
+                {/* MODALS */}
+                <TaskDetailModal
+                    mounted={mounted}
+                    selectedTask={selectedTask}
+                    setSelectedTask={setSelectedTask}
+                    handleBoost={handleBoost}
+                    boostedTasks={boostedTasks}
+                    justBoosted={justBoosted}
+                    locale={locale}
+                />
 
-            {/* MODALS */}
-            <TaskDetailModal
-                mounted={mounted}
-                selectedTask={selectedTask}
-                setSelectedTask={setSelectedTask}
-                handleBoost={handleBoost}
-                boostedTasks={boostedTasks}
-                justBoosted={justBoosted}
-                locale={locale}
-            />
+                <IdeaDetailModal
+                    mounted={mounted}
+                    selectedIdea={selectedIdea}
+                    setSelectedIdea={setSelectedIdea}
+                    handleVote={handleVote}
+                    votedIdeas={votedIdeas}
+                    lastVotedId={lastVotedId}
+                />
 
-            <IdeaDetailModal
-                mounted={mounted}
-                selectedIdea={selectedIdea}
-                setSelectedIdea={setSelectedIdea}
-                handleVote={handleVote}
-                votedIdeas={votedIdeas}
-                lastVotedId={lastVotedId}
-            />
+                <BugDetailModal
+                    mounted={mounted}
+                    selectedBug={selectedBug}
+                    setSelectedBug={setSelectedBug}
+                    handleBugVote={handleBugVote}
+                    votedIdeas={votedIdeas}
+                    lastVotedId={lastVotedId}
+                />
 
-            <BugDetailModal
-                mounted={mounted}
-                selectedBug={selectedBug}
-                setSelectedBug={setSelectedBug}
-                handleBugVote={handleBugVote}
-                votedIdeas={votedIdeas}
-                lastVotedId={lastVotedId}
-            />
+                <SubmitIdeaModal
+                    mounted={mounted}
+                    isOpen={isSubmitModalOpen}
+                    onClose={() => setIsSubmitModalOpen(false)}
+                    form={form}
+                    setForm={setForm}
+                    submitting={submitting}
+                    onSubmit={handleSubmit}
+                />
 
-            <SubmitIdeaModal
-                mounted={mounted}
-                isOpen={isSubmitModalOpen}
-                onClose={() => setIsSubmitModalOpen(false)}
-                form={form}
-                setForm={setForm}
-                submitting={submitting}
-                onSubmit={handleSubmit}
-            />
-
-            <SubmitBugModal
-                mounted={mounted}
-                isOpen={isBugModalOpen}
-                onClose={() => setIsBugModalOpen(false)}
-                bugForm={bugForm}
-                setBugForm={setBugForm}
-                bugSubmitting={bugSubmitting}
-                onBugSubmit={handleBugSubmit}
-            />
-        </AuroraBackground>
+                <SubmitBugModal
+                    mounted={mounted}
+                    isOpen={isBugModalOpen}
+                    onClose={() => setIsBugModalOpen(false)}
+                    bugForm={bugForm}
+                    setBugForm={setBugForm}
+                    bugSubmitting={bugSubmitting}
+                    onBugSubmit={handleBugSubmit}
+                />
+            </AuroraBackground>
+        </>
     );
 }
