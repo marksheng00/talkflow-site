@@ -125,7 +125,15 @@ export default defineType({
             title: 'Categories',
             type: 'array',
             group: 'settings',
-            of: [{ type: 'reference', to: { type: 'category' } }],
+            of: [
+                {
+                    type: 'reference',
+                    to: { type: 'category' },
+                    options: {
+                        disableNew: true,
+                    }
+                }
+            ],
         }),
         defineField({
             name: 'publishedAt',
