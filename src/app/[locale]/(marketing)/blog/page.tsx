@@ -91,7 +91,7 @@ export default async function BlogPage({
                                     href="/blog"
                                     locale={locale}
                                     className={`px-3 py-2 rounded-xl text-sm transition-all ${!categorySlug
-                                        ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
+                                        ? 'bg-teal-500/20 text-teal-400 font-bold'
                                         : 'text-neutral-400 hover:bg-white/5 hover:text-white'
                                         }`}
                                 >
@@ -102,7 +102,8 @@ export default async function BlogPage({
                                     .map((parent) => {
                                         const children = categories.filter(c => c.parent === parent.slug.current);
                                         const isChildActive = children.some(c => c.slug.current === categorySlug);
-                                        const isParentActive = categorySlug === parent.slug.current || isChildActive;
+                                        // Only highlight parent if explicitly selected, NOT if a child is selected
+                                        const isParentActive = categorySlug === parent.slug.current;
 
                                         return (
                                             <div key={parent.slug.current} className="group relative">
@@ -110,7 +111,7 @@ export default async function BlogPage({
                                                     href={`/blog?category=${parent.slug.current}`}
                                                     locale={locale}
                                                     className={`px-3 py-2 rounded-xl text-sm transition-all flex items-center justify-between ${isParentActive
-                                                        ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
+                                                        ? 'bg-teal-500/20 text-teal-400 font-bold'
                                                         : 'text-neutral-400 hover:bg-white/5 hover:text-white'
                                                         }`}
                                                 >
@@ -137,9 +138,9 @@ export default async function BlogPage({
                                                                 key={child.slug.current}
                                                                 href={`/blog?category=${child.slug.current}`}
                                                                 locale={locale}
-                                                                className={`px-3 py-1.5 rounded-lg text-xs transition-all ${categorySlug === child.slug.current
-                                                                    ? 'text-teal-400 font-bold bg-teal-500/10'
-                                                                    : 'text-neutral-500 hover:text-white'
+                                                                className={`px-3 py-1.5 rounded-lg text-xs transition-all block ${categorySlug === child.slug.current
+                                                                    ? 'text-teal-400 font-bold bg-teal-500/10 hover:bg-teal-500/20'
+                                                                    : 'text-neutral-500 hover:text-white hover:bg-white/5'
                                                                     }`}
                                                             >
                                                                 {child.title}
@@ -237,6 +238,8 @@ export default async function BlogPage({
                     </div>
                 </div>
             </section>
+
+
         </AuroraBackground>
     )
 }
