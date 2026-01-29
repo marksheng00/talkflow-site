@@ -747,11 +747,11 @@ details summary::-webkit-details-marker {
 }
 
 /* Reset global focus styles for Sanity Studio to prevent double borders */
-[id="__next"] button:focus-visible,
-[id="__next"] a:focus-visible,
-div[class*="sanity"] button:focus-visible,
-div[class*="sanity"] a:focus-visible {
+#sanity-studio-wrapper button:focus-visible,
+#sanity-studio-wrapper a:focus-visible,
+#sanity-studio-wrapper [tabindex]:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
   border-radius: 0 !important;
+  box-shadow: none !important;
 }
