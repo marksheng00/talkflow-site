@@ -117,7 +117,8 @@ GEO 强调真实专家的背书。
 
 ### 3. 如何增加 SEO 关联性？
 *   **文件**：`src/app/[locale]/layout.tsx` 中的 **`alternates`**。
-*   **细节**：当你新增了一种语言支持（如德语），务必在 `alternates.languages` 中加入新的映射：
+*   **细节**：当你新增了一种语言支持（如德语），务必在 `alternates.languages` 中加入新的映射。
+*   **全局兜底图**：存放于 `public/og-image.png`。如果文章未上传封面，系统将自动调用此文件作为搜索结果缩略图。
     ```tsx
     languages: {
       'en': '/en',
