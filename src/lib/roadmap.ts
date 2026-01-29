@@ -37,19 +37,35 @@ export async function listRoadmapItems(): Promise<RoadmapItem[]> {
   const supabase = getSupabaseClient();
   if (!supabase) return [];
 
-  const { data, error } = await supabase
-    .from("roadmap_items")
-    .select("*");
-  // .order("created_at", { ascending: false });
+  // Parallelize queries for performance
+  const [activeRequest, releasedRequest] = await Promise.all([
+    // 1. Fetch ALL active tasks (not released)
+    supabase
+      .from("roadmap_items")
+      .select("*")
+      .neq("status", "released"),
 
-  if (error || !data) {
+    // 2. Fetch only the most recent 20 released tasks
+    supabase
+      .from("roadmap_items")
+      .select("*")
+      .eq("status", "released")
+      .order("target_date", { ascending: false })
+      .limit(20)
+  ]);
+
+  if (activeRequest.error || releasedRequest.error) {
     console.error("DEBUG: Supabase Roadmap Fetch Failed");
-    console.error("Error Details:", JSON.stringify(error, null, 2));
-    console.error("URL:", process.env.SUPABASE_URL || "MISSING");
+    console.error("Active Error:", activeRequest.error);
+    console.error("Released Error:", releasedRequest.error);
     return [];
   }
 
-  return data.map(mapRowToRoadmapItem);
+  const activeTasks = activeRequest.data || [];
+  const releasedTasks = releasedRequest.data || [];
+
+  // Combine and map
+  return [...activeTasks, ...releasedTasks].map(mapRowToRoadmapItem);
 }
 
 export async function accelerateRoadmapItem(id: string): Promise<RoadmapItem> {
