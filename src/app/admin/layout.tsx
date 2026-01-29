@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient, User } from "@supabase/supabase-js";
 import {
     LayoutDashboard, Map, Lightbulb, Bug, FileText,
-    LogOut, Loader2, Database, ChevronLeft, ChevronRight
+    LogOut, Loader2, Database, ChevronLeft, ChevronRight, Tag
 } from "lucide-react";
 import "@/app/globals.css";
 
@@ -110,6 +110,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         { name: "Bugs", href: "/admin/bugs", icon: Bug },
         { name: "Changelog", href: "/admin/changelog", icon: FileText },
         { name: "Blog Posts", href: "/admin/blog", icon: Database },
+        { name: "Categories", href: "/admin/studio/structure/categories", icon: Tag }, // Attempt deep link
         // { name: "Studio", href: "/admin/studio", icon: ExternalLink },
     ];
 

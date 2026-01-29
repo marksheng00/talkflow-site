@@ -49,6 +49,30 @@ export const structure = (S: StructureBuilder) =>
             S.divider(),
 
             // 3. Other Types
-            S.documentTypeListItem('category').title('Categories').icon(TagIcon),
+            S.listItem()
+                .title('Categories')
+                .icon(TagIcon)
+                .child(
+                    S.list()
+                        .title('Category Structure')
+                        .items([
+                            S.listItem()
+                                .title('Primary Categories (Parents)')
+                                .child(
+                                    S.documentList()
+                                        .title('Primary Categories')
+                                        .filter('_type == "category" && !defined(parent)')
+                                ),
+                            S.listItem()
+                                .title('Sub-Categories')
+                                .child(
+                                    S.documentList()
+                                        .title('Sub-Categories')
+                                        .filter('_type == "category" && defined(parent)')
+                                ),
+                            S.divider(),
+                            S.documentTypeListItem('category').title('All Categories (Flat List)')
+                        ])
+                ),
             S.documentTypeListItem('author').title('Authors').icon(UsersIcon),
         ])
