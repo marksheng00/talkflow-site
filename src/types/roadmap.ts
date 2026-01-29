@@ -7,7 +7,6 @@ export type RoadmapItem = {
   description: Record<string, string>;
   status: RoadmapStatus;
   category?: string;
-  eta?: string;
   accelerations: number;
   created_at?: string | null;
   startDate?: string;
@@ -15,7 +14,6 @@ export type RoadmapItem = {
   progress?: number;
   coverImage?: string;
   detailedContent?: Record<string, string>;
-  sourceIdeaId?: string;  // Link to original idea if applicable
 };
 
 // Types for Community Ideas (User Submissions)

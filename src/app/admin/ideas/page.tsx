@@ -8,10 +8,13 @@ import {
     Trash2,
     Clock,
     Loader2,
-    Filter,
-    MoreHorizontal
+    MessageSquare,
+    Activity,
+    ArrowLeft,
+    ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -20,6 +23,7 @@ const supabaseClient = createClient(
 
 export default function AdminIdeasPage() {
     const [ideas, setIdeas] = useState<CommunityIdea[]>([]);
+    const [selectedIdea, setSelectedIdea] = useState<CommunityIdea | null>(null);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | IdeaStatus>('all');
 
@@ -41,7 +45,6 @@ export default function AdminIdeasPage() {
     }, []);
 
     const updateStatus = async (id: string, newStatus: IdeaStatus) => {
-        // Optimistic update
         setIdeas(ideas.map(idea => idea.id === id ? { ...idea, status: newStatus } : idea));
 
         const { error } = await supabaseClient
@@ -50,14 +53,13 @@ export default function AdminIdeasPage() {
             .eq("id", id);
 
         if (error) {
-            // Revert on error (could implement proper rollback, but alert for now)
             alert("Failed to update status");
         }
     };
 
-
     const deleteIdea = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this idea?")) return;
+        const ok = window.confirm("Are you sure you want to delete this idea?");
+        if (!ok) return;
 
         const { error } = await supabaseClient
             .from("community_ideas")
@@ -66,150 +68,206 @@ export default function AdminIdeasPage() {
 
         if (!error) {
             setIdeas(ideas.filter(idea => idea.id !== id));
+        } else {
+            console.error("Delete failed:", error);
+            alert(`Failed to delete: ${error.message}`);
         }
     };
 
     const filteredIdeas = filter === 'all' ? ideas : ideas.filter(i => i.status === filter);
 
     if (loading) return (
-        <div className="h-full flex items-center justify-center text-zinc-500">
-            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading inbox...
+        <div className="h-96 flex items-center justify-center text-zinc-500">
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading ideas...
         </div>
     );
 
-    return (
-        <div className="h-full flex flex-col bg-[#09090b]">
-            {/* Header Toolbar */}
-            <div className="h-16 border-b border-white/[0.06] flex items-center justify-between px-6 bg-[#09090b]/50 backdrop-blur-xl sticky top-0 z-10 shrink-0">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-lg font-bold text-zinc-100 tracking-tight">Idea Inbox</h1>
-                    <div className="h-4 w-[1px] bg-white/10" />
-                    <div className="flex gap-1">
-                        {(['all', 'open', 'planned', 'under_review', 'declined'] as const).map((s) => (
-                            <button
-                                key={s}
-                                onClick={() => setFilter(s)}
-                                className={cn(
-                                    "px-2.5 py-1 rounded-md text-[11px] font-medium uppercase tracking-wider transition-all",
-                                    filter === s
-                                        ? "bg-zinc-800 text-zinc-200"
-                                        : "text-zinc-500 hover:text-zinc-300 hover:bg-white/5"
-                                )}
-                            >
-                                {s.replace('_', ' ')}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
-                    {filteredIdeas.length} ITEMS
-                </div>
-            </div>
-
-            {/* List Content */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 md:max-w-5xl md:mx-auto w-full">
-                <div className="space-y-3">
-                    {filteredIdeas.map((idea) => (
-                        <div
-                            key={idea.id}
-                            className="group flex flex-col md:flex-row gap-4 p-4 rounded-xl bg-zinc-900/40 border border-white/[0.04] hover:bg-zinc-900 hover:border-zinc-700/50 transition-all"
+    // DETAIL VIEW
+    if (selectedIdea) {
+        return (
+            <div className="h-full flex flex-col bg-[#0b0b0d] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
+                {/* Header */}
+                <div className="h-16 flex items-center justify-between px-6 bg-[#0c0c0e] shrink-0">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setSelectedIdea(null)}
+                            className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"
                         >
-                            {/* Status Icon */}
-                            <div className="shrink-0 pt-1">
-                                <StatusBadge status={idea.status} />
-                            </div>
+                            <ArrowLeft className="w-4.5 h-4.5" />
+                        </button>
+                        <div className="flex flex-col">
+                            <h2 className="text-sm font-bold text-zinc-100 line-clamp-1 max-w-md">
+                                {selectedIdea.title}
+                            </h2>
+                            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter leading-none">
+                                ID: {selectedIdea.id.slice(0, 8)}
+                            </span>
+                        </div>
+                    </div>
 
-                            {/* Main Content */}
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="text-sm font-semibold text-zinc-200 truncate">{idea.title}</h3>
-                                    <span className="text-[10px] text-zinc-500 px-1.5 py-0.5 bg-zinc-800/50 rounded border border-white/5 capitalize">
-                                        {idea.category || 'General'}
-                                    </span>
-                                </div>
-                                <p className="text-[13px] text-zinc-500 leading-relaxed line-clamp-2">
-                                    {idea.description}
-                                </p>
-                                <div className="flex items-center gap-4 mt-3 text-xs text-zinc-600">
-                                    <span className="flex items-center gap-1">
-                                        <ThumbsUp className="w-3.5 h-3.5" />
-                                        {idea.upvotes}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <Clock className="w-3.5 h-3.5" />
-                                        {new Date(idea.created_at || '').toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Status Selector (Full Control) */}
-                            <div className="flex md:flex-col items-center md:items-end gap-3 shrink-0">
-                                <IdeaStatusSelector current={idea.status} onChange={(s) => updateStatus(idea.id, s)} />
-                                <button
-                                    onClick={() => deleteIdea(idea.id)}
-                                    className="p-1.5 text-zinc-600 hover:text-rose-400 transition-colors md:opacity-0 md:group-hover:opacity-100"
-                                    title="Delete Permanently"
-                                >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                </button>
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/5">
+                            <div className={cn(
+                                "px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight flex items-center gap-1.5",
+                                "bg-zinc-800 text-zinc-100 shadow-sm"
+                            )}>
+                                <ThumbsUp className="w-3 h-3 text-emerald-500" />
+                                {selectedIdea.upvotes} Upvotes
                             </div>
                         </div>
+
+                        <div className="h-4 w-px bg-white/10 mx-1" />
+
+                        <AdminStatusSelector
+                            value={selectedIdea.status}
+                            options={[
+                                { value: 'open', label: 'Open' },
+                                { value: 'under_review', label: 'Review' },
+                                { value: 'planned', label: 'Planned' },
+                                { value: 'declined', label: 'Declined' },
+                            ]}
+                            onChange={(s) => {
+                                updateStatus(selectedIdea.id, s);
+                                setSelectedIdea({ ...selectedIdea, status: s });
+                            }}
+                        />
+                        <div className="h-4 w-px bg-white/10 mx-1" />
+                        <button
+                            onClick={() => {
+                                deleteIdea(selectedIdea.id);
+                                setSelectedIdea(null);
+                            }}
+                            className="p-2 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Content - MINIMALISTIC REFACTOR */}
+                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                    <div className="max-w-3xl mx-auto space-y-8">
+                        {/* Main Description */}
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Description</label>
+                            <div className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                                {selectedIdea.description || <span className="text-zinc-600 italic">No description provided.</span>}
+                            </div>
+                        </div>
+
+                        <div className="h-px bg-white/[0.05] w-full" />
+
+                        {/* Metadata Rows */}
+                        <div className="grid grid-cols-3 gap-y-6 gap-x-12">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Category</label>
+                                <div className="text-sm text-zinc-300 font-medium">{selectedIdea.category || 'General'}</div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Submitted</label>
+                                <div className="text-sm text-zinc-300 font-mono">{new Date(selectedIdea.created_at || '').toLocaleString()}</div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Upvotes</label>
+                                <div className="text-sm text-zinc-300 font-mono">{selectedIdea.upvotes}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <AdminContainer>
+            <AdminHeader title="Ideas">
+                <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
+                    {(['all', 'open', 'planned', 'under_review', 'declined'] as const).map((s) => (
+                        <button
+                            key={s}
+                            onClick={() => setFilter(s)}
+                            className={cn(
+                                "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
+                                filter === s ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
+                            )}
+                        >
+                            {s}
+                        </button>
                     ))}
+                </div>
+            </AdminHeader>
+
+            {/* Table View (Scalable) */}
+            <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col mb-4">
+                <div className="overflow-y-auto custom-scrollbar flex-1">
+                    <table className="w-full text-left border-collapse border-spacing-0">
+                        <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+                            <tr className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                <th className="px-6 py-4 font-bold">Details</th>
+                                <th className="px-6 py-4 font-bold">Category</th>
+                                <th className="px-6 py-4 font-bold">Upvotes</th>
+                                <th className="px-6 py-4 font-bold">Status</th>
+                                <th className="px-6 py-4 font-bold text-right">Submitted</th>
+                                <th className="px-6 py-4 w-12 text-right pr-12"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/[0.02]">
+                            {filteredIdeas.map((idea) => (
+                                <tr
+                                    key={idea.id}
+                                    onClick={() => setSelectedIdea(idea)}
+                                    className="hover:bg-white/[0.02] transition-colors group cursor-pointer"
+                                >
+                                    <td className="px-6 py-6 max-w-xl">
+                                        <div className="space-y-1">
+                                            <h4 className="text-[14px] font-bold text-zinc-100">{idea.title}</h4>
+                                            <p className="text-[12px] text-zinc-500 line-clamp-1">{idea.description || 'No description provided.'}</p>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                                        {idea.category || 'General'}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-600">
+                                            <ThumbsUp className="w-3 h-3" />
+                                            <span>{idea.upvotes}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                                        <AdminStatusSelector
+                                            value={idea.status}
+                                            options={[
+                                                { value: 'open', label: 'Open' },
+                                                { value: 'under_review', label: 'Review' },
+                                                { value: 'planned', label: 'Planned' },
+                                                { value: 'declined', label: 'Declined' },
+                                            ]}
+                                            onChange={(s) => updateStatus(idea.id, s)}
+                                        />
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest">
+                                            {new Date(idea.created_at || '').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right pr-6">
+                                        <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors" />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
                     {filteredIdeas.length === 0 && (
-                        <div className="py-20 text-center">
-                            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center mx-auto mb-3">
-                                <Filter className="w-5 h-5 text-zinc-600" />
-                            </div>
-                            <p className="text-zinc-500 text-sm">No ideas found in this view.</p>
+                        <div className="py-20 flex flex-col items-center justify-center opacity-20 grayscale">
+                            <Activity className="w-8 h-8 mb-2 text-zinc-500" />
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">No data found</p>
                         </div>
                     )}
                 </div>
             </div>
-        </div>
-    );
-}
-
-function StatusBadge({ status }: { status: IdeaStatus }) {
-    switch (status) {
-        case 'open':
-            return <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" title="Open" />;
-        case 'under_review':
-            return <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" title="Under Review" />;
-        case 'planned':
-            return <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="Planned" />;
-        case 'declined':
-            return <div className="w-2.5 h-2.5 rounded-full bg-zinc-600" title="Declined" />;
-    }
-}
-
-function IdeaStatusSelector({ current, onChange }: { current: IdeaStatus, onChange: (s: IdeaStatus) => void }) {
-    const STATUSES: { value: IdeaStatus, label: string, color: string }[] = [
-        { value: 'open', label: 'Open', color: 'text-zinc-400' },
-        { value: 'under_review', label: 'Under Review', color: 'text-amber-400' },
-        { value: 'planned', label: 'Planned', color: 'text-emerald-400' },
-        { value: 'declined', label: 'Declined', color: 'text-rose-400' },
-    ];
-
-    return (
-        <div className="relative">
-            <select
-                value={current}
-                onChange={(e) => onChange(e.target.value as IdeaStatus)}
-                className={cn(
-                    "w-full appearance-none bg-zinc-950 border border-white/10 rounded-md py-1.5 pl-3 pr-8 text-[11px] font-bold uppercase tracking-wider outline-none focus:border-zinc-700 cursor-pointer transition-colors min-w-[120px]",
-                    STATUSES.find(s => s.value === current)?.color
-                )}
-            >
-                {STATUSES.map(s => (
-                    <option key={s.value} value={s.value} className="text-zinc-300 bg-zinc-900 border-none">
-                        {s.label}
-                    </option>
-                ))}
-            </select>
-            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                <MoreHorizontal className="w-3.5 h-3.5" />
-            </div>
-        </div>
+        </AdminContainer>
     );
 }

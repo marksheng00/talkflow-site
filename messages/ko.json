@@ -364,7 +364,7 @@
         "Hero": {
             "titlePrefix": "공개적으로",
             "titleSuffix": "만들어갑니다.",
-            "subtitle": "진행 상황을 추적하고, 예정된 기능에 투표하고, 에이전트 커뮤니케이션의 미래를 함께 만들어주세요."
+            "subtitle": "진행 상황을 추적하고, 예정된 기능을 가속화하고, 에이전트 커뮤니케이션의 미래를 함께 만들어주세요."
         },
         "Tabs": {
             "roadmap": "로드맵",
@@ -391,7 +391,7 @@
         },
         "RoadmapTab": {
             "taskOverview": "과제 개요",
-            "boost": "이 기능 가속화하기",
+            "boost": "이 과제 가속화하기",
             "boosted": "가속됨!"
         },
         "IdeasTab": {
@@ -405,7 +405,7 @@
                 "under_review": "검토 중",
                 "declined": "반려됨"
             },
-            "vote": "추천",
+            "boost": "가속",
             "modal": {
                 "label": "아이디어"
             }
@@ -422,7 +422,7 @@
                 "resolved": "해결됨",
                 "wont_fix": "수정 안 함"
             },
-            "vote": "추천",
+            "boost": "가속",
             "modal": {
                 "label": "버그 리포트",
                 "description": "상세 설명"

@@ -1,5 +1,5 @@
 import { BugReport } from "@/types/roadmap";
-import { Bug, Plus, ArrowUp } from "lucide-react";
+import { Bug, Plus, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AnimatedCounter } from "@/components/roadmap/AnimatedCounter";
 
@@ -79,10 +79,12 @@ export function BugsTab({
                                 <button
                                     onClick={(e) => handleBugVote(bug.id, e)}
                                     disabled={votedIdeas.has(bug.id)}
-                                    className={`flex items-center gap-1.5 text-xs font-semibold transition-colors group/up ${votedIdeas.get(bug.id) === "up" ? "text-rose-400" : "text-slate-500 hover:text-rose-400"
+                                    className={`flex items-center gap-1.5 text-xs font-semibold transition-all group/up ${votedIdeas.get(bug.id) === "up"
+                                        ? "text-emerald-400"
+                                        : "text-slate-500 hover:text-emerald-400 hover:scale-105"
                                         }`}
                                 >
-                                    <ArrowUp className={`h-4 w-4 transition-transform ${votedIdeas.has(bug.id) ? "" : "group-hover/up:-translate-y-0.5"}`} />
+                                    <Zap className={`h-4 w-4 transition-all ${votedIdeas.get(bug.id) === "up" ? "fill-emerald-400" : "group-hover/up:fill-emerald-400/20"}`} />
                                     {votedIdeas.get(bug.id) === "up" ? (
                                         <AnimatedCounter
                                             from={bug.upvotes - 1}
@@ -98,19 +100,12 @@ export function BugsTab({
                                 {/* Status Badge */}
                                 <div className="flex items-center">
                                     {(() => {
-                                        const statusColors: Record<string, string> = {
-                                            reported: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-                                            investigating: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-                                            fixing: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-                                            resolved: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-                                            wont_fix: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-                                        };
-                                        const colors = statusColors[bug.status] || "bg-slate-500/10 text-slate-400 border-slate-500/20";
-                                         return (
-                                             <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${colors}`}>
-                                                 {t(`BugsTab.status.${bug.status}`)}
-                                             </span>
-                                         );
+                                        const colors = "bg-slate-500/10 text-slate-400 border-slate-500/20";
+                                        return (
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${colors}`}>
+                                                {t.has(`BugsTab.status.${bug.status}`) ? t(`BugsTab.status.${bug.status}`) : bug.status}
+                                            </span>
+                                        );
                                     })()}
                                 </div>
                             </div>

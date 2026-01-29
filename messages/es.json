@@ -364,7 +364,7 @@
         "Hero": {
             "titlePrefix": "Construyendo en",
             "titleSuffix": "público.",
-            "subtitle": "Sigue nuestro progreso, vota sobre las próximas funciones y ayúdanos a dar forma al futuro de la comunicación agéntica."
+            "subtitle": "Sigue nuestro progreso, impulsa las próximas funciones y ayúdanos a dar forma al futuro de la comunicación agéntica."
         },
         "Tabs": {
             "roadmap": "Hoja de ruta",
@@ -391,7 +391,7 @@
         },
         "RoadmapTab": {
             "taskOverview": "Resumen de tareas",
-            "boost": "Impulsar esta función",
+            "boost": "Impulsar esta tarea",
             "boosted": "¡Impulsado!"
         },
         "IdeasTab": {
@@ -405,7 +405,7 @@
                 "under_review": "En revisión",
                 "declined": "Rechazado"
             },
-            "vote": "Votar",
+            "boost": "Impulsar",
             "modal": {
                 "label": "IDEA"
             }
@@ -422,7 +422,7 @@
                 "resolved": "Resuelto",
                 "wont_fix": "No se arreglará"
             },
-            "vote": "Votar",
+            "boost": "Impulsar",
             "modal": {
                 "label": "REPORTE DE BUG",
                 "description": "Descripción"

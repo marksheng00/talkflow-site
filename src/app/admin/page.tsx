@@ -126,8 +126,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between border-b border-white/[0.05] pb-6">
                 <div>
                     <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
-                        Command Center
-                        <span className="text-[10px] font-mono text-zinc-500 font-normal px-2 py-0.5 bg-white/5 rounded border border-white/5 uppercase">Real-Time Core</span>
+                        Dashboard
                     </h1>
                 </div>
             </div>
@@ -141,14 +140,14 @@ export default function AdminDashboardPage() {
                     icon={<Lightbulb className="w-4 h-4" />}
                 />
                 <DenseMetric
-                    label="Active Now"
+                    label="Online Now"
                     value={activeUsers.length.toString().padStart(2, '0')}
                     icon={<Activity className="w-4 h-4" />}
                     color="text-emerald-500"
                     isLive
                 />
                 <DenseMetric
-                    label="Urgent Bugs"
+                    label="Open Bugs"
                     value={loading ? "..." : stats.bugs.toString().padStart(2, '0')}
                     icon={<Bug className="w-4 h-4" />}
                     color="text-rose-400"
@@ -166,7 +165,7 @@ export default function AdminDashboardPage() {
                 <div className="lg:col-span-2 border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col">
                     <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
                         <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                            <Activity className="w-3 h-3" /> System & Analytics
+                            <Activity className="w-3 h-3" /> System Status
                         </h3>
                         <div className="flex items-center gap-2">
                             <button
@@ -225,7 +224,7 @@ export default function AdminDashboardPage() {
                 <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col min-h-[400px]">
                     <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02]">
                         <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                            <Monitor className="w-3 h-3" /> Live Audit Trail
+                            <Monitor className="w-3 h-3" /> Recent Activity
                         </h3>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -240,7 +239,7 @@ export default function AdminDashboardPage() {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-center mb-0.5">
                                         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">
-                                            {user.type === 'admin' ? 'Operator' : 'Guest Member'}
+                                            {user.type === 'admin' ? 'Admin' : 'User'}
                                         </span>
                                         <span className="text-[9px] font-mono text-zinc-600">Active</span>
                                     </div>
@@ -254,13 +253,13 @@ export default function AdminDashboardPage() {
                         {activeUsers.length === 0 && (
                             <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 grayscale">
                                 <Activity className="w-8 h-8 mb-2" />
-                                <p className="text-[10px] font-bold uppercase tracking-widest">No active stream</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest">No activity</p>
                             </div>
                         )}
                     </div>
                     <div className="p-4 border-t border-white/[0.05] bg-black/20">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-none">Global Connections</span>
+                            <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-none">Total Online</span>
                             <span className="text-xs font-mono text-emerald-500 font-bold">{activeUsers.length.toString().padStart(2, '0')}</span>
                         </div>
                     </div>

@@ -18,9 +18,11 @@ export function useRoadmapState(
 
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isBugModalOpen, setIsBugModalOpen] = useState(false);
-    const [selectedTask, setSelectedTask] = useState<RoadmapItem | null>(null);
-    const [selectedIdea, setSelectedIdea] = useState<CommunityIdea | null>(null);
-    const [selectedBug, setSelectedBug] = useState<BugReport | null>(null);
+
+    // Selection states with private setters
+    const [selectedTask, _setSelectedTask] = useState<RoadmapItem | null>(null);
+    const [selectedIdea, _setSelectedIdea] = useState<CommunityIdea | null>(null);
+    const [selectedBug, _setSelectedBug] = useState<BugReport | null>(null);
 
     const [todayPercent, setTodayPercent] = useState<number | null>(null);
 
@@ -47,6 +49,31 @@ export function useRoadmapState(
         actual: "",
         platform: "Web" as BugPlatform,
     });
+
+    // Wrapped setters to clear animation flags synchronously when opening/changing modals
+    const setSelectedTask = (task: RoadmapItem | null) => {
+        if (task) {
+            setJustBoosted(false);
+            setLastVotedId(null);
+        }
+        _setSelectedTask(task);
+    };
+
+    const setSelectedIdea = (idea: CommunityIdea | null) => {
+        if (idea) {
+            setJustBoosted(false);
+            setLastVotedId(null);
+        }
+        _setSelectedIdea(idea);
+    };
+
+    const setSelectedBug = (bug: BugReport | null) => {
+        if (bug) {
+            setJustBoosted(false);
+            setLastVotedId(null);
+        }
+        _setSelectedBug(bug);
+    };
 
     useEffect(() => {
         setMounted(true);

@@ -1,5 +1,5 @@
 import { CommunityIdea } from "@/types/roadmap";
-import { X, Sparkles, ArrowUp, ArrowDown } from "lucide-react";
+import { X, Sparkles, Zap } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { createPortal } from "react-dom";
@@ -9,7 +9,7 @@ interface IdeaDetailModalProps {
     mounted: boolean;
     selectedIdea: CommunityIdea | null;
     setSelectedIdea: (idea: CommunityIdea | null) => void;
-    handleVote: (id: string, direction: "up" | "down", e: React.MouseEvent) => void;
+    handleVote: (id: string, e: React.MouseEvent) => void;
     votedIdeas: Map<string, "up" | "down">;
     lastVotedId: string | null;
 }
@@ -23,6 +23,23 @@ export function IdeaDetailModal({
     lastVotedId,
 }: IdeaDetailModalProps) {
     const t = useTranslations('RoadmapPage');
+
+    const getCategoryColor = (category?: string) => {
+        switch (category) {
+            case "Feature":
+                return "text-blue-400 bg-blue-500/10 border-blue-500/20";
+            case "Content":
+                return "text-purple-400 bg-purple-500/10 border-purple-500/20";
+            case "AI Core":
+                return "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+            case "UIUX":
+                return "text-amber-400 bg-amber-500/10 border-amber-500/20";
+            case "Bug":
+                return "text-rose-400 bg-rose-500/10 border-rose-500/20";
+            default:
+                return "text-slate-400 bg-slate-500/10 border-slate-500/20";
+        }
+    };
 
     if (!mounted || !selectedIdea) return null;
 
@@ -61,8 +78,8 @@ export function IdeaDetailModal({
                         <div className="p-6 md:p-8 pt-2 space-y-6 relative">
                             <div>
                                 <div className="flex items-center gap-3 mb-4">
-                                    <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
-                                        {t(`Filters.Categories.${selectedIdea.category}`)}
+                                    <span className={`text-xs font-medium px-2 py-1 rounded border ${getCategoryColor(selectedIdea.category)}`}>
+                                        {selectedIdea.category ? (t.has(`Filters.Categories.${selectedIdea.category}`) ? t(`Filters.Categories.${selectedIdea.category}`) : selectedIdea.category) : ""}
                                     </span>
                                     <span className="text-xs text-slate-500 font-mono">
                                         {t('IdeasTab.modal.label')}
@@ -81,46 +98,17 @@ export function IdeaDetailModal({
                     {/* Mobile Bottom Action Bar */}
                     <div className="md:hidden p-4 border-t border-white/10 bg-[#0A0A0A]/90 backdrop-blur-xl shrink-0 flex gap-3">
                         <button
-                            onClick={(e) => handleVote(selectedIdea.id, "up", e)}
+                            onClick={(e) => handleVote(selectedIdea.id, e)}
                             disabled={votedIdeas.has(selectedIdea.id)}
                             className={`flex-1 h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${votedIdeas.get(selectedIdea.id) === "up"
-                                ? "bg-slate-800 text-emerald-400 cursor-default"
-                                : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:bg-emerald-500/20"
+                                ? "bg-slate-800 text-emerald-500 cursor-default"
+                                : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
                                 }`}
                         >
-                            <ArrowUp className="h-5 w-5" />
+                            <Zap className={`h-5 w-5 ${votedIdeas.get(selectedIdea.id) === "up" ? "fill-emerald-500" : ""}`} />
                             <span>
-                                {votedIdeas.get(selectedIdea.id) === "up" ? (
-                                    <AnimatedCounter
-                                        from={selectedIdea.upvotes - 1}
-                                        to={selectedIdea.upvotes}
-                                        skipAnimation={lastVotedId !== selectedIdea.id}
-                                        className="text-base font-bold"
-                                    />
-                                ) : (
-                                    selectedIdea.upvotes
-                                )}{" "}
-                                {t('IdeasTab.vote')}
+                                {votedIdeas.get(selectedIdea.id) === "up" ? t('RoadmapTab.boosted') : t('RoadmapTab.boost')}
                             </span>
-                        </button>
-                        <button
-                            onClick={(e) => handleVote(selectedIdea.id, "down", e)}
-                            disabled={votedIdeas.has(selectedIdea.id)}
-                            className={`h-12 w-12 rounded-xl flex items-center justify-center font-bold transition-all ${votedIdeas.get(selectedIdea.id) === "down"
-                                ? "bg-slate-800 text-rose-400 cursor-default"
-                                : "bg-white/5 border border-white/10 text-neutral-400 active:bg-white/10"
-                                }`}
-                        >
-                            {votedIdeas.get(selectedIdea.id) === "down" ? (
-                                <AnimatedCounter
-                                    from={selectedIdea.downvotes - 1}
-                                    to={selectedIdea.downvotes}
-                                    skipAnimation={lastVotedId !== selectedIdea.id}
-                                    className="text-base font-bold"
-                                />
-                            ) : (
-                                <ArrowDown className="h-5 w-5" />
-                            )}
                         </button>
                     </div>
                 </div>
@@ -134,51 +122,24 @@ export function IdeaDetailModal({
                         <X className="h-6 w-6" />
                     </button>
 
-                    <div className="flex flex-col gap-2">
-                        <button
-                            onClick={(e) => handleVote(selectedIdea.id, "up", e)}
-                            disabled={votedIdeas.has(selectedIdea.id)}
-                            className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.get(selectedIdea.id) === "up"
-                                ? "bg-black/80 border border-emerald-500/50 text-emerald-500"
-                                : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 text-neutral-400"
-                                }`}
-                        >
-                            {votedIdeas.get(selectedIdea.id) === "up" ? (
-                                <AnimatedCounter
-                                    from={selectedIdea.upvotes - 1}
-                                    to={selectedIdea.upvotes}
-                                    skipAnimation={lastVotedId !== selectedIdea.id}
-                                />
-                            ) : (
-                                <>
-                                    <ArrowUp className="h-6 w-6" />
-                                    <span className="text-[10px] font-bold">{selectedIdea.upvotes}</span>
-                                </>
-                            )}
-                        </button>
-
-                        <button
-                            onClick={(e) => handleVote(selectedIdea.id, "down", e)}
-                            disabled={votedIdeas.has(selectedIdea.id)}
-                            className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.get(selectedIdea.id) === "down"
-                                ? "bg-black/80 border border-rose-500/50 text-rose-500"
-                                : "bg-black/80 border border-white/10 hover:border-rose-500/50 hover:scale-105 text-neutral-400"
-                                }`}
-                        >
-                            {votedIdeas.get(selectedIdea.id) === "down" ? (
-                                <AnimatedCounter
-                                    from={selectedIdea.downvotes - 1}
-                                    to={selectedIdea.downvotes}
-                                    skipAnimation={lastVotedId !== selectedIdea.id}
-                                />
-                            ) : (
-                                <>
-                                    <ArrowDown className="h-6 w-6" />
-                                    <span className="text-[10px] font-bold">{selectedIdea.downvotes}</span>
-                                </>
-                            )}
-                        </button>
-                    </div>
+                    <button
+                        onClick={(e) => handleVote(selectedIdea.id, e)}
+                        disabled={votedIdeas.has(selectedIdea.id)}
+                        className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.get(selectedIdea.id) === "up"
+                            ? "bg-black/80 border border-emerald-500/50 text-emerald-500 cursor-default"
+                            : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-neutral-400"
+                            }`}
+                    >
+                        {votedIdeas.get(selectedIdea.id) !== "up" ? (
+                            <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
+                        ) : (
+                            <AnimatedCounter
+                                from={selectedIdea.upvotes - 1}
+                                to={selectedIdea.upvotes}
+                                skipAnimation={lastVotedId !== selectedIdea.id}
+                            />
+                        )}
+                    </button>
                 </div>
             </div>
         </div>,

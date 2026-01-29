@@ -364,7 +364,7 @@
         "Hero": {
             "titlePrefix": "在公眾面前",
             "titleSuffix": "構建。",
-            "subtitle": "跟踪我們的進度，對即將推出的功能進行投票，幫助我們塑造 Agentic 通訊的未來。"
+            "subtitle": "跟踪我們的進度，為您期待的功能加速，幫助我們塑造 Agentic 通訊的未來。"
         },
         "Tabs": {
             "roadmap": "路線圖",
@@ -391,7 +391,7 @@
         },
         "RoadmapTab": {
             "taskOverview": "任務概覽",
-            "boost": "加速此功能",
+            "boost": "加速此任務",
             "boosted": "已加速！"
         },
         "IdeasTab": {
@@ -405,7 +405,7 @@
                 "under_review": "審核中",
                 "declined": "暫不考慮"
             },
-            "vote": "贊成",
+            "boost": "加速",
             "modal": {
                 "label": "想法"
             }
@@ -422,7 +422,7 @@
                 "resolved": "已解決",
                 "wont_fix": "不予修復"
             },
-            "vote": "贊成",
+            "boost": "加速",
             "modal": {
                 "label": "Bug 報告",
                 "description": "描述"

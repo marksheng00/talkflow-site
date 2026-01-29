@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { RoadmapItem, RoadmapStatus } from "@/types/roadmap";
 import { createClient } from "@supabase/supabase-js";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { Plus, X, Loader2, Calendar, ArrowLeft, Sparkles, Check, AlertCircle, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload, CalendarDays } from "lucide-react";
+import { Plus, X, Loader2, Calendar, ArrowLeft, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload, CalendarDays, Map, Activity, Settings, Trash2 } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
 
@@ -27,15 +27,20 @@ export default function AdminRoadmapPage() {
     const [translating, setTranslating] = useState(false);
     const [translateFeedback, setTranslateFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [pendingDeletes, setPendingDeletes] = useState<string[]>([]);
+
+    const getStoragePathFromUrl = (url: string) => {
+        if (!url || !url.includes('/public/roadmap-covers/')) return null;
+        const parts = url.split('/public/roadmap-covers/');
+        return parts[parts.length - 1]; // Handles nested paths too
+    };
 
     const getLocalizedContent = (input: Record<string, string> | null | undefined) => {
         if (!input) return "";
-        // Priority: Active Locale -> En -> First Key -> Empty
         return input[activeLocale] || input['en'] || Object.values(input)[0] || "";
     };
 
     const fetchTasks = async () => {
-        // setLoading(true);
         const { data, error } = await supabaseClient
             .from("roadmap_items")
             .select("*")
@@ -44,19 +49,18 @@ export default function AdminRoadmapPage() {
         if (error) {
             console.error("Error fetching roadmap:", error);
         } else {
-            // Map snake_case DB fields to camelCase
-            // DB columns are now JSONB, so we get Objects directly.
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const mappedTasks = (data || []).map((t: any) => ({
                 ...t,
                 title: t.title || { en: "" },
                 description: t.description || { en: "" },
                 detailedContent: t.detailed_content || { en: "" },
-                coverImage: t.cover_image
+                coverImage: t.cover_image,
+                startDate: t.start_date,
+                targetDate: t.target_date
             }));
             setTasks(mappedTasks);
         }
-
         setLoading(false);
     };
 
@@ -74,36 +78,24 @@ export default function AdminRoadmapPage() {
         if (!task) return;
 
         let newProgress = task.progress || 0;
+        if (newStatus === 'released') newProgress = 100;
+        else if (newProgress === 100) newProgress = 95;
 
-        // Logic 1: Drag TO Released -> Progress 100%
-        if (newStatus === 'released') {
-            newProgress = 100;
-        }
-        // Logic 2: Drag FROM Released (or was 100%) -> Progress 95%
-        else if (newProgress === 100) {
-            newProgress = 95;
-        }
-
-        // Optimistic update
         const updatedTasks = tasks.map(t =>
             t.id === draggableId ? { ...t, status: newStatus, progress: newProgress } : t
         );
         setTasks(updatedTasks);
 
-        // API update
         await supabaseClient
             .from("roadmap_items")
             .update({ status: newStatus, progress: newProgress })
             .eq("id", draggableId);
     };
 
-
-
     const openEditor = (task?: RoadmapItem) => {
         if (task) {
             setEditingTask(task);
         } else {
-            // New Task
             setEditingTask({
                 status: 'researching',
                 category: 'Feature',
@@ -113,8 +105,9 @@ export default function AdminRoadmapPage() {
                 detailedContent: { en: "" }
             });
         }
-        setActiveLocale('en'); // Reset to default locale
+        setActiveLocale('en');
         setTranslateFeedback(null);
+        setPendingDeletes([]);
         setViewMode('editor');
     };
 
@@ -126,20 +119,22 @@ export default function AdminRoadmapPage() {
         try {
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-            const filePath = `roadmap-covers/${fileName}`;
+            const filePath = `${fileName}`;
 
-            // Upload to Supabase Storage
             const { error: uploadError } = await supabaseClient.storage
                 .from('roadmap-covers')
                 .upload(filePath, file);
 
             if (uploadError) throw uploadError;
 
-            // Get Public URL
             const { data: { publicUrl } } = supabaseClient.storage
                 .from('roadmap-covers')
                 .getPublicUrl(filePath);
 
+            if (editingTask.coverImage) {
+                const oldPath = getStoragePathFromUrl(editingTask.coverImage);
+                if (oldPath) setPendingDeletes([...pendingDeletes, oldPath]);
+            }
             setEditingTask({ ...editingTask, coverImage: publicUrl });
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -155,19 +150,13 @@ export default function AdminRoadmapPage() {
 
         const finalStatus = task.status || 'researching';
         let finalProgress = task.progress || 0;
-
-        // Sync Logic: Prioritize Status
-        if (finalStatus === 'released') {
-            finalProgress = 100;
-        } else if (finalProgress === 100) {
-            finalProgress = 95;
-        }
+        if (finalStatus === 'released') finalProgress = 100;
+        else if (finalProgress === 100) finalProgress = 95;
 
         const taskData = {
             title: task.title,
             description: task.description,
             category: task.category,
-            eta: task.eta,
             start_date: task.startDate,
             target_date: task.targetDate,
             progress: finalProgress,
@@ -178,21 +167,26 @@ export default function AdminRoadmapPage() {
         };
 
         if (task.id) {
-            // Update
             const { error } = await supabaseClient
                 .from("roadmap_items")
                 .update(taskData)
                 .eq("id", task.id);
 
             if (!error) {
-                setTasks(tasks.map(t => t.id === task.id ? { ...t, ...taskData, coverImage: taskData.cover_image, detailedContent: taskData.detailed_content } as RoadmapItem : t));
+                setTasks(tasks.map(t => t.id === task.id ? {
+                    ...t,
+                    ...taskData,
+                    startDate: taskData.start_date,
+                    targetDate: taskData.target_date,
+                    coverImage: taskData.cover_image,
+                    detailedContent: taskData.detailed_content
+                } as RoadmapItem : t));
                 setEditingTask(null);
                 setViewMode('kanban');
             } else {
                 alert("Update failed: " + error.message);
             }
         } else {
-            // Create New
             const { data, error } = await supabaseClient
                 .from("roadmap_items")
                 .insert(taskData)
@@ -200,9 +194,10 @@ export default function AdminRoadmapPage() {
                 .single();
 
             if (!error && data) {
-                // Ensure data matches new structure even if DB returns old format initially (unlikely with this insert)
                 const newTask = {
                     ...data,
+                    startDate: data.start_date,
+                    targetDate: data.target_date,
                     coverImage: data.cover_image,
                     detailedContent: data.detailed_content || { en: "" },
                     title: data.title || { en: "" },
@@ -215,87 +210,58 @@ export default function AdminRoadmapPage() {
                 alert("Create failed: " + (error?.message || 'Unknown error'));
             }
         }
+
+        // Cleanup storage
+        if (pendingDeletes.length > 0) {
+            await supabaseClient.storage.from('roadmap-covers').remove(pendingDeletes);
+            setPendingDeletes([]);
+        }
     };
 
     const handleAutoTranslate = async () => {
         if (!editingTask) return;
-
-        // Translate Title, Description, and Detailed Content
-        const fieldsToTranslate = [
-            { key: 'title', label: 'Title' },
-            { key: 'description', label: 'Summary' },
-            { key: 'detailedContent', label: 'Detailed Content' }
-        ];
-
-        // Check if current locale has content
+        const fieldsToTranslate = [{ key: 'title', label: 'Title' }, { key: 'description', label: 'Summary' }, { key: 'detailedContent', label: 'Detailed Content' }];
         const sourceTitle = editingTask.title?.[activeLocale];
-        if (!sourceTitle) {
-            alert(`Please enter at least a Title in ${activeLocale} first.`);
-            return;
-        }
+        if (!sourceTitle) return alert(`Please enter a Title in ${activeLocale} first.`);
 
         setTranslating(true);
         setTranslateFeedback(null);
-        console.log("Starting controlled-concurrency translation from:", activeLocale);
         const updatedTask = { ...editingTask };
-
         let errorCount = 0;
-
         const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         try {
-            // SEQUENTIAL EXECUTION
-            // This is the only way to strictly guarantee we don't hit QPS limits due to network caching/batching
             const targetLocales = LOCALES.filter(l => l !== activeLocale);
-
             for (const lang of targetLocales) {
                 for (const field of fieldsToTranslate) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const sourceText = (editingTask as any)[field.key]?.[activeLocale];
-
                     if (sourceText && sourceText !== "<p></p>" && sourceText.trim() !== "") {
                         try {
-                            // console.log(`Translating ${field.key} to ${lang}...`);
                             const res = await fetch("/api/admin/translate", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({ text: sourceText, from: activeLocale, to: lang })
                             });
                             const data = await res.json();
-
                             if (data.translatedText) {
-                                // Deep merge
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 if (!(updatedTask as any)[field.key]) (updatedTask as any)[field.key] = {};
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 (updatedTask as any)[field.key][lang] = data.translatedText;
                             } else {
                                 errorCount++;
-                                console.error(`Failed ${field.key} -> ${lang}:`, data.error);
                             }
-
-                            // Mild throttle between requests (5 QPS limit -> 200ms min gap)
-                            // Using 250ms to be safe
                             await delay(250);
-
                         } catch (err) {
                             errorCount++;
-                            console.error(`Request Error ${field.key} -> ${lang}:`, err);
                         }
                     }
                 }
             }
-
             setEditingTask({ ...updatedTask });
-
-            if (errorCount > 0) {
-                setTranslateFeedback({ type: 'error', message: "" });
-            } else {
-                setTranslateFeedback({ type: 'success', message: "" });
-            }
-
+            setTranslateFeedback({ type: errorCount > 0 ? 'error' : 'success', message: "" });
         } catch (err) {
-            console.error("Auto-translate critical error:", err);
             setTranslateFeedback({ type: 'error', message: "" });
         } finally {
             setTranslating(false);
@@ -303,292 +269,200 @@ export default function AdminRoadmapPage() {
         }
     };
 
-
-
-    if (loading) return <div className="text-white p-8">Loading roadmap...</div>;
+    if (loading) return (
+        <div className="h-96 flex items-center justify-center text-zinc-500">
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Initializing Roadmap...
+        </div>
+    );
 
     // EDITOR VIEW
     if (viewMode === 'editor' && editingTask) {
         return (
-            <div className="h-full flex flex-col bg-[#09090b] animate-in slide-in-from-right-4 duration-300">
-                {/* Editor Header */}
-                <div className="h-14 border-b border-white/[0.04] flex items-center justify-between px-5 bg-[#09090b]/50 backdrop-blur-sm shrink-0">
+            <div className="h-full flex flex-col bg-[#09090b] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
+                <div className="h-16 flex items-center justify-between px-6 bg-[#09090b]/50 backdrop-blur-xl shrink-0">
                     <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => {
-                                setViewMode('kanban');
-                                setEditingTask(null);
-                            }}
-                            className="p-1.5 hover:bg-zinc-800 rounded-md transition-colors text-zinc-500 hover:text-zinc-300"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                        </button>
+                        <button onClick={() => setViewMode('kanban')} className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"><ArrowLeft className="w-4.5 h-4.5" /></button>
                         <div className="flex flex-col">
-                            <h2 className="text-sm font-bold text-zinc-200">Edit Issue</h2>
-                            <p className="text-[10px] text-zinc-600 font-mono tracking-wide">{editingTask.id}</p>
+                            <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+                                {getLocalizedContent(editingTask.title) || 'Untitled Task'}
+                            </h2>
+                            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter">ID: {editingTask.id?.slice(0, 8) || 'Draft'}</span>
                         </div>
+                    </div>
 
-                        <div className="h-4 w-px bg-white/[0.04] mx-2" />
-
-                        {/* Language Switcher in Editor */}
-                        <div className="flex items-center bg-zinc-900/50 p-0.5 rounded-lg border border-white/5 ml-1">
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/5">
                             {LOCALES.map(loc => (
                                 <button
-                                    key={loc}
-                                    onClick={() => setActiveLocale(loc)}
-                                    className={cn(
-                                        "px-2 py-1 rounded text-[10px] font-bold uppercase transition-all",
-                                        activeLocale === loc
-                                            ? "bg-zinc-800 text-zinc-100 shadow-sm"
-                                            : "text-zinc-600 hover:text-zinc-400"
-                                    )}
+                                    key={loc} onClick={() => setActiveLocale(loc)}
+                                    className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold transition-all uppercase", activeLocale === loc ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400")}
                                 >
                                     {loc}
                                 </button>
                             ))}
-                            <div className="w-[1px] h-3 bg-white/10 mx-1" />
-                            <button
-                                onClick={handleAutoTranslate}
-                                disabled={translating}
-                                title="Auto-translate all languages"
-                                className={cn(
-                                    "px-2 py-1 rounded-md transition-all flex items-center",
-                                    translating
-                                        ? "text-amber-500 bg-amber-500/5"
-                                        : translateFeedback?.type === 'success'
-                                            ? "text-emerald-400 bg-emerald-500/5"
-                                            : translateFeedback?.type === 'error'
-                                                ? "text-rose-400 bg-rose-500/5"
-                                                : "text-zinc-500 hover:text-indigo-400 hover:bg-white/5"
-                                )}
-                            >
-                                <span className="text-[10px] font-bold uppercase">
-                                    {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Translate"}
-                                </span>
-                            </button>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-3">
+
                         <button
-                            onClick={() => handleSaveTask(editingTask)}
-                            className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black rounded-md text-[12px] font-bold transition-colors shadow-sm"
+                            onClick={handleAutoTranslate}
+                            disabled={translating}
+                            className={cn("px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all flex items-center bg-white/5 border border-white/5",
+                                translating ? "text-amber-500" : translateFeedback?.type === 'success' ? "text-emerald-400" : "text-zinc-400 hover:text-white hover:bg-white/10"
+                            )}
                         >
-                            Save Changes
+                            {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
+                        </button>
+
+                        <button onClick={() => handleSaveTask(editingTask)} className="px-5 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5 shadow-lg">
+                            <Activity className="w-3.5 h-3.5" /> Save Changes
                         </button>
                     </div>
                 </div>
 
-                {/* Editor Scrollable Content */}
-                <div className="flex-1 overflow-y-auto">
-                    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* LEFT: Main Content */}
-                        <div className="lg:col-span-2 space-y-8">
-                            {/* Title Input */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider pl-1">Title ({activeLocale})</label>
+                <div className="flex-1 overflow-y-auto scrollbar-zinc">
+                    <div className="max-w-[1400px] mx-auto p-8 grid grid-cols-1 lg:grid-cols-4 gap-12">
+                        <div className="lg:col-span-3 space-y-12">
+                            {/* Title Section */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Task Title</label>
                                 <input
-                                    className="w-full bg-transparent border-b border-white/10 py-2 text-2xl font-bold text-zinc-100 outline-none focus:border-indigo-500/50 placeholder:text-zinc-800 transition-colors"
-                                    placeholder={`Issue Title (${activeLocale})`}
+                                    className="w-full bg-transparent border-none p-0 text-3xl font-bold text-zinc-100 outline-none placeholder:text-zinc-800 focus:ring-0"
+                                    placeholder="Enter task title..."
                                     value={editingTask.title?.[activeLocale] || ''}
-                                    onChange={e => setEditingTask({
-                                        ...editingTask,
-                                        title: { ...editingTask.title, [activeLocale]: e.target.value }
-                                    })}
+                                    onChange={e => setEditingTask({ ...editingTask, title: { ...editingTask.title, [activeLocale]: e.target.value } })}
                                 />
                             </div>
 
-                            {/* Summary Input */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider pl-1">Short Summary ({activeLocale})</label>
+                            {/* Summary Section */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Summary</label>
                                 <textarea
-                                    className="w-full bg-zinc-900/50 border border-white/[0.04] rounded-lg p-4 text-sm text-zinc-300 outline-none focus:border-indigo-500/30 focus:bg-zinc-900 min-h-[100px] resize-none leading-relaxed transition-all"
-                                    placeholder={`A brief description (${activeLocale})...`}
+                                    className="w-full bg-white/[0.02] border border-white/[0.04] rounded-xl p-5 text-[15px] text-zinc-400 outline-none focus:border-white/10 transition-all min-h-[120px] leading-relaxed resize-none"
+                                    placeholder="Enter summary..."
                                     value={editingTask.description?.[activeLocale] || ''}
-                                    onChange={e => setEditingTask({
-                                        ...editingTask,
-                                        description: { ...editingTask.description, [activeLocale]: e.target.value }
-                                    })}
+                                    onChange={e => setEditingTask({ ...editingTask, description: { ...editingTask.description, [activeLocale]: e.target.value } })}
                                 />
                             </div>
 
-                            {/* Tiptap Editor */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider pl-1">Detailed Content ({activeLocale})</label>
-                                <div className="border border-white/[0.04] rounded-xl overflow-hidden bg-zinc-900/30 min-h-[400px]">
-                                    <TiptapEditor
-                                        content={editingTask.detailedContent?.[activeLocale] || ''}
-                                        onChange={(html) => setEditingTask({
-                                            ...editingTask,
-                                            detailedContent: { ...editingTask.detailedContent, [activeLocale]: html }
-                                        })}
-                                    />
-                                </div>
+                            {/* Content Section */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Description</label>
+                                <TiptapEditor
+                                    content={editingTask.detailedContent?.[activeLocale] || ''}
+                                    onChange={(html) => setEditingTask({ ...editingTask, detailedContent: { ...editingTask.detailedContent, [activeLocale]: html } })}
+                                />
                             </div>
                         </div>
 
-                        {/* RIGHT: Properties Sidebar */}
-                        <div className="space-y-6">
-                            <div className="bg-zinc-900/50 border border-white/[0.04] rounded-xl p-5 space-y-6 sticky top-6">
-                                <h3 className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider border-b border-white/[0.04] pb-3">Properties</h3>
+                        <aside className="space-y-10">
+                            <div className="p-6 bg-white/[0.02] border border-white/[0.04] rounded-2xl space-y-8">
+                                <h3 className="text-[11px] font-bold text-zinc-300 uppercase tracking-widest flex items-center gap-2">
+                                    <Settings className="w-3.5 h-3.5" /> Properties
+                                </h3>
 
-                                {/* Status */}
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">Status</label>
-                                    <div className="relative">
+                                <div className="space-y-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] uppercase font-bold text-zinc-600">Status</label>
                                         <select
-                                            className="w-full bg-black/20 border border-white/10 rounded-md py-2 px-3 text-[13px] text-zinc-300 outline-none focus:border-indigo-500/30 appearance-none cursor-pointer hover:bg-black/40 transition-colors"
+                                            className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-3 text-xs text-zinc-300 appearance-none outline-none focus:border-indigo-500/30"
                                             value={editingTask.status || 'researching'}
                                             onChange={e => {
-                                                const newStatus = e.target.value as RoadmapStatus;
-                                                let newProgress = editingTask.progress;
-                                                if (newStatus === 'released') newProgress = 100;
-                                                else if (editingTask.progress === 100) newProgress = 95;
-                                                setEditingTask({ ...editingTask, status: newStatus, progress: newProgress });
+                                                const s = e.target.value as RoadmapStatus;
+                                                let p = editingTask.progress || 0;
+                                                if (s === 'released') p = 100; else if (p === 100) p = 95;
+                                                setEditingTask({ ...editingTask, status: s, progress: p });
                                             }}
                                         >
-                                            {STATUS_COLUMNS.map(s => (
-                                                <option key={s} value={s} className="bg-zinc-900">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
-                                            ))}
+                                            {STATUS_COLUMNS.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
+                                        </select>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] uppercase font-bold text-zinc-600">Category</label>
+                                        <select
+                                            className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-3 text-xs text-zinc-300 appearance-none outline-none focus:border-indigo-500/30"
+                                            value={editingTask.category || 'Feature'}
+                                            onChange={e => setEditingTask({ ...editingTask, category: e.target.value })}
+                                        >
+                                            {["Feature", "Content", "AI Core", "UIUX"].map(c => <option key={c} value={c}>{c}</option>)}
                                         </select>
                                     </div>
                                 </div>
 
-                                {/* Category */}
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">Category</label>
-                                    <select
-                                        className="w-full bg-black/20 border border-white/10 rounded-md py-2 px-3 text-[13px] text-zinc-300 outline-none focus:border-indigo-500/30 appearance-none cursor-pointer hover:bg-black/40 transition-colors"
-                                        value={editingTask.category || 'Feature'}
-                                        onChange={e => setEditingTask({ ...editingTask, category: e.target.value })}
-                                    >
-                                        {["Feature", "Content", "AI Core", "UIUX"].map(c => (
-                                            <option key={c} value={c} className="bg-zinc-900">{c}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* Dates Section */}
-                                <div className="space-y-4 pt-4 border-t border-white/[0.04]">
-                                    <h4 className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest pl-1">Timing & ETA</h4>
-
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-center justify-between px-1">
-                                            <label className="text-[10px] uppercase font-bold text-zinc-600">Expected ETA</label>
-                                            <span className="text-[9px] text-emerald-500/60 font-mono">Deadline</span>
-                                        </div>
-                                        <div className="relative group">
+                                <div className="space-y-6 pt-6 border-t border-white/[0.05]">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] uppercase font-bold text-zinc-600">Completion</label>
+                                        <div className="flex items-center gap-4">
                                             <input
-                                                type="date"
-                                                className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-3 pl-10 text-[13px] text-zinc-300 outline-none focus:border-emerald-500/50 transition-all font-mono [color-scheme:dark]"
-                                                value={editingTask.eta || ''}
-                                                onChange={e => setEditingTask({ ...editingTask, eta: e.target.value })}
+                                                type="range" min="0" max="100"
+                                                className="flex-1 accent-indigo-500 h-1 bg-zinc-800 rounded-full appearance-none"
+                                                value={editingTask.progress || 0}
+                                                onChange={e => setEditingTask({ ...editingTask, progress: parseInt(e.target.value) })}
                                             />
-                                            <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-emerald-500 transition-colors" />
+                                            <span className="text-[10px] font-mono text-indigo-400 font-bold">{editingTask.progress}%</span>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">Start Date</label>
-                                            <div className="relative">
-                                                <input
-                                                    type="date"
-                                                    className="w-full bg-black/20 border border-white/10 rounded-lg py-2 px-3 text-[12px] text-zinc-400 outline-none focus:border-zinc-700 transition-all font-mono [color-scheme:dark]"
-                                                    value={editingTask.startDate || ''}
-                                                    onChange={e => setEditingTask({ ...editingTask, startDate: e.target.value })}
-                                                />
+                                    <div className="space-y-2">
+                                        <div className="space-y-4 pb-2">
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] uppercase font-bold text-zinc-600 ml-0.5 tracking-tight">Start Date</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="date"
+                                                        className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-2 pl-9 text-[11px] text-zinc-400 font-mono [color-scheme:dark] outline-none focus:border-indigo-500/30 transition-all font-medium"
+                                                        value={editingTask.startDate || ''}
+                                                        onChange={e => setEditingTask({ ...editingTask, startDate: e.target.value })}
+                                                    />
+                                                    <CalendarDays className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-700 pointer-events-none" />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] uppercase font-bold text-zinc-600 ml-0.5 tracking-tight">Target Date</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="date"
+                                                        className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-2 pl-9 text-[11px] text-zinc-400 font-mono [color-scheme:dark] outline-none focus:border-indigo-500/30 transition-all font-medium"
+                                                        value={editingTask.targetDate || ''}
+                                                        onChange={e => setEditingTask({ ...editingTask, targetDate: e.target.value })}
+                                                    />
+                                                    <CalendarDays className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-700 pointer-events-none" />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] uppercase font-bold text-zinc-600 pl-1">Target Date</label>
-                                            <div className="relative">
-                                                <input
-                                                    type="date"
-                                                    className="w-full bg-black/20 border border-white/10 rounded-lg py-2 px-3 text-[12px] text-zinc-400 outline-none focus:border-zinc-700 transition-all font-mono [color-scheme:dark]"
-                                                    value={editingTask.targetDate || ''}
-                                                    onChange={e => setEditingTask({ ...editingTask, targetDate: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
-                                    <p className="px-1 text-[9px] text-zinc-800 leading-tight">Dates control the positioning on the public Gantt chart timeline.</p>
                                 </div>
 
-                                {/* Progress */}
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center px-1">
-                                        <label className="text-[10px] uppercase font-bold text-zinc-600">Progress</label>
-                                        <span className="text-[10px] font-mono text-emerald-500">{editingTask.progress || 0}%</span>
-                                    </div>
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        className="w-full accent-emerald-500 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
-                                        value={editingTask.progress || 0}
-                                        onChange={e => setEditingTask({ ...editingTask, progress: parseInt(e.target.value) })}
-                                    />
-                                </div>
-
-                                {/* Cover Image */}
-                                <div className="space-y-3 pt-2 border-t border-white/[0.04]">
-                                    <div className="flex justify-between items-center px-1">
+                                <div className="space-y-4 pt-6 border-t border-white/[0.05]">
+                                    <div className="flex justify-between items-center">
                                         <label className="text-[10px] uppercase font-bold text-zinc-600">Cover Image</label>
-                                        <div className="relative">
-                                            <input
-                                                type="file"
-                                                id="cover-upload"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={handleImageUpload}
-                                                disabled={uploading}
-                                            />
-                                            <label
-                                                htmlFor="cover-upload"
-                                                className={cn(
-                                                    "flex items-center gap-1.5 px-2 py-1 rounded border border-white/5 text-[10px] font-bold uppercase cursor-pointer transition-all",
-                                                    uploading ? "opacity-50" : "hover:bg-white/5 text-zinc-400 hover:text-zinc-200"
-                                                )}
-                                            >
-                                                {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <CloudUpload className="w-3 h-3" />}
-                                                {uploading ? "Uploading..." : "Upload"}
-                                            </label>
-                                        </div>
+                                        <label className="text-[9px] font-bold text-indigo-500 hover:text-indigo-400 cursor-pointer uppercase">
+                                            {uploading ? "Uploading..." : "Replace"}
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+                                        </label>
                                     </div>
-
                                     {editingTask.coverImage ? (
-                                        <div className="rounded-lg overflow-hidden border border-white/10 relative group bg-black/40">
+                                        <div className="group relative rounded-xl overflow-hidden border border-white/10 bg-black/40 h-32">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={editingTask.coverImage} alt="Cover Preview" className="w-full h-32 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <button
-                                                    onClick={() => setEditingTask({ ...editingTask, coverImage: '' })}
-                                                    className="p-2 bg-rose-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform"
-                                                    title="Remove Image"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
-                                            </div>
+                                            <img src={editingTask.coverImage} alt="" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all" />
+                                            <button
+                                                onClick={() => {
+                                                    if (editingTask.coverImage) {
+                                                        const path = getStoragePathFromUrl(editingTask.coverImage);
+                                                        if (path) setPendingDeletes([...pendingDeletes, path]);
+                                                    }
+                                                    setEditingTask({ ...editingTask, coverImage: '' });
+                                                }}
+                                                className="absolute inset-0 flex items-center justify-center bg-rose-500/20 opacity-0 group-hover:opacity-100 transition-all text-white"
+                                            >
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
                                         </div>
                                     ) : (
-                                        <div className="h-32 rounded-lg border border-dashed border-white/5 flex flex-col items-center justify-center bg-white/[0.02] text-zinc-700">
-                                            <ImageIcon className="w-6 h-6 mb-2 opacity-20" />
-                                            <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">No Image Set</span>
-                                        </div>
+                                        <div className="h-32 rounded-xl border border-dashed border-white/5 flex items-center justify-center opacity-20"><ImageIcon className="w-6 h-6" /></div>
                                     )}
-
-                                    <div className="relative">
-                                        <input
-                                            className="w-full bg-black/20 border border-white/10 rounded-md py-2 px-3 pl-8 text-[10px] text-zinc-500 font-mono outline-none focus:border-zinc-700 transition-colors placeholder:text-zinc-800"
-                                            placeholder="https://..."
-                                            value={editingTask.coverImage || ''}
-                                            onChange={e => setEditingTask({ ...editingTask, coverImage: e.target.value })}
-                                        />
-                                        <Globe className="w-3 h-3 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-800" />
-                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </aside>
                     </div>
                 </div>
             </div>
@@ -597,80 +471,57 @@ export default function AdminRoadmapPage() {
 
     // KANBAN VIEW
     return (
-        <div className="h-full flex flex-col bg-[#09090b]">
-            {/* Toolbar Header - Denser, cleaner */}
-            <div className="h-14 border-b border-white/[0.04] flex items-center justify-between px-5 bg-[#09090b]/50 backdrop-blur-sm sticky top-0 z-40">
+        <div className="p-6 space-y-4 max-w-[1600px] mx-auto animate-in fade-in duration-700 h-full flex flex-col">
+            {/* Command Header */}
+            <div className="flex items-center justify-between pb-2 shrink-0">
                 <div className="flex items-center gap-4">
-                    {/* Segmented Control for View */}
-                    <div className="flex bg-zinc-900 rounded-lg p-0.5 border border-white/[0.04]">
-                        <button
-                            onClick={() => setViewMode('kanban')}
-                            className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all",
-                                viewMode === 'kanban'
-                                    ? "bg-zinc-800 text-white shadow-sm"
-                                    : "text-zinc-500 hover:text-zinc-300"
-                            )}
-                        >
-                            <Layers className="w-3.5 h-3.5" />
-                            <span>Board</span>
-                        </button>
-                        <button
-                            onClick={() => openEditor()}
-                            className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all",
-                                viewMode === 'editor'
-                                    ? "bg-zinc-800 text-white shadow-sm"
-                                    : "text-zinc-500 hover:text-zinc-300"
-                            )}
-                        >
-                            <Pencil className="w-3.5 h-3.5" />
-                            <span>Editor</span>
-                        </button>
-                    </div>
+                    <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
+                        Roadmap
+                    </h1>
+                </div>
 
-                    <div className="h-4 w-px bg-white/[0.04]" />
-
-                    {/* Flat Language Tags */}
-                    <div className="flex items-center gap-1.5 ml-1">
+                <div className="flex items-center gap-3">
+                    <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
                         {LOCALES.map(loc => (
                             <button
                                 key={loc}
                                 onClick={() => setActiveLocale(loc)}
                                 className={cn(
-                                    "px-2.5 py-1 rounded-md text-[11px] font-bold uppercase transition-all tracking-tight",
+                                    "px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight transition-all",
                                     activeLocale === loc
                                         ? "bg-zinc-800 text-zinc-100 shadow-sm"
-                                        : "text-zinc-500 hover:text-zinc-300 hover:bg-white/5"
+                                        : "text-zinc-500 hover:text-zinc-300"
                                 )}
                             >
                                 {loc}
                             </button>
                         ))}
                     </div>
-                </div>
 
-                <div className="flex items-center gap-3">
+                    <div className="h-4 w-[1px] bg-white/10 mx-1" />
+
                     <button
                         onClick={() => openEditor()}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-black rounded-md text-[12px] font-bold hover:bg-zinc-200 transition-colors"
+                        className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-xs transition-all flex items-center gap-1.5"
                     >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>New Issue</span>
+                        <Plus className="w-3.5 h-3.5" /> New Task
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-hidden p-0"> {/* P-0 to allow board to control padding */}
+            {/* Board Container */}
+            <div className="flex-1 overflow-hidden">
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <div className="flex gap-4 p-5 h-full"> {/* Added padding here */}
+                    <div className="flex gap-4 h-full overflow-x-auto pb-4 custom-scrollbar">
                         {STATUS_COLUMNS.map((status) => (
-                            <div key={status} className="flex-shrink-0 w-80 bg-zinc-900 border border-white/[0.04] rounded-xl flex flex-col">
-                                <div className="p-4 border-b border-white/[0.04] flex items-center justify-between">
-                                    <h3 className="font-bold text-zinc-300 uppercase tracking-wider text-sm">{status}</h3>
-                                    <span className="text-xs bg-white/5 px-2 py-0.5 rounded text-zinc-400">
+                            <div key={status} className="flex-shrink-0 w-80 border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col max-h-full">
+                                <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between shrink-0">
+                                    <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                                        <Layers className="w-3 h-3 text-indigo-500" /> {status}
+                                    </h3>
+                                    <div className="text-[10px] font-mono text-zinc-600 bg-white/5 px-2 py-0.5 rounded leading-none">
                                         {tasks.filter(t => t.status === status).length}
-                                    </span>
+                                    </div>
                                 </div>
 
                                 <Droppable droppableId={status}>
@@ -678,8 +529,10 @@ export default function AdminRoadmapPage() {
                                         <div
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
-                                            className={`flex-1 p-3 space-y-3 overflow-y-auto min-h-[100px] transition-colors ${snapshot.isDraggingOver ? 'bg-white/5' : ''
-                                                }`}
+                                            className={cn(
+                                                "flex-1 p-3 space-y-3 overflow-y-auto custom-scrollbar transition-colors",
+                                                snapshot.isDraggingOver ? 'bg-white/[0.02]' : ''
+                                            )}
                                         >
                                             {tasks.filter(t => t.status === status).map((task, index) => (
                                                 <Draggable key={task.id} draggableId={task.id} index={index}>
@@ -689,85 +542,48 @@ export default function AdminRoadmapPage() {
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
                                                             onClick={() => openEditor(task)}
-                                                            className={`
-                                                                bg-zinc-900/50 backdrop-blur-sm p-3 rounded-md border border-white/[0.04] 
-                                                                hover:border-zinc-600 hover:bg-zinc-900 transition-all group relative cursor-pointer
-                                                                ${snapshot.isDragging ? 'shadow-2xl ring-1 ring-white/10 z-50 rotate-2' : 'shadow-sm'}
-                                                            `}
+                                                            className={cn(
+                                                                "group bg-[#0F0F12] border border-white/[0.03] p-4 rounded-xl hover:border-zinc-700/40 hover:bg-[#141417] transition-all cursor-pointer relative",
+                                                                snapshot.isDragging ? "shadow-2xl ring-1 ring-indigo-500/20 z-50 rotate-1" : "shadow-sm"
+                                                            )}
                                                         >
-
-
-                                                            {/* Header Matches: Category + Priority? */}
-                                                            <div className="flex items-center justify-between mb-2">
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">
-                                                                        {task.category || 'General'}
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/10">
+                                                                    {task.category || 'Feature'}
+                                                                </span>
+                                                                {task.accelerations > 0 && (
+                                                                    <span className="flex items-center gap-0.5 text-emerald-500 text-[9px] font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/10">
+                                                                        <Zap className="w-2.5 h-2.5" /> {task.accelerations}x
                                                                     </span>
-                                                                    {task.accelerations > 0 && (
-                                                                        <span className="flex items-center gap-0.5 text-emerald-500/80 text-[10px] font-mono bg-emerald-500/5 px-1 rounded">
-                                                                            <Zap className="w-2.5 h-2.5" />
-                                                                            {task.accelerations}x
-                                                                        </span>
-                                                                    )}
-                                                                </div>
+                                                                )}
                                                             </div>
 
-                                                            {/* Content */}
-                                                            <h4 className="font-medium text-[13px] text-zinc-200 mb-1 leading-snug line-clamp-2">
-                                                                {getLocalizedContent(task.title) || <span className="italic text-zinc-600">Untitled</span>}
-                                                            </h4>
-                                                            <p className="text-[12px] text-zinc-500 line-clamp-2 leading-relaxed mb-3">
-                                                                {getLocalizedContent(task.description)}
-                                                            </p>
+                                                            <h4 className="text-[13px] font-bold text-zinc-100 mb-1 leading-snug line-clamp-2">{getLocalizedContent(task.title)}</h4>
+                                                            <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 mb-3 font-medium">{getLocalizedContent(task.description)}</p>
 
                                                             {task.coverImage && (
-                                                                <div className="mb-3 rounded-sm overflow-hidden border border-white/5 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                                <div className="mb-3 rounded-lg overflow-hidden border border-white/5 bg-black/20">
                                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                                    <img src={task.coverImage} alt="Cover" className="w-full h-20 object-cover" />
+                                                                    <img src={task.coverImage} alt="" className="w-full h-24 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                                                                 </div>
                                                             )}
 
-                                                            {/* Footer Meta */}
-                                                            <div className="flex items-center justify-between pt-2 border-t border-white/[0.04] mt-auto">
-                                                                <div className="flex items-center gap-3">
-                                                                    {/* Translation Status */}
-                                                                    {(() => {
-                                                                        const missingLocales = LOCALES.filter(l => !task.title[l]);
-                                                                        const currentCount = LOCALES.length - missingLocales.length;
-                                                                        const isFullyTranslated = missingLocales.length === 0;
-
-                                                                        return (
-                                                                            <div
-                                                                                title={isFullyTranslated ? "Fully Translated" : `Missing: ${missingLocales.join(', ')}`}
-                                                                                className={cn(
-                                                                                    "flex items-center gap-1 px-1 py-0.5 rounded transition-colors",
-                                                                                    isFullyTranslated
-                                                                                        ? "text-emerald-500/60 bg-emerald-500/5"
-                                                                                        : "text-amber-500/60 bg-amber-500/5"
-                                                                                )}
-                                                                            >
-                                                                                <Globe className="w-2.5 h-2.5" />
-                                                                                <span className="font-mono text-[9px]">{currentCount}/{LOCALES.length}</span>
-                                                                            </div>
-                                                                        );
-                                                                    })()}
-
-                                                                    {task.eta && (
-                                                                        <span className="text-[10px] text-zinc-600 font-mono flex items-center gap-1">
-                                                                            <Calendar className="w-2.5 h-2.5" />
-                                                                            {task.eta}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-
-                                                                {/* Mini Progress */}
-                                                                {task.progress !== undefined && (
-                                                                    <div className="flex items-center gap-1.5" title={`${task.progress}% Complete`}>
-                                                                        <div className="w-12 h-1 bg-zinc-800 rounded-full overflow-hidden">
-                                                                            <div className="h-full bg-zinc-500" style={{ width: `${task.progress}%` }} />
-                                                                        </div>
+                                                            <div className="flex items-center justify-between pt-2 border-t border-white/[0.04] mt-3">
+                                                                <div className="flex items-center gap-2.5">
+                                                                    <div className="flex items-center gap-1 text-zinc-600 font-mono text-[9px]">
+                                                                        <Calendar className="w-2.5 h-2.5" />
+                                                                        {task.targetDate || 'TBD'}
                                                                     </div>
-                                                                )}
+                                                                    <div className="flex items-center gap-1 text-zinc-600">
+                                                                        <Globe className="w-2.5 h-2.5" />
+                                                                        <span className="text-[9px] font-mono">
+                                                                            {LOCALES.length - LOCALES.filter(l => !task.title[l]).length}/{LOCALES.length}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="w-12 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                                                                    <div className="h-full bg-indigo-500" style={{ width: `${task.progress}%` }} />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )}
@@ -782,8 +598,6 @@ export default function AdminRoadmapPage() {
                     </div>
                 </DragDropContext>
             </div>
-        </div >
+        </div>
     );
 }
-
-

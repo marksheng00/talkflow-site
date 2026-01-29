@@ -22,8 +22,7 @@ function mapRowToRoadmapItem(row: Record<string, unknown>): RoadmapItem {
     title: (row.title as Record<string, string>) || { en: "" },
     description: (row.description as Record<string, string>) || { en: "" },
     status: (typeof row.status === "string" ? row.status : "researching") as RoadmapItem["status"],
-    category: typeof row.category === "string" ? row.category : undefined,
-    eta: typeof row.eta === "string" ? row.eta : undefined,
+    category: typeof row.category === "string" ? (row.category === "UI/UX" ? "UIUX" : row.category) : undefined,
     accelerations: toNumber(row.accelerations),
     created_at: typeof row.created_at === "string" ? row.created_at : null,
     startDate: typeof row.start_date === "string" ? row.start_date : undefined,
@@ -31,35 +30,23 @@ function mapRowToRoadmapItem(row: Record<string, unknown>): RoadmapItem {
     progress: toNumber(row.progress),
     coverImage: typeof row.cover_image === "string" ? row.cover_image : undefined,
     detailedContent: (row.detailed_content as Record<string, string>) || { en: "" },
-    sourceIdeaId: typeof row.source_idea_id === "string" ? row.source_idea_id : undefined,
   };
 }
 
-const mockRoadmapItems: RoadmapItem[] = [
-  {
-    id: "mock-1",
-    title: { en: "Adaptive interview simulator" },
-    description: { en: "Dynamic interviewer that mirrors tone, speed, and asks tougher follow-ups when you perform well." },
-    status: "building",
-    category: "Feature",
-    eta: "Q1",
-    accelerations: 24,
-    created_at: new Date().toISOString(),
-  },
-];
-
 export async function listRoadmapItems(): Promise<RoadmapItem[]> {
   const supabase = getSupabaseClient();
-  if (!supabase) return [...mockRoadmapItems];
+  if (!supabase) return [];
 
   const { data, error } = await supabase
     .from("roadmap_items")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("*");
+  // .order("created_at", { ascending: false });
 
   if (error || !data) {
-    console.warn("Falling back to mock roadmap data", error);
-    return [...mockRoadmapItems];
+    console.error("DEBUG: Supabase Roadmap Fetch Failed");
+    console.error("Error Details:", JSON.stringify(error, null, 2));
+    console.error("URL:", process.env.SUPABASE_URL || "MISSING");
+    return [];
   }
 
   return data.map(mapRowToRoadmapItem);
@@ -104,42 +91,42 @@ export async function accelerateRoadmapItem(id: string): Promise<RoadmapItem> {
  * Consolidates voting logic for ideas, bugs, and other votable items
  */
 export async function voteForItem<T extends { upvotes: number; downvotes?: number }>(
-    table: 'community_ideas' | 'bug_reports',
-    id: string,
-    direction: 'up' | 'down',
-    mapRow: (row: Record<string, unknown>) => T
+  table: 'community_ideas' | 'bug_reports',
+  id: string,
+  direction: 'up' | 'down',
+  mapRow: (row: Record<string, unknown>) => T
 ): Promise<T> {
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-        throw new Error("Database not available");
-    }
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    throw new Error("Database not available");
+  }
 
-    const { data: existing, error: fetchError } = await supabase
-        .from(table)
-        .select("*")
-        .eq("id", id)
-        .single();
+  const { data: existing, error: fetchError } = await supabase
+    .from(table)
+    .select("*")
+    .eq("id", id)
+    .single();
 
-    if (fetchError || !existing) {
-        throw new Error(fetchError?.message ?? "Item not found");
-    }
+  if (fetchError || !existing) {
+    throw new Error(fetchError?.message ?? "Item not found");
+  }
 
-    const updates = direction === "up"
-        ? { upvotes: (existing.upvotes ?? 0) + 1 }
-        : { downvotes: ((existing.downvotes ?? 0) + 1) };
+  const updates = direction === "up"
+    ? { upvotes: (existing.upvotes ?? 0) + 1 }
+    : { downvotes: ((existing.downvotes ?? 0) + 1) };
 
-    const { data, error } = await supabase
-        .from(table)
-        .update(updates)
-        .eq("id", id)
-        .select()
-        .single();
+  const { data, error } = await supabase
+    .from(table)
+    .update(updates)
+    .eq("id", id)
+    .select()
+    .single();
 
-    if (error || !data) {
-        throw new Error(error?.message ?? "Vote failed");
-    }
+  if (error || !data) {
+    throw new Error(error?.message ?? "Vote failed");
+  }
 
-    return mapRow(data);
+  return mapRow(data);
 }
 
 // ==========================================
@@ -151,7 +138,7 @@ function mapRowToIdea(row: Record<string, unknown>): CommunityIdea {
     id: String(row.id ?? randomUUID()),
     title: String(row.title ?? ""),
     description: typeof row.description === "string" ? row.description : "",
-    category: typeof row.category === "string" ? row.category : undefined,
+    category: typeof row.category === "string" ? (row.category === "UI/UX" ? "UIUX" : row.category) : undefined,
     status: (typeof row.status === "string" ? row.status : "open") as CommunityIdea["status"],
     upvotes: toNumber(row.upvotes),
     downvotes: toNumber(row.downvotes),
@@ -166,22 +153,9 @@ const ideaSubmissionSchema = z.object({
   category: z.string().max(80).optional(),
 });
 
-const mockIdeas: CommunityIdea[] = [
-  {
-    id: "mock-idea-1",
-    title: "Dark mode for mobile app",
-    description: "I often study at night and the white background is too bright.",
-    status: "open",
-    category: "UIUX",
-    upvotes: 45,
-    downvotes: 0,
-    created_at: new Date().toISOString(),
-  },
-];
-
 export async function listCommunityIdeas(): Promise<CommunityIdea[]> {
   const supabase = getSupabaseClient();
-  if (!supabase) return [...mockIdeas];
+  if (!supabase) return [];
 
   const { data, error } = await supabase
     .from("community_ideas")
@@ -189,8 +163,8 @@ export async function listCommunityIdeas(): Promise<CommunityIdea[]> {
     .order("created_at", { ascending: false });
 
   if (error || !data) {
-    console.warn("Falling back to mock ideas", error);
-    return [...mockIdeas];
+    console.warn("Failed to fetch community ideas", error);
+    return [];
   }
 
   return data.map(mapRowToIdea);
@@ -291,11 +265,9 @@ const bugSubmissionSchema = z.object({
   platform: z.enum(["iOS", "Android", "Web"]),
 });
 
-const mockBugs: BugReport[] = [];
-
 export async function listBugReports(): Promise<BugReport[]> {
   const supabase = getSupabaseClient();
-  if (!supabase) return [...mockBugs];
+  if (!supabase) return [];
 
   const { data, error } = await supabase
     .from("bug_reports")
@@ -303,8 +275,8 @@ export async function listBugReports(): Promise<BugReport[]> {
     .order("created_at", { ascending: false });
 
   if (error || !data) {
-    console.warn("Falling back to mock bugs", error);
-    return [...mockBugs];
+    console.warn("Failed to fetch bug reports", error);
+    return [];
   }
 
   return data.map(mapRowToBugReport);

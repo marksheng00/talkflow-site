@@ -104,29 +104,25 @@ export function useRoadmapActions({
         pendingBoosts.set(taskId, boostPromise);
     }
 
-    async function handleVote(id: string, direction: "up" | "down", e: React.MouseEvent) {
+    async function handleVote(id: string, e: React.MouseEvent) {
         e.stopPropagation();
         if (votedIdeas.has(id)) return;
 
         const previousIdeals = ideals;
         const prevSelectedIdea = selectedIdea;
         const optimisticallyUpdate = (i: CommunityIdea) => {
-            if (direction === "up") {
-                return { ...i, upvotes: i.upvotes + 1 };
-            } else {
-                return { ...i, downvotes: (i.downvotes || 0) + 1 };
-            }
+            return { ...i, upvotes: i.upvotes + 1 };
         };
 
         setIdeals(prev => prev.map(i => i.id === id ? optimisticallyUpdate(i) : i));
         if (selectedIdea?.id === id) {
             setSelectedIdea(optimisticallyUpdate(selectedIdea));
         }
-        setVotedIdeas(prev => new Map(prev).set(id, direction));
+        setVotedIdeas(prev => new Map(prev).set(id, "up"));
         setLastVotedId(id);
 
         try {
-            const updatedItem = await voteIdea(id, direction);
+            const updatedItem = await voteIdea(id, "up");
             setIdeals(prev => prev.map(i => i.id === id ? updatedItem : i));
             setSelectedIdea(current => current?.id === id ? updatedItem : current);
         } catch (error) {

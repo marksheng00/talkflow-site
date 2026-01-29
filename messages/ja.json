@@ -364,7 +364,7 @@
         "Hero": {
             "titlePrefix": "公開状態で",
             "titleSuffix": "構築中。",
-            "subtitle": "私たちの進捗を追跡し、今後の機能に投票し、エージェント型コミュニケーションの未来を一緒に形作りましょう。"
+            "subtitle": "私たちの進捗を追跡し、今後の機能を加速させ、エージェント型コミュニケーションの未来を一緒に形作りましょう。"
         },
         "Tabs": {
             "roadmap": "ロードマップ",
@@ -391,7 +391,7 @@
         },
         "RoadmapTab": {
             "taskOverview": "タスク概要",
-            "boost": "この機能を加速させる",
+            "boost": "このタスクを加速させる",
             "boosted": "加速しました！"
         },
         "IdeasTab": {
@@ -405,7 +405,7 @@
                 "under_review": "審査中",
                 "declined": "見送り"
             },
-            "vote": "賛成票",
+            "boost": "加速",
             "modal": {
                 "label": "アイデア"
             }
@@ -422,7 +422,7 @@
                 "resolved": "解決済み",
                 "wont_fix": "修正見送り"
             },
-            "vote": "賛成票",
+            "boost": "加速",
             "modal": {
                 "label": "バグ報告",
                 "description": "説明"

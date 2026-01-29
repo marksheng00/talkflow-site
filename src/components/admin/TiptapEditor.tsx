@@ -82,7 +82,7 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
     }
 
     return (
-        <div className="flex flex-col border border-white/10 rounded-xl overflow-hidden bg-black/20">
+        <div className="flex flex-col border border-white/[0.06] rounded-xl overflow-hidden bg-white/[0.01] focus-within:border-white/10 transition-all">
             {/* Toolbar */}
             {editable && (
                 <div className="flex flex-wrap items-center gap-1 p-2 border-b border-white/10 bg-white/5">

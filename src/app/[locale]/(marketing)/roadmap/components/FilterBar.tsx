@@ -41,7 +41,7 @@ export function FilterBar({
                                 : `bg-transparent border-white/10 text-slate-500 ${typeof colors === 'string' ? '' : colors.hover} hover:text-slate-300`
                                 }`}
                         >
-                            {t(`Filters.Platforms.${p}`)}
+                            {t.has(`Filters.Platforms.${p}`) ? t(`Filters.Platforms.${p}`) : p}
                         </button>
                     );
                 })}
@@ -72,7 +72,7 @@ export function FilterBar({
                             : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
                             }`}
                     >
-                        {t(`Filters.Categories.${cat}`)}
+                        {t.has(`Filters.Categories.${cat}`) ? t(`Filters.Categories.${cat}`) : cat}
                     </button>
                 );
             })}

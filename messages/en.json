@@ -364,7 +364,7 @@
         "Hero": {
             "titlePrefix": "Building in",
             "titleSuffix": "public.",
-            "subtitle": "Track our progress, vote on upcoming features, and help us shape the future of agentic communication."
+            "subtitle": "Track our progress, boost upcoming features, and help us shape the future of agentic communication."
         },
         "Tabs": {
             "roadmap": "Roadmap",
@@ -379,7 +379,8 @@
                 "Feature": "Feature",
                 "Content": "Content",
                 "AI Core": "AI Core",
-                "UIUX": "UIUX",
+                "UIUX": "UI/UX",
+                "System": "System",
                 "Bug": "Bug"
             },
             "Platforms": {
@@ -391,7 +392,7 @@
         },
         "RoadmapTab": {
             "taskOverview": "Task Overview",
-            "boost": "Boost this Feature",
+            "boost": "Boost this Task",
             "boosted": "Boosted!"
         },
         "IdeasTab": {
@@ -405,7 +406,7 @@
                 "under_review": "Under Review",
                 "declined": "Declined"
             },
-            "vote": "Upvote",
+            "boost": "Boost",
             "modal": {
                 "label": "IDEA"
             }
@@ -422,7 +423,7 @@
                 "resolved": "Resolved",
                 "wont_fix": "Won't Fix"
             },
-            "vote": "Upvote",
+            "boost": "Boost",
             "modal": {
                 "label": "BUG REPORT",
                 "description": "Description"

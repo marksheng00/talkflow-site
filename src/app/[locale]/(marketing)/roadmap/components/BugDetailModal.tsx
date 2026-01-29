@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { X, ArrowUp } from "lucide-react";
+import { X, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { BugReport } from "@/types/roadmap";
 import { AnimatedCounter } from "@/components/roadmap/AnimatedCounter";
@@ -49,7 +49,7 @@ export function BugDetailModal({
                             <div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <span className="text-xs font-medium text-rose-400 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20">
-                                        {t(`Filters.Platforms.${selectedBug.platform}`)}
+                                        {t.has(`Filters.Platforms.${selectedBug.platform}`) ? t(`Filters.Platforms.${selectedBug.platform}`) : selectedBug.platform}
                                     </span>
                                     <span className="text-xs text-slate-500 font-mono">
                                         {t("BugsTab.modal.label")}
@@ -57,23 +57,23 @@ export function BugDetailModal({
                                     {(() => {
                                         const statusMap = {
                                             reported: {
-                                                label: t("BugsTab.status.reported"),
+                                                label: t.has("BugsTab.status.reported") ? t("BugsTab.status.reported") : "reported",
                                                 color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
                                             },
                                             investigating: {
-                                                label: t("BugsTab.status.investigating"),
+                                                label: t.has("BugsTab.status.investigating") ? t("BugsTab.status.investigating") : "investigating",
                                                 color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
                                             },
                                             fixing: {
-                                                label: t("BugsTab.status.fixing"),
+                                                label: t.has("BugsTab.status.fixing") ? t("BugsTab.status.fixing") : "fixing",
                                                 color: "text-blue-400 bg-blue-500/10 border-blue-500/20",
                                             },
                                             resolved: {
-                                                label: t("BugsTab.status.resolved"),
+                                                label: t.has("BugsTab.status.resolved") ? t("BugsTab.status.resolved") : "resolved",
                                                 color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
                                             },
                                             wont_fix: {
-                                                label: t("BugsTab.status.wont_fix"),
+                                                label: t.has("BugsTab.status.wont_fix") ? t("BugsTab.status.wont_fix") : "wont_fix",
                                                 color: "text-neutral-400 bg-slate-500/10 border-slate-500/20",
                                             },
                                         };
@@ -112,24 +112,14 @@ export function BugDetailModal({
                         <button
                             onClick={(e) => handleBugVote(selectedBug.id, e)}
                             disabled={votedIdeas.has(selectedBug.id)}
-                            className={`flex-1 h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${votedIdeas.has(selectedBug.id)
-                                ? "bg-slate-800 text-emerald-400 cursor-default"
-                                : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:bg-emerald-500/20"
+                            className={`flex-1 h-12 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${votedIdeas.get(selectedBug.id) === "up"
+                                ? "bg-slate-800 text-emerald-500 cursor-default"
+                                : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
                                 }`}
                         >
-                            <ArrowUp className="h-5 w-5" />
+                            <Zap className={`h-5 w-5 ${votedIdeas.get(selectedBug.id) === "up" ? "fill-emerald-500" : ""}`} />
                             <span>
-                                {votedIdeas.has(selectedBug.id) ? (
-                                    <AnimatedCounter
-                                        from={selectedBug.upvotes - 1}
-                                        to={selectedBug.upvotes}
-                                        skipAnimation={lastVotedId !== selectedBug.id}
-                                        className="text-base font-bold"
-                                    />
-                                ) : (
-                                    selectedBug.upvotes
-                                )}{" "}
-                                {t("BugsTab.vote")}
+                                {votedIdeas.get(selectedBug.id) === "up" ? t('RoadmapTab.boosted') : t('RoadmapTab.boost')}
                             </span>
                         </button>
                     </div>
@@ -147,13 +137,13 @@ export function BugDetailModal({
                     <button
                         onClick={(e) => handleBugVote(selectedBug.id, e)}
                         disabled={votedIdeas.has(selectedBug.id)}
-                        className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.has(selectedBug.id)
+                        className={`flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-xl backdrop-blur-xl transition-all overflow-hidden ${votedIdeas.get(selectedBug.id) === "up"
                             ? "bg-black/80 border border-emerald-500/50 text-emerald-500 cursor-default"
-                            : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 hover:scale-105 cursor-pointer text-slate-500"
+                            : "bg-black/80 border border-white/10 hover:border-emerald-500/50 hover:scale-105 cursor-pointer text-neutral-400"
                             }`}
                     >
-                        {!votedIdeas.has(selectedBug.id) ? (
-                            <ArrowUp className="h-6 w-6 transition-transform group-hover:-translate-y-0.5" />
+                        {votedIdeas.get(selectedBug.id) !== "up" ? (
+                            <Zap className="h-6 w-6 text-emerald-500 fill-emerald-500" />
                         ) : (
                             <AnimatedCounter
                                 from={selectedBug.upvotes - 1}

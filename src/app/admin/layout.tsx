@@ -129,7 +129,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                 {!isCollapsed && (
                                     <div className="flex flex-col leading-tight whitespace-nowrap opacity-100 transition-opacity duration-300">
                                         <span className="text-[16px] font-bold tracking-tight text-white">talkflo</span>
-                                        <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-[0.2em]">Admin Center</span>
+                                        <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-[0.2em]">Admin</span>
                                     </div>
                                 )}
                             </div>
@@ -137,7 +137,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                         {/* Navigation */}
                         <nav className="flex-1 px-2 py-4 space-y-2 overflow-y-auto custom-scrollbar overflow-x-hidden">
-                            {!isCollapsed && <p className="px-2 pb-2 text-[10px] font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Platform</p>}
+                            {!isCollapsed && <p className="px-2 pb-2 text-[10px] font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Menu</p>}
                             {navItems.map((item) => {
                                 const isActive = pathname === item.href;
                                 return (

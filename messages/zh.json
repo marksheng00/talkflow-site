@@ -364,7 +364,7 @@
         "Hero": {
             "titlePrefix": "公开构建",
             "titleSuffix": "产品。",
-            "subtitle": "追踪我们的进度，为您期待的功能投票，并帮助我们共同塑造代理式沟通的未来。"
+            "subtitle": "追踪我们的进度，为您期待的功能加速，并帮助我们共同塑造代理式沟通的未来。"
         },
         "Tabs": {
             "roadmap": "路线图",
@@ -380,6 +380,7 @@
                 "Content": "内容",
                 "AI Core": "AI 核心",
                 "UIUX": "UI/UX",
+                "System": "系统",
                 "Bug": "Bug"
             },
             "Platforms": {
@@ -391,7 +392,7 @@
         },
         "RoadmapTab": {
             "taskOverview": "任务概览",
-            "boost": "加速此功能",
+            "boost": "加速此任务",
             "boosted": "已加速！"
         },
         "IdeasTab": {
@@ -405,7 +406,7 @@
                 "under_review": "审核中",
                 "declined": "暂不考虑"
             },
-            "vote": "赞成",
+            "boost": "加速",
             "modal": {
                 "label": "想法"
             }
@@ -422,7 +423,7 @@
                 "resolved": "已解决",
                 "wont_fix": "暂不修复"
             },
-            "vote": "赞成",
+            "boost": "加速",
             "modal": {
                 "label": "Bug 反馈",
                 "description": "详细描述"

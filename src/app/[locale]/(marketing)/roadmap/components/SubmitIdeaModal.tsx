@@ -84,7 +84,7 @@ export function SubmitIdeaModal({
                                             : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
                                             }`}
                                     >
-                                        {t(`Filters.Categories.${cat}`)}
+                                        {t.has(`Filters.Categories.${cat}`) ? t(`Filters.Categories.${cat}`) : cat}
                                     </button>
                                 ))}
                         </div>

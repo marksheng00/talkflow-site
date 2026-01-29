@@ -31,6 +31,23 @@ export function TaskDetailModal({
         return input[locale] || input["en"] || Object.values(input)[0] || "";
     };
 
+    const getCategoryColor = (category?: string) => {
+        switch (category) {
+            case "Feature":
+                return "text-blue-400 bg-blue-500/10 border-blue-500/20";
+            case "Content":
+                return "text-purple-400 bg-purple-500/10 border-purple-500/20";
+            case "AI Core":
+                return "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+            case "UIUX":
+                return "text-amber-400 bg-amber-500/10 border-amber-500/20";
+            case "Bug":
+                return "text-rose-400 bg-rose-500/10 border-rose-500/20";
+            default:
+                return "text-slate-400 bg-slate-500/10 border-slate-500/20";
+        }
+    };
+
     if (!mounted || !selectedTask) return null;
 
     return createPortal(
@@ -56,6 +73,8 @@ export function TaskDetailModal({
                                     alt={getLocalizedString(selectedTask.title)}
                                     fill
                                     className="object-cover"
+                                    unoptimized
+                                    priority
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/50 to-transparent" />
                             </div>
@@ -64,8 +83,8 @@ export function TaskDetailModal({
                         <div className="p-6 md:p-8 pb-8">
                             <div className="mb-6">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <span className="text-xs font-medium text-emerald-400 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                                        {t(`Filters.Categories.${selectedTask.category}`)}
+                                    <span className={`text-xs font-medium px-2 py-1 rounded-lg border ${getCategoryColor(selectedTask.category)}`}>
+                                        {selectedTask.category ? (t.has(`Filters.Categories.${selectedTask.category}`) ? t(`Filters.Categories.${selectedTask.category}`) : selectedTask.category) : ""}
                                     </span>
                                     {selectedTask.startDate && selectedTask.targetDate && (
                                         <span className="text-xs text-slate-500 font-mono">
@@ -76,7 +95,13 @@ export function TaskDetailModal({
                                 <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4 leading-tight">
                                     {getLocalizedString(selectedTask.title)}
                                 </h1>
-                                <div className="h-1.5 w-12 bg-emerald-500 mb-8 rounded-full" />
+                                <div className={`h-1.5 w-12 mb-8 rounded-full ${selectedTask.category === "Feature" ? "bg-blue-500" :
+                                    selectedTask.category === "Content" ? "bg-purple-500" :
+                                        selectedTask.category === "AI Core" ? "bg-emerald-500" :
+                                            selectedTask.category === "UIUX" ? "bg-amber-500" :
+                                                selectedTask.category === "Bug" ? "bg-rose-500" :
+                                                    "bg-emerald-500"
+                                    }`} />
                                 <p className="text-lg md:text-xl text-neutral-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
                                     {getLocalizedString(selectedTask.description)}
                                 </p>

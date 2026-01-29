@@ -32,8 +32,8 @@ export function RoadmapTab({
             <div className="flex gap-4 md:gap-6">
                 {/* LEFT: Fixed Task Column */}
                 <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
-                    <div className="mb-6 pb-4 border-b border-white/10">
-                        <div className="text-center">
+                    <div className="mb-6 pb-4 border-b border-white/10 px-2">
+                        <div className="text-left">
                             <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">{t('RoadmapTab.taskOverview')}</span>
                             <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
                         </div>
@@ -52,8 +52,8 @@ export function RoadmapTab({
                                                 {getLocalizedString(task.title)}
                                             </h4>
                                             <div className="hidden md:flex items-center gap-2">
-                                                <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 px-1.5 py-0.5">
-                                                    {t(`Filters.Categories.${task.category}`)}
+                                                <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 pr-1.5 py-0.5">
+                                                    {task.category ? (t.has(`Filters.Categories.${task.category}`) ? t(`Filters.Categories.${task.category}`) : task.category) : ""}
                                                 </span>
                                                 <div className="flex items-center gap-1 text-slate-600">
                                                     <Zap className="h-2.5 w-2.5" />
