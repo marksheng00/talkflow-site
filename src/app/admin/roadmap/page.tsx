@@ -218,6 +218,25 @@ export default function AdminRoadmapPage() {
         }
     };
 
+    const deleteTask = async (id: string) => {
+        const ok = window.confirm("Are you sure you want to delete this task? This cannot be undone.");
+        if (!ok) return;
+
+        const { error } = await supabaseClient
+            .from("roadmap_items")
+            .delete()
+            .eq("id", id);
+
+        if (!error) {
+            setTasks(tasks.filter(t => t.id !== id));
+            setEditingTask(null);
+            setViewMode('kanban');
+        } else {
+            console.error("Delete failed:", error);
+            alert(`Failed to delete: ${error.message}`);
+        }
+    };
+
     const handleAutoTranslate = async () => {
         if (!editingTask) return;
         const fieldsToTranslate = [{ key: 'title', label: 'Title' }, { key: 'description', label: 'Summary' }, { key: 'detailedContent', label: 'Detailed Content' }];
@@ -311,6 +330,15 @@ export default function AdminRoadmapPage() {
                         >
                             {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
                         </button>
+
+                        {editingTask.id && (
+                            <button
+                                onClick={() => deleteTask(editingTask.id as string)}
+                                className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 hover:border-rose-500/30 font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5"
+                            >
+                                <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                        )}
 
                         <button onClick={() => handleSaveTask(editingTask)} className="px-5 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5 shadow-lg">
                             <Activity className="w-3.5 h-3.5" /> Save Changes

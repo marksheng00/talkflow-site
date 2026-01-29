@@ -59,7 +59,7 @@ export default function AdminIdeasPage() {
 
     const deleteIdea = async (id: string) => {
         const ok = window.confirm("Are you sure you want to delete this idea?");
-        if (!ok) return;
+        if (!ok) return false;
 
         const { error } = await supabaseClient
             .from("community_ideas")
@@ -68,9 +68,11 @@ export default function AdminIdeasPage() {
 
         if (!error) {
             setIdeas(ideas.filter(idea => idea.id !== id));
+            return true;
         } else {
             console.error("Delete failed:", error);
             alert(`Failed to delete: ${error.message}`);
+            return false;
         }
     };
 
@@ -133,9 +135,9 @@ export default function AdminIdeasPage() {
                         />
                         <div className="h-4 w-px bg-white/10 mx-1" />
                         <button
-                            onClick={() => {
-                                deleteIdea(selectedIdea.id);
-                                setSelectedIdea(null);
+                            onClick={async () => {
+                                const success = await deleteIdea(selectedIdea.id);
+                                if (success) setSelectedIdea(null);
                             }}
                             className="p-2 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
                         >
@@ -184,7 +186,7 @@ export default function AdminIdeasPage() {
         <AdminContainer>
             <AdminHeader title="Ideas">
                 <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
-                    {(['all', 'open', 'planned', 'under_review', 'declined'] as const).map((s) => (
+                    {(['all', 'open', 'under_review', 'planned', 'declined'] as const).map((s) => (
                         <button
                             key={s}
                             onClick={() => setFilter(s)}
@@ -193,7 +195,7 @@ export default function AdminIdeasPage() {
                                 filter === s ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
                             )}
                         >
-                            {s}
+                            {s === 'under_review' ? 'Review' : s}
                         </button>
                     ))}
                 </div>

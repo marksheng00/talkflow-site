@@ -62,7 +62,7 @@ export default function AdminBugsPage() {
 
     const deleteBug = async (id: string) => {
         const ok = window.confirm("Are you sure you want to delete this bug report?");
-        if (!ok) return;
+        if (!ok) return false;
 
         const { error } = await supabaseClient
             .from("bug_reports")
@@ -71,9 +71,11 @@ export default function AdminBugsPage() {
 
         if (!error) {
             setBugs(bugs.filter(b => b.id !== id));
+            return true;
         } else {
             console.error("Delete failed:", error);
             alert(`Failed to delete: ${error.message}`);
+            return false;
         }
     };
 
@@ -143,9 +145,9 @@ export default function AdminBugsPage() {
                         />
                         <div className="h-4 w-px bg-white/10 mx-1" />
                         <button
-                            onClick={() => {
-                                deleteBug(selectedBug.id);
-                                setSelectedBug(null);
+                            onClick={async () => {
+                                const success = await deleteBug(selectedBug.id);
+                                if (success) setSelectedBug(null);
                             }}
                             className="p-2 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
                         >
