@@ -10,7 +10,6 @@ import {
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
 
 // Hooks
-import { useGanttScroll } from "./hooks/use-gantt-scroll";
 import { useRoadmapState } from "./hooks/use-roadmap-state";
 import { useRoadmapActions } from "./hooks/use-roadmap-actions";
 
@@ -121,8 +120,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
         bugs,
     });
 
-    // Gantt Scroll Hook
-    const { timelineRef } = useGanttScroll(activeTab);
+
 
     return (
         <AuroraBackground className="min-h-screen pb-24 text-white overflow-x-hidden">
@@ -158,9 +156,7 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                     <RoadmapTab
                         filteredTasks={filteredTasks}
                         setSelectedTask={setSelectedTask}
-                        timelineRef={timelineRef}
                         mounted={mounted}
-                        todayPercent={todayPercent}
                         locale={locale}
                     />
                 )}

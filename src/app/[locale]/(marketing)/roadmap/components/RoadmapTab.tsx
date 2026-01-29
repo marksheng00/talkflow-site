@@ -15,11 +15,9 @@ import {
 import { cn } from "@/lib/utils";
 
 interface RoadmapTabProps {
-    filteredTasks: RoadmapItem[]; // This now receives ALL tasks
+    filteredTasks: RoadmapItem[];
     setSelectedTask: (task: RoadmapItem) => void;
-    timelineRef_deprecated?: React.RefObject<HTMLDivElement | null>; // Kept for compatibility if parent passes it
     mounted: boolean;
-    todayPercent_deprecated?: number | null;
     locale: string;
 }
 
