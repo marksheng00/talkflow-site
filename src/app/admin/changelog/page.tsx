@@ -66,7 +66,6 @@ export default function AdminChangelogPage() {
     const [selectedRelease, setSelectedRelease] = useState<Release | null>(null);
     const [changes, setChanges] = useState<ChangeItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState("");
     const [translating, setTranslating] = useState(false);
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
@@ -96,10 +95,6 @@ export default function AdminChangelogPage() {
             let query = supabaseClient
                 .from("changelog_releases")
                 .select("*", { count: 'exact' });
-
-            if (searchQuery) {
-                query = query.ilike("version", `%${searchQuery}%`);
-            }
 
             const { data, count, error } = await query
                 .order("publish_date", { ascending: false })
@@ -135,12 +130,9 @@ export default function AdminChangelogPage() {
 
     useEffect(() => {
         fetchReleases();
-    }, [page, searchQuery]);
+    }, [page]);
 
-    // Reset page when search changes
-    useEffect(() => {
-        setPage(1);
-    }, [searchQuery]);
+
 
     useEffect(() => {
         if (selectedRelease) {
@@ -342,13 +334,6 @@ export default function AdminChangelogPage() {
         return (
             <AdminContainer>
                 <AdminHeader title="Changelog">
-                    <AdminSearch
-                        placeholder="Search releases..."
-                        value={searchQuery}
-                        onSearch={setSearchQuery}
-                        className="w-48"
-                    />
-                    <div className="h-4 w-px bg-white/10 mx-1" />
                     <AdminButton icon={<Plus className="w-3.5 h-3.5" />} onClick={handleCreateRelease}>
                         New Release
                     </AdminButton>
