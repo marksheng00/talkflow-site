@@ -197,8 +197,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     {/* Main Content */}
                     <main className="flex-1 min-w-0 bg-[#09090b] flex flex-col h-full overflow-hidden">
                         {/* Optional Topbar or Breadcrumb could go here */}
-                        <div className="flex-1 overflow-y-auto custom-scrollbar">
-                            {/* Pro-tip: Add max-width constraint for readability if content assumes it, but for dashboards full width is often better */}
+                        <div className="flex-1 flex flex-col overflow-hidden">
                             {children}
                         </div>
                     </main>

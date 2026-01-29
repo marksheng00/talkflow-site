@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
-import { AdminContainer, AdminHeader } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminButton, AdminSearch, AdminPagination } from "@/components/admin/ui/AdminKit";
 import {
-    Search, Edit, Trash2, Plus, Tag, Layers, Hash, Loader2, CornerDownRight
+    Edit, Trash2, Plus, Tag, Hash, Loader2, CornerDownRight
 } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { deleteCategory } from "./actions";
 
 interface Category {
@@ -18,7 +19,6 @@ interface Category {
     postCount: number;
 }
 
-// Map same as frontend, assuming styles are available globally
 const COLOR_STYLES: Record<string, string> = {
     blue: "bg-blue-500/10 text-blue-400 border-blue-500/20",
     emerald: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
@@ -41,7 +41,6 @@ export default function AdminCategoriesPage() {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            // Fetch categories, parent title, and post count
             const query = `*[_type == "category"] | order(parent->title.en asc, title.en asc) {
                 _id,
                 "title": title.en,
@@ -53,27 +52,17 @@ export default function AdminCategoriesPage() {
 
             try {
                 const data = await client.fetch<Category[]>(query);
-
-                // Sort hierarchically in frontend
                 const parents = data.filter(c => !c.parent).sort((a, b) => (a.title || '').localeCompare(b.title || ''));
                 const children = data.filter(c => c.parent);
-
                 const sorted: Category[] = [];
 
                 parents.forEach(parent => {
                     sorted.push(parent);
-                    // Find children for this parent
                     const myChildren = children.filter(child => child.parent === parent.title);
-                    // Sort children alphabetically
                     myChildren.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
                     sorted.push(...myChildren);
                 });
 
-                // Handle orphans (children whose parent might be missing or renamed differently)
-                // In exact match logic above, if parent title changed but ref didn't update in our logic... 
-                // Wait, logic uses parent->title.en. If parent exists, we have its title.
-                // The only edge case is if we can't match string to string perfectly or duplicates.
-                // But generally safe. Any leftover children?
                 const usedIds = new Set(sorted.map(s => s._id));
                 const orphans = data.filter(c => !usedIds.has(c._id));
                 sorted.push(...orphans);
@@ -102,60 +91,51 @@ export default function AdminCategoriesPage() {
     };
 
     const filteredCategories = categories.filter(cat =>
-        cat.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        cat.slug?.current.toLowerCase().includes(searchQuery.toLowerCase())
+        (cat.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (cat.slug?.current || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (loading) return (
         <div className="h-96 flex items-center justify-center text-zinc-500">
-            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading categories...
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Mapping Taxonomies...
         </div>
     );
 
     return (
         <AdminContainer>
-            <div className="flex items-center justify-between mb-8">
-                <AdminHeader title="Blog Categories" description="Manage taxonomy and view post distribution." className="mb-0" />
-                <Link
-                    href="/admin/studio/intent/create/type=category;template=category"
-                    target="_blank"
-                    className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs transition-all shadow-lg hover:shadow-emerald-500/20"
-                >
-                    <Plus className="w-4 h-4" /> New Category
+            <AdminHeader
+                title="Blog Categories"
+                description="Manage global taxonomy and content distribution."
+                className="mb-6"
+            >
+                <AdminSearch
+                    placeholder="Search categories..."
+                    onSearch={setSearchQuery}
+                    className="w-64"
+                />
+                <div className="h-4 w-px bg-white/10 mx-1" />
+                <Link href="/admin/studio/intent/create/type=category;template=category" target="_blank">
+                    <AdminButton icon={<Plus className="w-3.5 h-3.5" />}>
+                        New Category
+                    </AdminButton>
                 </Link>
-            </div>
+            </AdminHeader>
 
-            {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                    <input
-                        type="text"
-                        placeholder="Search categories..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-zinc-900/50 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-zinc-300 placeholder:text-zinc-600 outline-none focus:border-emerald-500/50 transition-all font-medium"
-                    />
-                </div>
-            </div>
-
-            {/* Data Table */}
-            <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col">
+            <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col mb-4">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-[#0c0c0e] border-b border-white/[0.05]">
-                            <tr>
-                                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest w-1/3">Category Name</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Color</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Posts</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Slug</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Actions</th>
+                            <tr className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest whitespace-nowrap">
+                                <th className="px-6 py-4 w-1/3">Category Hierarchy</th>
+                                <th className="px-6 py-4">Color Profile</th>
+                                <th className="px-6 py-4 text-center">Referenced Posts</th>
+                                <th className="px-6 py-4">Slug Index</th>
+                                <th className="px-6 py-4 text-right pr-6">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.03]">
+                        <tbody className="divide-y divide-white/[0.02]">
                             {filteredCategories.map((cat) => (
                                 <tr key={cat._id} className="group hover:bg-white/[0.02] transition-colors">
-                                    {/* Name Column */}
                                     <td className="px-6 py-4">
                                         <div className="flex items-center">
                                             {cat.parent && (
@@ -166,58 +146,54 @@ export default function AdminCategoriesPage() {
                                             <Link
                                                 href={`/admin/studio/intent/edit/id=${cat._id};type=category`}
                                                 target="_blank"
-                                                className={`text-sm font-bold transition-all hover:underline decoration-emerald-500/30 ${cat.parent ? 'text-zinc-300' : 'text-zinc-100 text-base'}`}
+                                                className={cn(
+                                                    "font-bold transition-all hover:underline leading-none",
+                                                    cat.parent ? "text-zinc-400 text-xs" : "text-zinc-100 text-[14px]"
+                                                )}
                                             >
                                                 {cat.title || "Untitled"}
                                             </Link>
                                         </div>
                                     </td>
-
-                                    {/* Color Column */}
                                     <td className="px-6 py-4">
                                         {cat.color ? (
-                                            <span className={`inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight border ${COLOR_STYLES[cat.color] || 'bg-zinc-800 border-zinc-700 text-zinc-400'}`}>
-                                                {cat.color}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <div className={cn("w-2 h-2 rounded-full", cat.color.startsWith('bg-') ? cat.color : `bg-${cat.color}-500/40`)} />
+                                                <span className={cn("text-[10px] font-bold uppercase tracking-tight", cat.color.startsWith('text-') ? cat.color : `text-${cat.color}-400`)}>
+                                                    {cat.color}
+                                                </span>
+                                            </div>
                                         ) : (
-                                            <span className="text-[10px] text-zinc-600 italic">Inherited / None</span>
+                                            <span className="text-[10px] text-zinc-700 font-bold uppercase italic">No Profile</span>
                                         )}
                                     </td>
-
-                                    {/* Posts Count */}
                                     <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-8 h-6 rounded flex items-center justify-center text-xs font-bold ${cat.postCount > 0 ? 'bg-indigo-500/10 text-indigo-400' : 'bg-zinc-800 text-zinc-600'}`}>
+                                        <div className="flex justify-center">
+                                            <div className={cn(
+                                                "min-w-[32px] h-6 rounded-md flex items-center justify-center text-[11px] font-mono font-bold",
+                                                cat.postCount > 0 ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" : "bg-white/5 text-zinc-600"
+                                            )}>
                                                 {cat.postCount}
                                             </div>
                                         </div>
                                     </td>
-
-                                    {/* Slug */}
                                     <td className="px-6 py-4">
-                                        <div className="flex items-center gap-1 text-[11px] text-zinc-500 font-mono bg-white/[0.02] px-2 py-1 rounded w-fit">
-                                            <Hash className="w-3 h-3 opacity-50" />
+                                        <div className="flex items-center gap-1.5 text-[10px] font-mono text-zinc-500 bg-white/5 py-1 px-2 rounded-lg w-fit">
+                                            <Hash className="w-3 h-3 opacity-30" />
                                             {cat.slug?.current}
                                         </div>
                                     </td>
-
-                                    {/* Actions */}
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                                            <Link
-                                                href={`/admin/studio/intent/edit/id=${cat._id};type=category`}
-                                                target="_blank"
-                                                className="p-2 hover:bg-emerald-500/10 text-zinc-400 hover:text-emerald-500 rounded-lg transition-colors flex items-center gap-2 text-[10px] font-bold uppercase"
-                                            >
-                                                <Edit className="w-3.5 h-3.5" /> Edit
+                                    <td className="px-6 py-4 text-right pr-6">
+                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Link href={`/admin/studio/intent/edit/id=${cat._id};type=category`} target="_blank">
+                                                <AdminButton variant="ghost" size="sm" icon={<Edit className="w-3.5 h-3.5" />} />
                                             </Link>
-                                            <div className="w-px h-3 bg-white/10" />
-                                            <button
-                                                onClick={(e) => handleDelete(cat._id, e)}
-                                                className="p-2 hover:bg-rose-500/10 text-zinc-400 hover:text-rose-500 rounded-lg transition-colors"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
+                                            <AdminButton
+                                                variant="danger"
+                                                size="sm"
+                                                icon={<Trash2 className="w-3.5 h-3.5" />}
+                                                onClick={(e: React.MouseEvent) => handleDelete(cat._id, e)}
+                                            />
                                         </div>
                                     </td>
                                 </tr>
@@ -225,10 +201,10 @@ export default function AdminCategoriesPage() {
 
                             {filteredCategories.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="py-24 text-center text-zinc-500">
-                                        <div className="flex flex-col items-center gap-2 opacity-50">
-                                            <Tag className="w-8 h-8 stroke-1" />
-                                            <p className="text-xs font-bold uppercase tracking-widest">No categories found</p>
+                                    <td colSpan={5} className="py-20 text-center">
+                                        <div className="flex flex-col items-center gap-2 opacity-20">
+                                            <Tag className="w-8 h-8 text-zinc-500" />
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">No Taxonomies Found</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -236,6 +212,13 @@ export default function AdminCategoriesPage() {
                         </tbody>
                     </table>
                 </div>
+
+                <AdminPagination
+                    totalItems={categories.length}
+                    currentPage={1}
+                    totalPages={1}
+                    onPageChange={() => { }}
+                />
             </div>
         </AdminContainer>
     );

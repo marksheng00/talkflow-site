@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Bug, Lightbulb, Loader2, Activity, Monitor, User as UserIcon, Globe, Download, RotateCw } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { cn } from "@/lib/utils";
+import { AdminContainer, AdminHeader, AdminButton } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -121,15 +122,8 @@ export default function AdminDashboardPage() {
 
 
     return (
-        <div className="p-6 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-700">
-            {/* Console Header */}
-            <div className="flex items-center justify-between border-b border-white/[0.05] pb-6">
-                <div>
-                    <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
-                        Dashboard
-                    </h1>
-                </div>
-            </div>
+        <AdminContainer className="space-y-6">
+            <AdminHeader title="Dashboard" className="border-b border-white/[0.05] pb-6" />
 
 
             {/* Quick Metrics */}
@@ -168,16 +162,15 @@ export default function AdminDashboardPage() {
                             <Activity className="w-3 h-3" /> System Status
                         </h3>
                         <div className="flex items-center gap-2">
-                            <button
+                            <AdminButton
+                                variant="secondary"
+                                size="sm"
+                                loading={refreshing}
                                 onClick={refreshHealth}
-                                disabled={refreshing}
-                                className="group flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50"
+                                icon={<RotateCw className={cn("w-3 h-3", refreshing && "animate-spin")} />}
                             >
-                                <span className="text-[9px] font-mono text-zinc-400 group-hover:text-zinc-200 uppercase transition-colors">
-                                    {refreshing ? 'Refreshing...' : 'Refresh'}
-                                </span>
-                                <RotateCw className={cn("w-3 h-3 text-zinc-500 group-hover:text-zinc-300 transition-colors", refreshing && "animate-spin")} />
-                            </button>
+                                {refreshing ? 'Refreshing' : 'Refresh'}
+                            </AdminButton>
                         </div>
                     </div>
 
@@ -265,7 +258,7 @@ export default function AdminDashboardPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </AdminContainer>
     );
 }
 

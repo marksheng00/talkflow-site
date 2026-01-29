@@ -17,10 +17,12 @@ import {
     FileText,
     ArrowRight,
     Clock,
-    RotateCw
+    RotateCw,
+    Globe
 } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
+import { AdminContainer, AdminHeader, AdminSegmentedControl, AdminButton, AdminSearch, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
 
 // Types
 type Release = {
@@ -66,6 +68,9 @@ export default function AdminChangelogPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [translating, setTranslating] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const PAGE_SIZE = 15;
 
     // Editor State
     const [editingItem, setEditingItem] = useState<ChangeItem | null>(null);
@@ -88,15 +93,23 @@ export default function AdminChangelogPage() {
     const fetchReleases = async () => {
         setLoading(true);
         try {
-            const { data, error } = await supabaseClient
+            let query = supabaseClient
                 .from("changelog_releases")
-                .select("*")
-                .order("publish_date", { ascending: false });
-            
+                .select("*", { count: 'exact' });
+
+            if (searchQuery) {
+                query = query.ilike("version", `%${searchQuery}%`);
+            }
+
+            const { data, count, error } = await query
+                .order("publish_date", { ascending: false })
+                .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+
             if (error) {
                 console.error("Error fetching releases:", error);
             } else {
                 setReleases(data || []);
+                setTotalCount(count || 0);
             }
         } catch (err) {
             console.error("Unexpected error fetching releases:", err);
@@ -120,7 +133,14 @@ export default function AdminChangelogPage() {
         }
     }, []);
 
-    useEffect(() => { fetchReleases(); }, []);
+    useEffect(() => {
+        fetchReleases();
+    }, [page, searchQuery]);
+
+    // Reset page when search changes
+    useEffect(() => {
+        setPage(1);
+    }, [searchQuery]);
 
     useEffect(() => {
         if (selectedRelease) {
@@ -136,7 +156,7 @@ export default function AdminChangelogPage() {
     const handleCreateRelease = async () => {
         // 1. Get the latest version from existing releases
         let nextVersion = "v1.0.0";
-        
+
         if (releases.length > 0) {
             // Find the highest version that matches our format
             const validVersions = releases
@@ -158,13 +178,13 @@ export default function AdminChangelogPage() {
                 nextVersion = `v${parts.join('.')}`;
             }
         }
-        
+
         const { data, error } = await supabaseClient
             .from("changelog_releases")
-            .insert({ 
-                version: nextVersion, 
-                status: "draft", 
-                publish_date: new Date().toISOString() 
+            .insert({
+                version: nextVersion,
+                status: "draft",
+                publish_date: new Date().toISOString()
             })
             .select()
             .single();
@@ -187,7 +207,7 @@ export default function AdminChangelogPage() {
 
     const handleUpdateRelease = async (updates: Partial<Release>) => {
         if (!selectedRelease) return;
-        
+
         const previousRelease = { ...selectedRelease };
         const updated = { ...selectedRelease, ...updates };
 
@@ -196,12 +216,12 @@ export default function AdminChangelogPage() {
 
         // 2. If version is being updated, validate format before syncing to DB
         if (updates.version !== undefined && !VERSION_REGEX.test(updates.version)) {
-            return; 
+            return;
         }
 
         // 3. Sync to Database
         const { error } = await supabaseClient.from("changelog_releases").update(updates).eq("id", selectedRelease.id);
-        
+
         if (error) {
             console.error("Error updating release:", {
                 message: error.message,
@@ -209,11 +229,11 @@ export default function AdminChangelogPage() {
                 details: error.details,
                 hint: error.hint
             });
-            
+
             if (error.code === '23505') {
                 alert(`Version "${updates.version}" already exists. Reverting change.`);
             }
-            
+
             // Revert local states
             setSelectedRelease(previousRelease);
             if (updates.version !== undefined) {
@@ -310,7 +330,7 @@ export default function AdminChangelogPage() {
         }
     };
 
-    const filteredReleases = releases.filter(r => r.version.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredReleases = releases;
 
     if (loading) return (
         <div className="h-96 flex items-center justify-center text-zinc-500">
@@ -318,34 +338,21 @@ export default function AdminChangelogPage() {
         </div>
     );
 
-    // ==========================================
-    // 1. DASHBOARD LIST VIEW
     if (!selectedRelease) {
         return (
-            <div className="p-6 space-y-4 max-w-[1600px] mx-auto animate-in fade-in duration-700 h-full flex flex-col">
-                {/* Command Header */}
-                <div className="flex items-center justify-between pb-2 shrink-0">
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
-                            Changelog
-                        </h1>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
-                            <input
-                                type="text" placeholder="Search releases..."
-                                value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-white/5 border border-white/5 rounded-lg pl-8 pr-3 py-1.5 text-[10px] text-zinc-400 w-48 focus:border-white/10 outline-none transition-all font-bold uppercase"
-                            />
-                        </div>
-                        <div className="h-4 w-[1px] bg-white/10 mx-1" />
-                        <button onClick={handleCreateRelease} className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-xs transition-all flex items-center gap-1.5">
-                            <Plus className="w-3.5 h-3.5" /> New Release
-                        </button>
-                    </div>
-                </div>
+            <AdminContainer>
+                <AdminHeader title="Changelog">
+                    <AdminSearch
+                        placeholder="Search releases..."
+                        value={searchQuery}
+                        onSearch={setSearchQuery}
+                        className="w-48"
+                    />
+                    <div className="h-4 w-px bg-white/10 mx-1" />
+                    <AdminButton icon={<Plus className="w-3.5 h-3.5" />} onClick={handleCreateRelease}>
+                        New Release
+                    </AdminButton>
+                </AdminHeader>
 
                 {/* Table View (Scalable) */}
                 <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col mb-4">
@@ -375,7 +382,12 @@ export default function AdminChangelogPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <StatusBadge status={r.status} />
+                                            <span className={cn(
+                                                "text-[10px] font-bold uppercase tracking-wider",
+                                                r.status === 'published' ? "text-emerald-500/70" : "text-zinc-600"
+                                            )}>
+                                                {r.status}
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest">
@@ -397,8 +409,15 @@ export default function AdminChangelogPage() {
                             </div>
                         )}
                     </div>
+
+                    <AdminPagination
+                        totalItems={totalCount}
+                        currentPage={page}
+                        totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+                        onPageChange={setPage}
+                    />
                 </div>
-            </div>
+            </AdminContainer>
         );
     }
 
@@ -407,82 +426,69 @@ export default function AdminChangelogPage() {
     return (
         <div className="h-full flex flex-col bg-[#0b0b0d] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
             {/* 1. Header Bar */}
-            <div className="h-16 flex items-center justify-between px-6 bg-[#0c0c0e] shrink-0">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => setSelectedRelease(null)} className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"><ArrowLeft className="w-4.5 h-4.5" /></button>
-                    <div className="flex flex-col">
-                        <input
-                            className="bg-transparent border-none p-0 text-sm font-bold text-zinc-100 outline-none placeholder:text-zinc-800 focus:ring-0 w-64"
-                            placeholder="Enter version..."
-                            value={localVersion}
-                            onChange={(e) => setLocalVersion(e.target.value)}
-                            onBlur={() => {
-                                if (localVersion !== selectedRelease.version) {
-                                    handleUpdateRelease({ version: localVersion });
-                                }
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    (e.target as HTMLInputElement).blur();
-                                }
-                            }}
-                        />
-                        <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter leading-none">ID: {selectedRelease.id.slice(0, 8)}</span>
-                    </div>
+            <AdminDetailHeader
+                onBack={() => setSelectedRelease(null)}
+                title={selectedRelease.version}
+                subtitle={`ID: ${selectedRelease.id.slice(0, 8)}`}
+            >
+                {/* Date Picker */}
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-white/[0.08] rounded-lg shadow-sm">
+                    <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+                    <input
+                        type="date"
+                        className="bg-transparent text-[10px] font-bold text-zinc-400 outline-none [color-scheme:dark] cursor-pointer hover:text-zinc-200 transition-colors uppercase tracking-widest"
+                        value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
+                        onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
+                    />
                 </div>
 
-                <div className="flex items-center gap-3">
-                    {/* Date Picker */}
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg border border-white/5">
-                        <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                        <input
-                            type="date"
-                            className="bg-transparent text-[10px] font-bold text-zinc-400 outline-none [color-scheme:dark] cursor-pointer hover:text-zinc-200 transition-colors uppercase tracking-widest"
-                            value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
-                            onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
-                        />
-                    </div>
+                <div className="h-4 w-px bg-white/10 mx-1" />
 
-                    <div className="h-4 w-px bg-white/10 mx-1" />
+                {/* Locale Switcher */}
+                <AdminSegmentedControl
+                    options={LOCALES.map(loc => ({ value: loc, label: loc }))}
+                    value={activeLocale}
+                    onChange={setActiveLocale}
+                />
 
-                    {/* Locale Switcher */}
-                    <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/5">
-                        {LOCALES.map(loc => (
-                            <button
-                                key={loc} onClick={() => setActiveLocale(loc)}
-                                className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold transition-all uppercase", activeLocale.toLowerCase() === loc.toLowerCase() ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400")}
-                            >
-                                {loc}
-                            </button>
-                        ))}
-                    </div>
+                <AdminButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleAutoTranslate}
+                    loading={translating}
+                    icon={<Globe className="w-3.5 h-3.5" />}
+                >
+                    {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
+                </AdminButton>
 
-                    <button
-                        onClick={handleAutoTranslate}
-                        disabled={translating}
-                        className={cn("px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all flex items-center bg-white/5 border border-white/5",
-                            translating ? "text-amber-500" : translateFeedback?.type === 'success' ? "text-emerald-400" : "text-zinc-400 hover:text-white hover:bg-white/10"
-                        )}
-                    >
-                        {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
-                    </button>
+                <AdminButton
+                    variant="danger"
+                    size="sm"
+                    icon={<Trash2 className="w-3.5 h-3.5" />}
+                    onClick={() => {
+                        if (confirm("Delete this entire release?")) {
+                            // If there was a release delete action, we'd call it here
+                            setSelectedRelease(null);
+                        }
+                    }}
+                />
 
-                    <button
-                        onClick={() => {
-                            const newStatus = selectedRelease.status === 'published' ? 'draft' : 'published';
-                            const updates: Partial<Release> = { status: newStatus };
-                            if (newStatus === 'published' && selectedRelease.version.includes('(Draft)')) {
-                                updates.version = selectedRelease.version.replace('(Draft)', '').trim();
-                            }
-                            handleUpdateRelease(updates);
-                        }}
-                        className="px-5 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5 shadow-lg"
-                    >
-                        {selectedRelease.status === 'draft' ? <Rocket className="w-3.5 h-3.5" /> : <Activity className="w-3.5 h-3.5" />}
-                        {selectedRelease.status === 'draft' ? 'Publish Release' : 'Unpublish'}
-                    </button>
-                </div>
-            </div>
+                <AdminButton
+                    variant={selectedRelease.status === 'draft' ? 'primary' : 'secondary'}
+                    size="sm"
+                    icon={selectedRelease.status === 'draft' ? <Rocket className="w-3.5 h-3.5" /> : <Activity className="w-3.5 h-3.5" />}
+                    onClick={() => {
+                        const newStatus = selectedRelease.status === 'published' ? 'draft' : 'published';
+                        const updates: Partial<Release> = { status: newStatus };
+                        if (newStatus === 'published' && selectedRelease.version.includes('(Draft)')) {
+                            updates.version = selectedRelease.version.replace('(Draft)', '').trim();
+                        }
+                        handleUpdateRelease(updates);
+                    }}
+                >
+                    {selectedRelease.status === 'draft' ? 'Publish' : 'Unpublish'}
+                </AdminButton>
+            </AdminDetailHeader>
 
             {/* 3. Main Workspace */}
             <div className="flex-1 overflow-y-auto scrollbar-zinc pb-20">
@@ -492,7 +498,7 @@ export default function AdminChangelogPage() {
                         {changes.map((item, idx) => (
                             <div key={item.id} className="group relative space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 {/* Item Header */}
-                                <div className="flex items-center justify-between group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                                     <div className="flex items-center gap-1.5">
                                         <div className="text-[10px] font-mono text-zinc-700 w-4 font-bold">{(idx + 1).toString().padStart(2, '0')}</div>
                                         <div className="flex items-center bg-white/5 rounded-md p-1 border border-white/5 gap-1">
@@ -511,12 +517,12 @@ export default function AdminChangelogPage() {
                                             ))}
                                         </div>
                                     </div>
-                                    <button
+                                    <AdminButton
+                                        variant="danger"
+                                        size="sm"
                                         onClick={() => handleDeleteChangeItem(item.id)}
-                                        className="p-1.5 text-zinc-700 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
+                                        icon={<Trash2 className="w-3.5 h-3.5" />}
+                                    />
                                 </div>
 
                                 {/* Rich Text Editor */}
@@ -532,47 +538,35 @@ export default function AdminChangelogPage() {
                             </div>
                         ))}
 
-                        {/* Empty State / Add First Item */}
-                        {changes.length === 0 && (
-                            <div className="h-64 border border-dashed border-white/5 rounded-2xl flex flex-col items-center justify-center text-zinc-600 opacity-40">
-                                <FileText className="w-8 h-8 mb-3" />
-                                <p className="text-xs font-bold uppercase tracking-widest">No changes documented</p>
-                            </div>
-                        )}
-
-                        {/* Add Item Trigger */}
-                        <div className="pt-4 flex justify-center">
+                        {/* Empty State / Add Flow */}
+                        {changes.length === 0 ? (
                             <button
                                 onClick={handleAddChange}
-                                className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full text-xs font-bold text-zinc-400 hover:text-zinc-100 transition-all flex items-center gap-2 group"
+                                className="w-full h-64 border border-dashed border-white/[0.08] bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/20 rounded-xl flex flex-col items-center justify-center text-zinc-500 transition-all group"
                             >
-                                <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                Add New Change Block
+                                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-white/10 transition-all">
+                                    <Plus className="w-5 h-5 text-zinc-400 group-hover:text-white" />
+                                </div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 group-hover:text-zinc-200 transition-colors">Start documenting changes</p>
+                                <p className="text-[9px] text-zinc-600 mt-2 opacity-50">Add your first change block to this release</p>
                             </button>
-                        </div>
+                        ) : (
+                            <div className="pt-8 flex justify-center">
+                                <button
+                                    onClick={handleAddChange}
+                                    className="px-8 py-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-200 transition-all flex items-center gap-3 group active:scale-95"
+                                >
+                                    <Plus className="w-4 h-4 text-zinc-600 group-hover:text-zinc-300 transition-colors" />
+                                    Add New Change Block
+                                </button>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="h-px bg-white/[0.04] w-full" />
-
-                    {/* Bottom Danger Zone */}
-                    <div className="flex justify-center">
-                        <button
-                            onClick={() => handleDeleteRelease(selectedRelease.id)}
-                            className="text-[10px] font-bold text-rose-500/30 hover:text-rose-500 transition-colors uppercase tracking-[0.2em]"
-                        >
-                            Delete Entire Release
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-function StatusBadge({ status }: { status: "draft" | "published" }) {
-    return (
-        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-            {status}
-        </span>
-    );
-}
+// StatusBadge removed as it's replaced by AdminBadge

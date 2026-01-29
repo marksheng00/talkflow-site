@@ -17,7 +17,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -28,27 +28,44 @@ export default function AdminBugsPage() {
     const [bugs, setBugs] = useState<BugReport[]>([]);
     const [selectedBug, setSelectedBug] = useState<BugReport | null>(null);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState<'all' | 'open' | 'resolved'>('all');
+    const [filter, setFilter] = useState<BugStatus | 'all'>('all');
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const PAGE_SIZE = 15;
 
     useEffect(() => {
         const fetchBugs = async () => {
-            const { data, error } = await supabaseClient
+            setLoading(true);
+            let query = supabaseClient
                 .from("bug_reports")
-                .select("*")
-                .order("created_at", { ascending: false });
+                .select("*", { count: 'exact' });
+
+            if (filter !== 'all') {
+                query = query.eq("status", filter);
+            }
+
+            const { data, count, error } = await query
+                .order("created_at", { ascending: false })
+                .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
             if (error) {
                 console.error("Error fetching bugs:", error);
             } else {
                 setBugs(data || []);
+                setTotalCount(count || 0);
             }
             setLoading(false);
         };
         fetchBugs();
-    }, []);
+    }, [filter, page]);
+
+    // Reset page when filter changes
+    useEffect(() => {
+        setPage(1);
+    }, [filter]);
 
     const updateStatus = async (id: string, newStatus: BugStatus) => {
-        setBugs(bugs.map(b => b.id === id ? { ...b, status: newStatus } : b));
+        setBugs(bugs.map(b => b.id === id ? { ...b, status: newStatus as any } : b));
 
         const { error } = await supabaseClient
             .from("bug_reports")
@@ -92,12 +109,7 @@ export default function AdminBugsPage() {
         return <Monitor className="w-3 h-3" />;
     };
 
-    const filteredBugs = bugs.filter(b => {
-        if (filter === 'all') return true;
-        if (filter === 'open') return !['resolved', 'wont_fix'].includes(b.status);
-        if (filter === 'resolved') return ['resolved', 'wont_fix'].includes(b.status);
-        return true;
-    });
+    const filteredBugs = bugs;
 
     if (loading) return (
         <div className="h-96 flex items-center justify-center text-zinc-500">
@@ -109,52 +121,37 @@ export default function AdminBugsPage() {
     if (selectedBug) {
         return (
             <div className="h-full flex flex-col bg-[#0b0b0d] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
-                {/* Header */}
-                <div className="h-16 flex items-center justify-between px-6 bg-[#0c0c0e] shrink-0">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSelectedBug(null)}
-                            className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"
-                        >
-                            <ArrowLeft className="w-4.5 h-4.5" />
-                        </button>
-                        <div className="flex flex-col">
-                            <h2 className="text-sm font-bold text-zinc-100 line-clamp-1 max-w-md">
-                                {selectedBug.title}
-                            </h2>
-                            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter leading-none">
-                                ID: {selectedBug.id.slice(0, 8)}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <AdminStatusSelector
-                            value={selectedBug.status}
-                            options={[
-                                { value: 'reported', label: 'Reported' },
-                                { value: 'investigating', label: 'Investigating' },
-                                { value: 'fixing', label: 'Fixing' },
-                                { value: 'resolved', label: 'Resolved' },
-                                { value: 'wont_fix', label: "Won't Fix" },
-                            ]}
-                            onChange={(s) => {
-                                updateStatus(selectedBug.id, s);
-                                setSelectedBug({ ...selectedBug, status: s });
-                            }}
-                        />
-                        <div className="h-4 w-px bg-white/10 mx-1" />
-                        <button
-                            onClick={async () => {
-                                const success = await deleteBug(selectedBug.id);
-                                if (success) setSelectedBug(null);
-                            }}
-                            className="p-2 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
+                <AdminDetailHeader
+                    title={selectedBug.title}
+                    subtitle={`ID: ${selectedBug.id.slice(0, 8)}`}
+                    onBack={() => setSelectedBug(null)}
+                >
+                    <AdminStatusSelector
+                        size="sm"
+                        value={selectedBug.status}
+                        options={[
+                            { value: 'reported', label: 'Reported' },
+                            { value: 'investigating', label: 'Investigating' },
+                            { value: 'fixing', label: 'Fixing' },
+                            { value: 'resolved', label: 'Resolved' },
+                            { value: 'wont_fix', label: "Won't Fix" },
+                        ]}
+                        onChange={(s) => {
+                            updateStatus(selectedBug.id, s);
+                            setSelectedBug({ ...selectedBug, status: s });
+                        }}
+                    />
+                    <div className="h-4 w-px bg-white/10 mx-1" />
+                    <AdminButton
+                        variant="danger"
+                        size="sm"
+                        onClick={async () => {
+                            const success = await deleteBug(selectedBug.id);
+                            if (success) setSelectedBug(null);
+                        }}
+                        icon={<Trash2 className="w-3.5 h-3.5" />}
+                    />
+                </AdminDetailHeader>
 
                 {/* Content - MINIMALISTIC REFACTOR */}
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
@@ -219,20 +216,18 @@ export default function AdminBugsPage() {
     return (
         <AdminContainer>
             <AdminHeader title="Bugs">
-                <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
-                    {(['all', 'open', 'resolved'] as const).map((s) => (
-                        <button
-                            key={s}
-                            onClick={() => setFilter(s)}
-                            className={cn(
-                                "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
-                                filter === s ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
-                            )}
-                        >
-                            {s}
-                        </button>
-                    ))}
-                </div>
+                <AdminSegmentedControl
+                    value={filter}
+                    onChange={(val: any) => setFilter(val)}
+                    options={[
+                        { value: 'all', label: 'All' },
+                        { value: 'reported', label: 'Reported' },
+                        { value: 'investigating', label: 'Investigating' },
+                        { value: 'fixing', label: 'Fixing' },
+                        { value: 'resolved', label: 'Resolved' },
+                        { value: 'wont_fix', label: "Won't Fix" },
+                    ]}
+                />
             </AdminHeader>
 
             {/* Table View (Scalable) */}
@@ -304,6 +299,13 @@ export default function AdminBugsPage() {
                         </div>
                     )}
                 </div>
+
+                <AdminPagination
+                    totalItems={totalCount}
+                    currentPage={page}
+                    totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+                    onPageChange={setPage}
+                />
             </div>
         </AdminContainer>
     );

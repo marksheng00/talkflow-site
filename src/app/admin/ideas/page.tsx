@@ -14,7 +14,7 @@ import {
     ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -26,26 +26,43 @@ export default function AdminIdeasPage() {
     const [selectedIdea, setSelectedIdea] = useState<CommunityIdea | null>(null);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | IdeaStatus>('all');
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const PAGE_SIZE = 15;
 
     useEffect(() => {
         const fetchIdeas = async () => {
-            const { data, error } = await supabaseClient
+            setLoading(true);
+            let query = supabaseClient
                 .from("community_ideas")
-                .select("*")
-                .order("created_at", { ascending: false });
+                .select("*", { count: 'exact' });
+
+            if (filter !== 'all') {
+                query = query.eq("status", filter);
+            }
+
+            const { data, count, error } = await query
+                .order("created_at", { ascending: false })
+                .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
             if (error) {
                 console.error("Error fetching ideas:", error);
             } else {
                 setIdeas(data || []);
+                setTotalCount(count || 0);
             }
             setLoading(false);
         };
         fetchIdeas();
-    }, []);
+    }, [filter, page]);
+
+    // Reset page when filter changes
+    useEffect(() => {
+        setPage(1);
+    }, [filter]);
 
     const updateStatus = async (id: string, newStatus: IdeaStatus) => {
-        setIdeas(ideas.map(idea => idea.id === id ? { ...idea, status: newStatus } : idea));
+        setIdeas(ideas.map(idea => idea.id === id ? { ...idea, status: newStatus as any } : idea));
 
         const { error } = await supabaseClient
             .from("community_ideas")
@@ -76,7 +93,7 @@ export default function AdminIdeasPage() {
         }
     };
 
-    const filteredIdeas = filter === 'all' ? ideas : ideas.filter(i => i.status === filter);
+    const filteredIdeas = ideas;
 
     if (loading) return (
         <div className="h-96 flex items-center justify-center text-zinc-500">
@@ -88,63 +105,36 @@ export default function AdminIdeasPage() {
     if (selectedIdea) {
         return (
             <div className="h-full flex flex-col bg-[#0b0b0d] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
-                {/* Header */}
-                <div className="h-16 flex items-center justify-between px-6 bg-[#0c0c0e] shrink-0">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSelectedIdea(null)}
-                            className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"
-                        >
-                            <ArrowLeft className="w-4.5 h-4.5" />
-                        </button>
-                        <div className="flex flex-col">
-                            <h2 className="text-sm font-bold text-zinc-100 line-clamp-1 max-w-md">
-                                {selectedIdea.title}
-                            </h2>
-                            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter leading-none">
-                                ID: {selectedIdea.id.slice(0, 8)}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/5">
-                            <div className={cn(
-                                "px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight flex items-center gap-1.5",
-                                "bg-zinc-800 text-zinc-100 shadow-sm"
-                            )}>
-                                <ThumbsUp className="w-3 h-3 text-emerald-500" />
-                                {selectedIdea.upvotes} Upvotes
-                            </div>
-                        </div>
-
-                        <div className="h-4 w-px bg-white/10 mx-1" />
-
-                        <AdminStatusSelector
-                            value={selectedIdea.status}
-                            options={[
-                                { value: 'open', label: 'Open' },
-                                { value: 'under_review', label: 'Review' },
-                                { value: 'planned', label: 'Planned' },
-                                { value: 'declined', label: 'Declined' },
-                            ]}
-                            onChange={(s) => {
-                                updateStatus(selectedIdea.id, s);
-                                setSelectedIdea({ ...selectedIdea, status: s });
-                            }}
-                        />
-                        <div className="h-4 w-px bg-white/10 mx-1" />
-                        <button
-                            onClick={async () => {
-                                const success = await deleteIdea(selectedIdea.id);
-                                if (success) setSelectedIdea(null);
-                            }}
-                            className="p-2 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
+                <AdminDetailHeader
+                    title={selectedIdea.title}
+                    subtitle={`ID: ${selectedIdea.id.slice(0, 8)}`}
+                    onBack={() => setSelectedIdea(null)}
+                >
+                    <AdminStatusSelector
+                        size="sm"
+                        value={selectedIdea.status}
+                        options={[
+                            { value: 'open', label: 'Open' },
+                            { value: 'under_review', label: 'Review' },
+                            { value: 'planned', label: 'Planned' },
+                            { value: 'declined', label: 'Declined' },
+                        ]}
+                        onChange={(s) => {
+                            updateStatus(selectedIdea.id, s);
+                            setSelectedIdea({ ...selectedIdea, status: s });
+                        }}
+                    />
+                    <div className="h-4 w-px bg-white/10 mx-1" />
+                    <AdminButton
+                        variant="danger"
+                        size="sm"
+                        onClick={async () => {
+                            const success = await deleteIdea(selectedIdea.id);
+                            if (success) setSelectedIdea(null);
+                        }}
+                        icon={<Trash2 className="w-3.5 h-3.5" />}
+                    />
+                </AdminDetailHeader>
 
                 {/* Content - MINIMALISTIC REFACTOR */}
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
@@ -185,20 +175,17 @@ export default function AdminIdeasPage() {
     return (
         <AdminContainer>
             <AdminHeader title="Ideas">
-                <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
-                    {(['all', 'open', 'under_review', 'planned', 'declined'] as const).map((s) => (
-                        <button
-                            key={s}
-                            onClick={() => setFilter(s)}
-                            className={cn(
-                                "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
-                                filter === s ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
-                            )}
-                        >
-                            {s === 'under_review' ? 'Review' : s}
-                        </button>
-                    ))}
-                </div>
+                <AdminSegmentedControl
+                    options={[
+                        { value: 'all', label: 'All' },
+                        { value: 'open', label: 'Open' },
+                        { value: 'under_review', label: 'Review' },
+                        { value: 'planned', label: 'Planned' },
+                        { value: 'declined', label: 'Declined' },
+                    ]}
+                    value={filter}
+                    onChange={setFilter}
+                />
             </AdminHeader>
 
             {/* Table View (Scalable) */}
@@ -269,6 +256,13 @@ export default function AdminIdeasPage() {
                         </div>
                     )}
                 </div>
+
+                <AdminPagination
+                    totalItems={totalCount}
+                    currentPage={page}
+                    totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+                    onPageChange={setPage}
+                />
             </div>
         </AdminContainer>
     );

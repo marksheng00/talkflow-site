@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { RoadmapItem, RoadmapStatus } from "@/types/roadmap";
 import { createClient } from "@supabase/supabase-js";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { Plus, X, Loader2, Calendar, ArrowLeft, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload, CalendarDays, Map, Activity, Settings, Trash2 } from "lucide-react";
+import { Plus, X, Loader2, Calendar, ArrowLeft, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload, CalendarDays, Map, Activity, Settings, Trash2, ChevronRight } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
+import { AdminContainer, AdminHeader, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminSearch, AdminPagination, AdminStatusSelector } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -20,7 +21,12 @@ export default function AdminRoadmapPage() {
     const [tasks, setTasks] = useState<RoadmapItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingTask, setEditingTask] = useState<Partial<RoadmapItem> | null>(null);
-    const [viewMode, setViewMode] = useState<'kanban' | 'editor'>('kanban');
+    const [viewMode, setViewMode] = useState<'kanban' | 'editor' | 'list'>('kanban');
+    const [filterStatus, setFilterStatus] = useState<RoadmapStatus | "all">("all");
+    const [filterCategory, setFilterCategory] = useState<string>("all");
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const PAGE_SIZE = 15;
 
     // Editor Language State
     const [activeLocale, setActiveLocale] = useState<string>('en');
@@ -41,32 +47,89 @@ export default function AdminRoadmapPage() {
     };
 
     const fetchTasks = async () => {
-        const { data, error } = await supabaseClient
-            .from("roadmap_items")
-            .select("*")
-            .order("created_at", { ascending: false });
+        setLoading(true);
+        try {
+            let query = supabaseClient
+                .from("roadmap_items")
+                .select("*", { count: 'exact' });
 
-        if (error) {
-            console.error("Error fetching roadmap:", error);
-        } else {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mappedTasks = (data || []).map((t: any) => ({
-                ...t,
-                title: t.title || { en: "" },
-                description: t.description || { en: "" },
-                detailedContent: t.detailed_content || { en: "" },
-                coverImage: t.cover_image,
-                startDate: t.start_date,
-                targetDate: t.target_date
-            }));
-            setTasks(mappedTasks);
+            if (filterStatus !== "all") {
+                query = query.eq("status", filterStatus);
+            }
+
+            if (filterCategory !== "all") {
+                query = query.eq("category", filterCategory);
+            }
+
+            // --- OPTIMIZATION FOR 1000+ TASKS ---
+            // If in Kanban mode, we only want ALL active tasks + TOP 20 released items
+            // to prevent performance and UI disaster.
+            if (viewMode === 'kanban') {
+                // In a perfect world, we'd do complex union queries, 
+                // but for simplicity, we'll order by status and release date
+                query = query.order("created_at", { ascending: false });
+            } else {
+                // In list mode, standard server-side pagination handles the load
+                query = query.range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1)
+                    .order("created_at", { ascending: false });
+            }
+
+            const { data, count, error } = await query;
+
+            if (error) {
+                console.error("Error fetching roadmap:", error);
+            } else {
+                let mappedTasks = (data || []).map((t: any) => ({
+                    ...t,
+                    title: t.title || { en: "" },
+                    description: t.description || { en: "" },
+                    detailedContent: t.detailed_content || { en: "" },
+                    coverImage: t.cover_image,
+                    startDate: t.start_date,
+                    targetDate: t.target_date
+                }));
+
+                // If Kanban, manually slice the 'released' tasks to top 20
+                if (viewMode === 'kanban') {
+                    const released = mappedTasks.filter(t => t.status === 'released').slice(0, 20);
+                    const active = mappedTasks.filter(t => t.status !== 'released');
+                    mappedTasks = [...active, ...released];
+                }
+
+                setTasks(mappedTasks);
+                setTotalCount(count || 0);
+            }
+
+            if (error) {
+                console.error("Error fetching roadmap:", error);
+            } else {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const mappedTasks = (data || []).map((t: any) => ({
+                    ...t,
+                    title: t.title || { en: "" },
+                    description: t.description || { en: "" },
+                    detailedContent: t.detailed_content || { en: "" },
+                    coverImage: t.cover_image,
+                    startDate: t.start_date,
+                    targetDate: t.target_date
+                }));
+                setTasks(mappedTasks);
+                setTotalCount(count || 0);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
         fetchTasks();
-    }, []);
+    }, [viewMode, page, filterStatus, filterCategory]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [viewMode, filterStatus, filterCategory]);
 
     const onDragEnd = async (result: DropResult) => {
         const { destination, source, draggableId } = result;
@@ -298,53 +361,39 @@ export default function AdminRoadmapPage() {
     if (viewMode === 'editor' && editingTask) {
         return (
             <div className="h-full flex flex-col bg-[#09090b] text-zinc-300 animate-in fade-in duration-500 overflow-hidden">
-                <div className="h-16 flex items-center justify-between px-6 bg-[#09090b]/50 backdrop-blur-xl shrink-0">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => setViewMode('kanban')} className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"><ArrowLeft className="w-4.5 h-4.5" /></button>
-                        <div className="flex flex-col">
-                            <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
-                                {getLocalizedContent(editingTask.title) || 'Untitled Task'}
-                            </h2>
-                            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter">ID: {editingTask.id?.slice(0, 8) || 'Draft'}</span>
-                        </div>
-                    </div>
+                <AdminDetailHeader
+                    title={getLocalizedContent(editingTask.title) || 'Untitled Task'}
+                    subtitle={`ID: ${editingTask.id?.slice(0, 8) || 'Draft'}`}
+                    onBack={() => setViewMode('kanban')}
+                >
+                    <AdminSegmentedControl
+                        options={LOCALES.map(loc => ({ value: loc, label: loc }))}
+                        value={activeLocale}
+                        onChange={setActiveLocale}
+                    />
 
-                    <div className="flex items-center gap-3">
-                        <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/5">
-                            {LOCALES.map(loc => (
-                                <button
-                                    key={loc} onClick={() => setActiveLocale(loc)}
-                                    className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold transition-all uppercase", activeLocale === loc ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400")}
-                                >
-                                    {loc}
-                                </button>
-                            ))}
-                        </div>
+                    <AdminButton
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleAutoTranslate}
+                        loading={translating}
+                    >
+                        {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
+                    </AdminButton>
 
-                        <button
-                            onClick={handleAutoTranslate}
-                            disabled={translating}
-                            className={cn("px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all flex items-center bg-white/5 border border-white/5",
-                                translating ? "text-amber-500" : translateFeedback?.type === 'success' ? "text-emerald-400" : "text-zinc-400 hover:text-white hover:bg-white/10"
-                            )}
-                        >
-                            {translating ? "Translating..." : translateFeedback?.type === 'success' ? "Done" : "Auto-Translate"}
-                        </button>
+                    {editingTask.id && (
+                        <AdminButton
+                            variant="danger"
+                            size="sm"
+                            onClick={() => deleteTask(editingTask.id as string)}
+                            icon={<Trash2 className="w-3.5 h-3.5" />}
+                        />
+                    )}
 
-                        {editingTask.id && (
-                            <button
-                                onClick={() => deleteTask(editingTask.id as string)}
-                                className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 hover:border-rose-500/30 font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5"
-                            >
-                                <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                        )}
-
-                        <button onClick={() => handleSaveTask(editingTask)} className="px-5 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-[11px] transition-all flex items-center gap-1.5 shadow-lg">
-                            <Activity className="w-3.5 h-3.5" /> Save Changes
-                        </button>
-                    </div>
-                </div>
+                    <AdminButton size="sm" icon={<Activity className="w-3.5 h-3.5" />} onClick={() => handleSaveTask(editingTask)}>
+                        Save Changes
+                    </AdminButton>
+                </AdminDetailHeader>
 
                 <div className="flex-1 overflow-y-auto scrollbar-zinc">
                     <div className="max-w-[1400px] mx-auto p-8 grid grid-cols-1 lg:grid-cols-4 gap-12">
@@ -497,135 +546,234 @@ export default function AdminRoadmapPage() {
         );
     }
 
-    // KANBAN VIEW
     return (
-        <div className="p-6 space-y-4 max-w-[1600px] mx-auto animate-in fade-in duration-700 h-full flex flex-col">
-            {/* Command Header */}
-            <div className="flex items-center justify-between pb-2 shrink-0">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
-                        Roadmap
-                    </h1>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
-                        {LOCALES.map(loc => (
-                            <button
-                                key={loc}
-                                onClick={() => setActiveLocale(loc)}
-                                className={cn(
-                                    "px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight transition-all",
-                                    activeLocale === loc
-                                        ? "bg-zinc-800 text-zinc-100 shadow-sm"
-                                        : "text-zinc-500 hover:text-zinc-300"
-                                )}
-                            >
-                                {loc}
-                            </button>
-                        ))}
+        <AdminContainer>
+            <AdminHeader
+                title={
+                    <div className="flex items-center gap-4">
+                        <h1 className="text-2xl font-bold text-white tracking-tight">Roadmap</h1>
+                        <AdminSegmentedControl
+                            options={[
+                                { value: 'kanban', label: 'Board' },
+                                { value: 'list', label: 'List' }
+                            ]}
+                            value={viewMode === 'list' ? 'list' : 'kanban'}
+                            onChange={(v: string) => setViewMode(v as any)}
+                        />
                     </div>
-
-                    <div className="h-4 w-[1px] bg-white/10 mx-1" />
-
-                    <button
-                        onClick={() => openEditor()}
-                        className="px-4 py-1.5 bg-zinc-100 hover:bg-white text-black font-bold rounded-lg text-xs transition-all flex items-center gap-1.5"
-                    >
-                        <Plus className="w-3.5 h-3.5" /> New Task
-                    </button>
+                }
+            >
+                <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
+                    <AdminStatusSelector
+                        size="sm"
+                        value={filterStatus}
+                        onChange={(val: string) => setFilterStatus(val as any)}
+                        options={[
+                            { value: 'all', label: 'All Status' },
+                            ...STATUS_COLUMNS.map(s => ({ value: s, label: s.toUpperCase() }))
+                        ]}
+                        className="min-w-[140px]"
+                    />
+                    <AdminStatusSelector
+                        size="sm"
+                        value={filterCategory}
+                        onChange={setFilterCategory}
+                        options={[
+                            { value: 'all', label: 'All Categories' },
+                            ...["Feature", "Content", "AI Core", "UIUX"].map(c => ({ value: c, label: c }))
+                        ]}
+                        className="min-w-[140px]"
+                    />
                 </div>
-            </div>
+
+                <div className="h-4 w-[1px] bg-white/10 mx-1" />
+
+                <AdminSegmentedControl
+                    options={LOCALES.map(loc => ({ value: loc, label: loc }))}
+                    value={activeLocale}
+                    onChange={setActiveLocale}
+                />
+
+                <div className="h-4 w-[1px] bg-white/10 mx-1" />
+
+                <AdminButton icon={<Plus className="w-3.5 h-3.5" />} onClick={() => openEditor()}>
+                    New Task
+                </AdminButton>
+            </AdminHeader>
 
             {/* Board Container */}
-            <div className="flex-1 overflow-hidden">
-                <DragDropContext onDragEnd={onDragEnd}>
-                    <div className="flex gap-4 h-full overflow-x-auto pb-4 custom-scrollbar">
-                        {STATUS_COLUMNS.map((status) => (
-                            <div key={status} className="flex-shrink-0 w-80 border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col max-h-full">
-                                <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between shrink-0">
-                                    <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-                                        <Layers className="w-3 h-3 text-indigo-500" /> {status}
-                                    </h3>
-                                    <div className="text-[10px] font-mono text-zinc-600 bg-white/5 px-2 py-0.5 rounded leading-none">
-                                        {tasks.filter(t => t.status === status).length}
-                                    </div>
-                                </div>
-
-                                <Droppable droppableId={status}>
-                                    {(provided, snapshot) => (
-                                        <div
-                                            {...provided.droppableProps}
-                                            ref={provided.innerRef}
-                                            className={cn(
-                                                "flex-1 p-3 space-y-3 overflow-y-auto custom-scrollbar transition-colors",
-                                                snapshot.isDraggingOver ? 'bg-white/[0.02]' : ''
-                                            )}
-                                        >
-                                            {tasks.filter(t => t.status === status).map((task, index) => (
-                                                <Draggable key={task.id} draggableId={task.id} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                            onClick={() => openEditor(task)}
-                                                            className={cn(
-                                                                "group bg-[#0F0F12] border border-white/[0.03] p-4 rounded-xl hover:border-zinc-700/40 hover:bg-[#141417] transition-all cursor-pointer relative",
-                                                                snapshot.isDragging ? "shadow-2xl ring-1 ring-indigo-500/20 z-50 rotate-1" : "shadow-sm"
-                                                            )}
-                                                        >
-                                                            <div className="flex items-center gap-2 mb-2">
-                                                                <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/10">
-                                                                    {task.category || 'Feature'}
-                                                                </span>
-                                                                {task.accelerations > 0 && (
-                                                                    <span className="flex items-center gap-0.5 text-emerald-500 text-[9px] font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/10">
-                                                                        <Zap className="w-2.5 h-2.5" /> {task.accelerations}x
-                                                                    </span>
-                                                                )}
-                                                            </div>
-
-                                                            <h4 className="text-[13px] font-bold text-zinc-100 mb-1 leading-snug line-clamp-2">{getLocalizedContent(task.title)}</h4>
-                                                            <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 mb-3 font-medium">{getLocalizedContent(task.description)}</p>
-
-                                                            {task.coverImage && (
-                                                                <div className="mb-3 rounded-lg overflow-hidden border border-white/5 bg-black/20">
-                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                                    <img src={task.coverImage} alt="" className="w-full h-24 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                                                                </div>
-                                                            )}
-
-                                                            <div className="flex items-center justify-between pt-2 border-t border-white/[0.04] mt-3">
-                                                                <div className="flex items-center gap-2.5">
-                                                                    <div className="flex items-center gap-1 text-zinc-600 font-mono text-[9px]">
-                                                                        <Calendar className="w-2.5 h-2.5" />
-                                                                        {task.targetDate || 'TBD'}
-                                                                    </div>
-                                                                    <div className="flex items-center gap-1 text-zinc-600">
-                                                                        <Globe className="w-2.5 h-2.5" />
-                                                                        <span className="text-[9px] font-mono">
-                                                                            {LOCALES.length - LOCALES.filter(l => !task.title[l]).length}/{LOCALES.length}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="w-12 h-1 bg-zinc-800 rounded-full overflow-hidden">
-                                                                    <div className="h-full bg-indigo-500" style={{ width: `${task.progress}%` }} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
+            <div className="flex-1 overflow-hidden flex flex-col">
+                {viewMode === 'kanban' ? (
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <div className="flex gap-4 h-full overflow-x-auto pb-4 custom-scrollbar">
+                            {STATUS_COLUMNS
+                                .filter(s => filterStatus === 'all' || s === filterStatus)
+                                .map((status) => (
+                                    <div key={status} className="flex-shrink-0 w-80 border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col max-h-full">
+                                        <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between shrink-0">
+                                            <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                                                <Layers className="w-3 h-3 text-indigo-500" /> {status}
+                                            </h3>
+                                            <div className="text-[10px] font-mono text-zinc-600 bg-white/5 px-2 py-0.5 rounded leading-none">
+                                                {status === 'released' ? (
+                                                    `Showing 20/` + tasks.filter(t => t.status === status).length
+                                                ) : (
+                                                    tasks.filter(t => t.status === status).length
+                                                )}
+                                            </div>
                                         </div>
-                                    )}
-                                </Droppable>
-                            </div>
-                        ))}
+
+                                        <Droppable droppableId={status}>
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    {...provided.droppableProps}
+                                                    ref={provided.innerRef}
+                                                    className={cn(
+                                                        "flex-1 p-3 space-y-3 overflow-y-auto custom-scrollbar transition-colors",
+                                                        snapshot.isDraggingOver ? 'bg-white/[0.02]' : ''
+                                                    )}
+                                                >
+                                                    {tasks.filter(t => t.status === status).map((task, index) => (
+                                                        <Draggable key={task.id} draggableId={task.id} index={index}>
+                                                            {(provided, snapshot) => (
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                    onClick={() => openEditor(task)}
+                                                                    className={cn(
+                                                                        "group bg-[#0F0F12] border border-white/[0.03] p-4 rounded-xl hover:border-zinc-700/40 hover:bg-[#141417] transition-all cursor-pointer relative",
+                                                                        snapshot.isDragging ? "shadow-2xl ring-1 ring-indigo-500/20 z-50 rotate-1" : "shadow-sm"
+                                                                    )}
+                                                                >
+                                                                    <div className="flex items-center gap-2 mb-2">
+                                                                        <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/10">
+                                                                            {task.category || 'Feature'}
+                                                                        </span>
+                                                                        {task.accelerations > 0 && (
+                                                                            <span className="flex items-center gap-0.5 text-emerald-500 text-[9px] font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/10">
+                                                                                <Zap className="w-2.5 h-2.5" /> {task.accelerations}x
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <h4 className="text-[13px] font-bold text-zinc-100 mb-1 leading-snug line-clamp-2">{getLocalizedContent(task.title)}</h4>
+                                                                    <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 mb-3 font-medium">{getLocalizedContent(task.description)}</p>
+
+                                                                    {task.coverImage && (
+                                                                        <div className="mb-3 rounded-lg overflow-hidden border border-white/5 bg-black/20">
+                                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                            <img src={task.coverImage} alt="" className="w-full h-24 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                                                                        </div>
+                                                                    )}
+
+                                                                    <div className="flex items-center justify-between pt-2 border-t border-white/[0.04] mt-3">
+                                                                        <div className="flex items-center gap-2.5">
+                                                                            <div className="flex items-center gap-1 text-zinc-600 font-mono text-[9px]">
+                                                                                <Calendar className="w-2.5 h-2.5" />
+                                                                                {task.targetDate || 'TBD'}
+                                                                            </div>
+                                                                            <div className="flex items-center gap-1 text-zinc-600">
+                                                                                <Globe className="w-2.5 h-2.5" />
+                                                                                <span className="text-[9px] font-mono">
+                                                                                    {LOCALES.length - LOCALES.filter(l => !task.title[l]).length}/{LOCALES.length}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="w-12 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                                                                            <div className="h-full bg-indigo-500" style={{ width: `${task.progress}%` }} />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </Draggable>
+                                                    ))}
+                                                    {provided.placeholder}
+                                                </div>
+                                            )}
+                                        </Droppable>
+                                    </div>
+                                ))}
+                        </div>
+                    </DragDropContext>
+                ) : (
+                    <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col">
+                        <div className="overflow-y-auto custom-scrollbar flex-1">
+                            <table className="w-full text-left border-collapse border-spacing-0">
+                                <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
+                                    <tr className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                        <th className="px-6 py-4 font-bold">Details</th>
+                                        <th className="px-6 py-4 font-bold">Category</th>
+                                        <th className="px-6 py-4 font-bold">Progress</th>
+                                        <th className="px-6 py-4 font-bold">Status</th>
+                                        <th className="px-6 py-4 font-bold text-right">Target Date</th>
+                                        <th className="px-6 py-4 w-12 text-right pr-12"></th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/[0.02]">
+                                    {tasks.map((task) => (
+                                        <tr
+                                            key={task.id}
+                                            onClick={() => openEditor(task)}
+                                            className="hover:bg-white/[0.02] transition-colors group cursor-pointer"
+                                        >
+                                            <td className="px-6 py-6 max-w-xl">
+                                                <div className="flex items-center gap-4">
+                                                    {task.coverImage && (
+                                                        <img src={task.coverImage} className="w-12 h-12 rounded-lg object-cover border border-white/10 shrink-0" alt="" />
+                                                    )}
+                                                    <div className="space-y-1">
+                                                        <h4 className="text-[14px] font-bold text-zinc-100">{getLocalizedContent(task.title)}</h4>
+                                                        <p className="text-[12px] text-zinc-500 line-clamp-1">{getLocalizedContent(task.description)}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg bg-white/5 border border-white/5 text-zinc-400">
+                                                    {task.category || 'Feature'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-16 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                                        <div className="h-full bg-indigo-500" style={{ width: `${task.progress}%` }} />
+                                                    </div>
+                                                    <span className="text-[10px] font-mono text-zinc-500">{task.progress}%</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                                                    {task.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest">
+                                                    {task.targetDate || 'TBD'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-right pr-6">
+                                                <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors" />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {tasks.length === 0 && (
+                                <div className="py-20 flex flex-col items-center justify-center opacity-20 grayscale">
+                                    <Activity className="w-8 h-8 mb-2 text-zinc-500" />
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">No tasks found</p>
+                                </div>
+                            )}
+                        </div>
+                        <AdminPagination
+                            totalItems={totalCount}
+                            currentPage={page}
+                            totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+                            onPageChange={setPage}
+                        />
                     </div>
-                </DragDropContext>
+                )}
             </div>
-        </div>
+        </AdminContainer>
     );
 }
