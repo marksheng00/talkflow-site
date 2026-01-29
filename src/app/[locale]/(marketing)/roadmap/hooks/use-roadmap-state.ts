@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { RoadmapItem, CommunityIdea, BugReport, Category, BugPlatform } from "@/types/roadmap";
 
 export type Tab = "roadmap" | "ideas" | "bugs";
@@ -51,28 +51,40 @@ export function useRoadmapState(
     });
 
     // Wrapped setters to clear animation flags synchronously when opening/changing modals
-    const setSelectedTask = (task: RoadmapItem | null) => {
-        if (task) {
-            setJustBoosted(false);
-            setLastVotedId(null);
+    const setSelectedTask: React.Dispatch<React.SetStateAction<RoadmapItem | null>> = (action) => {
+        if (typeof action === 'function') {
+            _setSelectedTask(action);
+        } else {
+            if (action) {
+                setJustBoosted(false);
+                setLastVotedId(null);
+            }
+            _setSelectedTask(action);
         }
-        _setSelectedTask(task);
     };
 
-    const setSelectedIdea = (idea: CommunityIdea | null) => {
-        if (idea) {
-            setJustBoosted(false);
-            setLastVotedId(null);
+    const setSelectedIdea: React.Dispatch<React.SetStateAction<CommunityIdea | null>> = (action) => {
+        if (typeof action === 'function') {
+            _setSelectedIdea(action);
+        } else {
+            if (action) {
+                setJustBoosted(false);
+                setLastVotedId(null);
+            }
+            _setSelectedIdea(action);
         }
-        _setSelectedIdea(idea);
     };
 
-    const setSelectedBug = (bug: BugReport | null) => {
-        if (bug) {
-            setJustBoosted(false);
-            setLastVotedId(null);
+    const setSelectedBug: React.Dispatch<React.SetStateAction<BugReport | null>> = (action) => {
+        if (typeof action === 'function') {
+            _setSelectedBug(action);
+        } else {
+            if (action) {
+                setJustBoosted(false);
+                setLastVotedId(null);
+            }
+            _setSelectedBug(action);
         }
-        _setSelectedBug(bug);
     };
 
     useEffect(() => {
