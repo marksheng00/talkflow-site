@@ -110,7 +110,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         { name: "Bugs", href: "/admin/bugs", icon: Bug },
         { name: "Changelog", href: "/admin/changelog", icon: FileText },
         { name: "Blog Posts", href: "/admin/blog", icon: Database },
-        { name: "Blog Categories", href: "/admin/studio/structure/categories", icon: Tag, external: true },
+        { name: "Blog Categories", href: "/admin/categories", icon: Tag },
         // { name: "Studio", href: "/admin/studio", icon: ExternalLink },
     ];
 
