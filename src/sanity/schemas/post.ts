@@ -6,12 +6,24 @@ export default defineType({
     name: 'post',
     title: 'Blog Post',
     type: 'document',
+    groups: [
+        {
+            name: 'editorial',
+            title: 'Write',
+            default: true,
+        },
+        {
+            name: 'settings',
+            title: 'Settings',
+        },
+    ],
     fields: [
         defineField({
             name: 'translationId',
             title: 'Translation ID',
             type: 'string',
-            hidden: false, // We want to show the component
+            hidden: false,
+            group: 'editorial',
             components: {
                 input: TranslationManager
             },
@@ -20,22 +32,20 @@ export default defineType({
             name: 'title',
             title: 'Title',
             type: 'string',
+            group: 'editorial',
             validation: (Rule) => Rule.required().min(5).max(100),
         }),
         defineField({
-            name: 'language',
-            title: 'Language',
-            type: 'string',
-            options: {
-                list: LANGUAGES.map(l => ({ title: l.title, value: l.id })),
-            },
-            initialValue: 'en',
-            validation: (Rule) => Rule.required(),
+            name: 'body',
+            title: 'Body',
+            type: 'blockContent',
+            group: 'editorial',
         }),
         defineField({
             name: 'slug',
             title: 'Slug',
             type: 'slug',
+            group: 'settings',
             options: {
                 source: 'title',
                 maxLength: 96,
@@ -63,16 +73,19 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: 'author',
-            title: 'Author',
-            type: 'reference',
-            to: [{ type: 'author' }],
-            validation: (Rule) => Rule.required(),
+            name: 'excerpt',
+            title: 'Excerpt',
+            description: 'Short summary for list view and SEO',
+            type: 'text',
+            rows: 3,
+            group: 'settings',
+            validation: (Rule) => Rule.max(200),
         }),
         defineField({
             name: 'mainImage',
             title: 'Main image',
             type: 'image',
+            group: 'settings',
             options: {
                 hotspot: true,
             },
@@ -85,34 +98,43 @@ export default defineType({
             ],
         }),
         defineField({
+            name: 'language',
+            title: 'Language',
+            type: 'string',
+            group: 'settings',
+            options: {
+                list: LANGUAGES.map(l => ({ title: l.title, value: l.id })),
+            },
+            initialValue: 'en',
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+            name: 'author',
+            title: 'Author',
+            type: 'reference',
+            group: 'settings',
+            to: [{ type: 'author' }],
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
             name: 'categories',
             title: 'Categories',
             type: 'array',
+            group: 'settings',
             of: [{ type: 'reference', to: { type: 'category' } }],
         }),
         defineField({
             name: 'publishedAt',
             title: 'Published at',
             type: 'datetime',
+            group: 'settings',
             validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: 'excerpt',
-            title: 'Excerpt',
-            description: 'Short summary for list view and SEO',
-            type: 'text',
-            rows: 3,
-            validation: (Rule) => Rule.max(200),
-        }),
-        defineField({
-            name: 'body',
-            title: 'Body',
-            type: 'blockContent',
         }),
         defineField({
             name: 'seo',
             title: 'SEO Settings',
             type: 'object',
+            group: 'settings',
             fields: [
                 {
                     name: 'metaTitle',
