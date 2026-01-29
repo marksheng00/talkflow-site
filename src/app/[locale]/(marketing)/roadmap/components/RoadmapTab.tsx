@@ -28,143 +28,124 @@ export function RoadmapTab({
 
     return (
         <div className="section-shell max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 mt-stack-tight">
-            {/* Unified Gantt Chart View */}
-            <div className="flex gap-4 md:gap-6">
-                {/* LEFT: Fixed Task Column */}
-                <div className="w-[120px] md:w-[280px] flex-shrink-0 transition-all">
-                    <div className="mb-6 pb-4 border-b border-white/10 px-2">
-                        <div className="text-left">
-                            <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">{t('RoadmapTab.taskOverview')}</span>
-                            <div className="text-[9px] text-slate-600 mt-0.5 opacity-0">2024</div>
+            <div className="flex flex-col gap-8 rounded-xl bg-black/40 backdrop-blur-md border border-white/[0.05] p-1 overflow-hidden">
+                {/* Timeline Header (Syncs with scroll) */}
+                <div className="sticky top-0 z-30 bg-zinc-950/90 border-b border-white/[0.05] backdrop-blur-xl">
+                    <div className="h-10 relative overflow-hidden" ref={timelineRef}>
+                        <div className="absolute inset-y-0 left-0 min-w-[3000px] flex">
+                            {Array.from({ length: 25 }, (_, i) => {
+                                // Dynamic timeline: Start from 1 year ago
+                                const today = new Date();
+                                const date = new Date(today.getFullYear() - 1, today.getMonth() + i, 1);
+                                const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+                                const year = date.getFullYear();
+                                const isCurrentMonth = date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+
+                                return (
+                                    <div key={i} className={`flex-1 min-w-[120px] border-r border-white/[0.02] flex items-center justify-center flex-col ${isCurrentMonth ? 'bg-emerald-500/5' : ''}`}>
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider ${isCurrentMonth ? 'text-emerald-400' : 'text-zinc-500'}`}>{monthName}</span>
+                                        <span className="text-[9px] text-zinc-700 font-mono">{year}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    </div>
-                    <div className="space-y-3">
-                        {filteredTasks
-                            .filter(task => task.startDate && task.targetDate)
-                            .map((task) => (
-                                <div key={task.id} className="h-12 flex items-center">
-                                    <button
-                                        onClick={() => setSelectedTask(task)}
-                                        className="w-full h-full flex items-center text-left hover:bg-white/5 rounded-lg px-2 transition-colors group"
-                                    >
-                                        <div className="space-y-1">
-                                            <h4 className="font-semibold text-sm text-white leading-tight line-clamp-1 group-hover:text-emerald-400 transition-colors">
-                                                {getLocalizedString(task.title)}
-                                            </h4>
-                                            <div className="hidden md:flex items-center gap-2">
-                                                <span className="text-[9px] font-medium uppercase tracking-wider text-slate-500 pr-1.5 py-0.5">
-                                                    {task.category ? (t.has(`Filters.Categories.${task.category}`) ? t(`Filters.Categories.${task.category}`) : task.category) : ""}
-                                                </span>
-                                                <div className="flex items-center gap-1 text-slate-600">
-                                                    <Zap className="h-2.5 w-2.5" />
-                                                    <span className="text-[9px] font-medium">{task.accelerations}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                            ))}
                     </div>
                 </div>
 
-                {/* RIGHT: Scrollable Timeline */}
-                <div className="flex-1 overflow-hidden">
-                    <div
-                        ref={timelineRef}
-                        className="overflow-x-auto md:overflow-x-hidden overflow-y-hidden cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] select-none"
-                    >
-                        <div className="min-w-[8000px]">
-                            {/* Timeline Header */}
-                            <div className="mb-6 pb-4 border-b border-white/10 flex">
-                                {Array.from({ length: 97 }, (_, i) => {
-                                    const date = new Date(2024, i, 1);
-                                    const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-                                    const year = date.getFullYear();
-                                    return (
-                                        <div key={i} className="flex-1 text-center min-w-[80px]">
-                                            <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">{monthName}</span>
-                                            {i % 12 === 0 && <div className="text-[9px] text-slate-600 mt-0.5">{year}</div>}
-                                        </div>
-                                    );
-                                })}
+                {/* Groups */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar-hidden max-h-[800px]">
+                    {Object.entries(
+                        filteredTasks.reduce((acc, task) => {
+                            const cat = task.category || 'Other';
+                            if (!acc[cat]) acc[cat] = [];
+                            acc[cat].push(task);
+                            return acc;
+                        }, {} as Record<string, RoadmapItem[]>)
+                    ).map(([category, tasks]) => (
+                        <div key={category} className="mb-2">
+                            {/* Group Header */}
+                            <div className="sticky top-0 z-20 h-8 bg-zinc-900/80 border-y border-white/[0.05] flex items-center px-4 backdrop-blur-md">
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{t.has(`Filters.Categories.${category}`) ? t(`Filters.Categories.${category}`) : category}</span>
+                                <span className="ml-2 px-1.5 py-0.5 rounded-full bg-white/5 text-[9px] font-mono text-zinc-500">{tasks.length}</span>
                             </div>
 
-                            {/* Task Bars */}
-                            <div className="relative space-y-3">
-                                {mounted && todayPercent !== null && todayPercent >= 0 && todayPercent <= 100 && (
-                                    <div
-                                        className="absolute -top-6 -bottom-6 border-l-2 border-dashed border-emerald-500/30 pointer-events-none z-10"
-                                        style={{ left: `${todayPercent.toFixed(4)}%` }}
-                                    />
-                                )}
+                            {/* Task Bars container */}
+                            <div className="relative py-2 min-h-[50px] overflow-hidden" ref={el => {
+                                // Sync horizontal scroll with header
+                                if (el && timelineRef.current) {
+                                    el.scrollLeft = timelineRef.current.scrollLeft;
+                                    el.onscroll = () => {
+                                        if (timelineRef.current) timelineRef.current.scrollLeft = el.scrollLeft;
+                                        // Sync other group containers
+                                        document.querySelectorAll('.gantt-group-container').forEach((c: any) => {
+                                            if (c !== el) c.scrollLeft = el.scrollLeft;
+                                        });
+                                    };
+                                }
+                            }} className="gantt-group-container overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                                <div className="min-w-[3000px] relative h-full">
+                                    {/* Grid Lines Background */}
+                                    <div className="absolute inset-0 flex pointer-events-none">
+                                        {Array.from({ length: 25 }, (_, i) => (
+                                            <div key={i} className="flex-1 min-w-[120px] border-r border-white/[0.02] h-full" />
+                                        ))}
+                                    </div>
 
-                                {/* Grid Lines */}
-                                {Array.from({ length: 97 }, (_, i) => (
-                                    <div
-                                        key={i}
-                                        className="absolute -top-6 -bottom-6 border-l border-white/[0.03] pointer-events-none"
-                                        style={{ left: `${(i / 97) * 100}%` }}
-                                    />
-                                ))}
+                                    {/* Today Line */}
+                                    <div className="absolute top-0 bottom-0 left-1/2 w-px border-l border-dashed border-emerald-500/50 z-10">
+                                        <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                    </div>
 
-                                {filteredTasks
-                                    .filter(task => task.startDate && task.targetDate)
-                                    .map((task) => {
-                                        const startDate = new Date(task.startDate!);
-                                        const endDate = new Date(task.targetDate!);
-                                        const timelineStart = new Date('2024-01-01');
-                                        const timelineEnd = new Date('2032-01-31');
+                                    {/* Tasks */}
+                                    <div className="space-y-2 py-2">
+                                        {tasks.map(task => {
+                                            if (!task.startDate || !task.targetDate) return null;
 
-                                        const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                        const taskStartOffset = (startDate.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
-                                        const taskDuration = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+                                            const today = new Date();
+                                            const timelineStart = new Date(today.getFullYear() - 1, today.getMonth(), 1);
+                                            const timelineEnd = new Date(today.getFullYear() + 1, today.getMonth() + 1, 0); // Approx 25 months range
 
-                                        const leftPercent = (taskStartOffset / totalDays) * 100;
-                                        const widthPercent = (taskDuration / totalDays) * 100;
+                                            // Calculate simple percentage position
+                                            const totalMs = timelineEnd.getTime() - timelineStart.getTime();
+                                            const startMs = new Date(task.startDate).getTime() - timelineStart.getTime();
+                                            const durationMs = new Date(task.targetDate).getTime() - new Date(task.startDate).getTime();
 
-                                        const categoryColors = {
-                                            Feature: { border: 'border-blue-600/40', bg: 'bg-blue-700/10', progress: 'bg-blue-600/30', text: 'text-blue-200' },
-                                            Content: { border: 'border-purple-600/40', bg: 'bg-purple-700/10', progress: 'bg-purple-600/30', text: 'text-purple-200' },
-                                            "AI Core": { border: 'border-emerald-600/40', bg: 'bg-emerald-700/10', progress: 'bg-emerald-600/30', text: 'text-emerald-200' },
-                                            UIUX: { border: 'border-amber-600/40', bg: 'bg-amber-700/10', progress: 'bg-amber-600/30', text: 'text-amber-200' },
-                                            Bug: { border: 'border-rose-600/40', bg: 'bg-rose-700/10', progress: 'bg-rose-600/30', text: 'text-rose-200' }
-                                        };
+                                            const left = (startMs / totalMs) * 100;
+                                            const width = (durationMs / totalMs) * 100;
 
-                                        const colors = categoryColors[task.category as keyof typeof categoryColors] || { border: 'border-slate-600/40', bg: 'bg-slate-700/10', progress: 'bg-slate-600/20', text: 'text-slate-300' };
+                                            // Skip if out of range
+                                            if (left + width < 0 || left > 100) return null;
 
-                                        return (
-                                            <div key={task.id} className="relative h-12 flex items-center">
+                                            return (
                                                 <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSelectedTask(task);
-                                                    }}
-                                                    onMouseDown={(e) => e.stopPropagation()}
-                                                    className={`absolute h-12 rounded-lg border ${colors.border} ${colors.bg} backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg`}
+                                                    key={task.id}
+                                                    onClick={() => setSelectedTask(task)}
+                                                    className="relative block h-10 rounded-sm border hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all group"
                                                     style={{
-                                                        left: `${leftPercent}%`,
-                                                        width: `${widthPercent}%`,
-                                                        minWidth: '100px'
+                                                        left: `${Math.max(0, left)}%`,
+                                                        width: `${Math.max(0.5, width)}%`, // min width for visibility
+                                                        backgroundColor: 'rgba(255,255,255,0.03)',
+                                                        borderColor: 'rgba(255,255,255,0.08)'
                                                     }}
                                                 >
-                                                    <div className="absolute inset-0 overflow-hidden rounded-lg">
-                                                        <div
-                                                            className={`absolute bottom-0 left-0 h-[2px] ${colors.progress.replace('/30', '/60')} transition-all`}
-                                                            style={{ width: `${task.progress || 0}%` }}
-                                                        />
-                                                    </div>
-                                                    <div className="relative h-full flex items-center justify-between px-3 z-10">
-                                                        <span className={`text-[11px] font-semibold ${colors.text} truncate`}>
-                                                            {task.progress}%
+                                                    <div className="absolute inset-0 flex items-center px-3 overflow-hidden">
+                                                        <span className="text-[11px] font-bold text-zinc-300 whitespace-nowrap truncate sticky left-2">
+                                                            {getLocalizedString(task.title)}
                                                         </span>
                                                     </div>
+                                                    {/* Progress Fill */}
+                                                    <div
+                                                        className="absolute bottom-0 left-0 h-[2px] bg-emerald-500/50 transition-all group-hover:h-full group-hover:opacity-10 -z-10"
+                                                        style={{ width: `${task.progress}%` }}
+                                                    />
                                                 </button>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>
