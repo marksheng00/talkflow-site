@@ -110,7 +110,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         { name: "Bugs", href: "/admin/bugs", icon: Bug },
         { name: "Changelog", href: "/admin/changelog", icon: FileText },
         { name: "Blog Posts", href: "/admin/blog", icon: Database },
-        { name: "Categories", href: "/admin/studio/structure/categories", icon: Tag }, // Attempt deep link
+        { name: "Blog Categories", href: "/admin/studio/structure/categories", icon: Tag, external: true },
         // { name: "Studio", href: "/admin/studio", icon: ExternalLink },
     ];
 
@@ -147,6 +147,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                         key={item.href}
                                         href={item.href}
                                         title={isCollapsed ? item.name : undefined}
+                                        target={(item as any).external ? "_blank" : undefined}
                                         className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5'} px-2 py-2 rounded-md transition-all duration-200 group ${isActive
                                             ? "bg-zinc-900 text-zinc-100 font-medium"
                                             : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50"
