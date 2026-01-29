@@ -53,7 +53,8 @@ export const categoriesQuery = groq`
     ),
     slug,
     color,
-    description
+    description,
+    "parent": parent->slug.current
   }
 `
 

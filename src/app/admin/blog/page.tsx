@@ -158,7 +158,7 @@ export default function AdminBlogPage() {
                                     <td className="px-6 py-4 max-w-xs">
                                         <div className="flex flex-col gap-1">
                                             <Link
-                                                href={`/admin/studio/structure/post;${post._id}`}
+                                                href={`/admin/studio/intent/edit/id=${post._id}`}
                                                 target="_blank"
                                                 className="text-sm font-bold text-zinc-200 hover:text-emerald-400 decoration-emerald-500/30 hover:underline transition-all line-clamp-2"
                                             >
@@ -217,7 +217,7 @@ export default function AdminBlogPage() {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                                             <Link
-                                                href={`/admin/studio/structure/post;${post._id}`}
+                                                href={`/admin/studio/intent/edit/id=${post._id}`}
                                                 target="_blank"
                                                 className="p-2 hover:bg-emerald-500/10 text-zinc-400 hover:text-emerald-500 rounded-lg transition-colors flex items-center gap-2 text-[10px] font-bold uppercase"
                                             >

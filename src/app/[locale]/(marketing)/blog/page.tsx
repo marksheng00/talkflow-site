@@ -9,6 +9,8 @@ import {
 import { AuroraBackground } from '@/components/ui/AuroraBackground';
 import BlogCard from '@/components/blog/BlogCard';
 import { ChevronLeft, ChevronRight, Filter, BookOpen } from 'lucide-react';
+import { cn } from "@/lib/utils";
+
 import { Link } from '@/navigation';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { getTranslations } from 'next-intl/server';
@@ -95,19 +97,59 @@ export default async function BlogPage({
                                 >
                                     {t('Sidebar.allPosts')}
                                 </Link>
-                                {categories.map((cat) => (
-                                    <Link
-                                        key={cat.slug.current}
-                                        href={`/blog?category=${cat.slug.current}`}
-                                        locale={locale}
-                                        className={`px-3 py-2 rounded-xl text-sm transition-all ${categorySlug === cat.slug.current
-                                            ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
-                                            : 'text-neutral-400 hover:bg-white/5 hover:text-white'
-                                            }`}
-                                    >
-                                        {cat.title}
-                                    </Link>
-                                ))}
+                                {categories
+                                    .filter(cat => !cat.parent)
+                                    .map((parent) => {
+                                        const children = categories.filter(c => c.parent === parent.slug.current);
+                                        const isChildActive = children.some(c => c.slug.current === categorySlug);
+                                        const isParentActive = categorySlug === parent.slug.current || isChildActive;
+
+                                        return (
+                                            <div key={parent.slug.current} className="group relative">
+                                                <Link
+                                                    href={`/blog?category=${parent.slug.current}`}
+                                                    locale={locale}
+                                                    className={`px-3 py-2 rounded-xl text-sm transition-all flex items-center justify-between ${isParentActive
+                                                        ? 'bg-teal-500/20 text-teal-400 font-bold border border-teal-500/30'
+                                                        : 'text-neutral-400 hover:bg-white/5 hover:text-white'
+                                                        }`}
+                                                >
+                                                    {parent.title}
+                                                    {children.length > 0 && (
+                                                        <ChevronRight
+                                                            className={cn(
+                                                                "w-3.5 h-3.5 transition-transform opacity-50 text-neutral-400 group-hover:text-white group-hover:opacity-100",
+                                                                isChildActive ? "rotate-90 opacity-100 text-white" : "group-hover:rotate-90"
+                                                            )}
+                                                        />
+                                                    )}
+                                                </Link>
+
+                                                {children.length > 0 && (
+                                                    <div
+                                                        className={cn(
+                                                            "flex-col ml-4 mt-0.5 border-l border-white/10 pl-2 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-200 origin-top",
+                                                            isChildActive ? "flex" : "hidden group-hover:flex"
+                                                        )}
+                                                    >
+                                                        {children.map(child => (
+                                                            <Link
+                                                                key={child.slug.current}
+                                                                href={`/blog?category=${child.slug.current}`}
+                                                                locale={locale}
+                                                                className={`px-3 py-1.5 rounded-lg text-xs transition-all ${categorySlug === child.slug.current
+                                                                    ? 'text-teal-400 font-bold bg-teal-500/10'
+                                                                    : 'text-neutral-500 hover:text-white'
+                                                                    }`}
+                                                            >
+                                                                {child.title}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                             </nav>
                         </aside>
 

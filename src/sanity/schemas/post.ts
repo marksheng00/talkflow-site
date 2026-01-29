@@ -13,21 +13,15 @@ export default defineType({
             default: true,
         },
         {
+            name: 'translate',
+            title: 'Translate',
+        },
+        {
             name: 'settings',
             title: 'Settings',
         },
     ],
     fields: [
-        defineField({
-            name: 'translationId',
-            title: 'Translation ID',
-            type: 'string',
-            hidden: false,
-            group: 'editorial',
-            components: {
-                input: TranslationManager
-            },
-        }),
         defineField({
             name: 'title',
             title: 'Title',
@@ -40,6 +34,16 @@ export default defineType({
             title: 'Body',
             type: 'blockContent',
             group: 'editorial',
+        }),
+        defineField({
+            name: 'translationId',
+            title: 'Translation Hub',
+            type: 'string',
+            hidden: false,
+            group: 'translate',
+            components: {
+                input: TranslationManager
+            },
         }),
         defineField({
             name: 'slug',

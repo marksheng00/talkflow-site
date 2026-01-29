@@ -35,6 +35,13 @@ export default defineType({
             type: 'text',
         }),
         defineField({
+            name: 'parent',
+            title: 'Parent Category',
+            type: 'reference',
+            to: [{ type: 'category' }],
+            description: 'Optional: Select a parent category to create a hierarchy (e.g. AI -> LLM).'
+        }),
+        defineField({
             name: 'color',
             title: 'Color',
             type: 'string',
@@ -51,4 +58,20 @@ export default defineType({
             initialValue: 'blue'
         }),
     ],
+    preview: {
+        select: {
+            title: 'title.en',
+            subtitle: 'slug.current',
+            color: 'color'
+        },
+        prepare({ title, subtitle, color }) {
+            return {
+                title: title || 'Untitled Category',
+                subtitle: subtitle,
+                // We can even use the color to show a colored circle if we want, 
+                // but standard preview just expects title/subtitle/media.
+                // Sanity Studio doesn't natively render the 'color' string as a color unless we use custom media.
+            }
+        }
+    }
 })

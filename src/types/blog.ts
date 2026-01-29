@@ -6,6 +6,7 @@ export type BlogSlug = { current: string };
 export type BlogCategory = {
   title: string;
   slug: BlogSlug;
+  parent?: string;
   color?: string;
   description?: string;
 };
