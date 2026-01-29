@@ -19,7 +19,7 @@ const postFields = groq`
       title
     ),
     slug,
-    color
+    "color": coalesce(parent->color, color)
   }
 `
 
@@ -52,7 +52,7 @@ export const categoriesQuery = groq`
       title
     ),
     slug,
-    color,
+    "color": coalesce(parent->color, color),
     description,
     "parent": parent->slug.current
   }

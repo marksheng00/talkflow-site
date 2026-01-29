@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity'
+import { ColorPicker } from '../components/ColorPicker'
 
 export default defineType({
     name: 'category',
@@ -45,17 +46,11 @@ export default defineType({
             name: 'color',
             title: 'Color',
             type: 'string',
-            options: {
-                list: [
-                    { title: 'Blue', value: 'blue' },
-                    { title: 'Emerald', value: 'emerald' },
-                    { title: 'Purple', value: 'purple' },
-                    { title: 'Rose', value: 'rose' },
-                    { title: 'Amber', value: 'amber' },
-                    { title: 'Cyan', value: 'cyan' },
-                ],
+            components: {
+                input: ColorPicker
             },
-            initialValue: 'blue'
+            initialValue: 'blue',
+            hidden: ({ document }) => !!document?.parent,
         }),
     ],
     preview: {
@@ -68,9 +63,6 @@ export default defineType({
             return {
                 title: title || 'Untitled Category',
                 subtitle: subtitle,
-                // We can even use the color to show a colored circle if we want, 
-                // but standard preview just expects title/subtitle/media.
-                // Sanity Studio doesn't natively render the 'color' string as a color unless we use custom media.
             }
         }
     }

@@ -10,6 +10,21 @@ import { Clock } from 'lucide-react';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { useTranslations, useLocale } from 'next-intl';
 
+const COLOR_MAP: Record<string, string> = {
+    blue: "border-blue-500/30 text-blue-400 bg-blue-500/10",
+    emerald: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
+    purple: "border-purple-500/30 text-purple-400 bg-purple-500/10",
+    rose: "border-rose-500/30 text-rose-400 bg-rose-500/10",
+    amber: "border-amber-500/30 text-amber-400 bg-amber-500/10",
+    cyan: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
+    indigo: "border-indigo-500/30 text-indigo-400 bg-indigo-500/10",
+    orange: "border-orange-500/30 text-orange-400 bg-orange-500/10",
+    teal: "border-teal-500/30 text-teal-400 bg-teal-500/10",
+    pink: "border-pink-500/30 text-pink-400 bg-pink-500/10",
+    sky: "border-sky-500/30 text-sky-400 bg-sky-500/10",
+    slate: "border-slate-500/30 text-slate-400 bg-slate-500/10",
+};
+
 export default function BlogCard({ post }: { post: BlogPost }) {
     const t = useTranslations('BlogPage');
     const localeSelection = useLocale();
@@ -37,7 +52,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                     {post.categories?.slice(0, 2).map((cat: BlogCategory) => (
                         <span
                             key={cat.slug.current}
-                            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-${cat.color || 'emerald'}-500/30 text-${cat.color || 'emerald'}-400 bg-${cat.color || 'emerald'}-500/10`}
+                            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${COLOR_MAP[cat.color || 'emerald'] || COLOR_MAP['emerald']}`}
                         >
                             {cat.title}
                         </span>
