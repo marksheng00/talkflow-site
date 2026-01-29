@@ -9,6 +9,19 @@ import {
     LogOut, Loader2, Database, ChevronLeft, ChevronRight, Tag
 } from "lucide-react";
 import "@/app/globals.css";
+import { Outfit, Hanken_Grotesk } from "next/font/google";
+
+const heading = Outfit({
+    variable: "--font-heading",
+    subsets: ["latin"],
+    display: "swap",
+});
+
+const body = Hanken_Grotesk({
+    variable: "--font-body",
+    subsets: ["latin"],
+    display: "swap",
+});
 
 // ADMIN WHITELIST
 const ADMIN_EMAILS = [
@@ -89,7 +102,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         // ... (keep loading screen)
         return (
             <html lang="en">
-                <body className="bg-[#09090b] flex items-center justify-center min-h-screen">
+                <body className={`${heading.variable} ${body.variable} bg-[#09090b] flex items-center justify-center min-h-screen`}>
                     <div className="flex flex-col items-center gap-4">
                         <Loader2 className="w-6 h-6 text-zinc-500 animate-spin" />
                     </div>
@@ -100,7 +113,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     // Don't show sidebar on login page
     if (isLoginPage) {
-        return <html lang="en"><body>{children}</body></html>;
+        return <html lang="en"><body className={`${heading.variable} ${body.variable} antialiased`}>{children}</body></html>;
     }
 
     const navItems = [
@@ -116,7 +129,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     return (
         <html lang="en" className="dark">
-            <body className="bg-[#09090b] antialiased overflow-hidden">
+            <body className={`${heading.variable} ${body.variable} bg-[#09090b] antialiased overflow-hidden`}>
                 <div className="flex h-screen text-zinc-300 font-sans selection:bg-indigo-500/20 overflow-hidden">
                     {/* Sidebar */}
                     <aside

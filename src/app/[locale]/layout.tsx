@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { Outfit, Hanken_Grotesk } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from 'next-intl';
 import { locales, Locale } from "@/i18n/config";
@@ -7,13 +7,13 @@ import "../globals.css";
 import FluentBackground from "@/components/ui/FluentBackground";
 import PresenceTracker from "@/components/realtime/PresenceTracker";
 
-const heading = Space_Grotesk({
+const heading = Outfit({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
 });
 
-const body = Manrope({
+const body = Hanken_Grotesk({
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
