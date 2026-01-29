@@ -3,26 +3,33 @@ import { ChevronDown } from "lucide-react";
 
 interface AdminHeaderProps {
     title: string;
+    description?: string;
     tag?: string;
     children?: React.ReactNode;
+    className?: string;
 }
 
-export function AdminHeader({ title, tag, children }: AdminHeaderProps) {
+export function AdminHeader({ title, description, tag, children, className }: AdminHeaderProps) {
     return (
-        <div className="flex items-center justify-between pb-2 shrink-0">
-            <div className="flex items-center gap-4">
-                <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
-                    {title}
-                    {tag && (
-                        <span className="text-[10px] font-mono text-zinc-500 font-normal px-2 py-0.5 bg-white/5 rounded border border-white/5 uppercase">
-                            {tag}
-                        </span>
-                    )}
-                </h1>
+        <div className={cn("flex flex-col gap-1 pb-2 shrink-0", className)}>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <h1 className="text-xl font-bold text-zinc-100 tracking-tight flex items-center gap-3">
+                        {title}
+                        {tag && (
+                            <span className="text-[10px] font-mono text-zinc-500 font-normal px-2 py-0.5 bg-white/5 rounded border border-white/5 uppercase">
+                                {tag}
+                            </span>
+                        )}
+                    </h1>
+                </div>
+                <div className="flex items-center gap-3">
+                    {children}
+                </div>
             </div>
-            <div className="flex items-center gap-3">
-                {children}
-            </div>
+            {description && (
+                <p className="text-sm text-zinc-500 max-w-2xl">{description}</p>
+            )}
         </div>
     );
 }
