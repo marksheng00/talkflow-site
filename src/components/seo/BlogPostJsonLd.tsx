@@ -12,7 +12,9 @@ export default function BlogPostJsonLd({ post, locale }: BlogPostJsonLdProps) {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "headline": post.title,
-        "image": post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).url()] : [],
+        "image": post.mainImage
+            ? [urlFor(post.mainImage).width(1200).height(630).url()]
+            : ["https://talkflo.hicall.ai/og-image.png"], // Fallback image
         "datePublished": post.publishedAt,
         "dateModified": post.publishedAt,
         "inLanguage": locale,
