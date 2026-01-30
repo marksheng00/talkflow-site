@@ -394,7 +394,13 @@
         "RoadmapTab": {
             "taskOverview": "任务概览",
             "boost": "加速此任务",
-            "boosted": "已加速！"
+            "boosted": "已加速！",
+            "Phases": {
+                "researching": "调研中 Phase",
+                "building": "构建中 Phase",
+                "shipping": "发布中 Phase",
+                "released": "已发布 Phase"
+            }
         },
         "IdeasTab": {
             "submitCard": {

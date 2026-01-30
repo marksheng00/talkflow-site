@@ -218,7 +218,6 @@ export function RoadmapTab({
                             <div key={group.key} className="mb-4">
                                 {/* Group Header - LEFT - Frosted Glass */}
                                 <div className="h-9 px-4 flex items-center gap-3 mb-1 sticky top-0 bg-white/[0.03] backdrop-blur-xl z-30 border-y border-white/[0.05]">
-                                    <div className={cn("w-2 h-2 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.2)]", `bg-${group.config.color}-400`)} />
                                     <span className="text-xs font-semibold text-slate-200 tracking-wide">{group.config.label}</span>
                                     <span className="text-[10px] text-slate-500 font-mono ml-auto">{group.tasks.length}</span>
                                 </div>
@@ -333,12 +332,17 @@ export function RoadmapTab({
                                                     styleClass = styles.activeComplete;
                                                 } else if (isReleased) {
                                                     styleClass = styles.released;
-                                                } else if (task.status === 'shipping' || task.status === 'building') {
-                                                    styleClass = styles.active;
                                                 } else {
-                                                    // Planning/Idea (always gray/dashed)
-                                                    styleClass = `bg-slate-800/30 border border-slate-700/30 border-dashed opacity-60 hover:opacity-80`;
+                                                    // All other active phases (Shipping, Building, Researching)
+                                                    styleClass = styles.active;
                                                 }
+
+                                                const getPhaseName = (progress: number = 0) => {
+                                                    if (progress >= 100) return t('RoadmapTab.Phases.released');
+                                                    if (progress >= 75) return t('RoadmapTab.Phases.shipping');
+                                                    if (progress >= 25) return t('RoadmapTab.Phases.building');
+                                                    return t('RoadmapTab.Phases.researching');
+                                                };
 
                                                 return (
                                                     <div key={task.id} className="h-10 relative group/bar">
@@ -368,9 +372,9 @@ export function RoadmapTab({
                                                             )}
 
                                                             {/* Label on the bar (if wide enough) */}
-                                                            <div className="absolute inset-0 flex items-center px-2 opacity-0 group-hover/bar:opacity-100 transition-opacity">
+                                                            <div className="absolute inset-0 flex items-center px-2 opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap overflow-hidden">
                                                                 <span className="text-[10px] font-bold text-white drop-shadow-md truncate">
-                                                                    {task.progress}%
+                                                                    {getPhaseName(task.progress)}
                                                                 </span>
                                                             </div>
                                                         </div>

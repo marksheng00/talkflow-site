@@ -394,7 +394,13 @@
         "RoadmapTab": {
             "taskOverview": "Task Overview",
             "boost": "Boost this Task",
-            "boosted": "Boosted!"
+            "boosted": "Boosted!",
+            "Phases": {
+                "researching": "Researching Phase",
+                "building": "Building Phase",
+                "shipping": "Shipping Phase",
+                "released": "Released Phase"
+            }
         },
         "IdeasTab": {
             "submitCard": {

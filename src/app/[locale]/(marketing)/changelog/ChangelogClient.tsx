@@ -258,7 +258,7 @@ export default function ChangelogClient() {
                                                 {release.version}
                                             </h2>
                                             {index === 0 && (
-                                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950 bg-emerald-400 rounded-full animate-pulse">
+                                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950 bg-emerald-400 rounded-md animate-pulse">
                                                     {t('Latest')}
                                                 </span>
                                             )}

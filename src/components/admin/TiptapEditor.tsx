@@ -3,7 +3,10 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Quote, Code, Undo, Redo } from 'lucide-react';
+import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
+import Typography from '@tiptap/extension-typography';
+import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Quote, Code, Undo, Redo, Underline as UnderlineIcon, Link as LinkIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface TiptapEditorProps {
@@ -39,6 +42,14 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
     const editor = useEditor({
         extensions: [
             StarterKit,
+            Underline,
+            Typography,
+            Link.configure({
+                openOnClick: false,
+                HTMLAttributes: {
+                    class: 'text-emerald-400 underline decoration-emerald-400/30 underline-offset-4 hover:text-emerald-300 transition-colors cursor-pointer',
+                },
+            }),
             Placeholder.configure({
                 placeholder: 'Write the detailed project plan here…',
             }),
@@ -48,34 +59,27 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
         editable: editable,
         editorProps: {
             attributes: {
-                class: 'prose prose-invert prose-lg max-w-none focus:outline-none min-h-[300px]',
+                class: 'prose prose-invert max-w-none focus:outline-none min-h-[300px] text-zinc-200 px-4 py-6 prose-p:leading-relaxed prose-headings:text-white prose-a:text-emerald-400',
             },
         },
         onUpdate: ({ editor }) => {
-            onChange(editor.getHTML());
+            const html = editor.getHTML();
+            if (html !== content) {
+                onChange(html);
+            }
         },
     });
 
-    // Handle external content changes if necessary (e.g. initial load)
+    // Only update content if it's externally changed and significantly different
     useEffect(() => {
         if (editor && content !== editor.getHTML()) {
-            // Only update if content is drastically different to avoid cursor jumps
-            // Ideally we rely on initialContent, but if we switch tasks we need to reset
-            // editor.commands.setContent(content);
+            // We only want to set content if the external content is actually different
+            // from what's currently in the editor. This prevents cursor jumps.
+            if (!editor.isFocused) {
+                editor.commands.setContent(content);
+            }
         }
     }, [content, editor]);
-
-    // Better way to handle task switching:
-    useEffect(() => {
-        if (editor) {
-            editor.commands.setContent(content);
-        }
-    }, [content, editor]); // Warning: this might reset cursor on every keystroke if parent updates 'content' prop on every change.
-    // To solve this: The parent should only pass `content` for INITIAL LOADING, not for controlled syncing back.
-    // Or we use a ref to track if it's the same task ID.
-    // For now, let's assume the parent handles key changes by remounting or we just set content when `content` changes significantly.
-    // Actually, Tiptap handles `setContent` reasonably well but safe is to only do it if editor is empty or DIFFERENT task.
-    // Let's stick to the simple effect for MVP, assuming parent passing specific content only on mount/switch.
 
     if (!editor) {
         return null;
@@ -97,6 +101,28 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
                         isActive={editor.isActive('italic')}
                     >
                         <Italic className="w-4 h-4" />
+                    </MenuButton>
+                    <MenuButton
+                        onClick={() => editor.chain().focus().toggleUnderline().run()}
+                        isActive={editor.isActive('underline')}
+                    >
+                        <UnderlineIcon className="w-4 h-4" />
+                    </MenuButton>
+
+                    <div className="w-[1px] h-6 bg-white/10 mx-1" />
+
+                    <MenuButton
+                        onClick={() => {
+                            const url = window.prompt('URL');
+                            if (url) {
+                                editor.chain().focus().setLink({ href: url }).run();
+                            } else if (url === '') {
+                                editor.chain().focus().unsetLink().run();
+                            }
+                        }}
+                        isActive={editor.isActive('link')}
+                    >
+                        <LinkIcon className="w-4 h-4" />
                     </MenuButton>
 
                     <div className="w-[1px] h-6 bg-white/10 mx-1" />
@@ -158,7 +184,7 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
                 </div>
             )}
 
-            <EditorContent editor={editor} className="p-4 md:p-6 min-h-[300px]" />
+            <EditorContent editor={editor} className="min-h-[300px]" />
         </div>
     );
 }

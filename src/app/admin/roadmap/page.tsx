@@ -141,8 +141,12 @@ export default function AdminRoadmapPage() {
         if (!task) return;
 
         let newProgress = task.progress || 0;
-        if (newStatus === 'released') newProgress = 100;
-        else if (newProgress === 100) newProgress = 95;
+        
+        // Sync progress with new status if it's out of range
+        if (newStatus === 'researching' && (newProgress < 0 || newProgress > 24)) newProgress = 0;
+        else if (newStatus === 'building' && (newProgress < 25 || newProgress > 74)) newProgress = 25;
+        else if (newStatus === 'shipping' && (newProgress < 75 || newProgress > 99)) newProgress = 75;
+        else if (newStatus === 'released') newProgress = 100;
 
         const updatedTasks = tasks.map(t =>
             t.id === draggableId ? { ...t, status: newStatus, progress: newProgress } : t
@@ -213,8 +217,12 @@ export default function AdminRoadmapPage() {
 
         const finalStatus = task.status || 'researching';
         let finalProgress = task.progress || 0;
-        if (finalStatus === 'released') finalProgress = 100;
-        else if (finalProgress === 100) finalProgress = 95;
+        
+        // Force sync progress with status for data integrity
+        if (finalStatus === 'researching' && (finalProgress < 0 || finalProgress > 24)) finalProgress = 0;
+        else if (finalStatus === 'building' && (finalProgress < 25 || finalProgress > 74)) finalProgress = 25;
+        else if (finalStatus === 'shipping' && (finalProgress < 75 || finalProgress > 99)) finalProgress = 75;
+        else if (finalStatus === 'released') finalProgress = 100;
 
         const taskData = {
             title: task.title,
@@ -445,7 +453,13 @@ export default function AdminRoadmapPage() {
                                             onChange={e => {
                                                 const s = e.target.value as RoadmapStatus;
                                                 let p = editingTask.progress || 0;
-                                                if (s === 'released') p = 100; else if (p === 100) p = 95;
+                                                
+                                                // Sync progress when status changes
+                                                if (s === 'researching' && (p < 0 || p > 24)) p = 0;
+                                                else if (s === 'building' && (p < 25 || p > 74)) p = 25;
+                                                else if (s === 'shipping' && (p < 75 || p > 99)) p = 75;
+                                                else if (s === 'released') p = 100;
+                                                
                                                 setEditingTask({ ...editingTask, status: s, progress: p });
                                             }}
                                         >
@@ -473,7 +487,18 @@ export default function AdminRoadmapPage() {
                                                 type="range" min="0" max="100"
                                                 className="flex-1 accent-indigo-500 h-1 bg-zinc-800 rounded-full appearance-none"
                                                 value={editingTask.progress || 0}
-                                                onChange={e => setEditingTask({ ...editingTask, progress: parseInt(e.target.value) })}
+                                                onChange={e => {
+                                                    const p = parseInt(e.target.value);
+                                                    let s = editingTask.status || 'researching';
+                                                    
+                                                    // Sync status when progress changes
+                                                    if (p >= 100) s = 'released';
+                                                    else if (p >= 75) s = 'shipping';
+                                                    else if (p >= 25) s = 'building';
+                                                    else s = 'researching';
+                                                    
+                                                    setEditingTask({ ...editingTask, progress: p, status: s });
+                                                }}
                                             />
                                             <span className="text-[10px] font-mono text-indigo-400 font-bold">{editingTask.progress}%</span>
                                         </div>

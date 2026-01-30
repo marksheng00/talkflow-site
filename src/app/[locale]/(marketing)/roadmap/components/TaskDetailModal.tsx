@@ -95,13 +95,6 @@ export function TaskDetailModal({
                                 <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4 leading-tight">
                                     {getLocalizedString(selectedTask.title)}
                                 </h1>
-                                <div className={`h-1.5 w-12 mb-8 rounded-full ${selectedTask.category === "Feature" ? "bg-blue-500" :
-                                    selectedTask.category === "Content" ? "bg-purple-500" :
-                                        selectedTask.category === "AI Core" ? "bg-emerald-500" :
-                                            selectedTask.category === "UIUX" ? "bg-amber-500" :
-                                                selectedTask.category === "Bug" ? "bg-rose-500" :
-                                                    "bg-emerald-500"
-                                    }`} />
                                 <p className="text-lg md:text-xl text-neutral-400 leading-relaxed font-medium mb-8 italic border-l-4 border-white/5 pl-6">
                                     {getLocalizedString(selectedTask.description)}
                                 </p>

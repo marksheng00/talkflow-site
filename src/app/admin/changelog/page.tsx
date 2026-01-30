@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import {
     Plus,
@@ -76,6 +76,24 @@ export default function AdminChangelogPage() {
     const [activeLocale, setActiveLocale] = useState<string>("en");
     const [translateFeedback, setTranslateFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
     const [localVersion, setLocalVersion] = useState<string>("");
+    const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Debounced sync function
+    const debouncedSyncChangeItem = useCallback((item: ChangeItem) => {
+        if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+        syncTimeoutRef.current = setTimeout(async () => {
+            await supabaseClient
+                .from("changelog_items")
+                .update({ type: item.type, description: item.description })
+                .eq("id", item.id);
+        }, 1000);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+        };
+    }, []);
 
     useEffect(() => {
         if (selectedRelease) {
@@ -271,13 +289,19 @@ export default function AdminChangelogPage() {
         }
     };
 
-    const handleUpdateChangeItem = async (item: ChangeItem) => {
+    const handleUpdateChangeItem = (item: ChangeItem, immediate = false) => {
         setChanges(changes.map((c) => (c.id === item.id ? item : c)));
         if (editingItem?.id === item.id) setEditingItem(item);
-        await supabaseClient
-            .from("changelog_items")
-            .update({ type: item.type, description: item.description })
-            .eq("id", item.id);
+
+        if (immediate) {
+            if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+            supabaseClient
+                .from("changelog_items")
+                .update({ type: item.type, description: item.description })
+                .eq("id", item.id);
+        } else {
+            debouncedSyncChangeItem(item);
+        }
     };
 
     const handleDeleteChangeItem = async (itemId: string) => {
@@ -311,7 +335,7 @@ export default function AdminChangelogPage() {
             }
             const updatedItem = { ...editingItem, description: updatedDesc };
             setEditingItem(updatedItem);
-            handleUpdateChangeItem(updatedItem);
+            handleUpdateChangeItem(updatedItem, true);
             setTranslateFeedback({ type: 'success', message: '' });
         } catch (err) {
             console.error("Auto-translate error:", err);
@@ -483,14 +507,14 @@ export default function AdminChangelogPage() {
                         {changes.map((item, idx) => (
                             <div key={item.id} className="group relative space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 {/* Item Header */}
-                                <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                                <div className="flex items-center justify-between opacity-100 transition-opacity">
                                     <div className="flex items-center gap-1.5">
                                         <div className="text-[10px] font-mono text-zinc-700 w-4 font-bold">{(idx + 1).toString().padStart(2, '0')}</div>
                                         <div className="flex items-center bg-white/5 rounded-md p-1 border border-white/5 gap-1">
                                             {Object.entries(TYPE_LABELS).map(([val, label]) => (
                                                 <button
                                                     key={val}
-                                                    onClick={() => handleUpdateChangeItem({ ...item, type: val as any })}
+                                                    onClick={() => handleUpdateChangeItem({ ...item, type: val as any }, true)}
                                                     className={cn("px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-all",
                                                         item.type === val
                                                             ? "bg-zinc-800 text-zinc-100"

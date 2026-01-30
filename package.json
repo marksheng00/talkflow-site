@@ -1,6 +1,6 @@
 {
   "name": "talkflo-site",
-  "version": "0.1.172",
+  "version": "0.1.173",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -19,8 +19,11 @@
     "@sanity/ui": "^3.1.11",
     "@sanity/vision": "^5.6.0",
     "@supabase/supabase-js": "^2.90.1",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tiptap/extension-link": "^3.18.0",
     "@tiptap/extension-placeholder": "^3.17.1",
-    "@tiptap/extension-typography": "^3.17.1",
+    "@tiptap/extension-typography": "^3.18.0",
+    "@tiptap/extension-underline": "^3.18.0",
     "@tiptap/react": "^3.17.1",
     "@tiptap/starter-kit": "^3.17.1",
     "@vitalets/google-translate-api": "^9.2.1",
