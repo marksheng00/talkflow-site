@@ -5,10 +5,13 @@ export default function BrandJsonLd() {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "talkflo",
+        "legalName": "BeyondThink LLC",
+        "slogan": "Simple. Fast. Fluent.",
         "description": "Next-generation AI English speaking coach platform for IELTS/TOEFL preparation and fluency training.",
         "url": "https://talkflo.hicall.ai",
         "logo": "https://talkflo.hicall.ai/talkflo_logo.png",
-        "knowsAbout": ["English Language Learning", "Artificial Intelligence", "Voice Synthesis", "IELTS Preparation"],
+        "knowsAbout": ["English Language Learning", "Artificial Intelligence", "Voice Synthesis", "IELTS Preparation", "Communication Skills"],
+        "areaServed": "Worldwide",
         "sameAs": [
             "https://twitter.com/talkflo",
             "https://www.linkedin.com/company/talkflo"
@@ -20,7 +23,8 @@ export default function BrandJsonLd() {
         "address": {
             "@type": "PostalAddress",
             "addressCountry": "US"
-        }
+        },
+        "foundingDate": "2024"
     };
 
     return (

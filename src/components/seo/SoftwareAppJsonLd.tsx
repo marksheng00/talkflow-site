@@ -7,10 +7,20 @@ export default function SoftwareAppJsonLd() {
         "name": "talkflo",
         "operatingSystem": "Web, iOS, Android",
         "applicationCategory": "EducationalApplication",
+        "featureList": [
+            "Real-time AI Voice Interaction",
+            "Adaptive Role-play Scenarios",
+            "IELTS/TOEFL Pronunciation Scoring",
+            "Instant Grammar & Tone Feedback",
+            "Personalized Learning Roadmap",
+            "Multilingual Support"
+        ],
         "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.9",
-            "ratingCount": "1250"
+            "ratingCount": "1250",
+            "bestRating": "5",
+            "worstRating": "1"
         },
         "offers": {
             "@type": "AggregateOffer",
@@ -19,7 +29,7 @@ export default function SoftwareAppJsonLd() {
             "priceCurrency": "USD",
             "offerCount": "3"
         },
-        "description": "Master English fluency with talkflo. Real-time AI role-play, instant pronunciation feedback, and professional coaching for IELTS, TOEFL and job interviews."
+        "description": "Master English fluency with talkflo. User-centric AI speaking coach that provides real-time role-play, instant pronunciation scoring, and customized coaching for professional and academic exams."
     };
 
     return (

@@ -20,6 +20,7 @@ export default function BlogPostJsonLd({ post, locale }: BlogPostJsonLdProps) {
         "articleSection": post.categories?.[0]?.title || "Education", // Primary Category
         "inLanguage": locale,
         "isAccessibleForFree": "True",
+        "isFamilyFriendly": "True",
         "keywords": post.categories?.map(c => c.title).join(', ') || "AI English, Speaking Practice",
         "author": [{
             "@type": "Person",
@@ -33,7 +34,9 @@ export default function BlogPostJsonLd({ post, locale }: BlogPostJsonLdProps) {
             "url": "https://talkflo.hicall.ai",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://talkflo.hicall.ai/talkflo_logo.png"
+                "url": "https://talkflo.hicall.ai/talkflo_logo.png",
+                "width": "512",
+                "height": "512"
             }
         },
         "description": post.excerpt || post.seo?.metaDescription,
