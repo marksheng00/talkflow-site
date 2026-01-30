@@ -126,6 +126,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
             }}
             className={cn(
                 "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-2xl px-6 py-3 lg:px-10 lg:py-3",
+                "will-change-transform transform-gpu", // Hardware acceleration
                 className
             )}
         >
@@ -300,6 +301,7 @@ export const NavbarLogo = () => {
                 width={48}
                 height={48}
                 className="h-12 w-12 rounded-lg object-contain"
+                priority={true} // Priority loading for LCP
             />
             <span className="font-bold text-white tracking-wide text-xl">talkflo</span>
         </Link>

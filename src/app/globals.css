@@ -746,7 +746,15 @@ details summary::-webkit-details-marker {
   /* Firefox */
 }
 
-/* Reset global focus styles for Sanity Studio to prevent double borders */
+/* Performance optimization utilities */
+.will-change-transform {
+  will-change: transform;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+}
+
 #sanity-studio-wrapper button:focus-visible,
 #sanity-studio-wrapper a:focus-visible,
 #sanity-studio-wrapper [tabindex]:focus-visible {
