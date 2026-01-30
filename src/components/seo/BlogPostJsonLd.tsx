@@ -17,6 +17,7 @@ export default function BlogPostJsonLd({ post, locale }: BlogPostJsonLdProps) {
             : ["https://talkflo.hicall.ai/og-image.png"], // Fallback image
         "datePublished": post.publishedAt,
         "dateModified": post.publishedAt,
+        "articleSection": post.categories?.[0]?.title || "Education", // Primary Category
         "inLanguage": locale,
         "isAccessibleForFree": "True",
         "keywords": post.categories?.map(c => c.title).join(', ') || "AI English, Speaking Practice",
