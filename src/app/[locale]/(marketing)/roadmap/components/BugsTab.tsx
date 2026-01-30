@@ -57,9 +57,9 @@ export function BugsTab({
                         >
                             <div className="space-y-1.5 min-w-0">
                                 <div className="flex items-start justify-between gap-4 min-w-0">
-                                    <h4 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
+                                    <h3 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
                                         {bug.title}
-                                    </h4>
+                                    </h3>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`text-[9px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded border ${colors}`}>

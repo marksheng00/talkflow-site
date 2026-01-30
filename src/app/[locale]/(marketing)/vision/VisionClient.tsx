@@ -112,9 +112,9 @@ export default function VisionClient() {
                     <section className="section-block">
                         <div className="section-shell section-stack stack-base">
                             <div className="section-heading">
-                                <h3 className="font-heading text-3xl md:text-4xl font-bold text-white">
+                                <h2 className="font-heading text-3xl md:text-4xl font-bold text-white">
                                     {t('Security.title')}
-                                </h3>
+                                </h2>
                                 <p className="text-lg text-neutral-400 text-balance">
                                     {t('Security.subtitle')}
                                 </p>
@@ -139,9 +139,9 @@ export default function VisionClient() {
                     <section className="section-block">
                         <div className="section-shell text-center section-stack stack-base">
                             <div className="section-stack items-center text-center">
-                                <h4 className="font-heading text-4xl md:text-5xl font-bold text-white">
+                                <h2 className="font-heading text-4xl md:text-5xl font-bold text-white">
                                     {t('CTA.title')}
-                                </h4>
+                                </h2>
                                 <p className="text-lg text-neutral-400 text-balance">
                                     {t('CTA.subtitle')}
                                 </p>

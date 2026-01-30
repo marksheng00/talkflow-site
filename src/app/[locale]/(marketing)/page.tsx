@@ -193,7 +193,7 @@ export default function Home() {
               <div className="absolute top-0 right-0 -mt-12 -mr-12 h-48 w-48 rounded-full bg-indigo-500/15 blur-[60px] transition-all group-hover:bg-indigo-500/25" />
 
               <div className="relative z-10 space-y-2">
-                <h4 className="text-lg font-bold text-white md:text-xl">{t('Tech.cards.partner.title')}</h4>
+                <h3 className="text-lg font-bold text-white md:text-xl">{t('Tech.cards.partner.title')}</h3>
                 <p className="text-neutral-400 leading-relaxed text-xs md:text-sm">
                   {t('Tech.cards.partner.desc')}
                 </p>
@@ -249,7 +249,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-base md:text-lg font-bold text-white">{t('Tech.cards.latency.title')}</h4>
+                <h3 className="text-base md:text-lg font-bold text-white">{t('Tech.cards.latency.title')}</h3>
                 <p className="text-neutral-400 text-xs md:text-sm mt-0.5 truncate">
                   {t('Tech.cards.latency.desc')}
                 </p>
@@ -271,7 +271,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h4 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.models')}</h4>
+                <h3 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.models')}</h3>
               </div>
             </div>
 
@@ -296,7 +296,7 @@ export default function Home() {
 
               {/* Overlaid Label - Consistent with others */}
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h4 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.voice')}</h4>
+                <h3 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.voice')}</h3>
               </div>
             </div>
 
@@ -315,7 +315,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h4 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.asr')}</h4>
+                <h3 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.asr')}</h3>
               </div>
             </div>
 
@@ -375,7 +375,7 @@ export default function Home() {
 
                 {/* Right: Text Content */}
                 <div className="space-y-4">
-                  <h4 className="text-2xl font-bold text-white">{t('About.cards.pedagogy.title')}</h4>
+                  <h3 className="text-2xl font-bold text-white">{t('About.cards.pedagogy.title')}</h3>
                   <p className="text-base text-slate-200 leading-relaxed">
                     {t('About.cards.pedagogy.desc')}
                   </p>
@@ -394,7 +394,7 @@ export default function Home() {
               <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
                 {/* Left: Text Content */}
                 <div className="space-y-4 md:order-1">
-                  <h4 className="text-2xl font-bold text-white">{t('About.cards.engineering.title')}</h4>
+                  <h3 className="text-2xl font-bold text-white">{t('About.cards.engineering.title')}</h3>
                   <p className="text-base text-slate-200 leading-relaxed">
                     {t('About.cards.engineering.desc')}
                   </p>
@@ -449,7 +449,7 @@ export default function Home() {
 
                 {/* Right: Text Content */}
                 <div className="space-y-4">
-                  <h4 className="text-2xl font-bold text-white">{t('About.cards.human.title')}</h4>
+                  <h3 className="text-2xl font-bold text-white">{t('About.cards.human.title')}</h3>
                   <p className="text-base text-slate-200 leading-relaxed">
                     {t('About.cards.human.desc')}
                   </p>
