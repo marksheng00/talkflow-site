@@ -13,12 +13,16 @@ const heading = Outfit({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: true,
+  preload: true,
 });
 
 const body = Hanken_Grotesk({
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: true,
+  preload: true,
 });
 
 import { getTranslations } from 'next-intl/server';

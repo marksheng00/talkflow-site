@@ -9,9 +9,6 @@ import {
   Briefcase,
 } from "lucide-react";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
-import { ChatConversation } from "@/components/home/ChatConversation";
-import { FeedbackCard } from "@/components/home/FeedbackCard";
-import { AppDownloadButtons } from "@/components/home/AppDownloadButtons";
 import {
   primaryCta,
   playStore,
@@ -20,6 +17,12 @@ import {
   feedbackCards,
 } from "@/lib/data/home-data";
 import FaqJsonLd from "@/components/seo/FaqJsonLd";
+import dynamic from "next/dynamic";
+
+// Dynamic imports for deferred components
+const ChatConversation = dynamic(() => import("@/components/home/ChatConversation").then(mod => mod.ChatConversation), { ssr: true });
+const FeedbackCard = dynamic(() => import("@/components/home/FeedbackCard").then(mod => mod.FeedbackCard), { ssr: true });
+const AppDownloadButtons = dynamic(() => import("@/components/home/AppDownloadButtons").then(mod => mod.AppDownloadButtons), { ssr: true });
 
 export default function Home() {
   const t = useTranslations('HomePage');

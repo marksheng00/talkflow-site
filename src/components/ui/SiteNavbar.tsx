@@ -99,30 +99,23 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
     return (
         <motion.div
             animate={{
-                backdropFilter: visible ? "blur(16px)" : "blur(0px)",
-                backgroundColor: visible ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)",
-                borderColor: visible ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0)",
-                borderWidth: visible ? "1px" : "0px",
-                boxShadow: visible
-                    ? "0 4px 24px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1)"
-                    : "none",
-                width: visible ? "auto" : "100%",
+                opacity: visible ? 1 : 0.8,
                 y: visible ? 20 : 0,
             }}
             initial={{
-                borderWidth: "0px",
-                borderColor: "rgba(255, 255, 255, 0)",
-                backgroundColor: "rgba(255, 255, 255, 0)",
+                opacity: 1,
                 y: 0,
             }}
             style={{
-                WebkitBackdropFilter: visible ? "blur(16px)" : "blur(0px)",
-                borderStyle: "solid"
+                width: visible ? "auto" : "100%",
+                background: visible ? "rgba(255, 255, 255, 0.1)" : "transparent",
+                backdropFilter: visible ? "blur(16px)" : "blur(0px)",
+                border: visible ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
             }}
             transition={{
                 type: "spring",
-                stiffness: 200,
-                damping: 50,
+                stiffness: 260,
+                damping: 20,
             }}
             className={cn(
                 "relative mx-auto flex max-w-7xl items-center justify-between self-start rounded-2xl px-6 py-3 lg:px-10 lg:py-3",
