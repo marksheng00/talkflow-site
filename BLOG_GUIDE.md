@@ -81,13 +81,13 @@
 
 | 维护目标 | 对应文件路径 | 修改说明 |
 | :--- | :--- | :--- |
-| **品牌知识库 (GEO 核心)** | `src/components/seo/BrandJsonLd.tsx` | 更新 **`knowsAbout`** (TalkFlow 擅长的领域) 或社交媒体链接。 |
-| **软件属性更新** | `src/components/seo/SoftwareAppJsonLd.tsx` | 修改应用价格、评分、所属品类 (EducationApplication)。 |
-| **面包屑名称翻译** | `messages/*.json` (Navigation 命名空间) | 如果新增页面或想修改面包屑中的“首页/博客”字样，改这些 JSON 即可。 |
-| **站点地图规则** | `src/app/sitemap.ts` | 修改页面权重 (priority) 或各路径的抓取频率。 |
-| **爬虫封禁规则** | `src/app/robots.ts` | 决定哪些目录不让爬虫进入（如后台）。 |
-| **博客 Schema 逻辑** | `src/components/seo/BlogPostJsonLd.tsx` | 如果需要为 AI 搜索增加新的属性（如作者职位），在这里改。 |
-| **全局标题模版** | `src/app/[locale]/layout.tsx` | 修改全站通用的 Title 模版、Favicon 或全站 OG 图。 |
+| **品牌地位 & 领域 (GEO)** | `src/components/seo/BrandJsonLd.tsx` | 更新 **`knowsAbout`** (专业领域)、**`slogan`**、**`legalName`** 或社交媒体链接。 |
+| **核心功能 & 评分 (GEO)** | `src/components/seo/SoftwareAppJsonLd.tsx` | 更新 **`featureList`** (功能清单)、**`ratingValue`** (评分) 或价格。 |
+| **博客语义 & 标签** | `src/components/seo/BlogPostJsonLd.tsx` | 修改 **`articleSection`** (分类映射)、**`jobTitle`** (作者职位) 或 **`isFamilyFriendly`**。 |
+| **多语言面包屑** | `messages/*.json` | 修改 `Navigation` 下的翻译项，确保全语言路径显示正确。 |
+| **站点地图 & 抓取频率** | `src/app/sitemap.ts` | 修改页面权重 (priority) 或动态博客 Slug 的抓取规则。 |
+| **全局 SEO 模版** | `src/app/[locale]/layout.tsx` | 修改 `generateMetadata` 中的关键词、网站标题模版或 OG 图配置。 |
+| **爬虫封禁 (Robots)** | `src/app/robots.ts` | 决定哪些目录（如 `/admin`）对爬虫不可见。 |
 
 ---
 
