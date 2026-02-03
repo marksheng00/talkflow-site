@@ -8,10 +8,10 @@ import {
 } from '@/lib/sanity.queries';
 import { AuroraBackground } from '@/components/ui/AuroraBackground';
 import BlogCard from '@/components/blog/BlogCard';
-import { ChevronLeft, ChevronRight, Filter, BookOpen } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { buttonStyles } from "@/components/ui/Button";
 import { badgeStyles } from "@/components/ui/Badge";
+import { CategoriesSidebar } from "@/components/blog/CategoriesSidebar";
 
 import { Link } from '@/navigation';
 import type { BlogPost, BlogCategory } from '@/types/blog';
@@ -92,93 +92,15 @@ export default async function BlogPage({
                         {/* Two-column layout */}
                         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
                             {/* Sidebar (Desktop) */}
-                            <aside className="hidden lg:block w-[220px] flex-shrink-0 sticky top-32">
-                                <p className="typo-label text-slate-500 mb-4 flex items-center gap-2">
-                                    <Filter className="w-3 h-3" />
-                                    {t('Sidebar.categories')}
-                                </p>
-                                <nav className="flex flex-col space-y-1">
-                                    <Link
-                                        href="/blog"
-                                        locale={locale}
-                                        className={badgeStyles({
-                                            tone: !categorySlug ? "teal" : "slate",
-                                            variant: !categorySlug ? "soft" : "ghost",
-                                            size: "lg",
-                                            caps: false,
-                                            interactive: true,
-                                            className: !categorySlug ? "border-transparent" : undefined,
-                                        })}
-                                    >
-                                        {t('Sidebar.allPosts')}
-                                    </Link>
-                                    {categories
-                                        .filter(cat => !cat.parent)
-                                        .map((parent) => {
-                                            const children = categories.filter(c => c.parent === parent.slug.current);
-                                            const isChildActive = children.some(c => c.slug.current === categorySlug);
-                                            // Only highlight parent if explicitly selected, NOT if a child is selected
-                                            const isParentActive = categorySlug === parent.slug.current;
-
-                                            return (
-                                                <div key={parent.slug.current} className="group relative">
-                                                    <Link
-                                                        href={`/blog?category=${parent.slug.current}`}
-                                                        locale={locale}
-                                                        className={cn(
-                                                            badgeStyles({
-                                                                tone: isParentActive ? "teal" : "slate",
-                                                                variant: isParentActive ? "soft" : "ghost",
-                                                                size: "lg",
-                                                                caps: false,
-                                                                interactive: true,
-                                                                className: isParentActive ? "border-transparent" : undefined,
-                                                            }),
-                                                            "flex items-center justify-between"
-                                                        )}
-                                                    >
-                                                        {parent.title}
-                                                        {children.length > 0 && (
-                                                            <ChevronRight
-                                                                className={cn(
-                                                                    "w-3.5 h-3.5 transition-transform opacity-50 text-neutral-400 group-hover:text-white group-hover:opacity-100",
-                                                                    isChildActive ? "rotate-90 opacity-100 text-white" : "group-hover:rotate-90"
-                                                                )}
-                                                            />
-                                                        )}
-                                                    </Link>
-
-                                                    {children.length > 0 && (
-                                                        <div
-                                                            className={cn(
-                                                                "flex-col ml-4 mt-0.5 border-l border-white/10 pl-2 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-200 origin-top",
-                                                                isChildActive ? "flex" : "hidden group-hover:flex"
-                                                            )}
-                                                        >
-                                                            {children.map(child => (
-                                                                <Link
-                                                                    key={child.slug.current}
-                                                                    href={`/blog?category=${child.slug.current}`}
-                                                                    locale={locale}
-                                                                    className={badgeStyles({
-                                                                        tone: categorySlug === child.slug.current ? "teal" : "slate",
-                                                                        variant: categorySlug === child.slug.current ? "soft" : "ghost",
-                                                                        size: "lg",
-                                                                        caps: false,
-                                                                        interactive: true,
-                                                                        className: categorySlug === child.slug.current ? "border-transparent" : undefined,
-                                                                    })}
-                                                                >
-                                                                    {child.title}
-                                                                </Link>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                </nav>
-                            </aside>
+                            <CategoriesSidebar
+                                categories={categories}
+                                categorySlug={categorySlug}
+                                locale={locale}
+                                labels={{
+                                    categories: t('Sidebar.categories'),
+                                    allPosts: t('Sidebar.allPosts'),
+                                }}
+                            />
 
                             {/* Main Content */}
                             <div className="flex-1 min-w-0">
