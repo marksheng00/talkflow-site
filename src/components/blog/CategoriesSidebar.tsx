@@ -17,7 +17,7 @@ interface CategoriesSidebarProps {
     };
 }
 
-const CLOSE_DELAY_MS = 200;
+const CLOSE_DELAY_MS = 350;
 
 export function CategoriesSidebar({
     categories,
@@ -117,8 +117,10 @@ export function CategoriesSidebar({
                             {children.length > 0 && (
                                 <div
                                     className={cn(
-                                        "flex-col ml-4 mt-0.5 border-l border-white/10 pl-2 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-200 origin-top",
-                                        isOpen ? "flex" : "hidden"
+                                        "grid ml-4 mt-0.5 border-l border-white/10 pl-2 transition-[grid-template-rows,opacity] duration-200 origin-top",
+                                        isOpen
+                                            ? "grid-rows-[1fr] opacity-100 pointer-events-auto"
+                                            : "grid-rows-[0fr] opacity-0 pointer-events-none"
                                     )}
                                     onMouseEnter={() => {
                                         clearCloseTimer();
@@ -128,23 +130,25 @@ export function CategoriesSidebar({
                                         scheduleClose();
                                     }}
                                 >
-                                    {children.map((child) => (
-                                        <Link
-                                            key={child.slug.current}
-                                            href={`/blog?category=${child.slug.current}`}
-                                            locale={locale}
-                                            className={badgeStyles({
-                                                tone: categorySlug === child.slug.current ? "teal" : "slate",
-                                                variant: categorySlug === child.slug.current ? "soft" : "ghost",
-                                                size: "lg",
-                                                caps: false,
-                                                interactive: true,
-                                                className: categorySlug === child.slug.current ? "border-transparent" : undefined,
-                                            })}
-                                        >
-                                            {child.title}
-                                        </Link>
-                                    ))}
+                                    <div className="flex flex-col space-y-0.5 overflow-hidden">
+                                        {children.map((child) => (
+                                            <Link
+                                                key={child.slug.current}
+                                                href={`/blog?category=${child.slug.current}`}
+                                                locale={locale}
+                                                className={badgeStyles({
+                                                    tone: categorySlug === child.slug.current ? "teal" : "slate",
+                                                    variant: categorySlug === child.slug.current ? "soft" : "ghost",
+                                                    size: "lg",
+                                                    caps: false,
+                                                    interactive: true,
+                                                    className: categorySlug === child.slug.current ? "border-transparent" : undefined,
+                                                })}
+                                            >
+                                                {child.title}
+                                            </Link>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
