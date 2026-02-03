@@ -1,6 +1,6 @@
 import { Card, Stack, Text, Button, Flex, Box, Badge, Grid, useToast } from '@sanity/ui'
 import { useCallback, useState, useEffect } from 'react'
-import { useClient, useFormValue, set } from 'sanity'
+import { useClient, useFormValue, set, type StringInputProps } from 'sanity'
 import { LANGUAGES, BASE_LANGUAGE } from '../lib/languages'
 import { TranslateIcon, EditIcon, CheckmarkCircleIcon, AddIcon, WarningOutlineIcon, RefreshIcon, SyncIcon } from '@sanity/icons'
 import { useRouter } from 'sanity/router'
@@ -23,12 +23,7 @@ interface TextNode {
     text: string;
 }
 
-interface TranslationManagerProps {
-    value?: string;
-    onChange?: (val: unknown) => void;
-}
-
-export function TranslationManager(props: TranslationManagerProps) {
+export function TranslationManager(props: StringInputProps) {
     const { value: translationId, onChange } = props
     const documentId = useFormValue(['_id']) as string
     const currentLanguage = useFormValue(['language']) as string
