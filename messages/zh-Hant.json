@@ -247,26 +247,38 @@
         "vision": "願景",
         "blog": "博客",
         "login": "登錄",
-        "signup": "登錄 / 註冊",
+        "signup": "開始使用",
         "downloads": "下載"
     },
     "Footer": {
         "columns": {
             "Product": "產品",
             "Company": "公司",
-            "Resources": "相關資源"
+            "Legal": "法律合規",
+            "Downloads": "應用下載",
+            "Follow US": "關注我們"
         },
         "items": {
-            "Voice role-play": "語音角色扮演",
-            "AI feedback": "AI 反饋",
-            "Roadmap": "開發路線圖",
-            "Vision": "我們的願景",
-            "Careers": "加入我們",
+            "talkflo Overview": "talkflo 概覽",
+            "IELTS Killer": "雅思口語提分",
+            "Roadmap Visual": "路線圖",
+            "Ideas Feedback": "創意反饋",
+            "Bugs Feedback": "漏洞反饋",
+            "Vision": "願景",
+            "Blog": "博客",
+            "FAQs": "常見問題",
             "Support": "客戶支持",
-            "Blog": "官方博客",
-            "talkflo community": "交流社區",
-            "Press": "媒體聯繫",
-            "Privacy": "隱私條例"
+            "Privacy Policy": "隱私政策",
+            "Terms of Service": "服務協議",
+            "Refund Policy": "退款政策",
+            "Talkflo iOS App": "Talkflo iOS 版",
+            "Talkflo Android App": "Talkflo 安卓版",
+            "Facebook": "Facebook",
+            "Instagram": "Instagram",
+            "TikTok": "TikTok",
+            "Twitter": "Twitter",
+            "Xiaohongshu": "小紅書",
+            "YouTube": "YouTube"
         },
         "copyright": "© {year} talkflo. BeyondThink LLC 產品. 保留所有權利。"
     },
@@ -568,6 +580,44 @@
         "subtitle": "未找到頁面",
         "description": "抱歉，我們找不到您要訪問的頁面。它可能已被移動或不存在。",
         "button": "返回首頁"
+    },
+    "FAQPage": {
+        "titlePrefix": "常見",
+        "titleSuffix": "問題",
+        "subtitle": "關於 talkflo 和 AI 英語練習，您需要了解的一切。",
+        "sections": [
+            {
+                "title": "常規問題",
+                "items": [
+                    {
+                        "q": "什麼是 talkflo？",
+                        "a": "talkflo 是一款 AI 驅動的英語口語教練，旨在通過實時角色扮演和即時反饋幫助您提高流利度。"
+                    },
+                    {
+                        "q": "它與真人外教相比如何？",
+                        "a": "雖然它不能完全取代人際連接，但 talkflo 提供 24/7 全天候服務、即時反饋，以及一個安全、無壓力的練習環境。"
+                    }
+                ]
+            },
+            {
+                "title": "訂閱相關",
+                "items": [
+                    {
+                        "q": "我可以免費使用 talkflo 嗎？",
+                        "a": "可以！我們的免費方案包括每天 10 分鐘的 AI 練習和基礎反饋。"
+                    },
+                    {
+                        "q": "Pro 版有什麼好處？",
+                        "a": "Pro 用戶可以獲得無限練習時間、高級語法分析，以及使用最頂尖的 SOTA 語音模型。"
+                    }
+                ]
+            }
+        ],
+        "Support": {
+            "title": "還有疑問嗎？",
+            "subtitle": "我們的團隊隨時準備幫助您開啟英語學習之旅。歡迎隨時聯繫我們。",
+            "button": "聯繫支持"
+        }
     },
     "Metadata": {
         "title": "talkflo | 實時 AI 口語教練與對話練習",

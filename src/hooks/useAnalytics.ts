@@ -8,7 +8,7 @@ import { getDeviceType } from "@/lib/device-detection";
  * Use this to trigger events like 'download_clicked', 'signup_flow_start', etc.
  */
 export function useAnalytics() {
-    const trackEvent = useCallback((eventName: string, metadata: Record<string, any> = {}) => {
+    const trackEvent = useCallback((eventName: string, metadata: Record<string, unknown> = {}) => {
         // Collect basic context
         const payload = {
             event_name: eventName,

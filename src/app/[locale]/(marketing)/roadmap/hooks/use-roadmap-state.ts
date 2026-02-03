@@ -24,7 +24,15 @@ export function useRoadmapState(
     const [selectedIdea, _setSelectedIdea] = useState<CommunityIdea | null>(null);
     const [selectedBug, _setSelectedBug] = useState<BugReport | null>(null);
 
-    const [todayPercent, setTodayPercent] = useState<number | null>(null);
+    const todayPercent = useMemo(() => {
+        if (!mounted) return null;
+        const dayMs = 1000 * 60 * 60 * 24;
+        const timelineStart = Date.UTC(2024, 0, 1);
+        const timelineEnd = Date.UTC(2032, 0, 31);
+        const totalDays = (timelineEnd - timelineStart) / dayMs;
+        const todayOffset = (Date.now() - timelineStart) / dayMs;
+        return (todayOffset / totalDays) * 100;
+    }, [mounted]);
 
     // Boost tracking
     const [boostedTasks, setBoostedTasks] = useState<Set<string>>(new Set());
@@ -88,14 +96,40 @@ export function useRoadmapState(
     };
 
     useEffect(() => {
+        if (mounted) {
+            const currentHash = window.location.hash.replace('#', '');
+            if (activeTab === 'roadmap' && currentHash !== '') {
+                // Remove hash if it's the default tab
+                window.history.replaceState(null, '', window.location.pathname);
+            } else if (activeTab !== 'roadmap' && currentHash !== activeTab) {
+                // Update hash for other tabs
+                window.history.replaceState(null, '', `${window.location.pathname}#${activeTab}`);
+            }
+        }
+    }, [activeTab, mounted]);
+
+    useEffect(() => {
         setMounted(true);
 
-        const dayMs = 1000 * 60 * 60 * 24;
-        const timelineStart = Date.UTC(2024, 0, 1);
-        const timelineEnd = Date.UTC(2032, 0, 31);
-        const totalDays = (timelineEnd - timelineStart) / dayMs;
-        const todayOffset = (Date.now() - timelineStart) / dayMs;
-        setTodayPercent((todayOffset / totalDays) * 100);
+        // Handle URL hash for tab switching
+        const handleHashChange = () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash === 'ideas' || hash === 'bugs') {
+                setActiveTab(hash as Tab);
+            } else {
+                setActiveTab('roadmap');
+            }
+        };
+
+        // Check hash on initial load
+        handleHashChange();
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', handleHashChange);
+
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
     }, []);
 
     // Filter Logic

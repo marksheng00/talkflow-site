@@ -9,6 +9,9 @@ import {
   Briefcase,
 } from "lucide-react";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
+import { cardStyles } from "@/components/ui/Card";
+import { FaqItem } from "@/components/ui/FaqItem";
+import { Badge } from "@/components/ui/Badge";
 import {
   primaryCta,
   playStore,
@@ -41,7 +44,7 @@ export default function Home() {
 
           {/* Main Title */}
           <div className="section-heading max-w-none">
-            <h1 className="max-w-none font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
+            <h1 className="max-w-none typo-hero text-foreground">
               {t('titlePrefix')}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-emerald-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
                 {t('titleSuffix')}
@@ -49,7 +52,7 @@ export default function Home() {
             </h1>
 
             {/* Subtitle */}
-            <p className="max-w-5xl text-xl md:text-2xl leading-relaxed text-muted/60 px-2 md:px-0 font-light tracking-tight text-balance">
+            <p className="max-w-5xl typo-subtitle-lg text-muted/60 px-2 md:px-0 text-balance">
               {t('subtitle')}
             </p>
           </div>
@@ -69,7 +72,7 @@ export default function Home() {
                 <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/10 transition-transform hover:scale-110 cursor-pointer">
                   <Play className="h-6 w-6 md:h-8 md:w-8 text-white fill-current" />
                 </div>
-                <p className="text-xs md:text-sm font-medium tracking-wide uppercase text-neutral-400">{t('Hero.watchIntro')}</p>
+                <p className="typo-label text-neutral-400">{t('Hero.watchIntro')}</p>
               </div>
             </div>
 
@@ -82,8 +85,8 @@ export default function Home() {
                 { label: t('Hero.proofPoints.rating'), value: "4.9/5" }
               ].map((point) => (
                 <div key={point.label} className="text-center">
-                  <div className="text-3xl font-bold text-white">{point.value}</div>
-                  <div className="text-xs uppercase tracking-wider text-slate-500 mt-1">{point.label}</div>
+                  <div className="typo-stat text-white">{point.value}</div>
+                  <div className="typo-label text-slate-500 mt-1">{point.label}</div>
                 </div>
               ))}
             </div>
@@ -95,10 +98,10 @@ export default function Home() {
       <section id="product" className="section-block scroll-mt-32">
         <div className="section-shell section-stack">
           <div className="section-heading">
-            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+            <h2 className="typo-h2 text-white">
               {t('Features.title')}
             </h2>
-            <p className="text-lg text-neutral-400 text-balance">
+            <p className="typo-body-lg text-neutral-400 text-balance">
               {t('Features.subtitle')}
             </p>
           </div>
@@ -106,15 +109,19 @@ export default function Home() {
             {featureCards.map((feature, idx) => (
               <div
                 key={idx}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition hover:bg-white/[0.04]"
+                className={cardStyles({
+                  variant: "subtle",
+                  interactive: true,
+                  className: "group p-8",
+                })}
               >
                 <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 group-hover:bg-white/10 transition-colors">
                   <feature.icon className="h-6 w-6 text-emerald-200" />
                 </div>
-                <h3 className="font-heading text-xl font-bold text-white">
+                <h3 className="typo-h4 text-white">
                   {t(`Features.cards.${idx}.title`)}
                 </h3>
-                <p className="mt-3 text-base text-neutral-400 leading-relaxed">
+                <p className="mt-3 typo-body text-neutral-400">
                   {t(`Features.cards.${idx}.copy`)}
                 </p>
               </div>
@@ -122,13 +129,19 @@ export default function Home() {
           </div>
 
           {/* Feedback Subsection - Part of "Everything you need" */}
-          <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-12 lg:p-16 overflow-hidden relative section-stack stack-loose">
+          <div
+            className={cardStyles({
+              variant: "subtle",
+              className:
+                "p-8 md:p-12 lg:p-16 section-stack stack-loose",
+            })}
+          >
             <div className="grid gap-grid-lg lg:grid-cols-2 lg:items-center">
               <div className="space-y-8 z-10 relative">
-                <h3 className="font-heading text-3xl font-bold text-white md:text-4xl text-balance">
+                <h3 className="typo-h3 text-white text-balance">
                   {t('Features.Feedback.title')}
                 </h3>
-                <p className="text-lg text-neutral-400 leading-relaxed">
+                <p className="typo-body-lg text-neutral-400">
                   {t('Features.Feedback.desc')}
                 </p>
                 <div className="space-y-4">
@@ -137,7 +150,7 @@ export default function Home() {
                       <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
                         <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                       </div>
-                      <p className="text-base text-slate-300">{t(`Features.Feedback.list.${idx}`)}</p>
+                      <p className="typo-body text-slate-300">{t(`Features.Feedback.list.${idx}`)}</p>
                     </div>
                   ))}
                 </div>
@@ -152,7 +165,7 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-slate-500 text-center mt-2">{t('Features.Feedback.mobileSwipe')}</p>
+                <p className="typo-footnote text-slate-500 text-center mt-2">{t('Features.Feedback.mobileSwipe')}</p>
               </div>
 
               {/* Desktop: Vertical Marquee Container */}
@@ -181,10 +194,10 @@ export default function Home() {
       <section className="section-block relative">
         <div className="section-shell section-stack">
           <div className="section-heading">
-            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+            <h2 className="typo-h2 text-white">
               {t('Tech.title')}
             </h2>
-            <p className="text-lg text-neutral-400 text-balance">
+            <p className="typo-body-lg text-neutral-400 text-balance">
               {t('Tech.subtitle')}
             </p>
           </div>
@@ -192,12 +205,19 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-5 md:gap-6 md:grid-cols-6 md:grid-rows-2 md:h-[560px]">
 
             {/* 1. Agentic Conversation (Large - 3 cols, 2 rows) */}
-            <div className="group relative col-span-1 md:col-span-3 md:row-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 md:p-8 flex flex-col transition-all hover:bg-white/[0.04] h-[540px] md:h-auto md:min-h-0">
+            <div
+              className={cardStyles({
+                variant: "subtle",
+                interactive: true,
+                className:
+                  "group col-span-1 md:col-span-3 md:row-span-2 p-6 md:p-8 flex flex-col h-[540px] md:h-auto md:min-h-0",
+              })}
+            >
               <div className="absolute top-0 right-0 -mt-12 -mr-12 h-48 w-48 rounded-full bg-indigo-500/15 blur-[60px] transition-all group-hover:bg-indigo-500/25" />
 
               <div className="relative z-10 space-y-2">
-                <h3 className="text-lg font-bold text-white md:text-xl">{t('Tech.cards.partner.title')}</h3>
-                <p className="text-neutral-400 leading-relaxed text-xs md:text-sm">
+                <h3 className="typo-title text-white">{t('Tech.cards.partner.title')}</h3>
+                <p className="typo-body-sm text-neutral-400">
                   {t('Tech.cards.partner.desc')}
                 </p>
               </div>
@@ -209,13 +229,13 @@ export default function Home() {
                     text: t('Tech.cards.chat.0'),
                     delay: 0,
                     typingSpeed: 60,
-                    className: "self-end max-w-[75%] rounded-2xl rounded-br-sm bg-indigo-500/30 px-5 py-3.5 text-base text-white/90 leading-relaxed",
+                    className: "self-end max-w-[75%] rounded-2xl rounded-br-lg bg-indigo-500/30 px-5 py-3.5 typo-body text-white/90",
                   },
                   {
                     text: t('Tech.cards.chat.1'),
                     delay: 2500,
                     typingSpeed: 55,
-                    className: "self-start max-w-[80%] rounded-2xl rounded-bl-sm bg-white/10 px-5 py-3.5 text-base text-white/80 leading-relaxed",
+                    className: "self-start max-w-[80%] rounded-2xl rounded-bl-lg bg-white/10 px-5 py-3.5 typo-body text-white/80",
                     highlightWords: [
                       { word: t('Tech.cards.chat.1').includes('Wait') ? "Wait" : "请稍等", className: "gradient-word-cool" },
                       { word: t('Tech.cards.chat.1').includes('role') ? "role" : "职位", className: "gradient-word-emerald" },
@@ -226,13 +246,13 @@ export default function Home() {
                     text: t('Tech.cards.chat.2'),
                     delay: 5000,
                     typingSpeed: 65,
-                    className: "self-end max-w-[65%] rounded-2xl rounded-br-sm bg-indigo-500/30 px-5 py-3.5 text-base text-white/90 leading-relaxed",
+                    className: "self-end max-w-[65%] rounded-2xl rounded-br-lg bg-indigo-500/30 px-5 py-3.5 typo-body text-white/90",
                   },
                   {
                     text: t('Tech.cards.chat.3'),
                     delay: 7500,
                     typingSpeed: 50,
-                    className: "self-start max-w-[85%] rounded-2xl rounded-bl-sm bg-white/10 px-5 py-3.5 text-base text-white/80 leading-relaxed",
+                    className: "self-start max-w-[85%] rounded-2xl rounded-bl-lg bg-white/10 px-5 py-3.5 typo-body text-white/80",
                     highlightWords: [
                       { word: t('Tech.cards.chat.3').includes('Perfect') ? "Perfect" : "太棒了", className: "gradient-word-cool" },
                       { word: t('Tech.cards.chat.3').includes('failed') ? "failed" : "失败", className: "gradient-word-warm" },
@@ -244,16 +264,23 @@ export default function Home() {
             </div>
 
             {/* 2. Speed / Latency (3 cols, 1 row) */}
-            <div className="group relative col-span-1 md:col-span-3 md:row-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-6 md:p-8 transition-all hover:bg-white/[0.04] flex items-center gap-5">
+            <div
+              className={cardStyles({
+                variant: "subtle",
+                interactive: true,
+                className:
+                  "group col-span-1 md:col-span-3 md:row-span-1 p-6 md:p-8 flex items-center gap-5",
+              })}
+            >
               <div className="relative flex-shrink-0">
                 <div className="absolute inset-0 bg-emerald-500/25 blur-2xl rounded-full scale-125" />
-                <div className="relative text-4xl md:text-5xl font-bold text-emerald-400 tabular-nums">
-                  &lt;500<span className="text-xl md:text-2xl text-emerald-500/70">ms</span>
+                <div className="typo-stat-lg text-emerald-400 tabular-nums">
+                  &lt;500<span className="typo-body-lg text-emerald-500/70">ms</span>
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-base md:text-lg font-bold text-white">{t('Tech.cards.latency.title')}</h3>
-                <p className="text-neutral-400 text-xs md:text-sm mt-0.5 truncate">
+                <h3 className="typo-body-lg-strong text-white">{t('Tech.cards.latency.title')}</h3>
+                <p className="typo-body-sm text-neutral-400 mt-0.5 truncate">
                   {t('Tech.cards.latency.desc')}
                 </p>
               </div>
@@ -264,22 +291,36 @@ export default function Home() {
             </div>
 
             {/* 3. Models - Smooth sequential fade */}
-            <div className="group relative col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
+            <div
+              className={cardStyles({
+                variant: "outline",
+                interactive: true,
+                className:
+                  "group col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] bg-gradient-to-b from-slate-900/50 to-slate-950/80",
+              })}
+            >
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative h-10 w-full flex items-center justify-center">
-                  <span className="absolute text-2xl md:text-3xl font-bold text-blue-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '0s' }}>Gemini</span>
-                  <span className="absolute text-2xl md:text-3xl font-bold text-purple-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '2s' }}>Claude</span>
-                  <span className="absolute text-2xl md:text-3xl font-bold text-emerald-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '4s' }}>GPT-5</span>
-                  <span className="absolute text-2xl md:text-3xl font-bold text-orange-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '6s' }}>Llama-3</span>
+                  <span className="absolute typo-h3 text-blue-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '0s' }}>Gemini</span>
+                  <span className="absolute typo-h3 text-purple-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '2s' }}>Claude</span>
+                  <span className="absolute typo-h3 text-emerald-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '4s' }}>GPT-5</span>
+                  <span className="absolute typo-h3 text-orange-400 animate-text-cycle will-change-[opacity,transform]" style={{ animationDelay: '6s' }}>Llama-3</span>
                 </div>
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h3 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.models')}</h3>
+                <h3 className="typo-label text-white/90 text-center">{t('Tech.cards.models')}</h3>
               </div>
             </div>
 
             {/* 4. Voice - High-Fidelity Living Mesh (方案 A 改良) */}
-            <div className="group relative col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
+            <div
+              className={cardStyles({
+                variant: "outline",
+                interactive: true,
+                className:
+                  "group col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] bg-gradient-to-b from-slate-900/50 to-slate-950/80",
+              })}
+            >
               {/* The Fluid Mesh Container */}
               <div className="absolute inset-0 flex items-center justify-center scale-110">
                 <div className="relative h-full w-full filter blur-[45px] animate-blob-rotate">
@@ -299,18 +340,25 @@ export default function Home() {
 
               {/* Overlaid Label - Consistent with others */}
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h3 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.voice')}</h3>
+                <h3 className="typo-label text-white/90 text-center">{t('Tech.cards.voice')}</h3>
               </div>
             </div>
 
             {/* 5. ASR - Sequential single phoneme with pixelated feel */}
-            <div className="group relative col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-slate-900/50 to-slate-950/80 transition-all hover:border-white/20">
+            <div
+              className={cardStyles({
+                variant: "outline",
+                interactive: true,
+                className:
+                  "group col-span-1 md:col-span-1 md:row-span-1 min-h-[240px] bg-gradient-to-b from-slate-900/50 to-slate-950/80",
+              })}
+            >
               {/* Pixel Grid Overlay */}
               <div className="absolute inset-0 pixel-grid" />
               <div className="scanline" />
 
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative h-10 w-full flex items-center justify-center font-pixel text-4xl md:text-5xl">
+                <div className="relative h-10 w-full flex items-center justify-center typo-pixel typo-stat-lg">
                   <span className="absolute text-emerald-400/90 animate-pixel-cycle will-change-[opacity,transform]" style={{ animationDelay: '0s' }}>/θ/</span>
                   <span className="absolute text-emerald-400/90 animate-pixel-cycle will-change-[opacity,transform]" style={{ animationDelay: '2s' }}>/ɪ/</span>
                   <span className="absolute text-emerald-400/90 animate-pixel-cycle will-change-[opacity,transform]" style={{ animationDelay: '4s' }}>/ŋ/</span>
@@ -318,7 +366,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-4 pt-8">
-                <h3 className="text-xs font-bold text-white/90 text-center">{t('Tech.cards.asr')}</h3>
+                <h3 className="typo-label text-white/90 text-center">{t('Tech.cards.asr')}</h3>
               </div>
             </div>
 
@@ -330,10 +378,10 @@ export default function Home() {
       <section id="about" className="section-block scroll-mt-32">
         <div className="section-shell section-stack">
           <div className="section-heading">
-            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+            <h2 className="typo-h2 text-white">
               {t('About.title')}
             </h2>
-            <p className="text-lg text-neutral-400 text-balance">
+            <p className="typo-body-lg text-neutral-400 text-balance">
               {t('About.subtitle')}
             </p>
           </div>
@@ -349,8 +397,8 @@ export default function Home() {
                   <div className="relative rounded-2xl border border-white/20 bg-white/95 backdrop-blur-xl p-6 shadow-2xl transition-all duration-500 group-hover:shadow-emerald-500/20">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide">{t('About.cards.pedagogy.badge')}</p>
-                        <p className="text-sm text-slate-500 mt-0.5">{t('About.cards.pedagogy.credential')}</p>
+                        <p className="typo-label text-emerald-600">{t('About.cards.pedagogy.badge')}</p>
+                        <p className="typo-body-sm text-slate-500 mt-0.5">{t('About.cards.pedagogy.credential')}</p>
                       </div>
                       <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center">
                         <BookOpen className="h-5 w-5 text-white" />
@@ -358,31 +406,31 @@ export default function Home() {
                     </div>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                        <span className="text-sm text-slate-600">{t('About.cards.pedagogy.stats.fluency')}</span>
-                        <span className="text-sm font-bold text-slate-900">8.5</span>
+                        <span className="typo-body-sm text-slate-600">{t('About.cards.pedagogy.stats.fluency')}</span>
+                        <span className="typo-body-sm-strong text-slate-900">8.5</span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                        <span className="text-sm text-slate-600">{t('About.cards.pedagogy.stats.lexical')}</span>
-                        <span className="text-sm font-bold text-slate-900">9.0</span>
+                        <span className="typo-body-sm text-slate-600">{t('About.cards.pedagogy.stats.lexical')}</span>
+                        <span className="typo-body-sm-strong text-slate-900">9.0</span>
                       </div>
                       <div className="flex justify-between items-center py-2">
-                        <span className="text-sm text-slate-600">{t('About.cards.pedagogy.stats.pronunciation')}</span>
-                        <span className="text-sm font-bold text-slate-900">8.0</span>
+                        <span className="typo-body-sm text-slate-600">{t('About.cards.pedagogy.stats.pronunciation')}</span>
+                        <span className="typo-body-sm-strong text-slate-900">8.0</span>
                       </div>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-200">
-                      <p className="text-xs text-neutral-400 italic">{t('About.cards.pedagogy.footer')}</p>
+                      <p className="typo-footnote text-neutral-400 italic">{t('About.cards.pedagogy.footer')}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Right: Text Content */}
                 <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-white">{t('About.cards.pedagogy.title')}</h3>
-                  <p className="text-base text-slate-200 leading-relaxed">
+                  <h3 className="typo-h3 text-white">{t('About.cards.pedagogy.title')}</h3>
+                  <p className="typo-body text-slate-200">
                     {t('About.cards.pedagogy.desc')}
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-emerald-300">
+                  <div className="flex items-center gap-2 typo-body-sm text-emerald-300">
                     <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span>{t('About.cards.pedagogy.trust')}</span>
                   </div>
@@ -397,11 +445,11 @@ export default function Home() {
               <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
                 {/* Left: Text Content */}
                 <div className="space-y-4 md:order-1">
-                  <h3 className="text-2xl font-bold text-white">{t('About.cards.engineering.title')}</h3>
-                  <p className="text-base text-slate-200 leading-relaxed">
+                  <h3 className="typo-h3 text-white">{t('About.cards.engineering.title')}</h3>
+                  <p className="typo-body text-slate-200">
                     {t('About.cards.engineering.desc')}
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-indigo-300">
+                  <div className="flex items-center gap-2 typo-body-sm text-indigo-300">
                     <div className="h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
                     <span>{t('About.cards.engineering.stat')}</span>
                   </div>
@@ -417,17 +465,17 @@ export default function Home() {
                         <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
                         <div className="h-3 w-3 rounded-full bg-green-500/80" />
                       </div>
-                      <span className="text-xs text-neutral-400 ml-2 font-mono">talkflo-engine</span>
+                      <span className="typo-mono text-neutral-400 ml-2">talkflo-engine</span>
                     </div>
 
                     {/* Terminal Content */}
-                    <div className="p-4 font-mono text-xs space-y-1">
+                    <div className="p-4 typo-mono space-y-1">
                       <p className="text-emerald-400">$ npm run dev</p>
                       <p className="text-slate-500">&gt; {t('About.cards.engineering.terminal.starting')}</p>
                       <p className="text-indigo-300">✓ {t('About.cards.engineering.terminal.voice')}</p>
                       <p className="text-indigo-300">✓ {t('About.cards.engineering.terminal.asr')}</p>
-                      <p className="text-neutral-400">⚡ {t('About.cards.engineering.terminal.latency')} <span className="text-emerald-400 font-bold">187ms</span></p>
-                      <p className="text-neutral-400">🎯 {t('About.cards.engineering.terminal.interruption')} <span className="text-purple-400 font-bold">{t('About.cards.engineering.terminal.active')}</span></p>
+                      <p className="text-neutral-400">⚡ {t('About.cards.engineering.terminal.latency')} <span className="text-emerald-400 typo-body-strong">187ms</span></p>
+                      <p className="text-neutral-400">🎯 {t('About.cards.engineering.terminal.interruption')} <span className="text-purple-400 typo-body-strong">{t('About.cards.engineering.terminal.active')}</span></p>
                       <p className="text-slate-500 animate-pulse">▊</p>
                     </div>
                   </div>
@@ -442,21 +490,21 @@ export default function Home() {
               <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
                 {/* Left: Embedded Chat Bubbles */}
                 <div className="space-y-4">
-                  <div className="relative rounded-2xl rounded-tl-sm border border-white/20 bg-white/95 backdrop-blur-xl p-4 shadow-xl max-w-sm transition-all group-hover:translate-y-[-4px]">
-                    <p className="text-sm text-slate-700">{t('About.cards.human.bubble1')}</p>
+                  <div className="relative rounded-2xl rounded-tl-lg border border-white/20 bg-white/95 backdrop-blur-xl p-4 shadow-xl max-w-sm transition-all group-hover:translate-y-[-4px]">
+                    <p className="typo-body-sm text-slate-700">{t('About.cards.human.bubble1')}</p>
                   </div>
-                  <div className="relative rounded-2xl rounded-br-sm border border-rose-200/30 bg-gradient-to-br from-rose-400/20 to-orange-400/20 backdrop-blur-xl p-4 shadow-xl ml-4 md:ml-8 transition-all group-hover:translate-y-[-2px]">
-                    <p className="text-sm text-white/90">{t('About.cards.human.bubble2')}</p>
+                  <div className="relative rounded-2xl rounded-br-lg border border-rose-200/30 bg-gradient-to-br from-rose-400/20 to-orange-400/20 backdrop-blur-xl p-4 shadow-xl ml-4 md:ml-8 transition-all group-hover:translate-y-[-2px]">
+                    <p className="typo-body-sm text-white/90">{t('About.cards.human.bubble2')}</p>
                   </div>
                 </div>
 
                 {/* Right: Text Content */}
                 <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-white">{t('About.cards.human.title')}</h3>
-                  <p className="text-base text-slate-200 leading-relaxed">
+                  <h3 className="typo-h3 text-white">{t('About.cards.human.title')}</h3>
+                  <p className="typo-body text-slate-200">
                     {t('About.cards.human.desc')}
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-rose-300">
+                  <div className="flex items-center gap-2 typo-body-sm text-rose-300">
                     <div className="h-2 w-2 rounded-full bg-rose-400 animate-pulse" />
                     <span>{t('About.cards.human.footer')}</span>
                   </div>
@@ -471,10 +519,10 @@ export default function Home() {
       <section className="section-block">
         <div className="section-shell section-stack">
           <div className="section-heading">
-            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+            <h2 className="typo-h2 text-white">
               {t('Testimonials.title')}
             </h2>
-            <p className="text-lg text-neutral-400 text-balance">
+            <p className="typo-body-lg text-neutral-400 text-balance">
               {t('Testimonials.subtitle')}
             </p>
           </div>
@@ -487,23 +535,33 @@ export default function Home() {
             ].map((config, idx) => (
               <div
                 key={idx}
-                className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-white/[0.02] p-8 transition-all hover:bg-white/[0.04] hover:border-white/20"
+                className={cardStyles({
+                  variant: "subtle",
+                  interactive: true,
+                  className: "group flex flex-col justify-between p-8",
+                })}
               >
                 <div className="space-y-6">
                   {/* Unified Premium Glass Badge */}
-                  <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-md">
+                  <Badge
+                    tone="neutral"
+                    variant="soft"
+                    size="md"
+                    caps={false}
+                    className="gap-2.5 backdrop-blur-md text-white/90"
+                  >
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10">
                       {config.icon === 'Briefcase' && <Briefcase className="h-3 w-3 text-emerald-400" />}
                       {config.icon === 'TrendingUp' && <TrendingUp className="h-3 w-3 text-indigo-400" />}
                       {config.icon === 'CheckCircle2' && <CheckCircle2 className="h-3 w-3 text-rose-400" />}
                     </div>
-                    <span className="text-[11px] font-bold tracking-tight text-white/90">{t(`Testimonials.items.${idx}.score`)}</span>
-                  </div>
+                    <span className="typo-caption text-white/90">{t(`Testimonials.items.${idx}.score`)}</span>
+                  </Badge>
 
-                  <p className="text-lg text-slate-200 leading-relaxed font-medium">“{t(`Testimonials.items.${idx}.quote`)}”</p>
+                  <p className="typo-body-lg-strong text-slate-200">“{t(`Testimonials.items.${idx}.quote`)}”</p>
 
                   {/* Fake Audio Player UI */}
-                  <div className="flex items-center gap-3 rounded-xl bg-white/5 p-2 pr-4 border border-white/5">
+                  <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-2 pr-4 border border-white/5">
                     <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
                       <Play className="h-3 w-3 text-white ml-0.5" />
                     </div>
@@ -518,15 +576,15 @@ export default function Home() {
                         />
                       ))}
                     </div>
-                    <span className="text-[10px] text-slate-500 font-mono">0:14</span>
+                    <span className="typo-mono text-slate-500">0:14</span>
                   </div>
                 </div>
 
                 <div className="mt-8 flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 ring-2 ring-white/10" />
                   <div>
-                    <p className="font-bold text-white text-sm">{t(`Testimonials.items.${idx}.name`)}</p>
-                    <p className="text-xs text-neutral-400">{t(`Testimonials.items.${idx}.role`)}</p>
+                    <p className="typo-body-sm-strong text-white">{t(`Testimonials.items.${idx}.name`)}</p>
+                    <p className="typo-label text-neutral-400">{t(`Testimonials.items.${idx}.role`)}</p>
                   </div>
                 </div>
               </div>
@@ -539,24 +597,18 @@ export default function Home() {
       <section className="section-block">
         <div className="section-shell section-stack">
           <div className="section-heading">
-            <h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+            <h2 className="typo-h2 text-white">
               {t('FAQ.title')}
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-4 md:gap-5 md:grid-cols-2 max-w-5xl mx-auto">
             {[0, 1, 2, 3].map((idx) => (
-              <details
+              <FaqItem
                 key={idx}
-                className="group rounded-3xl border border-white/10 bg-white/5 p-6 text-base md:text-lg transition-all hover:bg-white/10"
-              >
-                <summary className="flex cursor-pointer items-start justify-between font-medium text-white gap-4">
-                  {t(`FAQ.items.${idx}.q`)}
-                  <span className="text-emerald-200 transition-transform group-open:rotate-45 text-2xl leading-none">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 text-base text-neutral-400 leading-relaxed pr-8">{t(`FAQ.items.${idx}.a`)}</p>
-              </details>
+                size="md"
+                question={t(`FAQ.items.${idx}.q`)}
+                answer={t(`FAQ.items.${idx}.a`)}
+              />
             ))}
           </div>
         </div>
@@ -565,14 +617,20 @@ export default function Home() {
       {/* CTA Footer */}
       <section className="section-block">
         <div className="section-shell">
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10">
+          <div
+            className={cardStyles({
+              variant: "outline",
+              className:
+                "bg-gradient-to-r from-emerald-400/15 via-cyan-400/10 to-indigo-400/10 p-6 md:p-10",
+            })}
+          >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,245,197,0.12),transparent_30%)]" />
             <div className="relative flex flex-col items-center md:items-start text-center md:text-left">
               <div className="flex flex-col gap-5 md:gap-6 w-full">
-                <h2 className="font-heading text-3xl font-semibold text-white md:text-4xl">
+                <h2 className="typo-h2 text-white">
                   {t('FooterCTA.title')}
                 </h2>
-                <p className="text-base text-slate-200">
+                <p className="typo-body text-slate-200">
                   {t('FooterCTA.subtitle')}
                 </p>
                 <AppDownloadButtons

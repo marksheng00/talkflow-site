@@ -160,8 +160,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                         key={item.href}
                                         href={item.href}
                                         title={isCollapsed ? item.name : undefined}
-                                        target={(item as any).external ? "_blank" : undefined}
-                                        className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5'} px-2 py-2 rounded-md transition-all duration-200 group ${isActive
+                                        target={(item as { external?: boolean }).external ? "_blank" : undefined}
+                                        className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5'} px-2 py-2 rounded-2xl transition-all duration-200 group ${isActive
                                             ? "bg-zinc-900 text-zinc-100 font-medium"
                                             : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50"
                                             }`}
@@ -176,7 +176,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         {/* Toggle Button (Absolute on border) */}
                         <button
                             onClick={toggleSidebar}
-                            className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#09090b] border border-white/[0.1] rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer z-50 hover:bg-zinc-800"
+                            className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#09090b] border border-white/[0.1] rounded-2xl flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer z-50 hover:bg-zinc-800"
                             style={{ boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}
                         >
                             {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
@@ -184,7 +184,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                         {/* User Footer */}
                         <div className={`p-2 border-t border-white/[0.04] bg-[#09090b] shrink-0 overflow-hidden`}>
-                            <div className={`px-2 py-2 rounded-md hover:bg-zinc-900/50 flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} transition-colors group cursor-default`}>
+                            <div className={`px-2 py-2 rounded-2xl hover:bg-zinc-900/50 flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} transition-colors group cursor-default`}>
                                 <div className="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-[10px] font-bold text-indigo-400 shrink-0">
                                     {user?.email?.[0].toUpperCase()}
                                 </div>
@@ -196,7 +196,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                         </div>
                                         <button
                                             onClick={handleLogout}
-                                            className="p-1.5 -mr-1 rounded-md text-zinc-600 hover:text-rose-400 hover:bg-rose-500/10 transition-all opacity-0 group-hover:opacity-100"
+                                            className="p-1.5 -mr-1 rounded-2xl text-zinc-600 hover:text-rose-400 hover:bg-rose-500/10 transition-all opacity-0 group-hover:opacity-100"
                                             title="Sign out"
                                         >
                                             <LogOut className="w-3.5 h-3.5" />

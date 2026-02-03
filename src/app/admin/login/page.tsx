@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock, Mail } from "lucide-react";
+import { Input } from "@/components/ui/Field";
 
 // Initialize Supabase
 const supabase = createClient(
@@ -54,7 +55,7 @@ export default function AdminLoginPage() {
                 {/* Branding */}
                 <div className="text-center mb-10 group">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 p-0.5 mb-6 shadow-2xl group-hover:scale-110 transition-transform duration-500 overflow-hidden">
-                        <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center p-3">
+                        <div className="w-full h-full bg-black rounded-2xl flex items-center justify-center p-3">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src="/talkflo_logo.png" alt="talkflo" className="w-full h-full object-contain" />
                         </div>
@@ -71,7 +72,7 @@ export default function AdminLoginPage() {
 
                     <form onSubmit={handleLogin} className="space-y-6 relative">
                         {error && (
-                            <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold py-3 px-4 rounded-xl animate-in fade-in slide-in-from-top-2">
+                            <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold py-3 px-4 rounded-2xl animate-in fade-in slide-in-from-top-2">
                                 {error}
                             </div>
                         )}
@@ -80,12 +81,14 @@ export default function AdminLoginPage() {
                             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Email Address</label>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                <input
+                                <Input
                                     type="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-white/[0.05] border border-white/10 focus:border-indigo-500/50 rounded-2xl py-3.5 pl-12 pr-4 text-white outline-none transition-all placeholder:text-slate-600 focus:ring-4 focus:ring-indigo-500/10"
+                                    variant="admin"
+                                    tone="neutral"
+                                    className="rounded-2xl py-3.5 pl-12 pr-4 focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10"
                                     placeholder="admin@talkflo.ai"
                                 />
                             </div>
@@ -95,12 +98,14 @@ export default function AdminLoginPage() {
                             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Password</label>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                <input
+                                <Input
                                     type="password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-white/[0.05] border border-white/10 focus:border-indigo-500/50 rounded-2xl py-3.5 pl-12 pr-4 text-white outline-none transition-all placeholder:text-slate-600 focus:ring-4 focus:ring-indigo-500/10"
+                                    variant="admin"
+                                    tone="neutral"
+                                    className="rounded-2xl py-3.5 pl-12 pr-4 focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10"
                                     placeholder="••••••••"
                                 />
                             </div>

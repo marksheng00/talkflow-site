@@ -36,7 +36,6 @@ export default function AdminDashboardPage() {
     });
     const [activeUsers, setActiveUsers] = useState<PresenceUser[]>([]); // Detailed presence objects
     const [loading, setLoading] = useState(true);
-    const [pulse, setPulse] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
     // 1. System Health Check Function (Manual)
@@ -110,7 +109,7 @@ export default function AdminDashboardPage() {
 
         // 3. System Heartbeat (for subtle UI movement)
         const interval = setInterval(() => {
-            setPulse(p => p + 1);
+            // Heartbeat
         }, 3000);
 
         return () => {
@@ -156,7 +155,7 @@ export default function AdminDashboardPage() {
 
             {/* System & Analytics List (Simplified) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col">
+                <div className="lg:col-span-2 border border-white/[0.05] rounded-2xl bg-zinc-900/10 overflow-hidden flex flex-col">
                     <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
                         <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
                             <Activity className="w-3 h-3" /> System Status
@@ -214,7 +213,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {/* Live Audit / User Footprints */}
-                <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col min-h-[400px]">
+                <div className="border border-white/[0.05] rounded-2xl bg-zinc-900/10 flex flex-col min-h-[400px]">
                     <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02]">
                         <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
                             <Monitor className="w-3 h-3" /> Recent Activity
@@ -224,7 +223,7 @@ export default function AdminDashboardPage() {
                         {activeUsers.map((user, idx) => (
                             <div key={idx} className="flex items-start gap-3 group">
                                 <div className={cn(
-                                    "mt-1 p-1.5 rounded-md border shrink-0",
+                                    "mt-1 p-1.5 rounded-lg border shrink-0",
                                     user.type === 'admin' ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
                                 )}>
                                     <UserIcon className="w-3 h-3" />
@@ -266,7 +265,7 @@ export default function AdminDashboardPage() {
 
 function DenseMetric({ label, value, icon, color = "text-zinc-400", isLive = false }: { label: string, value: string, icon: React.ReactNode, color?: string, isLive?: boolean }) {
     return (
-        <div className="bg-[#09090b] border border-white/[0.04] p-5 rounded-xl flex items-center justify-between group transition-colors hover:border-white/[0.1] hover:bg-zinc-900/40">
+        <div className="bg-[#09090b] border border-white/[0.04] p-5 rounded-2xl flex items-center justify-between group transition-colors hover:border-white/[0.1] hover:bg-zinc-900/40">
             <div className="space-y-1">
                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{label}</p>
                 <div className="flex items-center gap-2">
@@ -276,7 +275,7 @@ function DenseMetric({ label, value, icon, color = "text-zinc-400", isLive = fal
                     {isLive && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
                 </div>
             </div>
-            <div className={cn("p-2 rounded-lg bg-white/[0.02] border border-white/[0.04] group-hover:bg-white/[0.05] transition-colors", color)}>{icon}</div>
+            <div className={cn("p-2 rounded-2xl bg-white/[0.02] border border-white/[0.04] group-hover:bg-white/[0.05] transition-colors", color)}>{icon}</div>
         </div>
     );
 }

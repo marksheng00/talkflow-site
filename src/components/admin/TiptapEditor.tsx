@@ -29,7 +29,7 @@ const MenuButton = ({
     <button
         onClick={(e) => { e.preventDefault(); onClick(); }}
         disabled={disabled}
-        className={`p-2 rounded-lg transition-colors ${isActive
+        className={`p-2 rounded-2xl transition-colors ${isActive
             ? 'bg-emerald-500/20 text-emerald-400'
             : 'text-neutral-400 hover:text-white hover:bg-white/10'
             } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -86,7 +86,7 @@ export default function TiptapEditor({ content, onChange, editable = true }: Tip
     }
 
     return (
-        <div className="flex flex-col border border-white/[0.06] rounded-xl overflow-hidden bg-white/[0.01] focus-within:border-white/10 transition-all">
+        <div className="flex flex-col border border-white/[0.06] rounded-2xl overflow-hidden bg-white/[0.01] focus-within:border-white/10 transition-all">
             {/* Toolbar */}
             {editable && (
                 <div className="flex flex-wrap items-center gap-1 p-2 border-b border-white/10 bg-white/5">

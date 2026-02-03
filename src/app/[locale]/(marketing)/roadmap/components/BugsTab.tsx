@@ -2,6 +2,7 @@ import { BugReport } from "@/types/roadmap";
 import { Bug, Plus, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AnimatedCounter } from "@/components/roadmap/AnimatedCounter";
+import { Badge } from "@/components/ui/Badge";
 
 interface BugsTabProps {
     filteredBugs: BugReport[];
@@ -32,8 +33,8 @@ export function BugsTab({
                     <Bug className="h-5 w-5 text-rose-400" />
                 </div>
                 <div className="text-left min-w-0 flex-1">
-                    <p className="text-sm font-bold text-slate-200 group-hover:text-white truncate">{t('BugsTab.submitCard.title')}</p>
-                    <p className="text-xs text-slate-500 truncate">{t('BugsTab.submitCard.subtitle')}</p>
+                    <p className="typo-body-sm-strong text-slate-200 group-hover:text-white truncate">{t('BugsTab.submitCard.title')}</p>
+                    <p className="typo-body-sm text-slate-500 truncate">{t('BugsTab.submitCard.subtitle')}</p>
                 </div>
                 <div className="ml-auto pl-2 flex-shrink-0">
                     <Plus className="h-5 w-5 text-slate-600 group-hover:text-rose-400 transition-colors" />
@@ -42,12 +43,11 @@ export function BugsTab({
 
             <div className="grid gap-cards md:grid-cols-2 lg:grid-cols-3 w-full">
                 {filteredBugs.map(bug => {
-                    const platformColors = {
-                        Web: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-                        iOS: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-                        Android: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-                    };
-                    const colors = platformColors[bug.platform] || "bg-slate-500/10 text-slate-400 border-slate-500/20";
+                    const platformTone = {
+                        Web: "blue",
+                        iOS: "rose",
+                        Android: "emerald",
+                    }[bug.platform] || "slate";
 
                     return (
                         <div
@@ -57,18 +57,18 @@ export function BugsTab({
                         >
                             <div className="space-y-1.5 min-w-0">
                                 <div className="flex items-start justify-between gap-4 min-w-0">
-                                    <h3 className="font-semibold text-white text-base leading-tight group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
+                                    <h3 className="typo-body-strong text-white group-hover:text-rose-400 transition-colors pr-8 truncate min-w-0">
                                         {bug.title}
                                     </h3>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className={`text-[9px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded border ${colors}`}>
+                                    <Badge tone={platformTone as "blue" | "rose" | "emerald" | "slate"} size="xs" variant="soft" caps={false}>
                                         {bug.platform}
-                                    </span>
+                                    </Badge>
                                 </div>
                             </div>
 
-                            <p className="text-sm text-neutral-400 leading-relaxed min-h-[40px] line-clamp-3">
+                            <p className="typo-body-sm text-neutral-400 min-h-[40px] line-clamp-3">
                                 {bug.stepsToReproduce}
                             </p>
 
@@ -79,7 +79,7 @@ export function BugsTab({
                                 <button
                                     onClick={(e) => handleBugVote(bug.id, e)}
                                     disabled={votedIdeas.has(bug.id)}
-                                    className={`flex items-center gap-1.5 text-xs font-semibold transition-all group/up ${votedIdeas.get(bug.id) === "up"
+                                    className={`flex items-center gap-1.5 typo-body-sm-strong transition-all group/up ${votedIdeas.get(bug.id) === "up"
                                         ? "text-emerald-400"
                                         : "text-slate-500 hover:text-emerald-400 hover:scale-105"
                                         }`}
@@ -90,7 +90,7 @@ export function BugsTab({
                                             from={bug.upvotes - 1}
                                             to={bug.upvotes}
                                             skipAnimation={lastVotedId !== bug.id}
-                                            className="text-xs font-semibold"
+                                            className="typo-body-sm-strong"
                                         />
                                     ) : (
                                         <span>{bug.upvotes}</span>
@@ -99,14 +99,9 @@ export function BugsTab({
 
                                 {/* Status Badge */}
                                 <div className="flex items-center">
-                                    {(() => {
-                                        const colors = "bg-slate-500/10 text-slate-400 border-slate-500/20";
-                                        return (
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${colors}`}>
-                                                {t.has(`BugsTab.status.${bug.status}`) ? t(`BugsTab.status.${bug.status}`) : bug.status}
-                                            </span>
-                                        );
-                                    })()}
+                                    <Badge tone="slate" size="xs" variant="soft">
+                                        {t.has(`BugsTab.status.${bug.status}`) ? t(`BugsTab.status.${bug.status}`) : bug.status}
+                                    </Badge>
                                 </div>
                             </div>
                         </div>

@@ -247,26 +247,38 @@
         "vision": "비전",
         "blog": "블로그",
         "login": "로그인",
-        "signup": "로그인 / 가입",
+        "signup": "시작하기",
         "downloads": "다운로드"
     },
     "Footer": {
         "columns": {
             "Product": "제품",
             "Company": "회사",
-            "Resources": "리소스"
+            "Legal": "법적 고지",
+            "Downloads": "앱 다운로드",
+            "Follow US": "팔로우"
         },
         "items": {
-            "Voice role-play": "음성 역할극",
-            "AI feedback": "AI 피드백",
-            "Roadmap": "로드맵",
+            "talkflo Overview": "talkflo 개요",
+            "IELTS Killer": "IELTS 점수 향상",
+            "Roadmap Visual": "로드맵",
+            "Ideas Feedback": "아이디어 피드백",
+            "Bugs Feedback": "버그 제보",
             "Vision": "비전",
-            "Careers": "채용",
-            "Support": "지원",
             "Blog": "블로그",
-            "talkflo community": "talkflo 커뮤니티",
-            "Press": "언론 문의",
-            "Privacy": "개인정보 보호"
+            "FAQs": "자주 묻는 질문",
+            "Support": "고객 지원",
+            "Privacy Policy": "개인정보 처리방침",
+            "Terms of Service": "이용약관",
+            "Refund Policy": "환불 정책",
+            "Talkflo iOS App": "Talkflo iOS 앱",
+            "Talkflo Android App": "Talkflo 안드로이드 앱",
+            "Facebook": "Facebook",
+            "Instagram": "Instagram",
+            "TikTok": "TikTok",
+            "Twitter": "Twitter",
+            "Xiaohongshu": "Xiaohongshu",
+            "YouTube": "YouTube"
         },
         "copyright": "© {year} talkflo. BeyondThink LLC의 제품입니다. All rights reserved."
     },
@@ -568,6 +580,44 @@
         "subtitle": "페이지를 찾을 수 없습니다",
         "description": "죄송합니다. 찾으시는 페이지가 이동되었거나 존재하지 않습니다.",
         "button": "홈으로 돌아가기"
+    },
+    "FAQPage": {
+        "titlePrefix": "자주 묻는",
+        "titleSuffix": "질문",
+        "subtitle": "talkflo와 AI 영어 연습에 대해 알아야 할 모든 것.",
+        "sections": [
+            {
+                "title": "일반 질문",
+                "items": [
+                    {
+                        "q": "talkflo란 무엇인가요?",
+                        "a": "talkflo는 실시간 역할극과 즉각적인 피드백을 통해 영어 유창성을 향상시키도록 설계된 AI 기반 영어 스피킹 코치입니다."
+                    },
+                    {
+                        "q": "실제 튜터와 비교하면 어떤가요?",
+                        "a": "사람과의 대면 연결을 완전히 대체할 수는 없지만, talkflo는 24시간 언제 어디서나 이용 가능하며, 즉각적인 피드백과 안전하고 부담 없는 연습 환경을 제공합니다."
+                    }
+                ]
+            },
+            {
+                "title": "구독 관련",
+                "items": [
+                    {
+                        "q": "무료로 사용할 수 있나요?",
+                        "a": "네! 무료 플랜에는 하루 10분의 AI 연습 시간과 기본 피드백이 포함되어 있습니다."
+                    },
+                    {
+                        "q": "Pro 플랜의 혜택은 무엇인가요?",
+                        "a": "Pro 사용자는 무제한 연습 시간, 고급 문법 분석, 그리고 최고 수준의 SOTA 음성 모델을 이용할 수 있습니다."
+                    }
+                ]
+            }
+        ],
+        "Support": {
+            "title": "더 궁금한 점이 있으신가요?",
+            "subtitle": "저희 팀이 여러분의 영어 학습 여정을 도와드릴 준비가 되어 있습니다. 언제든지 문의해 주세요.",
+            "button": "고객 지원 문의"
+        }
     },
     "Metadata": {
         "title": "talkflo | 실시간 AI 스피킹 코치 및 대화 연습",

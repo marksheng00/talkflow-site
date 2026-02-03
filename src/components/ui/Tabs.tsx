@@ -22,13 +22,13 @@ interface TabsProps {
 export function Tabs({ tabs, activeTab, onChange, className, variant = 'default' }: TabsProps) {
     if (variant === 'pills') {
         return (
-            <div className={cn("flex p-1 gap-1 rounded-xl bg-white/5 border border-white/5", className)}>
+            <div className={cn("flex p-1 gap-1 rounded-2xl bg-white/5 border border-white/5", className)}>
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => onChange(tab.id)}
                         className={cn(
-                            "flex-1 md:flex-initial px-4 md:px-8 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center flex items-center justify-center gap-2",
+                            "flex-1 md:flex-initial px-4 md:px-8 py-2.5 rounded-2xl typo-tab transition-all text-center flex items-center justify-center gap-2",
                             activeTab === tab.id
                                 ? "bg-white text-slate-950 shadow-lg"
                                 : "text-neutral-400 hover:text-white hover:bg-white/5"
@@ -49,7 +49,7 @@ export function Tabs({ tabs, activeTab, onChange, className, variant = 'default'
                     key={tab.id}
                     onClick={() => onChange(tab.id)}
                     className={cn(
-                        "px-4 py-2 text-sm font-medium transition-colors rounded-lg",
+                        "px-4 py-2 typo-body-sm-strong transition-colors rounded-2xl",
                         activeTab === tab.id
                             ? "text-white bg-white/10"
                             : "text-neutral-400 hover:text-white hover:bg-white/5"
@@ -69,7 +69,7 @@ export function Tabs({ tabs, activeTab, onChange, className, variant = 'default'
  */
 export function getToggleButtonStyle(isActive: boolean): string {
     return cn(
-        "relative flex-1 md:flex-initial px-4 md:px-8 py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all text-center flex items-center justify-center gap-2",
+        "relative flex-1 md:flex-initial px-4 md:px-8 py-2.5 rounded-2xl typo-tab transition-all text-center flex items-center justify-center gap-2",
         isActive
             ? "bg-white text-slate-950 shadow-lg"
             : "text-neutral-400 hover:text-white hover:bg-white/5"

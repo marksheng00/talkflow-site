@@ -130,7 +130,8 @@
             ]
         },
         "FAQ": {
-            "title": "よくある質問",
+            "titlePrefix": "よくある",
+            "titleSuffix": "質問",
             "items": [
                 {
                     "q": "モバイルアプリは必要ですか？",
@@ -247,26 +248,38 @@
         "vision": "ビジョン",
         "blog": "ブログ",
         "login": "ログイン",
-        "signup": "ログイン / 登録",
+        "signup": "今すぐ始める",
         "downloads": "ダウンロード"
     },
     "Footer": {
         "columns": {
             "Product": "プロダクト",
             "Company": "会社",
-            "Resources": "リソース"
+            "Legal": "法務",
+            "Downloads": "ダウンロード",
+            "Follow US": "フォローする"
         },
         "items": {
-            "Voice role-play": "音声ロールプレイ",
-            "AI feedback": "AIフィードバック",
-            "Roadmap": "ロードマップ",
+            "talkflo Overview": "talkflo 概要",
+            "IELTS Killer": "IELTS 対策",
+            "Roadmap Visual": "ロードマップ",
+            "Ideas Feedback": "アイデア・フィードバック",
+            "Bugs Feedback": "バグ報告",
             "Vision": "ビジョン",
-            "Careers": "採用情報",
-            "Support": "サポート",
             "Blog": "ブログ",
-            "talkflo community": "talkfloコミュニティ",
-            "Press": "プレス",
-            "Privacy": "プライバシー"
+            "FAQs": "よくある質問",
+            "Support": "サポート",
+            "Privacy Policy": "プライバシーポリシー",
+            "Terms of Service": "利用規約",
+            "Refund Policy": "返金ポリシー",
+            "Talkflo iOS App": "Talkflo iOS版",
+            "Talkflo Android App": "Talkflo Android版",
+            "Facebook": "Facebook",
+            "Instagram": "Instagram",
+            "TikTok": "TikTok",
+            "Twitter": "Twitter",
+            "Xiaohongshu": "小紅書 (Xiaohongshu)",
+            "YouTube": "YouTube"
         },
         "copyright": "© {year} talkflo. BeyondThink LLCの製品です。All rights reserved."
     },
@@ -568,6 +581,44 @@
         "subtitle": "ページが見つかりません",
         "description": "申し訳ありません。お探しのページは見つかりませんでした。移動されたか、存在しない可能性があります。",
         "button": "ホームに戻る"
+    },
+    "FAQPage": {
+        "titlePrefix": "よくある",
+        "titleSuffix": "質問",
+        "subtitle": "talkfloとAI英語練習について知っておくべきことすべて。",
+        "sections": [
+            {
+                "title": "一般的な質問",
+                "items": [
+                    {
+                        "q": "talkfloとは何ですか？",
+                        "a": "talkfloは、リアルタイムのロールプレイと即時フィードバックを通じて流暢さを向上させるよう設計された、AI搭載の英語スピーキングコーチです。"
+                    },
+                    {
+                        "q": "リアルの講師と比べてどうですか？",
+                        "a": "対面でのつながりを完全に置き換えるものではありませんが、talkfloは24時間365日の利用可能性、即時フィードバック、そして安全でプレッシャーのない練習環境を提供します。"
+                    }
+                ]
+            },
+            {
+                "title": "サブスクリプション",
+                "items": [
+                    {
+                        "q": "無料で利用できますか？",
+                        "a": "はい！無料プランでは、1日10分間のAI練習と基本的なフィードバックが含まれています。"
+                    },
+                    {
+                        "q": "Proプランの特典は何ですか？",
+                        "a": "Proユーザーは、無制限の練習時間、高度な文法分析、そして最高水準のSOTA音声モデルへのアクセスが可能です。"
+                    }
+                ]
+            }
+        ],
+        "Support": {
+            "title": "まだご不明な点がありますか？",
+            "subtitle": "私たちのチームがあなたの英語学習ジャーニーをサポートします。いつでもお気軽にお問い合わせください。",
+            "button": "サポートに連絡"
+        }
     },
     "Metadata": {
         "title": "talkflo | リアルタイムAIスピーキングコーチ＆英会話練習",

@@ -58,8 +58,8 @@ export async function POST(req: NextRequest) {
         const nonEmptyItems = finalTexts.map((t, i) => ({ text: t, index: i })).filter(item => item && item.text && item.text.trim().length > 0);
 
         if (nonEmptyItems.length === 0) {
-            return isBatch 
-                ? NextResponse.json({ translatedTexts: finalTexts }) 
+            return isBatch
+                ? NextResponse.json({ translatedTexts: finalTexts })
                 : NextResponse.json({ translatedText: text });
         }
 
@@ -88,8 +88,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ translatedText: finalTranslations[0] });
         }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Translation API Error:', error);
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({
+            error: error instanceof Error ? error.message : 'Internal Server Error'
+        }, { status: 500 });
     }
 }

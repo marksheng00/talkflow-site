@@ -247,26 +247,38 @@
         "vision": "愿景",
         "blog": "博客",
         "login": "登录",
-        "signup": "登录 / 注册",
+        "signup": "开始使用",
         "downloads": "客户端下载"
     },
     "Footer": {
         "columns": {
             "Product": "产品",
             "Company": "公司",
-            "Resources": "相关资源"
+            "Legal": "法律合规",
+            "Downloads": "应用下载",
+            "Follow US": "关注我们"
         },
         "items": {
-            "Voice role-play": "语音角色扮演",
-            "AI feedback": "AI 对话反馈",
-            "Roadmap": "开发路线图",
-            "Vision": "我们的愿景",
-            "Careers": "加入我们",
+            "talkflo Overview": "talkflo 概览",
+            "IELTS Killer": "雅思口语提分",
+            "Roadmap Visual": "路线图",
+            "Ideas Feedback": "创意反馈",
+            "Bugs Feedback": "漏洞反馈",
+            "Vision": "愿景",
+            "Blog": "博客",
+            "FAQs": "常见问题",
             "Support": "客户支持",
-            "Blog": "官方博客",
-            "talkflo community": "交流社区",
-            "Press": "媒体联系",
-            "Privacy": "隐私条例"
+            "Privacy Policy": "隐私政策",
+            "Terms of Service": "服务协议",
+            "Refund Policy": "退款政策",
+            "Talkflo iOS App": "Talkflo iOS 版",
+            "Talkflo Android App": "Talkflo 安卓版",
+            "Facebook": "Facebook",
+            "Instagram": "Instagram",
+            "TikTok": "TikTok",
+            "Twitter": "Twitter",
+            "Xiaohongshu": "小红书",
+            "YouTube": "YouTube"
         },
         "copyright": "© {year} talkflo. BeyondThink LLC 产品. 保留所有权利。"
     },
@@ -575,6 +587,106 @@
         "subtitle": "未找到页面",
         "description": "抱歉，我们找不到您要访问的页面。它可能已被移动或不存在。",
         "button": "返回首页"
+    },
+    "PrivacyPage": {
+        "title": "隐私政策",
+        "subtitle": "您的隐私是我们的首要任务。了解我们如何处理您的数据。",
+        "lastUpdated": "最后更新：2026年2月1日",
+        "sections": [
+            {
+                "title": "1. 数据收集",
+                "content": "我们收集您直接提供给我们的信息，例如当您创建账户、使用我们的 AI 口语教练或联系支持团队时。这可能包括您的电子邮件、姓名和语音录音（如果您选择存储）。"
+            },
+            {
+                "title": "2. 我们如何使用数据",
+                "content": "我们使用收集的数据来提供、维护和改进我们的服务，包括 AI 辅导引擎。语音数据会实时处理以提供反馈，并且仅在您明确授权的情况下才会存储。"
+            },
+            {
+                "title": "3. 数据安全",
+                "content": "我们使用行业标准的加密技术来保护您的传输中和静态数据。您的信息安全地存储在我们的服务器上，绝不会出售给第三方。"
+            }
+        ],
+        "footerNote": "如果您对本隐私政策有任何疑问，请通过 support@talkflo.ai 与我们联系。"
+    },
+    "TermsPage": {
+        "title": "服务协议",
+        "subtitle": "在使用 talkflo 之前，请仔细阅读这些条款。",
+        "lastUpdated": "最后更新：2026年2月1日",
+        "sections": [
+            {
+                "title": "1. 条款接受",
+                "content": "通过访问或使用 talkflo，即表示您同意受本服务条款及所有适用法律法规的约束。"
+            },
+            {
+                "title": "2. 使用许可",
+                "content": "我们授予您出于个人、非商业教育目的使用 talkflo 的许可。这是许可的授予，而非所有权的转让。"
+            },
+            {
+                "title": "3. 禁止行为",
+                "content": "您同意不滥用本服务，包括尝试对 AI 模型进行逆向工程或将服务用于任何非法活动。"
+            }
+        ],
+        "footerNote": "通过使用 talkflo，即表示您承认已阅读并理解本服务条款。"
+    },
+    "RefundPage": {
+        "title": "退款政策",
+        "subtitle": "我们高级方案的公平透明退款条款。",
+        "sections": [
+            {
+                "title": "1. 退款资格",
+                "content": "我们为所有 Pro 和 Ultra 年度订阅提供 7 天无理由退款保证。如果您对我们的服务不满意，可以在首次购买后 7 天内申请全额退款。"
+            },
+            {
+                "title": "2. 如何申请",
+                "content": "如需申请退款，请联系我们的支持团队 support@talkflo.ai，并提供您的账户详情和申请理由。"
+            },
+            {
+                "title": "3. 例外情况",
+                "content": "除非法律要求，否则按月订阅和促销优惠通常不予退款。退款将按原支付途径退回。"
+            }
+        ],
+        "Promise": {
+            "title": "我们的质量承诺",
+            "content": "我们对 talkflo 的质量负责。如果我们的 AI 教练在第一周内没有帮助您提高英语自信，我们将全额退款，无需任何理由。"
+        }
+    },
+    "FAQPage": {
+        "titlePrefix": "常见",
+        "titleSuffix": "问题",
+        "subtitle": "关于 talkflo 和 AI 英语练习，您需要了解的一切。",
+        "sections": [
+            {
+                "title": "常规问题",
+                "items": [
+                    {
+                        "q": "什么是 talkflo？",
+                        "a": "talkflo 是一款 AI 驱动的英语口语教练，旨在通过实时角色扮演和即时反馈帮助您提高流利度。"
+                    },
+                    {
+                        "q": "它与真人外教相比如何？",
+                        "a": "虽然它不能完全取代人际连接，但 talkflo 提供 24/7 全天候服务、即时反馈，以及一个安全、无压力的练习环境。"
+                    }
+                ]
+            },
+            {
+                "title": "订阅相关",
+                "items": [
+                    {
+                        "q": "我可以免费使用 talkflo 吗？",
+                        "a": "可以！我们的免费方案包括每天 10 分钟的 AI 练习和基础反馈。"
+                    },
+                    {
+                        "q": "Pro 版有什么好处？",
+                        "a": "Pro 用户可以获得无限练习时间、高级语法分析，以及使用最顶尖的 SOTA 语音模型。"
+                    }
+                ]
+            }
+        ],
+        "Support": {
+            "title": "还有疑问吗？",
+            "subtitle": "我们的团队随时准备帮助您开启英语学习之旅。欢迎随时联系我们。",
+            "button": "联系支持"
+        }
     },
     "Metadata": {
         "title": "talkflo | 实时 AI 口语教练与对话练习",

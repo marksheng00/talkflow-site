@@ -10,6 +10,8 @@ import { AuroraBackground } from '@/components/ui/AuroraBackground';
 import BlogCard from '@/components/blog/BlogCard';
 import { ChevronLeft, ChevronRight, Filter, BookOpen } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { buttonStyles } from "@/components/ui/Button";
+import { badgeStyles } from "@/components/ui/Badge";
 
 import { Link } from '@/navigation';
 import type { BlogPost, BlogCategory } from '@/types/blog';
@@ -71,7 +73,7 @@ export default async function BlogPage({
                     <div className="section-shell section-stack stack-base">
                         {/* Header */}
                         <div className="section-heading">
-                            <h1 className="font-heading text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] whitespace-normal md:whitespace-nowrap">
+                            <h1 className="typo-hero text-foreground whitespace-normal md:whitespace-nowrap">
                                 {currentCategory ? (
                                     <>
                                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-white to-teal-400 animate-text-shimmer bg-[size:200%_auto] pb-4 inline-block">{currentCategory.title}</span> {t('Hero.articles')}
@@ -91,18 +93,22 @@ export default async function BlogPage({
                         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
                             {/* Sidebar (Desktop) */}
                             <aside className="hidden lg:block w-[220px] flex-shrink-0 sticky top-32">
-                                <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <p className="typo-label text-slate-500 mb-4 flex items-center gap-2">
                                     <Filter className="w-3 h-3" />
                                     {t('Sidebar.categories')}
-                                </h2>
+                                </p>
                                 <nav className="flex flex-col space-y-1">
                                     <Link
                                         href="/blog"
                                         locale={locale}
-                                        className={`px-3 py-2 rounded-xl text-sm transition-all ${!categorySlug
-                                            ? 'bg-teal-500/20 text-teal-400 font-bold'
-                                            : 'text-neutral-400 hover:bg-white/5 hover:text-white'
-                                            }`}
+                                        className={badgeStyles({
+                                            tone: !categorySlug ? "teal" : "slate",
+                                            variant: !categorySlug ? "soft" : "ghost",
+                                            size: "lg",
+                                            caps: false,
+                                            interactive: true,
+                                            className: !categorySlug ? "border-transparent" : undefined,
+                                        })}
                                     >
                                         {t('Sidebar.allPosts')}
                                     </Link>
@@ -119,10 +125,17 @@ export default async function BlogPage({
                                                     <Link
                                                         href={`/blog?category=${parent.slug.current}`}
                                                         locale={locale}
-                                                        className={`px-3 py-2 rounded-xl text-sm transition-all flex items-center justify-between ${isParentActive
-                                                            ? 'bg-teal-500/20 text-teal-400 font-bold'
-                                                            : 'text-neutral-400 hover:bg-white/5 hover:text-white'
-                                                            }`}
+                                                        className={cn(
+                                                            badgeStyles({
+                                                                tone: isParentActive ? "teal" : "slate",
+                                                                variant: isParentActive ? "soft" : "ghost",
+                                                                size: "lg",
+                                                                caps: false,
+                                                                interactive: true,
+                                                                className: isParentActive ? "border-transparent" : undefined,
+                                                            }),
+                                                            "flex items-center justify-between"
+                                                        )}
                                                     >
                                                         {parent.title}
                                                         {children.length > 0 && (
@@ -147,10 +160,14 @@ export default async function BlogPage({
                                                                     key={child.slug.current}
                                                                     href={`/blog?category=${child.slug.current}`}
                                                                     locale={locale}
-                                                                    className={`px-3 py-1.5 rounded-lg text-xs transition-all block ${categorySlug === child.slug.current
-                                                                        ? 'text-teal-400 font-bold bg-teal-500/10 hover:bg-teal-500/20'
-                                                                        : 'text-neutral-500 hover:text-white hover:bg-white/5'
-                                                                        }`}
+                                                                    className={badgeStyles({
+                                                                        tone: categorySlug === child.slug.current ? "teal" : "slate",
+                                                                        variant: categorySlug === child.slug.current ? "soft" : "ghost",
+                                                                        size: "lg",
+                                                                        caps: false,
+                                                                        interactive: true,
+                                                                        className: categorySlug === child.slug.current ? "border-transparent" : undefined,
+                                                                    })}
                                                                 >
                                                                     {child.title}
                                                                 </Link>
@@ -170,10 +187,14 @@ export default async function BlogPage({
                                     <Link
                                         href="/blog"
                                         locale={locale}
-                                        className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${!categorySlug
-                                            ? 'bg-teal-500 text-black border-teal-500'
-                                            : 'bg-white/5 border-white/10 text-neutral-400'
-                                            }`}
+                                        className={badgeStyles({
+                                            tone: !categorySlug ? "teal" : "slate",
+                                            variant: !categorySlug ? "solid" : "ghost",
+                                            size: "lg",
+                                            caps: false,
+                                            interactive: true,
+                                            className: !categorySlug ? "border-transparent" : undefined,
+                                        })}
                                     >
                                         {t('Hero.latest')}
                                     </Link>
@@ -182,10 +203,14 @@ export default async function BlogPage({
                                             key={cat.slug.current}
                                             href={`/blog?category=${cat.slug.current}`}
                                             locale={locale}
-                                            className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${categorySlug === cat.slug.current
-                                                ? 'bg-teal-500 text-black border-teal-500'
-                                                : 'bg-white/5 border-white/10 text-neutral-400'
-                                                }`}
+                                            className={badgeStyles({
+                                                tone: categorySlug === cat.slug.current ? "teal" : "slate",
+                                                variant: categorySlug === cat.slug.current ? "solid" : "ghost",
+                                                size: "lg",
+                                                caps: false,
+                                                interactive: true,
+                                                className: categorySlug === cat.slug.current ? "border-transparent" : undefined,
+                                            })}
                                         >
                                             {cat.title}
                                         </Link>
@@ -208,13 +233,18 @@ export default async function BlogPage({
                                                     <Link
                                                         href={`/blog?page=${page - 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
                                                         locale={locale}
-                                                        className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
+                                                        className={buttonStyles({
+                                                            variant: "secondary",
+                                                            size: "sm",
+                                                            weight: "medium",
+                                                            className: "gap-2",
+                                                        })}
                                                     >
                                                         <ChevronLeft className="w-4 h-4" /> {t('Pagination.prev')}
                                                     </Link>
                                                 )}
 
-                                                <span className="px-3 py-1.5 text-slate-500 text-sm tabular-nums">
+                                                <span className="px-3 py-1.5 typo-body-sm text-slate-500 tabular-nums">
                                                     {page} / {totalPages}
                                                 </span>
 
@@ -222,7 +252,12 @@ export default async function BlogPage({
                                                     <Link
                                                         href={`/blog?page=${page + 1}${categorySlug ? `&category=${categorySlug}` : ''}`}
                                                         locale={locale}
-                                                        className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2 text-sm"
+                                                        className={buttonStyles({
+                                                            variant: "secondary",
+                                                            size: "sm",
+                                                            weight: "medium",
+                                                            className: "gap-2",
+                                                        })}
                                                     >
                                                         {t('Pagination.next')} <ChevronRight className="w-4 h-4" />
                                                     </Link>
@@ -237,7 +272,10 @@ export default async function BlogPage({
                                         <Link
                                             href="/blog"
                                             locale={locale}
-                                            className="px-5 py-2 rounded-xl bg-teal-500 text-black font-bold text-sm hover:bg-teal-400 transition-colors"
+                                            className={buttonStyles({
+                                                variant: "accent",
+                                                size: "sm",
+                                            })}
                                         >
                                             {t('Empty.button')}
                                         </Link>

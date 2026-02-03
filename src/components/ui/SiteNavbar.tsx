@@ -12,6 +12,7 @@ import Image from "next/image";
 import { Link } from "@/navigation";
 import React, { useRef, useState, useEffect } from "react";
 import { AuroraBackground } from "./AuroraBackground";
+import { buttonStyles } from "@/components/ui/Button";
 
 interface NavItem {
     name: string;
@@ -99,11 +100,9 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
     return (
         <motion.div
             animate={{
-                opacity: visible ? 1 : 0.8,
                 y: visible ? 20 : 0,
             }}
             initial={{
-                opacity: 1,
                 y: 0,
             }}
             style={{
@@ -135,7 +134,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
         <motion.div
             onMouseLeave={() => setHovered(null)}
             className={cn(
-                "absolute left-1/2 -translate-x-1/2 hidden flex-row items-center gap-2 text-sm font-medium text-neutral-400 lg:flex",
+                "absolute left-1/2 -translate-x-1/2 hidden flex-row items-center gap-2 typo-body-sm-strong text-neutral-400 lg:flex",
                 className
             )}
         >
@@ -150,7 +149,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
                     {hovered === idx && (
                         <motion.div
                             layoutId="hovered"
-                            className="absolute inset-0 h-full w-full rounded-lg bg-white/10"
+                            className="absolute inset-0 h-full w-full rounded-2xl bg-white/10"
                         />
                     )}
                     {item.icon && <span className="relative z-20 h-4 w-4">{item.icon}</span>}
@@ -286,17 +285,17 @@ export const NavbarLogo = () => {
     return (
         <Link
             href="/"
-            className="relative z-20 flex items-center gap-1.5 py-1 text-sm font-normal text-white"
+            className="relative z-20 flex items-center gap-1.5 py-1 typo-body-sm text-white"
         >
             <Image
                 src="/talkflo_logo.png"
                 alt="talkflo AI Speaking Coach - Real-time English practice logo"
                 width={48}
                 height={48}
-                className="h-12 w-12 rounded-lg object-contain"
+                className="h-12 w-12 rounded-2xl object-contain"
                 priority={true} // Priority loading for LCP
             />
-            <span className="font-bold text-white tracking-wide text-xl">talkflo</span>
+            <span className="typo-h4 text-white">talkflo</span>
         </Link>
     );
 };
@@ -309,23 +308,20 @@ export const NavbarButton = ({
     ...props
 }: NavbarButtonProps & React.AnchorHTMLAttributes<HTMLAnchorElement> & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
     const baseStyles =
-        "relative z-20 flex items-center justify-center px-6 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 active:scale-95";
-
-    const variantStyles = {
-        primary:
-            "bg-white !text-black font-bold hover:bg-slate-50 hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]",
-        secondary:
-            "bg-white/5 border border-white/10 text-white hover:bg-white/15",
-        dark: "bg-black text-white border border-white/10 hover:bg-neutral-900",
-        gradient:
-            "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-90",
-    };
+        "relative z-20";
 
     if (href) {
         return (
             <Link
                 href={href}
-                className={cn(baseStyles, variantStyles[variant], className)}
+                className={cn(
+                    baseStyles,
+                    buttonStyles({
+                        variant,
+                        size: "sm",
+                        className: cn("px-6", className),
+                    })
+                )}
                 {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
             >
                 {children}
@@ -335,7 +331,14 @@ export const NavbarButton = ({
 
     return (
         <button
-            className={cn(baseStyles, variantStyles[variant], className)}
+            className={cn(
+                baseStyles,
+                buttonStyles({
+                    variant,
+                    size: "sm",
+                    className: cn("px-6", className),
+                })
+            )}
             {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
         >
             {children}

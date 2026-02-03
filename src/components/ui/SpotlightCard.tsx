@@ -27,7 +27,7 @@ export const SpotlightCard = ({
         <div
             ref={divRef}
             className={cn(
-                "group relative border border-white/5 bg-white/[0.02] overflow-hidden rounded-xl",
+                "group relative border border-white/5 bg-white/[0.02] overflow-hidden rounded-2xl",
                 className
             )}
             onMouseMove={handleMouseMove}

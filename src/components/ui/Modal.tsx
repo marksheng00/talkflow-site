@@ -4,6 +4,7 @@ import { useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buttonStyles } from "@/components/ui/Button";
 
 interface ModalProps {
     isOpen: boolean;
@@ -14,6 +15,7 @@ interface ModalProps {
     showCloseButton?: boolean;
     closeOnOverlayClick?: boolean;
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+    allowOverflow?: boolean;
 }
 
 /**
@@ -27,7 +29,8 @@ export function Modal({
     className,
     showCloseButton = true,
     closeOnOverlayClick = true,
-    size = 'md'
+    size = 'md',
+    allowOverflow = false,
 }: ModalProps) {
     // Handle escape key
     useEffect(() => {
@@ -78,7 +81,8 @@ export function Modal({
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         className={cn(
-                            "relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]",
+                            "relative w-full bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-2xl flex flex-col max-h-[85vh] md:max-h-[90vh]",
+                            allowOverflow ? "overflow-visible" : "overflow-hidden",
                             sizeClasses[size],
                             className
                         )}
@@ -87,14 +91,14 @@ export function Modal({
                         {(title || showCloseButton) && (
                             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
                                 {title && (
-                                    <h2 className="text-xl font-bold text-white">
+                                    <h2 className="typo-h4 text-white">
                                         {title}
                                     </h2>
                                 )}
                                 {showCloseButton && (
                                     <button
                                         onClick={onClose}
-                                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
+                                        className="p-2 rounded-2xl bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
                                     >
                                         <X className="h-5 w-5" />
                                     </button>
@@ -136,24 +140,27 @@ export function ConfirmDialog({
     cancelText = 'Cancel',
     variant = 'info'
 }: ConfirmDialogProps) {
-    const variantClasses = {
-        danger: 'bg-rose-600 hover:bg-rose-500',
-        warning: 'bg-amber-600 hover:bg-amber-500',
-        info: 'bg-emerald-600 hover:bg-emerald-500'
-    };
+    const variantMap = {
+        danger: "danger",
+        warning: "warning",
+        info: "info",
+    } as const;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="sm">
             <div className="p-6 space-y-6">
                 <div>
-                    <h3 className="text-lg font-bold text-white">{title}</h3>
-                    <p className="text-sm text-neutral-400 mt-2">{message}</p>
+                    <h3 className="typo-title-sm text-white">{title}</h3>
+                    <p className="typo-body-sm text-neutral-400 mt-2">{message}</p>
                 </div>
 
                 <div className="flex gap-3 justify-end">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors"
+                        className={buttonStyles({
+                            variant: "secondary",
+                            size: "sm",
+                        })}
                     >
                         {cancelText}
                     </button>
@@ -162,10 +169,11 @@ export function ConfirmDialog({
                             onConfirm();
                             onClose();
                         }}
-className={cn(
-                            "px-4 py-2 rounded-xl text-white font-medium transition-colors",
-                            variantClasses[variant]
-                        )}
+                        className={buttonStyles({
+                            variant: variantMap[variant],
+                            size: "sm",
+                            weight: "medium",
+                        })}
                     >
                         {confirmText}
                     </button>

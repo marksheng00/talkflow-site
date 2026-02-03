@@ -19,20 +19,7 @@ interface Category {
     postCount: number;
 }
 
-const COLOR_STYLES: Record<string, string> = {
-    blue: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    emerald: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    purple: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    rose: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-    amber: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    cyan: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-    indigo: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-    orange: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-    teal: "bg-teal-500/10 text-teal-400 border-teal-500/20",
-    pink: "bg-pink-500/10 text-pink-400 border-pink-500/20",
-    sky: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-    slate: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-};
+
 
 export default function AdminCategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -121,7 +108,7 @@ export default function AdminCategoriesPage() {
                 </Link>
             </AdminHeader>
 
-            <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col mb-4">
+            <div className="border border-white/[0.05] rounded-2xl bg-zinc-900/10 overflow-hidden flex flex-col mb-4">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-[#0c0c0e] border-b border-white/[0.05]">
@@ -170,7 +157,7 @@ export default function AdminCategoriesPage() {
                                     <td className="px-6 py-4">
                                         <div className="flex justify-center">
                                             <div className={cn(
-                                                "min-w-[32px] h-6 rounded-md flex items-center justify-center text-[11px] font-mono font-bold",
+                                                "min-w-[32px] h-6 rounded-lg flex items-center justify-center text-[11px] font-mono font-bold",
                                                 cat.postCount > 0 ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" : "bg-white/5 text-zinc-600"
                                             )}>
                                                 {cat.postCount}

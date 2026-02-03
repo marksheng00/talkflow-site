@@ -91,7 +91,7 @@ const ptComponents: PortableTextComponents = {
                 return null;
             }
             return (
-                <div className="relative w-full aspect-video my-8 rounded-xl overflow-hidden bg-slate-800">
+                <div className="relative w-full aspect-video my-8 rounded-2xl overflow-hidden bg-slate-800">
                     <Image
                         src={urlFor(imageValue).fit('max').auto('format').url()}
                         alt={imageValue.alt || 'Blog image'}
@@ -116,18 +116,18 @@ const ptComponents: PortableTextComponents = {
     block: {
         h2: ({ children, value }: { children?: ReactNode; value: PortableTextBlock }) => {
             const id = slugify(extractText(value));
-            return <h2 id={id} className="text-3xl font-bold text-white mt-12 mb-6 scroll-mt-32">{children}</h2>;
+            return <h2 id={id} className="typo-h2 text-white mt-12 mb-6 scroll-mt-32">{children}</h2>;
         },
         h3: ({ children, value }: { children?: ReactNode; value: PortableTextBlock }) => {
             const id = slugify(extractText(value));
-            return <h3 id={id} className="text-2xl font-bold text-white mt-10 mb-4 scroll-mt-32">{children}</h3>;
+            return <h3 id={id} className="typo-h3 text-white mt-10 mb-4 scroll-mt-32">{children}</h3>;
         },
         blockquote: ({ children }: { children?: ReactNode }) => (
-            <blockquote className="border-l-4 border-emerald-500 pl-6 py-2 my-8 italic text-slate-300 bg-white/5 rounded-r-lg">
+            <blockquote className="border-l-4 border-emerald-500 pl-6 py-2 my-8 italic typo-body text-slate-300 bg-white/5 rounded-r-2xl">
                 {children}
             </blockquote>
         ),
-        normal: ({ children }: { children?: ReactNode }) => <p className="text-lg text-slate-300 leading-relaxed mb-6">{children}</p>,
+        normal: ({ children }: { children?: ReactNode }) => <p className="typo-body-lg text-slate-300 mb-6">{children}</p>,
     }
 };
 
@@ -176,7 +176,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                     <Link
                                         href="/blog"
                                         locale={locale}
-                                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
+                                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group typo-body-sm-strong"
                                     >
                                         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                         {t('Post.back')}
@@ -192,7 +192,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                     <Link
                                         href="/blog"
                                         locale={locale}
-                                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group text-sm font-bold"
+                                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group typo-body-sm-strong"
                                     >
                                         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                         {t('Post.back')}
@@ -202,7 +202,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                 <article>
                                     {/* Header */}
                                     <header className="text-left">
-                                        <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-8">
+                                        <h1 className="typo-h1 text-white mb-8">
                                             {post.title}
                                         </h1>
 
@@ -220,8 +220,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                                     </div>
                                                 )}
                                                 <div className="flex flex-col">
-                                                    <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.author')}</span>
-                                                    <span className="font-bold text-white text-lg whitespace-nowrap">{post.author?.name}</span>
+                                                    <span className="typo-label text-slate-500 mb-1">{t('Post.author')}</span>
+                                                    <span className="typo-body-lg-strong text-white whitespace-nowrap">{post.author?.name}</span>
                                                 </div>
                                             </div>
 
@@ -229,8 +229,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
                                             {/* Date */}
                                             <div className="flex flex-col">
-                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.published')}</span>
-                                                <time className="text-white font-medium whitespace-nowrap">
+                                                <span className="typo-label text-slate-500 mb-1">{t('Post.published')}</span>
+                                                <time className="typo-body-sm-strong text-white whitespace-nowrap">
                                                     {post.publishedAt
                                                         ? format(
                                                             new Date(post.publishedAt),
@@ -247,8 +247,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
                                             {/* Read Time */}
                                             <div className="flex flex-col">
-                                                <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.readTime')}</span>
-                                                <div className="flex items-center gap-2 text-white font-medium whitespace-nowrap">
+                                                <span className="typo-label text-slate-500 mb-1">{t('Post.readTime')}</span>
+                                                <div className="flex items-center gap-2 typo-body-sm-strong text-white whitespace-nowrap">
                                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
@@ -260,12 +260,12 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                                 <>
                                                     <div className="hidden md:block w-px h-10 bg-white/10" />
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs text-slate-500 mb-1 font-medium uppercase tracking-wider">{t('Post.category')}</span>
+                                                        <span className="typo-label text-slate-500 mb-1">{t('Post.category')}</span>
                                                         <div className="flex items-center gap-2">
                                                             {post.categories.map((cat: BlogCategory) => (
                                                                 <span
                                                                     key={cat.slug.current}
-                                                                    className="text-white font-medium whitespace-nowrap"
+                                                                    className="typo-body-sm-strong text-white whitespace-nowrap"
                                                                 >
                                                                     {cat.title}
                                                                 </span>
@@ -291,7 +291,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                     )}
 
                                     {/* Body */}
-                                    <div className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-a:text-emerald-400 prose-p:text-slate-300 prose-li:text-slate-300">
+                                    <div className="prose prose-invert max-w-none prose-a:text-emerald-400 prose-p:text-slate-300 prose-li:text-slate-300">
                                         <PortableText
                                             value={post.body}
                                             components={ptComponents}

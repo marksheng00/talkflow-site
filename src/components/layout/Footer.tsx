@@ -9,69 +9,85 @@ const columnsRaw = [
   {
     title: "Product",
     items: [
-      { label: "Voice role-play", href: "#product" },
-      { label: "AI feedback", href: "#benefits" },
-      { label: "Roadmap", href: "/roadmap" },
+      { label: "talkflo Overview", href: "/" },
+      { label: "IELTS Killer", href: "/ielts" },
+      { label: "Roadmap Visual", href: "/roadmap" },
+      { label: "Ideas Feedback", href: "/roadmap#ideas" },
+      { label: "Bugs Feedback", href: "/roadmap#bugs" },
     ],
   },
   {
     title: "Company",
     items: [
       { label: "Vision", href: "/vision" },
-      { label: "Careers", href: "mailto:hello@talkflo.ai" },
+      { label: "Blog", href: "/blog" },
+      { label: "FAQs", href: "/faq" },
       { label: "Support", href: "mailto:support@talkflo.ai" },
     ],
   },
   {
-    title: "Resources",
+    title: "Legal",
     items: [
-      { label: "Blog", href: "/blog" },
-      { label: "talkflo community", href: primaryCommunity() },
-      { label: "Press", href: "mailto:press@talkflo.ai" },
-      { label: "Privacy", href: "#" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Refund Policy", href: "/refund" },
+    ],
+  },
+  {
+    title: "Downloads",
+    items: [
+      { label: "Talkflo iOS App", href: "https://apps.apple.com/us/app/talkflo-speak-english-better/id6746321404" },
+      { label: "Talkflo Android App", href: "https://play.google.com/store/apps/details?id=io.aigaia.talkflo" },
+    ],
+  },
+  {
+    title: "Follow US",
+    items: [
+      { label: "Facebook", href: "https://facebook.com/talkflo" },
+      { label: "Instagram", href: "https://instagram.com/talkflo" },
+      { label: "TikTok", href: "https://tiktok.com/@talkflo" },
+      { label: "Twitter", href: "https://twitter.com/talkflo" },
+      { label: "Xiaohongshu", href: "https://xiaohongshu.com" },
+      { label: "YouTube", href: "https://youtube.com/@talkflo" },
     ],
   },
 ];
-
-function primaryCommunity() {
-  return "https://talkflo.hicall.ai/callout-lite/en/talkflo";
-}
 
 export default function Footer() {
   const t = useTranslations('Footer');
 
   return (
     <footer className="border-t border-white/10">
-      <div className="section-shell grid grid-cols-1 gap-10 py-12 md:grid-cols-4">
-        <div className="space-y-4">
+      <div className="section-shell grid grid-cols-2 gap-10 py-12 md:grid-cols-3 lg:grid-cols-6">
+        <div className="space-y-4 col-span-2 md:col-span-3 lg:col-span-1">
           <div className="flex items-center gap-1.5">
             <Image
               src="/talkflo_logo.png"
               alt="talkflo Logo"
               width={48}
               height={48}
-              className="h-10 w-10 rounded-lg object-contain block"
+              className="h-10 w-10 rounded-2xl object-contain block"
             />
             <div className="flex items-center gap-2">
-              <p className="font-heading text-xl font-bold tracking-wide text-white">
+              <p className="typo-h4 text-white">
                 talkflo
               </p>
-              <Link
-                href="/changelog"
-                className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-800/50 text-neutral-400 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-700/50 hover:text-white hover:border-slate-600 transition-colors cursor-pointer"
-                aria-label="View Changelog"
-              >
-                v{packageJson.version}
-              </Link>
             </div>
           </div>
+          <Link
+            href="/changelog"
+            className="inline-block px-2 py-0.5 typo-caption rounded-lg bg-slate-800/50 text-neutral-400 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-700/50 hover:text-white hover:border-slate-600 transition-colors cursor-pointer"
+            aria-label="View Changelog"
+          >
+            v{packageJson.version}
+          </Link>
         </div>
         {columnsRaw.map((column) => (
           <div key={column.title}>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-neutral-400">
+            <p className="mb-4 typo-label text-neutral-400">
               {t(`columns.${column.title}`)}
             </p>
-            <div className="space-y-3 text-sm text-slate-200">
+            <div className="space-y-3 typo-body-sm text-slate-200">
               {column.items.map((item) => (
                 <Link
                   key={item.label}
@@ -86,7 +102,7 @@ export default function Footer() {
         ))}
       </div>
       <div className="border-t border-white/5 py-4">
-        <div className="section-shell text-xs text-slate-500">
+        <div className="section-shell typo-body-sm text-slate-500">
           <span>{t('copyright', { year: new Date().getFullYear() })}</span>
         </div>
       </div>

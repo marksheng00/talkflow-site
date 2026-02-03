@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import { AdminContainer, AdminHeader, AdminButton, AdminSearch, AdminStatusSelector, AdminPagination } from "@/components/admin/ui/AdminKit";
 import {
-    Edit, Trash2, Globe, ExternalLink,
-    Calendar, User as UserIcon, Loader2, Plus, Hash, Tag
+    Edit, Trash2,
+    User as UserIcon, Loader2, Plus, Tag
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { LANGUAGES } from "@/sanity/lib/languages";
 import { deleteBlogPost } from "./actions";
 
@@ -80,10 +79,15 @@ export default function AdminBlogPage() {
         fetchPosts();
     }, [page, selectedLanguage, searchQuery]);
 
-    // Reset page when filters change
-    useEffect(() => {
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
         setPage(1);
-    }, [selectedLanguage, searchQuery]);
+    };
+
+    const handleLanguageChange = (lang: string) => {
+        setSelectedLanguage(lang);
+        setPage(1);
+    };
 
     const handleDelete = async (id: string, e: React.MouseEvent) => {
         e.preventDefault();
@@ -114,7 +118,7 @@ export default function AdminBlogPage() {
             >
                 <AdminSearch
                     placeholder="Search posts..."
-                    onSearch={setSearchQuery}
+                    onSearch={handleSearch}
                     className="w-64"
                 />
                 <AdminStatusSelector
@@ -123,7 +127,7 @@ export default function AdminBlogPage() {
                         { value: 'all', label: 'All Languages' },
                         ...LANGUAGES.map(l => ({ value: l.id, label: l.title }))
                     ]}
-                    onChange={setSelectedLanguage}
+                    onChange={handleLanguageChange}
                 />
                 <div className="h-4 w-px bg-white/10 mx-1" />
                 <Link href="/admin/studio/desk/post" target="_blank">
@@ -133,7 +137,7 @@ export default function AdminBlogPage() {
                 </Link>
             </AdminHeader>
 
-            <div className="border border-white/[0.05] rounded-xl bg-zinc-900/10 overflow-hidden flex flex-col mb-4">
+            <div className="border border-white/[0.05] rounded-2xl bg-zinc-900/10 overflow-hidden flex flex-col mb-4">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse border-spacing-0">
                         <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
@@ -166,7 +170,7 @@ export default function AdminBlogPage() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="text-[10px] font-bold text-zinc-400 bg-white/5 border border-white/5 px-2 py-1 rounded-md uppercase tracking-wider">
+                                        <span className="text-[10px] font-bold text-zinc-400 bg-white/5 border border-white/5 px-2 py-1 rounded-lg uppercase tracking-wider">
                                             {post.language || 'en'}
                                         </span>
                                     </td>

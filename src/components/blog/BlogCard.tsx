@@ -9,6 +9,7 @@ import { estimateReadingTime } from '@/lib/blog-helpers';
 import { Clock } from 'lucide-react';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { useTranslations, useLocale } from 'next-intl';
+import { cn } from '@/lib/utils';
 
 const COLOR_MAP: Record<string, string> = {
     blue: "border-blue-500/30 text-blue-400 bg-blue-500/10",
@@ -37,7 +38,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
             className="group relative flex flex-col gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-5 transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg h-full"
         >
             {post.mainImage && (
-                <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-slate-800">
+                <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-800">
                     <Image
                         src={urlFor(post.mainImage).width(600).height(400).url()}
                         alt={post.mainImage.alt || post.title}
@@ -52,22 +53,25 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                     {post.categories?.slice(0, 2).map((cat: BlogCategory) => (
                         <span
                             key={cat.slug.current}
-                            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${COLOR_MAP[cat.color || 'emerald'] || COLOR_MAP['emerald']}`}
+                            className={cn(
+                                "px-2 py-0.5 rounded-lg border typo-badge-sm uppercase",
+                                COLOR_MAP[cat.color || 'emerald'] || COLOR_MAP['emerald']
+                            )}
                         >
                             {cat.title}
                         </span>
                     ))}
                 </div>
 
-                <h2 className="font-heading text-xl font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
+                <h3 className="typo-h4 text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
                     {post.title}
-                </h2>
+                </h3>
 
-                <p className="text-sm text-neutral-400 line-clamp-3 leading-relaxed">
+                <p className="typo-body-sm text-neutral-400 line-clamp-3">
                     {post.excerpt}
                 </p>
 
-                <div className="mt-auto pt-4 flex items-center justify-between text-xs text-slate-500 border-t border-white/5">
+                <div className="mt-auto pt-4 flex items-center justify-between typo-body-sm text-slate-500 border-t border-white/5">
                     <div className="flex items-center gap-2">
                         {post.author?.image && (
                             <Image
@@ -78,7 +82,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
                                 className="rounded-full"
                             />
                         )}
-                        <span className="font-medium text-neutral-400">{post.author?.name}</span>
+                        <span className="typo-body-sm-strong text-neutral-400">{post.author?.name}</span>
                     </div>
 
                     <div className="flex items-center gap-3">

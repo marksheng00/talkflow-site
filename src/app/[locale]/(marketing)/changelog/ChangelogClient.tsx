@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Zap, Bug, Sparkles, Check, type LucideIcon } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Badge } from "@/components/ui/Badge";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -75,7 +76,7 @@ function ChangeItem({
                         onClick={handleBugClick}
                         disabled={!isBug || squashed}
                         className={cn(
-                            "h-8 w-8 rounded-lg flex items-center justify-center transition-all duration-500 relative overflow-hidden",
+                            "h-8 w-8 rounded-2xl flex items-center justify-center transition-all duration-500 relative overflow-hidden",
                             squashed ? "bg-emerald-500/20 text-emerald-400 scale-110" : config.color,
                             isBug && !squashed && "cursor-pointer hover:scale-110 hover:bg-rose-500/20 active:scale-95 animate-pulse"
                         )}
@@ -107,7 +108,7 @@ function ChangeItem({
                 <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                         <span className={cn(
-                            "text-[10px] font-bold uppercase tracking-wider transition-colors duration-500",
+                            "typo-caption transition-colors duration-500",
                             squashed ? "text-emerald-400" : config.color.split(" ")[0]
                         )}>
                             {squashed ? t('Squash.fixed') : config.label}
@@ -115,7 +116,7 @@ function ChangeItem({
                     </div>
                     <div
                         className={cn(
-                            "leading-relaxed text-sm md:text-base transition-all duration-500 prose prose-invert prose-p:my-0 prose-strong:text-white max-w-none",
+                            "typo-body transition-all duration-500 prose prose-invert prose-p:my-0 prose-strong:text-white max-w-none",
                             squashed ? "text-emerald-100/70 line-through decoration-emerald-500/50 decoration-2 opacity-50" : "text-slate-300"
                         )}
                         dangerouslySetInnerHTML={{ __html: change.content }}
@@ -215,15 +216,15 @@ export default function ChangelogClient() {
                 <div className="section-shell max-w-4xl mx-auto section-stack">
                     {/* Header */}
                     <div className="section-heading">
-                        <h1 className="font-heading text-4xl md:text-8xl font-bold tracking-tighter text-foreground whitespace-normal md:whitespace-nowrap leading-[1.1] md:leading-[0.9]">
+                        <h1 className="typo-hero text-foreground whitespace-normal md:whitespace-nowrap">
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-white to-amber-400 animate-text-shimmer bg-[size:200%_auto] block md:inline-block pb-4">
                                 {t('Hero.title')}
                             </span>
                         </h1>
-                        <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-4xl mx-auto">
+                        <p className="typo-subtitle-lg text-muted/60 max-w-4xl mx-auto">
                             {t('Hero.subtitle')}
                         </p>
-                        <p className="text-xs text-slate-600 font-mono">
+                        <p className="typo-mono text-slate-600">
                             {t('Hero.tip')}
                         </p>
                     </div>
@@ -254,16 +255,16 @@ export default function ChangelogClient() {
                                     {/* Release Header */}
                                     <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-6 relative group/header">
                                         <div className="flex items-center gap-3">
-                                            <h2 className="text-2xl font-bold text-white font-heading group-hover/header:text-emerald-400 transition-colors cursor-default">
+                                            <h2 className="typo-h3 text-white group-hover/header:text-emerald-400 transition-colors cursor-default">
                                                 {release.version}
                                             </h2>
                                             {index === 0 && (
-                                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950 bg-emerald-400 rounded-md animate-pulse">
+                                                <Badge tone="emerald" variant="solid" size="sm" className="animate-pulse">
                                                     {t('Latest')}
-                                                </span>
+                                                </Badge>
                                             )}
                                         </div>
-                                        <time className="text-sm font-mono text-slate-500">
+                                        <time className="typo-mono text-slate-500">
                                             {format(new Date(release.date), locale === 'zh' ? "yyyy年MM月dd日" : "MMMM dd, yyyy", {
                                                 locale: locale === 'zh' ? zhCN : undefined
                                             })}

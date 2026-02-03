@@ -6,7 +6,7 @@ export function AnimatedCounter({
     from, 
     to, 
     skipAnimation = false,
-    className = "text-2xl font-black"
+    className = "typo-h3"
 }: { 
     from: number; 
     to: number; 

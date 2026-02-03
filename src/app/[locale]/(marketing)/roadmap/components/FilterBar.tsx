@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { categories, Category, BugPlatform } from "@/types/roadmap";
 import { Tab } from "../hooks/use-roadmap-state";
+import { getToggleButtonStyle } from "@/components/ui/Tabs";
 
 interface FilterBarProps {
     activeTab: Tab;
@@ -21,25 +22,15 @@ export function FilterBar({
 
     if (activeTab === "bugs") {
         return (
-            <div className="flex gap-1.5 md:gap-2 w-full md:w-auto justify-center md:justify-end">
+            <div className="flex gap-1 w-full md:w-auto justify-center md:justify-end">
                 {(["All", "iOS", "Android", "Web"] as const).map(p => {
                     const isActive = selectedPlatform === p;
-                    const platformColors = {
-                        All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
-                        Web: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-                        iOS: "bg-rose-500/20 text-rose-400 border-rose-500/30",
-                        Android: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-                    };
-                    const colors = platformColors[p] || platformColors.All;
 
                     return (
                         <button
                             key={p}
                             onClick={() => setSelectedPlatform(p)}
-                            className={`flex-1 md:flex-initial px-3 md:px-4 py-1.5 rounded-xl text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${isActive
-                                ? (typeof colors === 'string' ? colors : colors.active)
-                                : `bg-transparent border-white/10 text-slate-500 ${typeof colors === 'string' ? '' : colors.hover} hover:text-slate-300`
-                                }`}
+                            className={getToggleButtonStyle(isActive)}
                         >
                             {t.has(`Filters.Platforms.${p}`) ? t(`Filters.Platforms.${p}`) : p}
                         </button>
@@ -50,27 +41,13 @@ export function FilterBar({
     }
 
     return (
-        <div className="flex gap-1.5 md:gap-2 w-full md:w-auto justify-center md:justify-end">
+        <div className="flex gap-1 w-full md:w-auto justify-center md:justify-end">
             {categories.map(cat => {
-                const categoryButtonColors = {
-                    All: { active: 'bg-slate-500/20 border-slate-500/50 text-slate-300', hover: 'hover:border-slate-500/30' },
-                    "Feature": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-                    "Content": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-                    "AI Core": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-                    "UIUX": "bg-amber-500/20 text-amber-400 border-amber-500/30",
-                    "Bug": "bg-rose-500/20 text-rose-400 border-rose-500/30",
-                };
-
-                const buttonColor = categoryButtonColors[cat as keyof typeof categoryButtonColors] || categoryButtonColors.All;
-
                 return (
                     <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}
-                        className={`flex-1 md:flex-initial px-2 md:px-3 py-1.5 rounded-xl text-[10px] md:text-xs font-semibold border transition-all text-center whitespace-nowrap ${selectedCategory === cat
-                            ? (typeof buttonColor === 'string' ? buttonColor : buttonColor.active)
-                            : `bg-transparent border-white/10 text-slate-500 ${typeof buttonColor === 'string' ? '' : buttonColor.hover} hover:text-slate-300`
-                            }`}
+                        className={getToggleButtonStyle(selectedCategory === cat)}
                     >
                         {t.has(`Filters.Categories.${cat}`) ? t(`Filters.Categories.${cat}`) : cat}
                     </button>

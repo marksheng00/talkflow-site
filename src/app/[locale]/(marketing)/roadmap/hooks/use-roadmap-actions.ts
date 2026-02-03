@@ -187,13 +187,13 @@ export function useRoadmapActions({
         } catch (error: unknown) {
             console.error("Failed to submit idea", error);
             let message = "An error occurred. Please ensure your input is long enough.";
-            
+
             if (error instanceof Error) {
                 // Zod errors often contain JSON-like strings in their message
                 if (error.message.includes('[{')) {
                     try {
                         const zodError = JSON.parse(error.message);
-                        message = zodError.map((e: any) => `${e.message}`).join('\n');
+                        message = zodError.map((e: { message: string }) => `${e.message}`).join('\n');
                     } catch {
                         message = error.message;
                     }
@@ -201,7 +201,7 @@ export function useRoadmapActions({
                     message = error.message;
                 }
             }
-            
+
             alert(`Failed to create idea:\n${message}`);
         } finally {
             setSubmitting(false);
@@ -229,13 +229,13 @@ export function useRoadmapActions({
         } catch (error: unknown) {
             console.error("Failed to submit bug", error);
             let message = "An error occurred. Please ensure your input is long enough.";
-            
+
             if (error instanceof Error) {
                 // Zod errors often contain JSON-like strings in their message
                 if (error.message.includes('[{')) {
                     try {
                         const zodError = JSON.parse(error.message);
-                        message = zodError.map((e: any) => `${e.message}`).join('\n');
+                        message = zodError.map((e: { message: string }) => `${e.message}`).join('\n');
                     } catch {
                         message = error.message;
                     }
@@ -243,7 +243,7 @@ export function useRoadmapActions({
                     message = error.message;
                 }
             }
-            
+
             alert(`Failed to report bug:\n${message}`);
         } finally {
             setBugSubmitting(false);

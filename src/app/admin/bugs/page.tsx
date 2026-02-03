@@ -1,23 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BugReport, BugStatus, BugSeverity } from "@/types/roadmap";
+import { BugReport, BugStatus } from "@/types/roadmap";
 import { createClient } from "@supabase/supabase-js";
 import {
-    Bug,
-    Clock,
     Loader2,
     Smartphone,
     Monitor,
     Trash2,
-    ShieldAlert,
     Activity,
-    ArrowLeft,
     ChevronRight,
-    ArrowRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminStatusSelector, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -59,13 +53,13 @@ export default function AdminBugsPage() {
         fetchBugs();
     }, [filter, page]);
 
-    // Reset page when filter changes
-    useEffect(() => {
+    const handleFilterChange = (val: BugStatus | 'all') => {
+        setFilter(val);
         setPage(1);
-    }, [filter]);
+    };
 
     const updateStatus = async (id: string, newStatus: BugStatus) => {
-        setBugs(bugs.map(b => b.id === id ? { ...b, status: newStatus as any } : b));
+        setBugs(bugs.map(b => b.id === id ? { ...b, status: newStatus } : b));
 
         const { error } = await supabaseClient
             .from("bug_reports")
@@ -96,13 +90,7 @@ export default function AdminBugsPage() {
         }
     };
 
-    const getSeverityVariant = (s: BugSeverity) => {
-        switch (s) {
-            case 'blocker': return "rose";
-            case 'major': return "amber";
-            default: return "blue";
-        }
-    };
+
 
     const getPlatformIcon = (p: string) => {
         if (p?.toLowerCase().includes('ios') || p?.toLowerCase().includes('android')) return <Smartphone className="w-3 h-3" />;
@@ -218,7 +206,7 @@ export default function AdminBugsPage() {
             <AdminHeader title="Bugs">
                 <AdminSegmentedControl
                     value={filter}
-                    onChange={(val: any) => setFilter(val)}
+                    onChange={handleFilterChange}
                     options={[
                         { value: 'all', label: 'All' },
                         { value: 'reported', label: 'Reported' },
@@ -231,7 +219,7 @@ export default function AdminBugsPage() {
             </AdminHeader>
 
             {/* Table View (Scalable) */}
-            <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col mb-4">
+            <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-2xl bg-zinc-900/10 flex flex-col mb-4">
                 <div className="overflow-y-auto custom-scrollbar flex-1">
                     <table className="w-full text-left border-collapse border-spacing-0">
                         <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">

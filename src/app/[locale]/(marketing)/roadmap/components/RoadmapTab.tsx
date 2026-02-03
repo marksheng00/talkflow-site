@@ -40,44 +40,44 @@ const COLOR_MAP: Record<string, {
 }> = {
     emerald: {
         active: "bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20 transition-all",
-        activeComplete: "bg-emerald-600 border-none text-white font-medium",
+        activeComplete: "bg-emerald-600 border-none text-white",
         released: "bg-emerald-500/5 border-emerald-500/10 opacity-50 grayscale-[0.2]",
-        releasedComplete: "bg-emerald-600 border-none text-white font-medium",
+        releasedComplete: "bg-emerald-600 border-none text-white",
         progress: "bg-emerald-600"
     },
     blue: {
         active: "bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20 transition-all",
-        activeComplete: "bg-blue-600 border-none text-white font-medium",
+        activeComplete: "bg-blue-600 border-none text-white",
         released: "bg-blue-500/5 border-blue-500/10 opacity-50 grayscale-[0.2]",
-        releasedComplete: "bg-blue-600 border-none text-white font-medium",
+        releasedComplete: "bg-blue-600 border-none text-white",
         progress: "bg-blue-600"
     },
     purple: {
         active: "bg-purple-500/10 border-purple-500/20 hover:bg-purple-500/20 transition-all",
-        activeComplete: "bg-purple-600 border-none text-white font-medium",
+        activeComplete: "bg-purple-600 border-none text-white",
         released: "bg-purple-500/5 border-purple-500/10 opacity-50 grayscale-[0.2]",
-        releasedComplete: "bg-purple-600 border-none text-white font-medium",
+        releasedComplete: "bg-purple-600 border-none text-white",
         progress: "bg-purple-600"
     },
     amber: {
         active: "bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/20 transition-all",
-        activeComplete: "bg-amber-600 border-none text-white font-medium",
+        activeComplete: "bg-amber-600 border-none text-white",
         released: "bg-amber-500/5 border-amber-500/10 opacity-50 grayscale-[0.2]",
-        releasedComplete: "bg-amber-600 border-none text-white font-medium",
+        releasedComplete: "bg-amber-600 border-none text-white",
         progress: "bg-amber-600"
     },
     slate: {
         active: "bg-slate-500/10 border-slate-500/20 hover:bg-slate-500/20 transition-all",
-        activeComplete: "bg-slate-600 border-none text-white font-medium",
+        activeComplete: "bg-slate-600 border-none text-white",
         released: "bg-slate-500/5 border-slate-500/10 opacity-50 grayscale-[0.2]",
-        releasedComplete: "bg-slate-600 border-none text-white font-medium",
+        releasedComplete: "bg-slate-600 border-none text-white",
         progress: "bg-slate-600"
     },
     zinc: {
         active: "bg-zinc-500/10 border-zinc-500/20 hover:bg-zinc-500/20 transition-all",
-        activeComplete: "bg-zinc-600 border-none text-white font-medium",
+        activeComplete: "bg-zinc-600 border-none text-white",
         released: "bg-zinc-500/5 border-zinc-500/10 opacity-50 grayscale-[0.2]",
-        releasedComplete: "bg-zinc-600 border-none text-white font-medium",
+        releasedComplete: "bg-zinc-600 border-none text-white",
         progress: "bg-zinc-600"
     }
 };
@@ -85,7 +85,6 @@ const COLOR_MAP: Record<string, {
 export function RoadmapTab({
     filteredTasks,
     setSelectedTask,
-    mounted,
     locale
 }: RoadmapTabProps) {
     const t = useTranslations('RoadmapPage');
@@ -117,8 +116,6 @@ export function RoadmapTab({
 
     // 2. Data Processing & Grouping
     const groupedTasks = useMemo(() => {
-        const visibleWindow = { start: timelineStart, end: timelineEnd };
-
         // Filter tasks within window
         const visible = filteredTasks.filter(task => {
             if (!task.startDate || !task.targetDate) return false;
@@ -209,7 +206,7 @@ export function RoadmapTab({
                 <div className="w-[140px] md:w-[320px] flex-shrink-0 border-r border-white/[0.08] bg-white/[0.01] z-20 relative backdrop-blur-md">
                     {/* Header */}
                     <div className="h-14 border-b border-white/[0.08] flex items-center px-6 bg-white/[0.02] backdrop-blur-xl">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-300">Task Overview</span>
+                        <span className="typo-caption text-slate-300">Task Overview</span>
                     </div>
 
                     {/* Content Groups */}
@@ -218,22 +215,22 @@ export function RoadmapTab({
                             <div key={group.key} className="mb-4">
                                 {/* Group Header - LEFT - Frosted Glass */}
                                 <div className="h-9 px-4 flex items-center gap-3 mb-1 sticky top-0 bg-white/[0.03] backdrop-blur-xl z-30 border-y border-white/[0.05]">
-                                    <span className="text-xs font-semibold text-slate-200 tracking-wide">{group.config.label}</span>
-                                    <span className="text-[10px] text-slate-500 font-mono ml-auto">{group.tasks.length}</span>
+                                    <span className="typo-body-sm-strong text-slate-200">{group.config.label}</span>
+                                    <span className="typo-mono text-slate-500 ml-auto">{group.tasks.length}</span>
                                 </div>
                                 {/* Tasks List */}
                                 <div className="space-y-[2px]">
                                     {group.tasks.map(task => (
                                         <div key={task.id} className="h-10 px-4 flex items-center group cursor-pointer hover:bg-white/[0.05] transition-all duration-300" onClick={() => setSelectedTask(task)}>
                                             <div className="min-w-0 flex-1">
-                                                <div className="text-[13px] font-medium text-slate-400 group-hover:text-white transition-colors truncate">
+                                                <div className="typo-body-sm text-slate-400 group-hover:text-white transition-colors truncate">
                                                     {getLocalizedString(task.title)}
                                                 </div>
                                             </div>
                                             {task.accelerations > 0 && (
                                                 <div className="flex items-center gap-1.5 text-emerald-400/90 ml-auto pl-2 w-[54px] flex-shrink-0 justify-start">
                                                     <Zap className="h-3.5 w-3.5 fill-current flex-shrink-0" />
-                                                    <span className="text-[11px] font-bold font-mono text-left">{task.accelerations}</span>
+                                                    <span className="typo-mono text-left">{task.accelerations}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -268,10 +265,10 @@ export function RoadmapTab({
                                         key={i}
                                         className="flex-1 border-r border-white/[0.05] flex flex-col justify-center px-3 min-w-[120px]"
                                     >
-                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-300">
+                                        <span className="typo-caption text-slate-300">
                                             {format(date, 'MMM')}
                                         </span>
-                                        <span className="text-[9px] font-mono text-slate-500 mt-0.5">
+                                        <span className="typo-caption-xs text-slate-500 mt-0.5">
                                             {format(date, 'yyyy')}
                                         </span>
                                     </div>
@@ -348,7 +345,7 @@ export function RoadmapTab({
                                                     <div key={task.id} className="h-10 relative group/bar">
                                                         <div
                                                             className={cn(
-                                                                "absolute top-2 bottom-2 rounded-md overflow-hidden backdrop-blur-sm transition-all hover:scale-y-110 hover:brightness-125 cursor-pointer min-w-[24px]",
+                                                                "absolute top-2 bottom-2 rounded-lg overflow-hidden backdrop-blur-sm transition-all hover:scale-y-110 hover:brightness-125 cursor-pointer min-w-[24px]",
                                                                 styleClass
                                                             )}
                                                             style={{
@@ -373,7 +370,7 @@ export function RoadmapTab({
 
                                                             {/* Label on the bar (if wide enough) */}
                                                             <div className="absolute inset-0 flex items-center px-2 opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap overflow-hidden">
-                                                                <span className="text-[10px] font-bold text-white drop-shadow-md truncate">
+                                                                <span className="typo-badge-sm text-white drop-shadow-md truncate">
                                                                     {getPhaseName(task.progress)}
                                                                 </span>
                                                             </div>

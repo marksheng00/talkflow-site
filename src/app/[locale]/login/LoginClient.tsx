@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/SiteNavbar";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { buttonStyles } from "@/components/ui/Button";
+import { cardStyles } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Field";
 
 type AuthStep = "initial" | "password";
 
@@ -101,7 +104,13 @@ export default function LoginClient() {
                 </Navbar>
 
                 <div className="w-full max-w-[400px]">
-                    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl">
+                    <div
+                        className={cardStyles({
+                            variant: "outline",
+                            className:
+                                "bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl",
+                        })}
+                    >
                         <AnimatePresence mode="wait">
                             {step === "initial" && (
                                 <motion.div
@@ -124,10 +133,10 @@ export default function LoginClient() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <h1 className="font-heading text-[26px] font-bold text-white tracking-tight">
+                                            <h1 className="typo-h3 text-white">
                                                 {t('Step1.title')}
                                             </h1>
-                                            <p className="text-neutral-400 text-[15px]">
+                                            <p className="typo-body-sm text-neutral-400">
                                                 {t('Step1.subtitle')}
                                             </p>
                                         </div>
@@ -138,10 +147,10 @@ export default function LoginClient() {
                                         {socialButtons.map((btn) => (
                                             <button
                                                 key={btn.name}
-                                                className="relative w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-[1.2svh] min-py-[10px] md:py-3 px-4 rounded-xl transition-all active:scale-[0.98] group"
+                                                className="relative w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white typo-button-md-medium py-[1.2svh] min-py-[10px] md:py-3 px-4 rounded-2xl transition-all active:scale-[0.98] group"
                                             >
                                                 {btn.icon}
-                                                <span className="text-[14px] md:text-[15px] font-semibold">{t('Step1.social', { name: btn.name })}</span>
+                                                <span className="typo-body-sm-strong">{t('Step1.social', { name: btn.name })}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -151,7 +160,7 @@ export default function LoginClient() {
                                         <div className="absolute inset-0 flex items-center">
                                             <span className="w-full border-t border-white/5" />
                                         </div>
-                                        <div className="relative flex justify-center text-[13px] uppercase tracking-wide">
+                                        <div className="relative flex justify-center typo-label">
                                             <span className="bg-[#0e0e10] px-3 text-slate-500">
                                                 {t('Step1.or')}
                                             </span>
@@ -161,19 +170,26 @@ export default function LoginClient() {
                                     {/* Email Form */}
                                     <form onSubmit={handleContinue} className="space-y-[1.5svh]">
                                         <div className="space-y-1.5">
-                                            <input
+                                            <Input
                                                 type="email"
                                                 placeholder={t('Step1.emailPlaceholder')}
                                                 required
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="w-full bg-transparent border border-white/10 focus:border-white/20 rounded-xl px-4 py-[1.5svh] min-py-[12px] md:py-3.5 text-white placeholder:text-slate-500 outline-none transition-all text-[14px] md:text-[15px]"
+                                                variant="transparent"
+                                                tone="neutral"
+                                                className="py-[1.5svh] min-py-[12px] md:py-3.5 typo-body-sm"
                                             />
                                         </div>
                                         <button
                                             type="submit"
                                             disabled={isLoading || !email}
-                                            className="w-full bg-white text-black hover:bg-slate-50 font-bold py-3 md:py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-[14px] md:text-[15px] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                                            className={buttonStyles({
+                                                variant: "primary",
+                                                size: "md",
+                                                className:
+                                                    "w-full gap-2",
+                                            })}
                                         >
                                             {isLoading ? (
                                                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -205,10 +221,10 @@ export default function LoginClient() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <h1 className="font-heading text-[26px] font-bold text-white tracking-tight">
+                                            <h1 className="typo-h3 text-white">
                                                 {t('Step2.title')}
                                             </h1>
-                                            <p className="text-neutral-400 text-[15px]">
+                                            <p className="typo-body-sm text-neutral-400">
                                                 {t('Step2.subtitle')}
                                             </p>
                                         </div>
@@ -216,14 +232,14 @@ export default function LoginClient() {
 
                                     <div className="space-y-[2svh] md:space-y-8">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">
+                                            <label className="typo-label text-slate-500 pl-1">
                                                 {t('Step2.emailLabel')}
                                             </label>
-                                            <div className="flex items-center justify-between p-3.5 rounded-xl border border-white/10 bg-white/[0.02]">
-                                                <span className="text-[15px] text-slate-200 font-medium pl-1">{email}</span>
+                                            <div className="flex items-center justify-between p-3.5 rounded-2xl border border-white/10 bg-white/[0.02]">
+                                                <span className="typo-body-sm-strong text-slate-200 pl-1">{email}</span>
                                                 <button
                                                     onClick={() => setStep("initial")}
-                                                    className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors pr-1"
+                                                    className="typo-body-sm-strong text-emerald-400 hover:text-emerald-300 transition-colors pr-1"
                                                 >
                                                     {t('Step2.edit')}
                                                 </button>
@@ -232,17 +248,19 @@ export default function LoginClient() {
 
                                         <form onSubmit={handleContinue} className="space-y-5">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">
+                                                <label className="typo-label text-slate-500 pl-1">
                                                     {t('Step2.passwordLabel')}
                                                 </label>
                                                 <div className="relative">
-                                                    <input
+                                                    <Input
                                                         type={showPassword ? "text" : "password"}
                                                         placeholder={t('Step2.passwordPlaceholder')}
                                                         required
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
-                                                        className="w-full bg-transparent border border-white/10 focus:border-white/20 rounded-xl px-4 py-[1.5svh] min-py-[12px] md:py-3.5 text-white placeholder:text-slate-500 outline-none transition-all text-[14px] md:text-[15px] pr-10"
+                                                        variant="transparent"
+                                                        tone="neutral"
+                                                        className="py-[1.5svh] min-py-[12px] md:py-3.5 typo-body-sm pr-10"
                                                     />
                                                     <button
                                                         type="button"
@@ -261,7 +279,12 @@ export default function LoginClient() {
                                             <button
                                                 type="submit"
                                                 disabled={isLoading || !password}
-                                                className="w-full bg-white text-black hover:bg-slate-50 font-bold py-[1.5svh] min-py-[12px] md:py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-[14px] md:text-[15px] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                                                className={buttonStyles({
+                                                    variant: "primary",
+                                                    size: "md",
+                                                    className:
+                                                        "w-full gap-2 py-[1.5svh] min-py-[12px] md:py-3.5",
+                                                })}
                                             >
                                                 {isLoading ? (
                                                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -273,7 +296,7 @@ export default function LoginClient() {
 
                                         <button
                                             onClick={() => setStep("initial")}
-                                            className="w-full text-slate-500 hover:text-white text-sm font-medium transition-colors"
+                                            className="w-full text-slate-500 hover:text-white typo-body-sm-strong transition-colors"
                                         >
                                             {t('Step2.back')}
                                         </button>
@@ -285,11 +308,11 @@ export default function LoginClient() {
 
                     {/* Bottom branding */}
                     <div className="mt-[2svh] md:mt-8 text-center space-y-1.5 opacity-60 hover:opacity-100 transition-opacity duration-500">
-                        <p className="text-[11px] text-slate-500 font-medium tracking-wide">
+                        <p className="typo-footnote text-slate-500 tracking-wide">
                             {t('Branding.from')}
                         </p>
                         <div className="flex items-center justify-center gap-2 text-neutral-400">
-                            <span className="text-[13px] font-bold tracking-tight">BeyondThink</span>
+                            <span className="typo-body-sm-strong tracking-tight">BeyondThink</span>
                         </div>
                     </div>
                 </div>

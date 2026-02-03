@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 import { cn } from "@/lib/utils";
+import { buttonStyles } from "@/components/ui/Button";
 
 interface AppDownloadButtonsProps {
     appStoreLink: string;
@@ -45,12 +46,17 @@ const StoreButton = ({
         href={href}
         onClick={onTrack}
         className={cn(
-            "group flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-white text-slate-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 whitespace-nowrap lg:w-auto lg:min-w-[200px]",
+            buttonStyles({
+                variant: "primary",
+                size: "lg",
+                className:
+                    "group h-14 whitespace-nowrap lg:w-auto lg:min-w-[200px]",
+            }),
             isMobileLayout ? "flex-1 px-3" : "px-6"
         )}
     >
         <Icon />
-        <span className="text-base font-bold text-black">
+        <span className="typo-body-strong text-black">
             {isMobileLayout ? label : (desktopLabel || label)}
         </span>
     </Link>
@@ -61,12 +67,17 @@ const WebButton = ({ href, isMobileLayout, label, onTrack }: { href: string; isM
         href={href}
         onClick={onTrack}
         className={cn(
-            "group flex h-14 w-full lg:w-auto lg:min-w-[200px] items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 lg:flex-initial whitespace-nowrap",
+            buttonStyles({
+                variant: "secondary",
+                size: "lg",
+                className:
+                    "group h-14 w-full lg:w-auto lg:min-w-[200px] backdrop-blur-sm lg:flex-initial whitespace-nowrap",
+            }),
             isMobileLayout ? "flex-1 px-3" : "px-6"
         )}
     >
         <MonitorPlay className="h-5 w-5 text-slate-300 group-hover:text-white transition-colors flex-shrink-0" />
-        <span className="text-base font-medium text-slate-300 group-hover:text-white transition-colors">
+        <span className="typo-body-strong text-slate-300 group-hover:text-white transition-colors">
             {label}
         </span>
     </Link>

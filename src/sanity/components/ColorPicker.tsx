@@ -1,4 +1,4 @@
-import { StringInputProps, set, unset } from 'sanity'
+import { StringInputProps, set } from 'sanity'
 import { Box, Flex, Tooltip, Text, Card } from '@sanity/ui'
 import { CheckmarkIcon } from '@sanity/icons'
 

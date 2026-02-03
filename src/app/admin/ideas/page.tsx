@@ -6,15 +6,11 @@ import { createClient } from "@supabase/supabase-js";
 import {
     ThumbsUp,
     Trash2,
-    Clock,
     Loader2,
-    MessageSquare,
     Activity,
-    ArrowLeft,
     ChevronRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { AdminContainer, AdminHeader, AdminBadge, AdminStatusSelector, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminStatusSelector, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -56,13 +52,13 @@ export default function AdminIdeasPage() {
         fetchIdeas();
     }, [filter, page]);
 
-    // Reset page when filter changes
-    useEffect(() => {
+    const handleFilterChange = (val: IdeaStatus | 'all') => {
+        setFilter(val);
         setPage(1);
-    }, [filter]);
+    };
 
     const updateStatus = async (id: string, newStatus: IdeaStatus) => {
-        setIdeas(ideas.map(idea => idea.id === id ? { ...idea, status: newStatus as any } : idea));
+        setIdeas(ideas.map(idea => idea.id === id ? { ...idea, status: newStatus } : idea));
 
         const { error } = await supabaseClient
             .from("community_ideas")
@@ -184,12 +180,12 @@ export default function AdminIdeasPage() {
                         { value: 'declined', label: 'Declined' },
                     ]}
                     value={filter}
-                    onChange={setFilter}
+                    onChange={(val) => handleFilterChange(val as IdeaStatus | 'all')}
                 />
             </AdminHeader>
 
             {/* Table View (Scalable) */}
-            <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col mb-4">
+            <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-2xl bg-zinc-900/10 flex flex-col mb-4">
                 <div className="overflow-y-auto custom-scrollbar flex-1">
                     <table className="w-full text-left border-collapse border-spacing-0">
                         <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">

@@ -247,26 +247,38 @@
         "vision": "Visión",
         "blog": "Blog",
         "login": "Iniciar sesión",
-        "signup": "Entrar / Registrarse",
+        "signup": "Empezar",
         "downloads": "Descargas"
     },
     "Footer": {
         "columns": {
             "Product": "Producto",
             "Company": "Empresa",
-            "Resources": "Recursos"
+            "Legal": "Legal",
+            "Downloads": "Descargas",
+            "Follow US": "Síguenos"
         },
         "items": {
-            "Voice role-play": "Juego de roles de voz",
-            "AI feedback": "Comentarios con IA",
-            "Roadmap": "Hoja de ruta",
+            "talkflo Overview": "Resumen de talkflo",
+            "IELTS Killer": "IELTS Killer",
+            "Roadmap Visual": "Hoja de ruta",
+            "Ideas Feedback": "Sugerencias",
+            "Bugs Feedback": "Errores",
             "Vision": "Visión",
-            "Careers": "Carreras",
-            "Support": "Soporte",
             "Blog": "Blog",
-            "talkflo community": "Comunidad talkflo",
-            "Press": "Prensa",
-            "Privacy": "Privacidad"
+            "FAQs": "Preguntas frecuentes",
+            "Support": "Soporte",
+            "Privacy Policy": "Política de privacidad",
+            "Terms of Service": "Términos de servicio",
+            "Refund Policy": "Política de reembolso",
+            "Talkflo iOS App": "App Talkflo para iOS",
+            "Talkflo Android App": "App Talkflo para Android",
+            "Facebook": "Facebook",
+            "Instagram": "Instagram",
+            "TikTok": "TikTok",
+            "Twitter": "Twitter",
+            "Xiaohongshu": "Xiaohongshu",
+            "YouTube": "YouTube"
         },
         "copyright": "© {year} talkflo. Un producto de BeyondThink LLC. Todos los derechos reservados."
     },
@@ -568,6 +580,95 @@
         "subtitle": "Página no encontrada",
         "description": "Lo sentimos, no pudimos encontrar la página que buscas. Puede que haya sido movida o no exista.",
         "button": "Volver al Inicio"
+    },
+    "PrivacyPage": {
+        "title": "Privacy Policy",
+        "subtitle": "Your privacy is our priority. Learn how we handle your data.",
+        "lastUpdated": "Last updated: February 1, 2026",
+        "sections": [
+            {
+                "title": "1. Data Collection",
+                "content": "We collect information you provide directly to us, such as when you create an account, use our AI speaking coach, or contact support."
+            },
+            {
+                "title": "2. How We Use Data",
+                "content": "We use the collected data to provide, maintain, and improve our services, including the AI coaching engine."
+            },
+            {
+                "title": "3. Data Security",
+                "content": "We use industry-standard encryption to protect your data both in transit and at rest."
+            }
+        ]
+    },
+    "TermsPage": {
+        "title": "Terms of Service",
+        "subtitle": "Please read these terms carefully before using talkflo.",
+        "lastUpdated": "Last updated: February 1, 2026",
+        "sections": [
+            {
+                "title": "1. Acceptance of Terms",
+                "content": "By accessing or using talkflo, you agree to be bound by these Terms of Service."
+            },
+            {
+                "title": "2. Use License",
+                "content": "Permission is granted to use talkflo for personal, non-commercial educational purposes."
+            },
+            {
+                "title": "3. Prohibited Conduct",
+                "content": "You agree not to misuse the service, including attempting to reverse engineer the AI models."
+            }
+        ]
+    },
+    "RefundPage": {
+        "title": "Refund Policy",
+        "subtitle": "Fair and transparent refund terms for our premium plans.",
+        "sections": [
+            {
+                "title": "1. Refund Eligibility",
+                "content": "We offer a 7-day money-back guarantee for all Pro and Ultra annual subscriptions."
+            },
+            {
+                "title": "2. How to Request",
+                "content": "To request a refund, please contact our support team at support@talkflo.ai."
+            },
+            {
+                "title": "3. Exceptions",
+                "content": "Monthly subscriptions and promotional offers are generally non-refundable."
+            }
+        ]
+    },
+    "FAQPage": {
+        "titlePrefix": "Preguntas",
+        "titleSuffix": "Frecuentes",
+        "subtitle": "Todo lo que necesitas saber sobre talkflo y la práctica de inglés con IA.",
+        "sections": [
+            {
+                "title": "General",
+                "items": [
+                    {
+                        "q": "¿Qué es talkflo?",
+                        "a": "talkflo es un entrenador de habla inglesa impulsado por IA."
+                    },
+                    {
+                        "q": "¿Cómo se compara con un tutor real?",
+                        "a": "Ofrece disponibilidad 24/7 y retroalimentación instantánea."
+                    }
+                ]
+            },
+            {
+                "title": "Suscripción",
+                "items": [
+                    {
+                        "q": "¿Puedo usar talkflo gratis?",
+                        "a": "¡Sí! Nuestro plan gratuito incluye 10 minutos de práctica con IA al día."
+                    },
+                    {
+                        "q": "¿Cuáles son los beneficios de Pro?",
+                        "a": "Los usuarios Pro obtienen tiempo de práctica ilimitado y análisis avanzado."
+                    }
+                ]
+            }
+        ]
     },
     "Metadata": {
         "title": "talkflo | Entrenador de habla con IA en tiempo real y práctica de conversación",

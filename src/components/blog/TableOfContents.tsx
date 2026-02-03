@@ -41,7 +41,7 @@ export function TableOfContents({ headings, translation }: TableOfContentsProps)
 
     return (
         <div className="hidden lg:block sticky top-24 self-start w-64 shrink-0">
-            <h3 className="font-bold text-lg text-white mb-4">{translation || "On this page:"}</h3>
+            <p className="typo-label text-white mb-4">{translation || "On this page:"}</p>
             <nav className="relative">
                 {/* Render a continuous line if needed, but styling shows individual items have borders */}
                 <ul className="space-y-4">
@@ -58,14 +58,14 @@ export function TableOfContents({ headings, translation }: TableOfContentsProps)
                                     setActiveId(heading.id);
                                 }}
                                 className={cn(
-                                    "block text-sm transition-all duration-200",
+                                    "block typo-body-sm transition-all duration-200",
                                     activeId === heading.id
-                                        ? "text-emerald-400 font-medium"
+                                        ? "text-emerald-400 typo-body-sm-strong"
                                         : "text-neutral-400 hover:text-slate-200"
                                 )}
                             >
                                 <div className={cn(
-                                    "relative pl-4 py-3 rounded-r-xl border-l-4 transition-all duration-200",
+                                    "relative pl-4 py-3 rounded-r-2xl border-l-4 transition-all duration-200",
                                     activeId === heading.id
                                         ? "bg-emerald-500/10 border-emerald-500"
                                         : "border-transparent hover:border-slate-700"

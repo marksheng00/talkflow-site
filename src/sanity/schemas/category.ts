@@ -59,7 +59,7 @@ export default defineType({
             subtitle: 'slug.current',
             color: 'color'
         },
-        prepare({ title, subtitle, color }) {
+        prepare({ title, subtitle }) {
             return {
                 title: title || 'Untitled Category',
                 subtitle: subtitle,

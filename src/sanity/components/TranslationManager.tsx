@@ -12,7 +12,23 @@ function generateUUID() {
         : 'xxxx-xxxx-xxxx-xxxx'.replace(/[x]/g, () => (Math.random() * 16 | 0).toString(16));
 }
 
-export function TranslationManager(props: any) {
+interface TranslationItem {
+    _id: string;
+    language: string;
+    title?: string;
+}
+
+interface TextNode {
+    path: (string | number)[];
+    text: string;
+}
+
+interface TranslationManagerProps {
+    value?: string;
+    onChange?: (val: unknown) => void;
+}
+
+export function TranslationManager(props: TranslationManagerProps) {
     const { value: translationId, onChange } = props
     const documentId = useFormValue(['_id']) as string
     const currentLanguage = useFormValue(['language']) as string
@@ -20,7 +36,7 @@ export function TranslationManager(props: any) {
 
     // Use Sanity client to query siblings
     const client = useClient({ apiVersion: '2021-10-21' })
-    const [translations, setTranslations] = useState<any[]>([])
+    const [translations, setTranslations] = useState<TranslationItem[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const toast = useToast()
 
@@ -47,7 +63,7 @@ export function TranslationManager(props: any) {
 
             // Deduplicate: If we have draft and published, prefer draft
             // Simplified logic: Just keep one entry per language, prefer draft ID if exists
-            const uniqueTranslations = result.reduce((acc: any[], curr: any) => {
+            const uniqueTranslations = result.reduce((acc: TranslationItem[], curr: TranslationItem) => {
                 const existingIndex = acc.findIndex(item => item.language === curr.language);
                 if (existingIndex >= 0) {
                     // If current is draft, replace existing
@@ -110,8 +126,8 @@ export function TranslationManager(props: any) {
             }
 
             // 2. Extract translatable content
-            const extractTextNodes = (doc: any) => {
-                const nodes: { path: any[], text: string }[] = [];
+            const extractTextNodes = (doc: { title?: string; excerpt?: string; body?: unknown[]; seo?: { metaTitle?: string; metaDescription?: string } }) => {
+                const nodes: TextNode[] = [];
 
                 // Fields to translate
                 if (doc.title) nodes.push({ path: ['title'], text: doc.title });
@@ -121,13 +137,15 @@ export function TranslationManager(props: any) {
 
                 // Body (Portable Text)
                 if (Array.isArray(doc.body)) {
-                    doc.body.forEach((block: any, blockIndex: number) => {
-                        if (block._type === 'block' && Array.isArray(block.children)) {
-                            block.children.forEach((span: any, spanIndex: number) => {
-                                if (span._type === 'span' && typeof span.text === 'string' && span.text.trim()) {
+                    doc.body.forEach((block: unknown, blockIndex: number) => {
+                        const b = block as { _type: string; children?: unknown[] };
+                        if (b._type === 'block' && Array.isArray(b.children)) {
+                            b.children.forEach((span: unknown, spanIndex: number) => {
+                                const s = span as { _type: string; text?: string };
+                                if (s._type === 'span' && typeof s.text === 'string' && s.text.trim()) {
                                     nodes.push({
                                         path: ['body', blockIndex, 'children', spanIndex, 'text'],
-                                        text: span.text
+                                        text: s.text
                                     });
                                 }
                             });
@@ -256,7 +274,7 @@ export function TranslationManager(props: any) {
             }
 
             // Pick best master (prefer draft)
-            const masterRef = masterResults.find((m: any) => m._id.startsWith('drafts.')) || masterResults[0];
+            const masterRef = masterResults.find((m: TranslationItem) => m._id.startsWith('drafts.')) || masterResults[0];
 
             // Fetch full master content
             const masterId = masterRef._id.replace('drafts.', '');
@@ -273,18 +291,20 @@ export function TranslationManager(props: any) {
             if (!currentDoc) throw new Error("Please save the current document first.");
 
             // A common function would be better, but we duplicate extraction/translation logic for safety/speed now
-            const extractTextNodes = (doc: any) => {
-                const nodes: { path: any[], text: string }[] = [];
+            const extractTextNodes = (doc: { title?: string; excerpt?: string; body?: unknown[]; seo?: { metaTitle?: string; metaDescription?: string } }) => {
+                const nodes: TextNode[] = [];
                 if (doc.title) nodes.push({ path: ['title'], text: doc.title });
                 if (doc.excerpt) nodes.push({ path: ['excerpt'], text: doc.excerpt });
                 if (doc.seo?.metaTitle) nodes.push({ path: ['seo', 'metaTitle'], text: doc.seo.metaTitle });
                 if (doc.seo?.metaDescription) nodes.push({ path: ['seo', 'metaDescription'], text: doc.seo.metaDescription });
                 if (Array.isArray(doc.body)) {
-                    doc.body.forEach((block: any, blockIndex: number) => {
-                        if (block._type === 'block' && Array.isArray(block.children)) {
-                            block.children.forEach((span: any, spanIndex: number) => {
-                                if (span._type === 'span' && typeof span.text === 'string' && span.text.trim()) {
-                                    nodes.push({ path: ['body', blockIndex, 'children', spanIndex, 'text'], text: span.text });
+                    doc.body.forEach((block: unknown, blockIndex: number) => {
+                        const b = block as { _type: string; children?: unknown[] };
+                        if (b._type === 'block' && Array.isArray(b.children)) {
+                            b.children.forEach((span: unknown, spanIndex: number) => {
+                                const s = span as { _type: string; text?: string };
+                                if (s._type === 'span' && typeof s.text === 'string' && s.text.trim()) {
+                                    nodes.push({ path: ['body', blockIndex, 'children', spanIndex, 'text'], text: s.text });
                                 }
                             });
                         }
@@ -355,9 +375,13 @@ export function TranslationManager(props: any) {
 
             // Reload page to show changes? Sanity usually auto-reloads.
 
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
-            toast.push({ status: 'error', title: 'Sync Failed', description: err.message });
+            toast.push({
+                status: 'error',
+                title: 'Sync Failed',
+                description: err instanceof Error ? err.message : 'Unknown error'
+            });
         } finally {
             setIsLoading(false);
         }

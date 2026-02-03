@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { RoadmapItem, RoadmapStatus } from "@/types/roadmap";
 import { createClient } from "@supabase/supabase-js";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { Plus, X, Loader2, Calendar, ArrowLeft, Globe, Layers, Pencil, Zap, Image as ImageIcon, CloudUpload, CalendarDays, Map, Activity, Settings, Trash2, ChevronRight } from "lucide-react";
+import { Plus, Loader2, Calendar, Globe, Layers, Zap, Image as ImageIcon, CalendarDays, Activity, Settings, Trash2, ChevronRight } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { AdminContainer, AdminHeader, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminSearch, AdminPagination, AdminStatusSelector } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination, AdminStatusSelector } from "@/components/admin/ui/AdminKit";
+import { Input, Textarea } from "@/components/ui/Field";
 
 const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -46,7 +48,7 @@ export default function AdminRoadmapPage() {
         return input[activeLocale] || input['en'] || Object.values(input)[0] || "";
     };
 
-    const fetchTasks = async () => {
+    const fetchTasks = useCallback(async () => {
         setLoading(true);
         try {
             let query = supabaseClient
@@ -61,75 +63,59 @@ export default function AdminRoadmapPage() {
                 query = query.eq("category", filterCategory);
             }
 
-            // --- OPTIMIZATION FOR 1000+ TASKS ---
-            // If in Kanban mode, we only want ALL active tasks + TOP 20 released items
-            // to prevent performance and UI disaster.
-            if (viewMode === 'kanban') {
-                // In a perfect world, we'd do complex union queries, 
-                // but for simplicity, we'll order by status and release date
-                query = query.order("created_at", { ascending: false });
-            } else {
-                // In list mode, standard server-side pagination handles the load
-                query = query.range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1)
-                    .order("created_at", { ascending: false });
-            }
-
-            const { data, count, error } = await query;
+            const { data, count, error } = await query
+                .order("created_at", { ascending: false })
+                .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
             if (error) {
                 console.error("Error fetching roadmap:", error);
             } else {
-                let mappedTasks = (data || []).map((t: any) => ({
+                const mappedRows = (data || []) as Array<Record<string, unknown>>;
+                const mappedTasks: RoadmapItem[] = mappedRows.map((t) => ({
                     ...t,
-                    title: t.title || { en: "" },
-                    description: t.description || { en: "" },
-                    detailedContent: t.detailed_content || { en: "" },
-                    coverImage: t.cover_image,
-                    startDate: t.start_date,
-                    targetDate: t.target_date
-                }));
+                    title: (t.title as Record<string, string>) || { en: "" },
+                    description: (t.description as Record<string, string>) || { en: "" },
+                    detailedContent: (t.detailed_content as Record<string, string>) || { en: "" },
+                    coverImage: t.cover_image as string,
+                    startDate: t.start_date as string,
+                    targetDate: t.target_date as string
+                }) as RoadmapItem);
 
                 // If Kanban, manually slice the 'released' tasks to top 20
                 if (viewMode === 'kanban') {
                     const released = mappedTasks.filter(t => t.status === 'released').slice(0, 20);
                     const active = mappedTasks.filter(t => t.status !== 'released');
-                    mappedTasks = [...active, ...released];
+                    setTasks([...active, ...released]);
+                } else {
+                    setTasks(mappedTasks);
                 }
-
-                setTasks(mappedTasks);
                 setTotalCount(count || 0);
             }
-
-            if (error) {
-                console.error("Error fetching roadmap:", error);
-            } else {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const mappedTasks = (data || []).map((t: any) => ({
-                    ...t,
-                    title: t.title || { en: "" },
-                    description: t.description || { en: "" },
-                    detailedContent: t.detailed_content || { en: "" },
-                    coverImage: t.cover_image,
-                    startDate: t.start_date,
-                    targetDate: t.target_date
-                }));
-                setTasks(mappedTasks);
-                setTotalCount(count || 0);
-            }
-        } catch (err) {
-            console.error(err);
+        } catch (error: unknown) {
+            console.error(error);
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchTasks();
     }, [viewMode, page, filterStatus, filterCategory]);
 
     useEffect(() => {
+        fetchTasks();
+    }, [fetchTasks]);
+
+    const handleViewModeChange = (v: 'kanban' | 'list' | 'editor') => {
+        setViewMode(v);
         setPage(1);
-    }, [viewMode, filterStatus, filterCategory]);
+    };
+
+    const handleFilterStatusChange = (val: RoadmapStatus | "all") => {
+        setFilterStatus(val);
+        setPage(1);
+    };
+
+    const handleFilterCategoryChange = (val: string) => {
+        setFilterCategory(val);
+        setPage(1);
+    };
 
     const onDragEnd = async (result: DropResult) => {
         const { destination, source, draggableId } = result;
@@ -141,7 +127,7 @@ export default function AdminRoadmapPage() {
         if (!task) return;
 
         let newProgress = task.progress || 0;
-        
+
         // Sync progress with new status if it's out of range
         if (newStatus === 'researching' && (newProgress < 0 || newProgress > 24)) newProgress = 0;
         else if (newStatus === 'building' && (newProgress < 25 || newProgress > 74)) newProgress = 25;
@@ -217,7 +203,7 @@ export default function AdminRoadmapPage() {
 
         const finalStatus = task.status || 'researching';
         let finalProgress = task.progress || 0;
-        
+
         // Force sync progress with status for data integrity
         if (finalStatus === 'researching' && (finalProgress < 0 || finalProgress > 24)) finalProgress = 0;
         else if (finalStatus === 'building' && (finalProgress < 25 || finalProgress > 74)) finalProgress = 25;
@@ -324,8 +310,7 @@ export default function AdminRoadmapPage() {
             const targetLocales = LOCALES.filter(l => l !== activeLocale);
             for (const lang of targetLocales) {
                 for (const field of fieldsToTranslate) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const sourceText = (editingTask as any)[field.key]?.[activeLocale];
+                    const sourceText = (editingTask as Record<string, Record<string, string>>)[field.key]?.[activeLocale];
                     if (sourceText && sourceText !== "<p></p>" && sourceText.trim() !== "") {
                         try {
                             const res = await fetch("/api/admin/translate", {
@@ -335,15 +320,14 @@ export default function AdminRoadmapPage() {
                             });
                             const data = await res.json();
                             if (data.translatedText) {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                if (!(updatedTask as any)[field.key]) (updatedTask as any)[field.key] = {};
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                (updatedTask as any)[field.key][lang] = data.translatedText;
+                                if (!(updatedTask as Record<string, Record<string, string>>)[field.key]) (updatedTask as Record<string, Record<string, string>>)[field.key] = {};
+                                (updatedTask as Record<string, Record<string, string>>)[field.key][lang] = data.translatedText;
                             } else {
                                 errorCount++;
                             }
                             await delay(250);
-                        } catch (err) {
+                        } catch (error: unknown) {
+                            console.error(error);
                             errorCount++;
                         }
                     }
@@ -351,7 +335,8 @@ export default function AdminRoadmapPage() {
             }
             setEditingTask({ ...updatedTask });
             setTranslateFeedback({ type: errorCount > 0 ? 'error' : 'success', message: "" });
-        } catch (err) {
+        } catch (error: unknown) {
+            console.error(error);
             setTranslateFeedback({ type: 'error', message: "" });
         } finally {
             setTranslating(false);
@@ -409,22 +394,26 @@ export default function AdminRoadmapPage() {
                             {/* Title Section */}
                             <div className="space-y-4">
                                 <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Task Title</label>
-                                <input
-                                    className="w-full bg-transparent border-none p-0 text-3xl font-bold text-zinc-100 outline-none placeholder:text-zinc-800 focus:ring-0"
+                                <Input
+                                    className="w-full bg-transparent border-none p-0 text-3xl font-bold text-zinc-100 placeholder:text-zinc-800 focus:ring-0"
                                     placeholder="Enter task title..."
                                     value={editingTask.title?.[activeLocale] || ''}
                                     onChange={e => setEditingTask({ ...editingTask, title: { ...editingTask.title, [activeLocale]: e.target.value } })}
+                                    variant="transparent"
+                                    tone="neutral"
                                 />
                             </div>
 
                             {/* Summary Section */}
                             <div className="space-y-4">
                                 <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Summary</label>
-                                <textarea
-                                    className="w-full bg-white/[0.02] border border-white/[0.04] rounded-xl p-5 text-[15px] text-zinc-400 outline-none focus:border-white/10 transition-all min-h-[120px] leading-relaxed resize-none"
+                                <Textarea
+                                    className="w-full bg-white/[0.02] border border-white/[0.04] rounded-2xl p-5 text-[15px] text-zinc-400 focus:border-white/10 transition-all min-h-[120px] leading-relaxed resize-none"
                                     placeholder="Enter summary..."
                                     value={editingTask.description?.[activeLocale] || ''}
                                     onChange={e => setEditingTask({ ...editingTask, description: { ...editingTask.description, [activeLocale]: e.target.value } })}
+                                    variant="transparent"
+                                    tone="neutral"
                                 />
                             </div>
 
@@ -448,18 +437,18 @@ export default function AdminRoadmapPage() {
                                     <div className="space-y-1.5">
                                         <label className="text-[10px] uppercase font-bold text-zinc-600">Status</label>
                                         <select
-                                            className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-3 text-xs text-zinc-300 appearance-none outline-none focus:border-indigo-500/30"
+                                            className="w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 px-3 text-xs text-zinc-300 appearance-none outline-none focus:border-indigo-500/30"
                                             value={editingTask.status || 'researching'}
                                             onChange={e => {
                                                 const s = e.target.value as RoadmapStatus;
                                                 let p = editingTask.progress || 0;
-                                                
+
                                                 // Sync progress when status changes
                                                 if (s === 'researching' && (p < 0 || p > 24)) p = 0;
                                                 else if (s === 'building' && (p < 25 || p > 74)) p = 25;
                                                 else if (s === 'shipping' && (p < 75 || p > 99)) p = 75;
                                                 else if (s === 'released') p = 100;
-                                                
+
                                                 setEditingTask({ ...editingTask, status: s, progress: p });
                                             }}
                                         >
@@ -470,7 +459,7 @@ export default function AdminRoadmapPage() {
                                     <div className="space-y-1.5">
                                         <label className="text-[10px] uppercase font-bold text-zinc-600">Category</label>
                                         <select
-                                            className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-3 text-xs text-zinc-300 appearance-none outline-none focus:border-indigo-500/30"
+                                            className="w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 px-3 text-xs text-zinc-300 appearance-none outline-none focus:border-indigo-500/30"
                                             value={editingTask.category || 'Feature'}
                                             onChange={e => setEditingTask({ ...editingTask, category: e.target.value })}
                                         >
@@ -490,13 +479,13 @@ export default function AdminRoadmapPage() {
                                                 onChange={e => {
                                                     const p = parseInt(e.target.value);
                                                     let s = editingTask.status || 'researching';
-                                                    
+
                                                     // Sync status when progress changes
                                                     if (p >= 100) s = 'released';
                                                     else if (p >= 75) s = 'shipping';
                                                     else if (p >= 25) s = 'building';
                                                     else s = 'researching';
-                                                    
+
                                                     setEditingTask({ ...editingTask, progress: p, status: s });
                                                 }}
                                             />
@@ -509,11 +498,13 @@ export default function AdminRoadmapPage() {
                                             <div className="space-y-1.5">
                                                 <label className="text-[9px] uppercase font-bold text-zinc-600 ml-0.5 tracking-tight">Start Date</label>
                                                 <div className="relative">
-                                                    <input
+                                                    <Input
                                                         type="date"
-                                                        className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-2 pl-9 text-[11px] text-zinc-400 font-mono [color-scheme:dark] outline-none focus:border-indigo-500/30 transition-all font-medium"
+                                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 px-2 pl-9 text-[11px] text-zinc-400 font-mono [color-scheme:dark] focus:border-indigo-500/30 transition-all font-medium"
                                                         value={editingTask.startDate || ''}
                                                         onChange={e => setEditingTask({ ...editingTask, startDate: e.target.value })}
+                                                        variant="transparent"
+                                                        tone="neutral"
                                                     />
                                                     <CalendarDays className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-700 pointer-events-none" />
                                                 </div>
@@ -521,11 +512,13 @@ export default function AdminRoadmapPage() {
                                             <div className="space-y-1.5">
                                                 <label className="text-[9px] uppercase font-bold text-zinc-600 ml-0.5 tracking-tight">Target Date</label>
                                                 <div className="relative">
-                                                    <input
+                                                    <Input
                                                         type="date"
-                                                        className="w-full bg-black/40 border border-white/10 rounded-lg py-2.5 px-2 pl-9 text-[11px] text-zinc-400 font-mono [color-scheme:dark] outline-none focus:border-indigo-500/30 transition-all font-medium"
+                                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 px-2 pl-9 text-[11px] text-zinc-400 font-mono [color-scheme:dark] focus:border-indigo-500/30 transition-all font-medium"
                                                         value={editingTask.targetDate || ''}
                                                         onChange={e => setEditingTask({ ...editingTask, targetDate: e.target.value })}
+                                                        variant="transparent"
+                                                        tone="neutral"
                                                     />
                                                     <CalendarDays className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-700 pointer-events-none" />
                                                 </div>
@@ -543,9 +536,13 @@ export default function AdminRoadmapPage() {
                                         </label>
                                     </div>
                                     {editingTask.coverImage ? (
-                                        <div className="group relative rounded-xl overflow-hidden border border-white/10 bg-black/40 h-32">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={editingTask.coverImage} alt="" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all" />
+                                        <div className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 h-32">
+                                            <Image
+                                                src={editingTask.coverImage}
+                                                alt="Cover"
+                                                fill
+                                                className="object-cover opacity-60 group-hover:opacity-100 transition-all"
+                                            />
                                             <button
                                                 onClick={() => {
                                                     if (editingTask.coverImage) {
@@ -560,7 +557,7 @@ export default function AdminRoadmapPage() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <div className="h-32 rounded-xl border border-dashed border-white/5 flex items-center justify-center opacity-20"><ImageIcon className="w-6 h-6" /></div>
+                                        <div className="h-32 rounded-2xl border border-dashed border-white/5 flex items-center justify-center opacity-20"><ImageIcon className="w-6 h-6" /></div>
                                     )}
                                 </div>
                             </div>
@@ -583,7 +580,7 @@ export default function AdminRoadmapPage() {
                                 { value: 'list', label: 'List' }
                             ]}
                             value={viewMode === 'list' ? 'list' : 'kanban'}
-                            onChange={(v: string) => setViewMode(v as any)}
+                            onChange={(v: string) => handleViewModeChange(v as 'kanban' | 'list')}
                         />
                     </div>
                 }
@@ -592,7 +589,7 @@ export default function AdminRoadmapPage() {
                     <AdminStatusSelector
                         size="sm"
                         value={filterStatus}
-                        onChange={(val: string) => setFilterStatus(val as any)}
+                        onChange={(val: string) => handleFilterStatusChange(val as RoadmapStatus | "all")}
                         options={[
                             { value: 'all', label: 'All Status' },
                             ...STATUS_COLUMNS.map(s => ({ value: s, label: s.toUpperCase() }))
@@ -602,7 +599,7 @@ export default function AdminRoadmapPage() {
                     <AdminStatusSelector
                         size="sm"
                         value={filterCategory}
-                        onChange={setFilterCategory}
+                        onChange={handleFilterCategoryChange}
                         options={[
                             { value: 'all', label: 'All Categories' },
                             ...["Feature", "Content", "AI Core", "UIUX"].map(c => ({ value: c, label: c }))
@@ -634,7 +631,7 @@ export default function AdminRoadmapPage() {
                             {STATUS_COLUMNS
                                 .filter(s => filterStatus === 'all' || s === filterStatus)
                                 .map((status) => (
-                                    <div key={status} className="flex-shrink-0 w-80 border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col max-h-full">
+                                    <div key={status} className="flex-shrink-0 w-80 border border-white/[0.05] rounded-2xl bg-zinc-900/10 flex flex-col max-h-full">
                                         <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between shrink-0">
                                             <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
                                                 <Layers className="w-3 h-3 text-indigo-500" /> {status}
@@ -667,7 +664,7 @@ export default function AdminRoadmapPage() {
                                                                     {...provided.dragHandleProps}
                                                                     onClick={() => openEditor(task)}
                                                                     className={cn(
-                                                                        "group bg-[#0F0F12] border border-white/[0.03] p-4 rounded-xl hover:border-zinc-700/40 hover:bg-[#141417] transition-all cursor-pointer relative",
+                                                                        "group bg-[#0F0F12] border border-white/[0.03] p-4 rounded-2xl hover:border-zinc-700/40 hover:bg-[#141417] transition-all cursor-pointer relative",
                                                                         snapshot.isDragging ? "shadow-2xl ring-1 ring-indigo-500/20 z-50 rotate-1" : "shadow-sm"
                                                                     )}
                                                                 >
@@ -686,7 +683,7 @@ export default function AdminRoadmapPage() {
                                                                     <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-2 mb-3 font-medium">{getLocalizedContent(task.description)}</p>
 
                                                                     {task.coverImage && (
-                                                                        <div className="mb-3 rounded-lg overflow-hidden border border-white/5 bg-black/20">
+                                                                        <div className="mb-3 rounded-2xl overflow-hidden border border-white/5 bg-black/20">
                                                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                             <img src={task.coverImage} alt="" className="w-full h-24 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                                                                         </div>
@@ -722,7 +719,7 @@ export default function AdminRoadmapPage() {
                         </div>
                     </DragDropContext>
                 ) : (
-                    <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col">
+                    <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-2xl bg-zinc-900/10 flex flex-col">
                         <div className="overflow-y-auto custom-scrollbar flex-1">
                             <table className="w-full text-left border-collapse border-spacing-0">
                                 <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
@@ -745,7 +742,9 @@ export default function AdminRoadmapPage() {
                                             <td className="px-6 py-6 max-w-xl">
                                                 <div className="flex items-center gap-4">
                                                     {task.coverImage && (
-                                                        <img src={task.coverImage} className="w-12 h-12 rounded-lg object-cover border border-white/10 shrink-0" alt="" />
+                                                        <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-white/10 shrink-0">
+                                                            <Image src={task.coverImage} fill className="object-cover" alt="Cover" />
+                                                        </div>
                                                     )}
                                                     <div className="space-y-1">
                                                         <h4 className="text-[14px] font-bold text-zinc-100">{getLocalizedContent(task.title)}</h4>

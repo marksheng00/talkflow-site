@@ -54,12 +54,13 @@ export async function GET() {
 
         // Process Analytics Data securely on server
         if (analyticsCheck.data) {
-            analyticsCheck.data.forEach((event: any) => {
+            analyticsCheck.data.forEach((event: { metadata: unknown; created_at: string }) => {
                 let meta = event.metadata;
                 if (typeof meta === 'string') {
                     try { meta = JSON.parse(meta); } catch { }
                 }
-                const target = meta?.target_platform || meta?.target;
+                const metaObj = meta as Record<string, unknown>;
+                const target = metaObj?.target_platform || metaObj?.target;
                 const eventDate = new Date(event.created_at);
 
                 let platformKey: 'ios' | 'android' | 'web' | null = null;

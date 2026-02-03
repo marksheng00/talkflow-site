@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({ success: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('Analytics Handler Error:', err);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }

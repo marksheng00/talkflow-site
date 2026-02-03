@@ -4,6 +4,8 @@ import { PricingTier, BillingCycle } from "@/lib/data/pricing-data";
 import { cn } from "@/lib/utils";
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { buttonStyles } from "@/components/ui/Button";
+import { cardStyles } from "@/components/ui/Card";
 
 interface PricingCardProps {
     tier: PricingTier;
@@ -29,12 +31,17 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
     return (
         <div
             className={cn(
-                "relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border bg-white/[0.02] p-6 md:p-8 transition-all hover:bg-white/[0.04]",
+                cardStyles({
+                    variant: "subtle",
+                    interactive: true,
+                    className:
+                        "flex h-full flex-col justify-between p-6 md:p-8",
+                }),
                 tier.highlight
                     ? "border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.1)]"
                     : isUltra
                         ? "border-emerald-500/50 shadow-[0_0_40px_rgba(52,211,153,0.1)]"
-                        : "border-white/10"
+                    : "border-white/10"
             )}
         >
             {tier.highlight && (
@@ -49,22 +56,22 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
             <div className="relative z-10">
                 {/* Header */}
                 <div className="mb-6 space-y-2">
-                    <h2 className={cn("font-heading text-2xl font-bold text-white", isUltra && "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400")}>
+                    <h2 className={cn("typo-h3 text-white", isUltra && "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400")}>
                         {tier.name}
                     </h2>
-                    <p className="text-sm text-neutral-400">{tier.description}</p>
+                    <p className="typo-body-sm text-neutral-400">{tier.description}</p>
                 </div>
 
                 {/* Price */}
                 <div className="mb-8 flex items-baseline gap-1">
                     {isCustom ? (
-                        <span className="text-4xl font-bold text-white">Custom</span>
+                        <span className="typo-h2 text-white">Custom</span>
                     ) : (
                         <>
-                            <span className="text-4xl font-bold text-white flex">
+                            <span className="typo-h2 text-white flex">
                                 $<AnimatedPrice value={price} />
                             </span>
-                            <span className="text-slate-500">/mo</span>
+                            <span className="typo-body-sm text-slate-500">/mo</span>
                         </>
                     )}
                 </div>
@@ -79,7 +86,7 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
                                     tier.highlight || isUltra ? "text-emerald-400" : "text-slate-500"
                                 )}
                             />
-                            <span className="text-sm text-slate-300">{feature}</span>
+                            <span className="typo-body-sm text-slate-300">{feature}</span>
                         </li>
                     ))}
                 </ul>
@@ -89,12 +96,15 @@ export const PricingCard = ({ tier, billingCycle }: PricingCardProps) => {
             <Link
                 href={tier.name === "Free" ? "/signup" : tier.name === "Pro" ? "/signup?plan=pro" : "/contact"}
                 className={cn(
-                    "relative z-10 flex h-14 w-full items-center justify-center rounded-2xl text-base font-bold transition-all active:scale-95",
-                    tier.highlight
-                        ? "bg-white !text-black shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-slate-50 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
-                        : isUltra
-                            ? "bg-gradient-to-r from-emerald-400 to-cyan-400 !text-black shadow-[0_0_20px_rgba(52,211,153,0.3)] hover:shadow-[0_0_30px_rgba(52,211,153,0.5)] hover:bg-emerald-400"
-                            : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                    "relative z-10 w-full",
+                    buttonStyles({
+                        variant: tier.highlight
+                            ? "primary"
+                            : isUltra
+                                ? "gradient"
+                                : "secondary",
+                        size: "lg",
+                    })
                 )}
             >
                 {tier.cta}

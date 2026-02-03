@@ -79,7 +79,7 @@ export default function Header() {
                       onClick={() => setIsLangOpen(false)}
                       onMouseEnter={() => setLangHovered(idx)}
                       className={cn(
-                        "relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                        "relative flex items-center gap-2 px-3 py-2 rounded-2xl typo-body-sm-strong transition-colors",
                         showHighlight ? "text-white" : "text-neutral-400"
                       )}
                     >
@@ -87,14 +87,14 @@ export default function Header() {
                         <motion.div
                           layoutId="lang-pill"
                           className={cn(
-                            "absolute inset-0 h-full w-full rounded-lg bg-white/10",
+                            "absolute inset-0 h-full w-full rounded-2xl bg-white/10",
                             isActive && !isHovered && "bg-white/5"
                           )}
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
 
-                      <span className="text-lg leading-none relative z-10">{lang.flag}</span>
+                      <span className="typo-flag leading-none relative z-10">{lang.flag}</span>
                       <span className="relative z-10">{lang.label}</span>
                     </Link>
                   );
@@ -118,7 +118,7 @@ export default function Header() {
           <button
             onClick={() => setIsLangOpen(!isLangOpen)}
             className={cn(
-              "relative flex items-center justify-center p-2 rounded-lg transition-colors text-2xl h-10 w-10",
+              "relative flex items-center justify-center p-2 rounded-2xl transition-colors typo-flag-button h-10 w-10",
               isLangOpen ? "bg-white/10 text-white" : "text-neutral-400 hover:text-white hover:bg-white/5"
             )}
           >
@@ -166,14 +166,14 @@ export default function Header() {
                       locale={lang.code}
                       onClick={() => setIsMobileLangOpen(false)}
                       className={cn(
-                        "flex items-center justify-center rounded-xl transition-all shrink-0",
+                        "flex items-center justify-center rounded-2xl transition-all shrink-0",
                         "w-[clamp(2.1rem,9vw,2.3rem)] h-[clamp(2.1rem,9vw,2.3rem)]",
                         locale === lang.code
                           ? "bg-white/10 text-white"
                           : "text-neutral-400 hover:text-white"
                       )}
                     >
-                      <span className="text-[clamp(1.2rem,5.5vw,1.5rem)]">{lang.flag}</span>
+                      <span className="typo-flag-responsive">{lang.flag}</span>
                     </Link>
                   ))}
 
@@ -198,12 +198,12 @@ export default function Header() {
                       setIsMobileMenuOpen(false); // Close menu when opening lang switcher
                     }}
                     className={cn(
-                      "flex items-center justify-center rounded-xl transition-all",
+                      "flex items-center justify-center rounded-2xl transition-all",
                       "w-[clamp(2.1rem,9vw,2.3rem)] h-[clamp(2.1rem,9vw,2.3rem)]",
                       "text-neutral-400 hover:text-white hover:bg-white/5"
                     )}
                   >
-                    <span className="text-[clamp(1.2rem,5.5vw,1.5rem)]">{currentLang.flag}</span>
+                    <span className="typo-flag-responsive">{currentLang.flag}</span>
                   </button>
                 </div>
               )}
@@ -232,7 +232,7 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
               className="relative flex w-full items-center gap-3 text-neutral-400 hover:text-white"
             >
-              <span className="text-lg font-medium">{item.name}</span>
+              <span className="typo-body-lg-strong">{item.name}</span>
             </Link>
           ))}
           <div className="flex w-full flex-col gap-4 pt-4">

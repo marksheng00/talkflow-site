@@ -6,23 +6,17 @@ import {
     Plus,
     Trash2,
     Rocket,
-    ArrowLeft,
     Calendar,
     Layers,
     ChevronRight,
-    Search,
     Loader2,
-    Settings,
     Activity,
-    FileText,
-    ArrowRight,
-    Clock,
-    RotateCw,
     Globe
 } from "lucide-react";
 import TiptapEditor from "@/components/admin/TiptapEditor";
 import { cn } from "@/lib/utils";
-import { AdminContainer, AdminHeader, AdminSegmentedControl, AdminButton, AdminSearch, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
+import { AdminContainer, AdminHeader, AdminSegmentedControl, AdminButton, AdminDetailHeader, AdminPagination } from "@/components/admin/ui/AdminKit";
+import { Input } from "@/components/ui/Field";
 
 // Types
 type Release = {
@@ -54,12 +48,7 @@ const TYPE_LABELS: Record<string, string> = {
     perf: "Performance",
 };
 
-const TYPE_COLORS: Record<string, string> = {
-    feature: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    fix: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-    improvement: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    perf: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-};
+
 
 export default function AdminChangelogPage() {
     const [releases, setReleases] = useState<Release[]>([]);
@@ -75,7 +64,6 @@ export default function AdminChangelogPage() {
     const [editingItem, setEditingItem] = useState<ChangeItem | null>(null);
     const [activeLocale, setActiveLocale] = useState<string>("en");
     const [translateFeedback, setTranslateFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
-    const [localVersion, setLocalVersion] = useState<string>("");
     const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Debounced sync function
@@ -95,22 +83,15 @@ export default function AdminChangelogPage() {
         };
     }, []);
 
-    useEffect(() => {
-        if (selectedRelease) {
-            setLocalVersion(selectedRelease.version);
-        }
-    }, [selectedRelease?.id]);
 
-    const getLocalizedContent = (input: Record<string, string> | null | undefined) => {
-        if (!input) return "";
-        return input[activeLocale] || input['en'] || Object.values(input)[0] || "";
-    };
+
+
 
     // Fetch releases
-    const fetchReleases = async () => {
+    const fetchReleases = useCallback(async () => {
         setLoading(true);
         try {
-            let query = supabaseClient
+            const query = supabaseClient
                 .from("changelog_releases")
                 .select("*", { count: 'exact' });
 
@@ -129,7 +110,7 @@ export default function AdminChangelogPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page]);
 
     // Fetch changes
     const fetchChanges = useCallback(async (releaseId: string) => {
@@ -148,7 +129,7 @@ export default function AdminChangelogPage() {
 
     useEffect(() => {
         fetchReleases();
-    }, [page]);
+    }, [fetchReleases]);
 
 
 
@@ -159,7 +140,7 @@ export default function AdminChangelogPage() {
             setEditingItem(null);
             setChanges([]);
         }
-    }, [selectedRelease?.id, fetchChanges]);
+    }, [selectedRelease, fetchChanges]);
 
     const VERSION_REGEX = /^v\d+\.\d+\.\d+$/;
 
@@ -246,9 +227,6 @@ export default function AdminChangelogPage() {
 
             // Revert local states
             setSelectedRelease(previousRelease);
-            if (updates.version !== undefined) {
-                setLocalVersion(previousRelease.version);
-            }
             return;
         }
 
@@ -364,7 +342,7 @@ export default function AdminChangelogPage() {
                 </AdminHeader>
 
                 {/* Table View (Scalable) */}
-                <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-xl bg-zinc-900/10 flex flex-col mb-4">
+                <div className="flex-1 overflow-hidden border border-white/[0.05] rounded-2xl bg-zinc-900/10 flex flex-col mb-4">
                     <div className="overflow-y-auto custom-scrollbar flex-1">
                         <table className="w-full text-left border-collapse border-spacing-0">
                             <thead className="sticky top-0 bg-[#09090b] z-10 shadow-[0_1px_0_rgba(255,255,255,0.05)]">
@@ -384,7 +362,7 @@ export default function AdminChangelogPage() {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 group-hover:border-emerald-500/20 transition-all shrink-0">
+                                                <div className="w-8 h-8 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-zinc-500 group-hover:text-emerald-400 group-hover:border-emerald-500/20 transition-all shrink-0">
                                                     <Layers className="w-4 h-4" />
                                                 </div>
                                                 <span className="text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">{r.version}</span>
@@ -441,13 +419,15 @@ export default function AdminChangelogPage() {
                 subtitle={`ID: ${selectedRelease.id.slice(0, 8)}`}
             >
                 {/* Date Picker */}
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-white/[0.08] rounded-lg shadow-sm">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-white/[0.08] rounded-2xl shadow-sm">
                     <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                    <input
+                    <Input
                         type="date"
-                        className="bg-transparent text-[10px] font-bold text-zinc-400 outline-none [color-scheme:dark] cursor-pointer hover:text-zinc-200 transition-colors uppercase tracking-widest"
+                        className="bg-transparent text-[10px] font-bold text-zinc-400 [color-scheme:dark] cursor-pointer hover:text-zinc-200 transition-colors uppercase tracking-widest border-none p-0"
                         value={new Date(selectedRelease.publish_date).toISOString().split("T")[0]}
                         onChange={(e) => handleUpdateRelease({ publish_date: new Date(e.target.value).toISOString() })}
+                        variant="transparent"
+                        tone="neutral"
                     />
                 </div>
 
@@ -474,12 +454,7 @@ export default function AdminChangelogPage() {
                     variant="danger"
                     size="sm"
                     icon={<Trash2 className="w-3.5 h-3.5" />}
-                    onClick={() => {
-                        if (confirm("Delete this entire release?")) {
-                            // If there was a release delete action, we'd call it here
-                            setSelectedRelease(null);
-                        }
-                    }}
+                    onClick={() => handleDeleteRelease(selectedRelease.id)}
                 />
 
                 <AdminButton
@@ -510,12 +485,12 @@ export default function AdminChangelogPage() {
                                 <div className="flex items-center justify-between opacity-100 transition-opacity">
                                     <div className="flex items-center gap-1.5">
                                         <div className="text-[10px] font-mono text-zinc-700 w-4 font-bold">{(idx + 1).toString().padStart(2, '0')}</div>
-                                        <div className="flex items-center bg-white/5 rounded-md p-1 border border-white/5 gap-1">
+                                        <div className="flex items-center bg-white/5 rounded-2xl p-1 border border-white/5 gap-1">
                                             {Object.entries(TYPE_LABELS).map(([val, label]) => (
                                                 <button
                                                     key={val}
-                                                    onClick={() => handleUpdateChangeItem({ ...item, type: val as any }, true)}
-                                                    className={cn("px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-all",
+                                                    onClick={() => handleUpdateChangeItem({ ...item, type: val as ChangeItem['type'] }, true)}
+                                                    className={cn("px-2 py-0.5 rounded-2xl text-[9px] font-bold uppercase transition-all",
                                                         item.type === val
                                                             ? "bg-zinc-800 text-zinc-100"
                                                             : "text-zinc-600 hover:text-zinc-400"
@@ -535,7 +510,7 @@ export default function AdminChangelogPage() {
                                 </div>
 
                                 {/* Rich Text Editor */}
-                                <div className="border border-white/[0.06] rounded-xl bg-zinc-900/10 focus-within:border-white/10 transition-all overflow-hidden">
+                                <div className="border border-white/[0.06] rounded-2xl bg-zinc-900/10 focus-within:border-white/10 transition-all overflow-hidden">
                                     <TiptapEditor
                                         content={item.description[activeLocale.toLowerCase()] || ""}
                                         onChange={(val) => {
@@ -551,9 +526,9 @@ export default function AdminChangelogPage() {
                         {changes.length === 0 ? (
                             <button
                                 onClick={handleAddChange}
-                                className="w-full h-64 border border-dashed border-white/[0.08] bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/20 rounded-xl flex flex-col items-center justify-center text-zinc-500 transition-all group"
+                                className="w-full h-64 border border-dashed border-white/[0.08] bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/20 rounded-2xl flex flex-col items-center justify-center text-zinc-500 transition-all group"
                             >
-                                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-white/10 transition-all">
+                                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-white/10 transition-all">
                                     <Plus className="w-5 h-5 text-zinc-400 group-hover:text-white" />
                                 </div>
                                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 group-hover:text-zinc-200 transition-colors">Start documenting changes</p>
@@ -563,7 +538,7 @@ export default function AdminChangelogPage() {
                             <div className="pt-8 flex justify-center">
                                 <button
                                     onClick={handleAddChange}
-                                    className="px-8 py-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-200 transition-all flex items-center gap-3 group active:scale-95"
+                                    className="px-8 py-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-200 transition-all flex items-center gap-3 group active:scale-95"
                                 >
                                     <Plus className="w-4 h-4 text-zinc-600 group-hover:text-zinc-300 transition-colors" />
                                     Add New Change Block

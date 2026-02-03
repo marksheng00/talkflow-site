@@ -71,11 +71,6 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
         setVotedIdeas,
         lastVotedId,
         setLastVotedId,
-        todayPercent,
-        form,
-        setForm,
-        bugForm,
-        setBugForm,
         submitting,
         setSubmitting,
         bugSubmitting,
@@ -83,6 +78,10 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
         filteredTasks,
         filteredIdeals,
         filteredBugs,
+        form,
+        setForm,
+        bugForm,
+        setBugForm,
     } = useRoadmapState(initialTasks, initialIdeas, initialBugs);
 
     // Actions Hook
@@ -137,13 +136,13 @@ export default function RoadmapClient({ initialTasks, initialIdeas, initialBugs 
                 <section className="section-block section-hero">
                     <div className="section-shell section-stack stack-tight items-center text-center">
                         <div className="section-heading max-w-none">
-                            <h1 className="max-w-none font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto">
+                            <h1 className="max-w-none typo-hero text-foreground">
                                 {t('Hero.titlePrefix')}{" "}
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 animate-text-shimmer bg-[size:200%_auto] inline-block pb-4">
                                     {t('Hero.titleSuffix')}
                                 </span>
                             </h1>
-                            <p className="text-xl md:text-2xl text-muted/60 font-light tracking-tight leading-relaxed max-w-5xl mx-auto">
+                            <p className="typo-subtitle-lg text-muted/60 max-w-5xl mx-auto">
                                 {t('Hero.subtitle')}
                             </p>
                         </div>

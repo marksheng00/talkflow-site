@@ -605,6 +605,163 @@ details summary::-webkit-details-marker {
   mask-image: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.15), transparent 60%);
 }
 
+/* Typography tokens */
+.typo-hero {
+  @apply font-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.1] md:leading-[0.9] text-balance break-words hyphens-auto;
+}
+
+.typo-h1 {
+  @apply font-heading text-3xl md:text-5xl font-bold tracking-tight leading-tight;
+}
+
+.typo-h2 {
+  @apply font-heading text-4xl md:text-5xl font-bold;
+}
+
+.typo-h3 {
+  @apply font-heading text-2xl md:text-3xl font-bold leading-tight;
+}
+
+.typo-h4 {
+  @apply font-heading text-xl font-bold;
+}
+
+.typo-title {
+  @apply font-heading text-xl md:text-2xl font-bold tracking-tight;
+}
+
+.typo-title-sm {
+  @apply text-lg font-bold;
+}
+
+.typo-subtitle-lg {
+  @apply text-xl md:text-2xl font-light tracking-tight leading-relaxed;
+}
+
+.typo-body-lg {
+  @apply text-lg leading-relaxed;
+}
+
+.typo-body-lg-strong {
+  @apply text-lg font-medium;
+}
+
+.typo-body {
+  @apply text-base leading-relaxed;
+}
+
+.typo-body-strong {
+  @apply text-base font-medium;
+}
+
+.typo-body-sm {
+  @apply text-sm;
+}
+
+.typo-body-sm-strong {
+  @apply text-sm font-medium;
+}
+
+.typo-footnote {
+  @apply text-xs font-medium;
+}
+
+.typo-label {
+  @apply text-xs font-bold uppercase tracking-wider;
+}
+
+.typo-caption {
+  @apply text-[10px] font-bold uppercase tracking-wide;
+}
+
+.typo-caption-xs {
+  @apply text-[9px] font-bold uppercase tracking-wide;
+}
+
+.typo-badge-xs {
+  @apply text-[9px] font-bold tracking-wide;
+}
+
+.typo-badge-sm {
+  @apply text-[10px] font-bold tracking-wide;
+}
+
+.typo-badge-md {
+  @apply text-xs font-bold tracking-wider;
+}
+
+.typo-badge-lg {
+  @apply text-sm font-bold tracking-wide;
+}
+
+.typo-tab {
+  @apply text-xs md:text-sm font-bold tracking-wider;
+}
+
+.typo-stat {
+  @apply text-3xl font-bold;
+}
+
+.typo-stat-lg {
+  @apply text-3xl md:text-5xl font-bold;
+}
+
+.typo-mono {
+  @apply font-mono text-xs;
+}
+
+.typo-symbol {
+  @apply text-2xl font-bold;
+}
+
+.typo-symbol-lg {
+  @apply text-3xl font-bold;
+}
+
+.typo-flag {
+  @apply text-lg;
+}
+
+.typo-flag-button {
+  @apply text-2xl;
+}
+
+.typo-flag-responsive {
+  font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+}
+
+.typo-button-sm {
+  @apply text-sm font-bold;
+}
+
+.typo-button-sm-medium {
+  @apply text-sm font-medium;
+}
+
+.typo-button-md {
+  @apply text-sm font-bold;
+}
+
+.typo-button-md-medium {
+  @apply text-sm font-medium;
+}
+
+.typo-button-lg {
+  @apply text-base font-bold;
+}
+
+.typo-button-lg-medium {
+  @apply text-base font-medium;
+}
+
+.typo-button-xl {
+  @apply text-lg font-bold;
+}
+
+.typo-button-xl-medium {
+  @apply text-lg font-medium;
+}
+
 /* Typewriter cursor animation */
 @keyframes cursor-blink {
 
@@ -764,6 +921,15 @@ details summary::-webkit-details-marker {
 }
 
 .font-pixel {
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 2px;
+  text-shadow:
+    0 0 10px rgba(52, 211, 153, 0.4),
+    1px 1px 0px rgba(0, 0, 0, 0.8);
+  filter: contrast(1.2) brightness(1.1);
+}
+
+.typo-pixel {
   font-family: 'Courier New', Courier, monospace;
   letter-spacing: 2px;
   text-shadow:

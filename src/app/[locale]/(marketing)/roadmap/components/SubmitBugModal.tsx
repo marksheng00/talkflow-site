@@ -1,9 +1,10 @@
 "use client";
-
-import { createPortal } from "react-dom";
 import { X, Bug, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { BugPlatform } from "@/types/roadmap";
+import { Modal } from "@/components/ui/Modal";
+import { buttonStyles } from "@/components/ui/Button";
+import { Field, Input, Textarea } from "@/components/ui/Field";
 
 interface SubmitBugModalProps {
     mounted: boolean;
@@ -26,15 +27,17 @@ export function SubmitBugModal({
 }: SubmitBugModalProps) {
     const t = useTranslations('RoadmapPage');
 
-    if (!mounted || !isOpen) return null;
+    if (!mounted) return null;
 
-    return createPortal(
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in"
-                onClick={onClose}
-            />
-            <div className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto no-scrollbar">
+    return (
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            size="md"
+            className="max-w-lg"
+            showCloseButton={false}
+        >
+            <div className="relative p-6 md:p-8 max-h-[90vh] overflow-y-auto no-scrollbar">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 p-2 rounded-full bg-black/50 backdrop-blur-md text-white/70 hover:text-white border border-white/10 transition-colors z-10"
@@ -43,70 +46,70 @@ export function SubmitBugModal({
                 </button>
 
                 <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <h2 className="typo-h3 text-white flex items-center gap-2">
                         <Bug className="h-6 w-6 text-rose-500" />
                         {t("ReportBugModal.title")}
                     </h2>
-                    <p className="text-sm text-slate-500 mt-1">{t("ReportBugModal.subtitle")}</p>
+                    <p className="typo-body-sm text-slate-500 mt-1">{t("ReportBugModal.subtitle")}</p>
                 </div>
 
                 <form onSubmit={onBugSubmit} className="space-y-5">
                     {/* Title */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            {t("ReportBugModal.fields.title")}
-                        </label>
-                        <input
+                    <Field label={t("ReportBugModal.fields.title")}>
+                        <Input
                             required
                             type="text"
                             placeholder={t("ReportBugModal.placeholders.title")}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
                             value={bugForm.title}
                             onChange={(e) => setBugForm({ ...bugForm, title: e.target.value })}
+                            tone="rose"
                         />
-                    </div>
+                    </Field>
 
                     {/* Platform Selection */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            {t("ReportBugModal.fields.platform")}
-                        </label>
+                    <Field label={t("ReportBugModal.fields.platform")}>
                         <div className="flex gap-2">
                             {(["Web", "iOS", "Android"] as const).map((p) => (
                                 <button
                                     key={p}
                                     type="button"
                                     onClick={() => setBugForm({ ...bugForm, platform: p })}
-                                    className={`flex-1 py-2.5 rounded-xl border font-bold text-sm transition-all ${bugForm.platform === p
-                                        ? "bg-rose-500/20 border-rose-500/50 text-rose-400"
-                                        : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300 hover:bg-white/10"
-                                        }`}
+                                    className={buttonStyles({
+                                        variant: bugForm.platform === p ? "danger" : "secondary",
+                                        size: "sm",
+                                        className:
+                                            bugForm.platform === p
+                                                ? "bg-rose-500/20 border-rose-500/50 text-rose-400 hover:bg-rose-500/20"
+                                                : "text-slate-500 hover:text-slate-300",
+                                    })}
                                 >
                                     {t(`Filters.Platforms.${p}`)}
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </Field>
 
                     {/* Description */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            {t("ReportBugModal.fields.steps")}
-                        </label>
-                        <textarea
+                    <Field label={t("ReportBugModal.fields.steps")}>
+                        <Textarea
                             required
                             rows={4}
                             placeholder={t("ReportBugModal.placeholders.steps")}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors resize-none"
                             value={bugForm.steps}
                             onChange={(e) => setBugForm({ ...bugForm, steps: e.target.value })}
+                            tone="rose"
+                            className="resize-none"
                         />
-                    </div>
+                    </Field>
 
                     <button
                         disabled={bugSubmitting}
                         type="submit"
-                        className="w-full bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-rose-900/20 flex items-center justify-center gap-2"
+                        className={buttonStyles({
+                            variant: "danger",
+                            size: "lg",
+                            className: "w-full",
+                        })}
                     >
                         {bugSubmitting ? (
                             <Loader2 className="h-5 w-5 animate-spin" />
@@ -116,7 +119,6 @@ export function SubmitBugModal({
                     </button>
                 </form>
             </div>
-        </div>,
-        document.body
+        </Modal>
     );
 }

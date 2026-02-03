@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/Field";
 import { ChevronDown, Search, Loader2, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 
@@ -56,7 +57,7 @@ export function AdminDetailHeader({ title, subtitle, onBack, children, className
             <div className="flex items-center gap-4">
                 <button
                     onClick={onBack}
-                    className="p-2 hover:bg-white/5 rounded-lg text-zinc-500 hover:text-white transition-all"
+                    className="p-2 hover:bg-white/5 rounded-2xl text-zinc-500 hover:text-white transition-all"
                 >
                     <ArrowLeft className="w-4.5 h-4.5" />
                 </button>
@@ -110,7 +111,7 @@ export function AdminBadge({ children, variant = 'primary', className, dot }: Ad
 
     return (
         <span className={cn(
-            "px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5 w-fit",
+            "px-2 py-0.5 rounded-2xl text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5 w-fit",
             variants[variant],
             className
         )}>
@@ -154,7 +155,7 @@ export function AdminButton({
     return (
         <button
             className={cn(
-                "rounded-lg transition-all flex items-center justify-center font-bold uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed",
+                "rounded-2xl transition-all flex items-center justify-center font-bold uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed",
                 variants[variant],
                 sizes[size],
                 className
@@ -184,12 +185,14 @@ export function AdminSearch({ placeholder, onSearch, className, size = 'md' }: A
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-zinc-100 transition-colors">
                 <Search className="w-4 h-4" />
             </div>
-            <input
+            <Input
                 type="text"
                 placeholder={placeholder || "Search..."}
                 onChange={(e) => onSearch(e.target.value)}
+                variant="admin"
+                tone="neutral"
                 className={cn(
-                    "block w-full pl-9 pr-4 bg-zinc-900 border border-white/[0.08] rounded-lg font-bold uppercase tracking-tight text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/20 focus:bg-zinc-800 transition-all shadow-sm",
+                    "pl-9 pr-4 rounded-2xl font-bold uppercase tracking-tight focus:border-white/20 focus:bg-zinc-800 shadow-sm",
                     paddings,
                     textSizes
                 )}
@@ -216,7 +219,7 @@ export function AdminStatusSelector<T extends string>({ value, options, onChange
                 value={value}
                 onChange={(e) => onChange(e.target.value as T)}
                 className={cn(
-                    "appearance-none block w-full bg-zinc-900 border border-white/[0.08] rounded-lg px-4 pr-10 font-bold text-zinc-100 focus:outline-none focus:border-white/20 transition-all cursor-pointer shadow-sm uppercase tracking-tight",
+                    "appearance-none block w-full bg-zinc-900 border border-white/[0.08] rounded-2xl px-4 pr-10 font-bold text-zinc-100 focus:outline-none focus:border-white/20 transition-all cursor-pointer shadow-sm uppercase tracking-tight",
                     paddings,
                     textSizes
                 )}
@@ -243,7 +246,7 @@ interface AdminSegmentedControlProps<T extends string> {
 
 export function AdminSegmentedControl<T extends string>({ options, value, onChange, className }: AdminSegmentedControlProps<T>) {
     return (
-        <div className={cn("flex bg-black p-0.5 rounded-xl border border-white/[0.05] shadow-inner", className)}>
+        <div className={cn("flex bg-black p-0.5 rounded-2xl border border-white/[0.05] shadow-inner", className)}>
             {options.map((option) => {
                 const isActive = value === option.value;
                 return (
@@ -251,7 +254,7 @@ export function AdminSegmentedControl<T extends string>({ options, value, onChan
                         key={option.value}
                         onClick={() => onChange(option.value)}
                         className={cn(
-                            "px-4 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap",
+                            "px-4 py-1 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap",
                             isActive
                                 ? "bg-zinc-100 text-black shadow-[0_2px_8px_rgba(255,255,255,0.1)]"
                                 : "text-zinc-500 hover:text-zinc-300"
@@ -313,7 +316,7 @@ export function AdminPagination({ currentPage, totalPages, onPageChange, totalIt
                                 key={p}
                                 onClick={() => onPageChange(p as number)}
                                 className={cn(
-                                    "min-w-[28px] h-7 flex items-center justify-center rounded-lg text-[10px] font-bold transition-all",
+                                    "min-w-[28px] h-7 flex items-center justify-center rounded-2xl text-[10px] font-bold transition-all",
                                     currentPage === p
                                         ? "bg-zinc-100 text-black shadow-sm"
                                         : "text-zinc-500 hover:text-zinc-300 hover:bg-white/5"
