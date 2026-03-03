@@ -57,7 +57,7 @@ export default async function BlogPage({
     ]);
 
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
-    const currentCategory = categories.find((c) => c.slug.current === categorySlug);
+    const currentCategory = categorySlug ? categories.find((c) => c.slug?.current === categorySlug) : undefined;
     const navT = await getTranslations({ locale, namespace: 'Navigation' });
 
     return (
@@ -120,7 +120,7 @@ export default async function BlogPage({
                                     >
                                         {t('Hero.latest')}
                                     </Link>
-                                    {categories.map((cat) => (
+                                    {categories.filter(cat => cat && cat.slug?.current).map((cat) => (
                                         <Link
                                             key={cat.slug.current}
                                             href={`/blog?category=${cat.slug.current}`}

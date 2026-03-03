@@ -33,7 +33,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
 
     return (
         <Link
-            href={`/blog/${post.slug.current}`}
+            href={post.slug?.current ? `/blog/${post.slug.current}` : '#'}
             locale={localeSelection}
             className="group relative flex flex-col gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-5 transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg h-full"
         >
@@ -50,7 +50,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
 
             <div className="flex flex-col gap-3 flex-1">
                 <div className="flex items-center gap-2">
-                    {post.categories?.slice(0, 2).map((cat: BlogCategory) => (
+                    {post.categories?.filter(cat => cat && cat.slug?.current).slice(0, 2).map((cat: BlogCategory) => (
                         <span
                             key={cat.slug.current}
                             className={cn(

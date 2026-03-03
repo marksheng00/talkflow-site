@@ -26,7 +26,7 @@ export function CategoriesSidebar({
     labels,
 }: CategoriesSidebarProps) {
     const derivedOpenParent = categorySlug
-        ? (categories.find((cat) => cat.slug.current === categorySlug)?.parent || categorySlug)
+        ? (categories.find((cat) => cat.slug?.current === categorySlug)?.parent || categorySlug)
         : null;
     const [hoverParent, setHoverParent] = useState<string | null>(null);
     const openParent = hoverParent ?? derivedOpenParent;
@@ -71,9 +71,10 @@ export function CategoriesSidebar({
                 </Link>
 
                 {parents.map((parent) => {
-                    const children = categories.filter((c) => c.parent === parent.slug.current);
+                    if (!parent.slug?.current) return null;
+                    const children = categories.filter((c) => c.slug?.current && c.parent === parent.slug.current);
                     const isParentActive = categorySlug === parent.slug.current;
-                    const isChildActive = children.some((c) => c.slug.current === categorySlug);
+                    const isChildActive = children.some((c) => c.slug?.current === categorySlug);
                     const isOpen = openParent === parent.slug.current || isChildActive;
 
                     return (
@@ -131,23 +132,26 @@ export function CategoriesSidebar({
                                     }}
                                 >
                                     <div className="flex flex-col space-y-0.5 overflow-hidden">
-                                        {children.map((child) => (
-                                            <Link
-                                                key={child.slug.current}
-                                                href={`/blog?category=${child.slug.current}`}
-                                                locale={locale}
-                                                className={badgeStyles({
-                                                    tone: categorySlug === child.slug.current ? "teal" : "slate",
-                                                    variant: categorySlug === child.slug.current ? "soft" : "ghost",
-                                                    size: "lg",
-                                                    caps: false,
-                                                    interactive: true,
-                                                    className: categorySlug === child.slug.current ? "border-transparent" : undefined,
-                                                })}
-                                            >
-                                                {child.title}
-                                            </Link>
-                                        ))}
+                                        {children.map((child) => {
+                                            if (!child.slug?.current) return null;
+                                            return (
+                                                <Link
+                                                    key={child.slug.current}
+                                                    href={`/blog?category=${child.slug.current}`}
+                                                    locale={locale}
+                                                    className={badgeStyles({
+                                                        tone: categorySlug === child.slug.current ? "teal" : "slate",
+                                                        variant: categorySlug === child.slug.current ? "soft" : "ghost",
+                                                        size: "lg",
+                                                        caps: false,
+                                                        interactive: true,
+                                                        className: categorySlug === child.slug.current ? "border-transparent" : undefined,
+                                                    })}
+                                                >
+                                                    {child.title}
+                                                </Link>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}

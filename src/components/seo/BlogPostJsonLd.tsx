@@ -42,7 +42,7 @@ export default function BlogPostJsonLd({ post, locale }: BlogPostJsonLdProps) {
         "description": post.excerpt || post.seo?.metaDescription,
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": `https://talkflo.hicall.ai/${locale}/blog/${post.slug.current}`
+            "@id": `https://talkflo.hicall.ai/${locale}/blog/${post.slug?.current || ''}`
         }
     };
 

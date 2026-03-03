@@ -77,3 +77,57 @@ export const postBySlugQuery = groq`
     }
   }
 `
+
+// SEO Landing Page 查询
+const seoLandingPageFields = groq`
+  _id,
+  title,
+  subtitle,
+  heroDescription,
+  introduction,
+  sections,
+  ctaText,
+  ctaLink,
+  slug,
+  language,
+  targetKeywords,
+  primaryKeyword,
+  metaTitle,
+  metaDescription,
+  ogImage,
+  faqItems,
+  "relatedPages": relatedPages[]->{
+    title,
+    slug,
+    language
+  },
+  publishedAt,
+  status,
+  priority
+`
+
+// 获取所有已发布的 SEO landing pages
+export const seoLandingPagesQuery = groq`
+  *[_type == "seoLandingPage" && status == "published" && (language == $language || (!defined(language) && $language == "en"))] | order(priority asc, publishedAt desc) {
+    ${seoLandingPageFields}
+  }
+`
+
+// 获取所有 SEO landing pages 的 slugs（用于 generateStaticParams）
+export const allSeoLandingPageSlugsQuery = groq`
+  *[_type == "seoLandingPage" && status == "published"] {
+    slug,
+    language
+  }
+`
+
+// 获取单个 SEO landing page
+export const seoLandingPageBySlugQuery = groq`
+  *[_type == "seoLandingPage" && slug.current == $slug && (language == $language || language == "en" || !defined(language))] | order(select(language == $language => 0, 1) asc)[0] {
+    ${seoLandingPageFields},
+    "translations": *[_type == "seoLandingPage" && translationId == ^.translationId && _id != ^._id && defined(translationId)] {
+      language,
+      slug
+    }
+  }
+`

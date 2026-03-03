@@ -41,10 +41,12 @@ const extractText = (block: PortableTextBlock): string => {
 // Generate static params for all posts across all languages
 export async function generateStaticParams() {
     const posts = await client.fetch<Array<{ slug: { current: string }, language: string }>>(allPostSlugsQuery);
-    return posts.map((post) => ({
-        slug: post.slug.current,
-        locale: post.language || 'en'
-    }));
+    return posts
+        .filter(post => post && post.slug?.current)
+        .map((post) => ({
+            slug: post.slug.current,
+            locale: post.language || 'en'
+        }));
 }
 
 // Generate metadata for SEO
@@ -162,7 +164,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                 items={[
                     { name: navT('home'), item: '/' },
                     { name: navT('blog'), item: '/blog' },
-                    { name: post.title, item: `/blog/${post.slug.current}` }
+                    { name: post.title, item: post.slug?.current ? `/blog/${post.slug.current}` : '#' }
                 ]}
             />
             <AuroraBackground className="min-h-screen pb-24 text-white">
@@ -262,7 +264,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                                     <div className="flex flex-col">
                                                         <span className="typo-label text-slate-500 mb-1">{t('Post.category')}</span>
                                                         <div className="flex items-center gap-2">
-                                                            {post.categories.map((cat: BlogCategory) => (
+                                                            {post.categories.filter(cat => cat && cat.slug?.current).map((cat: BlogCategory) => (
                                                                 <span
                                                                     key={cat.slug.current}
                                                                     className="typo-body-sm-strong text-white whitespace-nowrap"
