@@ -2,7 +2,7 @@
 
 import { Link } from '@/navigation';
 import Image from 'next/image';
-import { urlFor } from '@/lib/sanity.image';
+import { urlFor, isValidSanityImage } from '@/lib/sanity.image';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { estimateReadingTime } from '@/lib/blog-helpers';
@@ -37,7 +37,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
             locale={localeSelection}
             className="group relative flex flex-col gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-5 transition-all hover:bg-white/[0.04] hover:border-white/10 hover:shadow-lg h-full"
         >
-            {post.mainImage && (
+            {post.mainImage && isValidSanityImage(post.mainImage) && (
                 <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-800">
                     <Image
                         src={urlFor(post.mainImage).width(600).height(400).url()}
@@ -73,7 +73,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
 
                 <div className="mt-auto pt-4 flex items-center justify-between typo-body-sm text-slate-500 border-t border-white/5">
                     <div className="flex items-center gap-2">
-                        {post.author?.image && (
+                        {post.author?.image && isValidSanityImage(post.author.image) && (
                             <Image
                                 src={urlFor(post.author.image).width(24).height(24).url()}
                                 alt={post.author.name}

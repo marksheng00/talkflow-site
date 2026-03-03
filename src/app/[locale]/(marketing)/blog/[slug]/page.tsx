@@ -2,7 +2,7 @@ import { client } from '@/lib/sanity.client';
 import { postBySlugQuery, allPostSlugsQuery } from '@/lib/sanity.queries';
 import { AuroraBackground } from '@/components/ui/AuroraBackground';
 import { PortableText } from '@portabletext/react';
-import { urlFor } from '@/lib/sanity.image';
+import { urlFor, isValidSanityImage } from '@/lib/sanity.image';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { zhCN, zhTW } from 'date-fns/locale';
@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         openGraph: {
             title: post.title,
             description: post.excerpt,
-            images: post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).url()] : [],
+            images: (post.mainImage && isValidSanityImage(post.mainImage)) ? [urlFor(post.mainImage).width(1200).height(630).url()] : [],
         },
     };
 }
@@ -89,7 +89,7 @@ const ptComponents: PortableTextComponents = {
     types: {
         image: ({ value }) => {
             const imageValue = value as PortableImageValue;
-            if (!imageValue || !(imageValue as { asset?: { _ref?: string } }).asset?._ref) {
+            if (!imageValue || !isValidSanityImage(imageValue)) {
                 return null;
             }
             return (
@@ -211,7 +211,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                         <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-8 border-y border-white/10 py-6 mb-12 w-full text-left">
                                             {/* Author */}
                                             <div className="flex items-center gap-4">
-                                                {post.author?.image && (
+                                                {post.author?.image && isValidSanityImage(post.author.image) && (
                                                     <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-white/10 shrink-0">
                                                         <Image
                                                             src={urlFor(post.author.image).width(96).height(96).url()}
@@ -280,7 +280,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                                     </header>
 
                                     {/* Main Image */}
-                                    {post.mainImage && (
+                                    {post.mainImage && isValidSanityImage(post.mainImage) && (
                                         <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-16">
                                             <Image
                                                 src={urlFor(post.mainImage).width(1200).height(630).url()}

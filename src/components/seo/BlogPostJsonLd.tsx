@@ -1,6 +1,6 @@
 import React from 'react';
 import { BlogPost } from '@/types/blog';
-import { urlFor } from '@/lib/sanity.image';
+import { urlFor, isValidSanityImage } from '@/lib/sanity.image';
 
 interface BlogPostJsonLdProps {
     post: BlogPost;
@@ -12,7 +12,7 @@ export default function BlogPostJsonLd({ post, locale }: BlogPostJsonLdProps) {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "headline": post.title,
-        "image": post.mainImage
+        "image": (post.mainImage && isValidSanityImage(post.mainImage))
             ? [urlFor(post.mainImage).width(1200).height(630).url()]
             : ["https://talkflo.hicall.ai/og-image.png"], // Fallback image
         "datePublished": post.publishedAt,
